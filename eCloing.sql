@@ -280,6 +280,7 @@ CREATE TABLE plasmid_map
 	seq_start INT NOT NULL,
 	seq_end INT NOT NULL,
 	label NVARCHAR(200) NOT NULL,
+	clockwise BIT,
 	[des] TEXT,
 );
 
@@ -518,12 +519,6 @@ CREATE TABLE protocol
 
 
 
-
-
-
-
-
-
 ---------------------------------------------------------------------------------------------------
 --project design, should be automatically generated steps and cloning strategies
 --project 
@@ -533,27 +528,6 @@ CREATE TABLE protocol
 --record experiments
 
 --this need most of the work
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
