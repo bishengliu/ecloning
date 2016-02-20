@@ -73,7 +73,7 @@ GO
 
 CREATE TABLE [dbo].[AspNetRoles](
 	[Id] [nvarchar](128) NOT NULL,
-	[Name] [nvarchar](256) NOT NULL UNIQUE,
+	[Name] [nvarchar](256) NOT NULL UNIQUE,  --appAdmin, instituteAdmin, departAdmin, groupAdmin 
  CONSTRAINT [PK_dbo.AspNetRoles] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -194,10 +194,6 @@ CREATE TABLE department --department level
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(50) NOT NULL,
-    code TEXT, --for registration code
-    license_num INT, -- how many license
-    expire_date DATETIME, --license expired
-	active BIT,
 	[des] TEXT,
 	CONSTRAINT uq_department_name UNIQUE (name)
 );
@@ -207,10 +203,6 @@ CREATE TABLE [group]
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	depart_id INT NOT NULL,
     name NVARCHAR(50) NOT NULL, 
-    code TEXT, --for registration code
-    license_num INT, -- how many license
-    expire_date DATETIME, --license expired
-	active BIT,
 	[des] TEXT,
 	CONSTRAINT uq_group_depart_id_name UNIQUE (depart_id,name),
 	CONSTRAINT fk_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)
@@ -239,6 +231,25 @@ CREATE TABLE group_people
 	CONSTRAINT fk_group_people_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 );
 
+--app license
+CREATE TABLE app_license
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	institute_num INT NOT NULL, --the number of institute license, default  -1, meaning no limits
+	institute_expired BIT,
+	institute_expired_dt DATETIME,
+	depart_id INT NOT NULL, 
+	depart_num INT NOT NULL, --the number of each depart license, default  -1, meaning no limits
+	depart_expired BIT,
+	depart_expired_dt DATETIME,
+	group_id INT NOT NULL,
+	group_num INT NOT NULL, --the number of each group license, default 5.
+	group_expired BIT,
+	group_expired_dt DATETIME,
+	CONSTRAINT fk_app_license_depart_id FOREIGN KEY (depart_id) REFERENCES department(id),
+	CONSTRAINT fk_app_license_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
+	CONSTRAINT uq_app_license_depart_id_group_id UNIQUE (depart_id,group_id)
+);
 
 --technically license table for each person, like cloning, viral work, cellular work etc.
 CREATE TABLE license
@@ -528,7 +539,7 @@ CREATE TABLE minus180_liquid_nitrogen --for both
 	drawer_num INT NOT NULL, --how many drawers in each tower
 	location NVARCHAR(100),
 	[des] TEXT,
-	CONSTRAINT uq_minus80_name UNIQUE (name),
+	CONSTRAINT uq_minus180_liquid_nitrogen_name UNIQUE (name),
 );
 
 
@@ -584,7 +595,7 @@ CREATE TABLE protocol
 	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
 	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	CONSTRAINT fk_protocol_people_id FOREIGN KEY (people_id) REFERENCES people(id),
-	CONSTRAINT uq_protocol_name_version UNIQUE (name,version)
+	CONSTRAINT uq_protocol_name_version UNIQUE ([name],[version])
 
 );
 
