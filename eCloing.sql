@@ -202,7 +202,7 @@ CREATE TABLE department --department level
 	CONSTRAINT uq_department_name UNIQUE (name)
 );
 --research group in each department--
-CREATE TABLE group
+CREATE TABLE [group]
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	depart_id INT NOT NULL,
@@ -234,8 +234,8 @@ CREATE TABLE group_people
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	group_id INT NOT NULL,
     people_id INT NOT NULL,
-	CONSTRAINT uq_group_people_group_id_people_id UNIQUE (roup_id, people_id),
-	CONSTRAINT fk_group_people_group_id FOREIGN KEY (group_id) REFERENCES group(id),
+	CONSTRAINT uq_group_people_group_id_people_id UNIQUE (group_id, people_id),
+	CONSTRAINT fk_group_people_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT fk_group_people_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 );
 
@@ -254,7 +254,7 @@ CREATE TABLE people_license
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	people_id INT NOT NULL,
-    licence_id NVARCHAR(100), --license id refer to license tables
+    licence_id INT NOT NULL, --license id refer to license tables
     licence_num NVARCHAR(250),  --license id-num pair for each people
 	CONSTRAINT fk_people_license_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_people_license_licence_id FOREIGN KEY (licence_id) REFERENCES license(id),
@@ -277,7 +277,7 @@ CREATE TABLE plasmid
 	resistance NVARCHAR(200), --both bac and cellular
 	reporter NVARCHAR(200),
 	selection NVARCHAR(200), --selection marker
-	insert NVARCHAR(200), --gene or oligo etc.
+	[insert] NVARCHAR(200), --gene or oligo etc.
 	usage NVARCHAR(200), --RNAi, luciferase, Cre/Lox etc. check addgene
 	plasmid_type NVARCHAR(200),
 	ref_plasmid INT,
@@ -308,21 +308,20 @@ CREATE TABLE plasmid_feature
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	feature NVARCHAR(200) NOT NULL,
-	feature_id INT NOT NULL,
 	[des] TEXT,
 );
 INSERT INTO plasmid_feature
 VALUES
-("feature", 1, "Generic Features"),
-("promoter", 2, "Promoters"),
-("primer", 3, "Primers"),
-("enzyme", 4, "Enzymes"),
-("gene", 5, "Genes"),
-("origin", 6, "Origins"),
-("regulatory", 7, "Regulatory"),
-("terminator", 8, "Terminators"),
-("exact_feature", 9, "Exact Features"),
-("orf", 10, "ORF");
+('feature',  'Generic Features'),
+('promoter', 'Promoters'),
+('primer', 'Primers'),
+('enzyme',  'Enzymes'),
+('gene', 'Genes'),
+('origin', 'Origins'),
+('regulatory',  'Regulatory'),
+('terminator',  'Terminators'),
+('exact_feature', 'Exact Features'),
+('orf', 'ORF');
 
 
 --need use addgene giraffe
@@ -335,13 +334,13 @@ CREATE TABLE plasmid_map
 	feature NVARCHAR(200) NOT NULL,
 	feature_id INT NOT NULL,
 	start INT NOT NULL,
-	end INT NOT NULL,
+	[end] INT NOT NULL,
 	cut INT, --enzyme cut only clude unique and 2 cuts
 	label NVARCHAR(200) NOT NULL,
 	clockwise INT NOT NULL, -- 1 or 0
 	[des] TEXT,
 	CONSTRAINT fk_plasmid_map_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
-	CONSTRAINT fk_plasmid_map_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(feature_id)
+	CONSTRAINT fk_plasmid_map_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id)
 );
 
 
@@ -491,7 +490,7 @@ CREATE TABLE container
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	category NVARCHAR(100), -- -20, -80, -180, liquid nitrogen
 	[des] TEXT,
-	CONSTRAINT uq_container_name UNIQUE (name),
+	CONSTRAINT uq_container_name UNIQUE (category),
 );
 
 CREATE TABLE minus20
@@ -579,7 +578,7 @@ CREATE TABLE protocol
 	version INT,
 	versionref INT, --ref to previous version
 	people_id INT,
-	des] TEXT,
+	[des] TEXT,
 	dt DATETIME,
 	submitted_to_group BIT, --for submitted to general stock and prevent changes 
 	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
