@@ -193,34 +193,54 @@ alter table dbo.AspNetRoles Add constraint UQ_AspNetRoles_Name UNIQUE (Name);
 CREATE TABLE department --department level
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(50) NOT NULL, 
+    name NVARCHAR(50) NOT NULL,
+    code TEXT, --for registration code
+    license_num INT, -- how many license
+    expire_date DATETIME, --license expired
 	active BIT,
 	[des] TEXT,
+	CONSTRAINT uq_department_name UNIQUE (name)
 );
 --research group in each department--
-CREATE TABLE group_people
+CREATE TABLE group
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	depart_id INT NOT NULL,
     name NVARCHAR(50) NOT NULL, 
+    code TEXT, --for registration code
+    license_num INT, -- how many license
+    expire_date DATETIME, --license expired
 	active BIT,
 	[des] TEXT,
-	CONSTRAINT fk_people_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)
+	CONSTRAINT uq_group_depart_id_name UNIQUE (depart_id,name),
+	CONSTRAINT fk_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)
 );
 ---lab people in each research group----
 CREATE TABLE people
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	group_id INT NOT NULL,
+	--group_id INT NOT NULL,
     first_name NVARCHAR(50) NOT NULL,
     mid_name  NVARCHAR(50),
     last_name  NVARCHAR(50) NOT NULL,
     email NVARCHAR(50) NOT NULL,
     func NVARCHAR(100),
 	active bit,
-	CONSTRAINT fk_people_group_id FOREIGN KEY (group_id) REFERENCES group_people(id)
+	CONSTRAINT uq_people_email UNIQUE (email)
 );
---license table for each tech
+
+CREATE TABLE group_people
+(
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	group_id INT NOT NULL,
+    people_id INT NOT NULL,
+	CONSTRAINT uq_group_people_group_id_people_id UNIQUE (roup_id, people_id),
+	CONSTRAINT fk_group_people_group_id FOREIGN KEY (group_id) REFERENCES group(id),
+	CONSTRAINT fk_group_people_people_id FOREIGN KEY (people_id) REFERENCES people(id),
+);
+
+
+--technically license table for each person, like cloning, viral work, cellular work etc.
 CREATE TABLE license
 (
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -250,7 +270,7 @@ CREATE TABLE plasmid
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(200) NOT NULL,
 	[sequence] TEXT,
-	expression_system NVARCHAR(100), --bacteria, cellular, yeast, etc
+	expression_system NVARCHAR(100), --manmalian, baterial, yeast, worm, insert etc.
 	expression_subsystem NVARCHAR(100), --in detail which bateria, cell or yeast --check addgene
 	promotor NVARCHAR(100),
 	polyA NVARCHAR(100),
@@ -264,24 +284,64 @@ CREATE TABLE plasmid
 	img_fn NVARCHAR(500), --upload image/ how the plasmid works
 	addgene INT, --cite addgene plasmid# like, 12260
 	d DATETIME,
-	people_id INT NOT NULL,
-	submitted BIT, --for submitted to general stock and prevent changes 
-	general BIT, --after approval changed to true and shared by all people
+	people_id INT NOT NULL, --the person who add this plasmid
+	submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	[des] TEXT,
 	CONSTRAINT fk_plasmid_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_plasmid_name_people_id UNIQUE (name,people_id)
 ); 
 
---need use add giraffe
+
+--1. Generic features
+--2. Genes
+--3. Regulatory
+--4. Promoters
+--5. Primers
+--6.Terminators
+--7.Origins
+--8.ORFs
+
+--main feature
+CREATE TABLE plasmid_feature
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	feature NVARCHAR(200) NOT NULL,
+	feature_id INT NOT NULL,
+	[des] TEXT,
+);
+INSERT INTO plasmid_feature
+VALUES
+("feature", 1, "Generic Features"),
+("promoter", 2, "Promoters"),
+("primer", 3, "Primers"),
+("enzyme", 4, "Enzymes"),
+("gene", 5, "Genes"),
+("origin", 6, "Origins"),
+("regulatory", 7, "Regulatory"),
+("terminator", 8, "Terminators"),
+("exact_feature", 9, "Exact Features"),
+("orf", 10, "ORF");
+
+
+--need use addgene giraffe
 CREATE TABLE plasmid_map
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	plasmid_id INT NOT NULL,
-	seq_start INT NOT NULL,
-	seq_end INT NOT NULL,
+	--type_id INT, --linear or circlular
+	show_feature INT NOT NULL, -- 1 or 0
+	feature NVARCHAR(200) NOT NULL,
+	feature_id INT NOT NULL,
+	start INT NOT NULL,
+	end INT NOT NULL,
+	cut INT, --enzyme cut only clude unique and 2 cuts
 	label NVARCHAR(200) NOT NULL,
-	clockwise BIT,
+	clockwise INT NOT NULL, -- 1 or 0
 	[des] TEXT,
+	CONSTRAINT fk_plasmid_map_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
+	CONSTRAINT fk_plasmid_map_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(feature_id)
 );
 
 
@@ -313,6 +373,9 @@ CREATE TABLE [primer]
 	modification NVARCHAR(100), --Non (default), phosphorylated
 	people_id INT,
 	[des] TEXT,
+	submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_primer_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_primer_name UNIQUE (name)
@@ -332,6 +395,9 @@ CREATE TABLE [oligo]
 	modification NVARCHAR(100), --Non (default), phosphorylated
 	people_id INT,
 	[des] TEXT,
+	submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_oligo_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_oligo_name UNIQUE (name)
@@ -350,6 +416,9 @@ CREATE TABLE [probe] --pcr probe
 	location NVARCHAR(100),
 	people_id INT,
 	[des] TEXT,
+	submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_probe_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_probe_forward_primer FOREIGN KEY (forward_primer) REFERENCES primer(id),
@@ -381,6 +450,9 @@ CREATE TABLE [clone_group]
 	dt DATETIME DEFAULT GETDATE(),
 	[des] TEXT,
 	people_id INT,
+	submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	CONSTRAINT fk_clone_group_people_id FOREIGN KEY (people_id) REFERENCES people(id),	
 	CONSTRAINT fk_clone_group_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
 	CONSTRAINT fk_clone_group_oligo_id FOREIGN KEY (oligo_id) REFERENCES oligo(id),
@@ -509,13 +581,13 @@ CREATE TABLE protocol
 	people_id INT,
 	des] TEXT,
 	dt DATETIME,
+	submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	CONSTRAINT fk_protocol_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_protocol_name_version UNIQUE (name,version)
 
 );
-
-
-
 
 
 
@@ -529,7 +601,46 @@ CREATE TABLE protocol
 
 --this need most of the work
 
+--for main steps--
+-- 1. molecular cloning
+-- 2. cellular work (plasmid only)
+-- 3. viral production
+-- 4. viral infection in vitro
+-- 5. viral inecton in vivo 
+CREATE TABLE main_step
+(
+		id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+		name NVARCHAR(200),
+		[des] TEXT
+);
 
+
+--project/experiment
+CREATE TABLE project
+(
+		id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+		name NVARCHAR(200),
+		aim TEXT,
+		people_id INT NOT NULL,
+		start_dt DATETIME,
+		status NVARCHAR(100), --open, closed, finished
+		finished_dt DATETIME, --date of closure or done
+		dt DATETIME,
+		[des] TEXT,
+		shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+		shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
+		CONSTRAINT fk_project_people_id FOREIGN KEY (people_id) REFERENCES people(id),
+);
+
+
+----------
+--add table, clone_strategy
+--need carefuly thinking
+--should include: digestion strategies, like enzyme cut, whether need to blunt fragement, insert postion/replace, clockwise, gel confirmation, selection etc, 
+--this need the plasmid map if using features or seq site if only using restriction cut.
+
+----------------------
+--add tables to record exp/data for each small experiment, think about all the work in the lab. should be expandable and flexible
 
 
 --for form dropdown items--
