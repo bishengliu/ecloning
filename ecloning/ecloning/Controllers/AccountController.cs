@@ -9,6 +9,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ecloning.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using SendGrid;
+using System.Net.Mail;
+using System.Net;
 
 namespace ecloning.Controllers
 {
@@ -151,17 +155,149 @@ namespace ecloning.Controllers
         {
             if (ModelState.IsValid)
             {
+                //appAdmin
+                var appAdmin = new AppAdmin();
+
+                //db
+                ecloningEntities db = new ecloningEntities();
+
+
+                //check code in group table
+                var depart = db.departments.Where(d => d.name == model.Department);
+                if (depart.Count() == 0)
+                {
+                    TempData["msg"] = "Department not found!";
+                    return View(model);
+                }
+                var group = db.groups.Where(g => g.depart_id == depart.FirstOrDefault().id && g.name == model.Group);
+                if (group.Count() == 0)
+                {
+                    TempData["msg"] = "Group not found!";
+                    return View(model);
+                }
+
+
+                //check code first
+                if (model.Email == appAdmin.email)
+                {
+                    if(model.code != appAdmin.code)
+                    {
+                        TempData["msg"] = "Invitation Code is wrong!";
+                        return View(model);
+                    }
+                }
+                else
+                {
+                    //check code in group table
+                    if (group.FirstOrDefault().code != model.code)
+                    {
+                        TempData["msg"] = "Invitation Code is wrong!";
+                        return View(model);
+                    }
+
+
+                }
+
+                //try to register
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
+
+                //role related
+                ApplicationDbContext context = new ApplicationDbContext();
+                var roleStore = new RoleStore<IdentityRole>(context);
+                var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+ 
+
+                //register sucess
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    //add to people table
+                    var person = new person();
+
+                    person.first_name = model.first_name;
+                    person.last_name = model.last_name;
+                    person.email = model.Email;
+                    person.active = true;
+                    db.people.Add(person);
+                    db.SaveChanges();
+
+                    //get persion id
+                    int people_id = db.people.Where(e => e.email == model.Email).FirstOrDefault().id;
+
+
+                    //add to group_people
+                    var group_people = new group_people();
+                    group_people.group_id = group.FirstOrDefault().id;
+                    group_people.people_id = people_id;
+                    db.group_people.Add(group_people);
+                    db.SaveChanges();
+
                     
+
+                    //stopping auto sigin in
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
+                    //check whether it is appAdmin
+                    if (model.Email == appAdmin.email)
+                    {
+                        //check whether appAmin role
+                        var Admin = db.AspNetRoles.Where(r => r.Name == "appAdmin");
+                        if (Admin.Count() == 0)
+                        {
+                            //create it
+                            IdentityRole Role = new IdentityRole("appAdmin");
+                            context.Roles.Add(Role);
+                            context.SaveChanges();
+                        }
+
+                        //add to appAdmin role
+                        if (!userManager.IsInRole(user.Id, "appAdmin"))
+                        {
+                            userManager.AddToRole(user.Id, "appAdmin");
+                        }
+                    }
+
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    //if app host in azure, use sendgrid
+                    if(eCloningSettings.AppEnv() == "Cloud")
+                    {
+                        var msg = new SendGridMessage();
+
+                        msg.From = new MailAddress(appAdmin.email, appAdmin.appName);
+                        msg.AddTo(model.Email);
+                        msg.Subject = "Complete your registration";
+
+
+                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                        msg.Html = "Thank you for your registration, please click on the link to complete your registration: <a href=\"" + callbackUrl + "\">here</a>";
+
+                        var username = eCloningSettings.SendgridLoginName();
+                        var pswd = eCloningSettings.SendgridPsw();
+                        var credentials = new NetworkCredential(username, pswd);
+                        // Create an Web transport for sending email.
+                        var transportWeb = new Web(credentials);
+
+                        // Send the email.
+                        // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                        await transportWeb.DeliverAsync(msg);
+                    }
+                    if(eCloningSettings.AppEnv() == "Cloud")
+                    {
+                        //send email using local smtp
+                        var smtp = new LocalSMTP();
+                    }
+
 
                     return RedirectToAction("Index", "Home");
                 }

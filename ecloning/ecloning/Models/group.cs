@@ -17,18 +17,18 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public group()
         {
+            this.app_license = new HashSet<app_license>();
             this.group_people = new HashSet<group_people>();
         }
     
         public int id { get; set; }
         public int depart_id { get; set; }
         public string name { get; set; }
-        public string code { get; set; }
-        public Nullable<int> license_num { get; set; }
-        public Nullable<System.DateTime> expire_date { get; set; }
-        public Nullable<bool> active { get; set; }
         public string des { get; set; }
+        public string code { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<app_license> app_license { get; set; }
         public virtual department department { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group_people> group_people { get; set; }

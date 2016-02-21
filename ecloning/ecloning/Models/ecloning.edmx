@@ -15,6 +15,23 @@
           <Property Name="Model" Type="varbinary(max)" Nullable="false" />
           <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
+        <EntityType Name="app_license">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="institute_num" Type="int" Nullable="false" />
+          <Property Name="institute_expired" Type="bit" />
+          <Property Name="institute_expired_dt" Type="datetime" />
+          <Property Name="depart_id" Type="int" Nullable="false" />
+          <Property Name="depart_num" Type="int" Nullable="false" />
+          <Property Name="depart_expired" Type="bit" />
+          <Property Name="depart_expired_dt" Type="datetime" />
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="group_num" Type="int" Nullable="false" />
+          <Property Name="group_expired" Type="bit" />
+          <Property Name="group_expired_dt" Type="datetime" />
+        </EntityType>
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -101,10 +118,6 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="code" Type="text" />
-          <Property Name="license_num" Type="int" />
-          <Property Name="expire_date" Type="datetime" />
-          <Property Name="active" Type="bit" />
           <Property Name="des" Type="text" />
         </EntityType>
         <EntityType Name="dropdownitem">
@@ -123,11 +136,8 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="depart_id" Type="int" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="code" Type="text" />
-          <Property Name="license_num" Type="int" />
-          <Property Name="expire_date" Type="datetime" />
-          <Property Name="active" Type="bit" />
           <Property Name="des" Type="text" />
+          <Property Name="code" Type="text" />
         </EntityType>
         <EntityType Name="group_people">
           <Key>
@@ -408,6 +418,30 @@
           <Property Name="dt" Type="datetime" />
           <Property Name="des" Type="text" />
         </EntityType>
+        <Association Name="fk_app_license_depart_id">
+          <End Role="department" Type="Self.department" Multiplicity="1" />
+          <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="department">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="app_license">
+              <PropertyRef Name="depart_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_app_license_group_id">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="app_license">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_clone_group_oligo_id">
           <End Role="oligo" Type="Self.oligo" Multiplicity="0..1" />
           <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
@@ -706,6 +740,7 @@
         </Association>
         <EntityContainer Name="ecloningModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="app_license" EntityType="Self.app_license" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -737,6 +772,14 @@
           <EntitySet Name="protocol" EntityType="Self.protocol" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="restriction" EntityType="Self.restriction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="storage" EntityType="Self.storage" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_app_license_depart_id" Association="Self.fk_app_license_depart_id">
+            <End Role="department" EntitySet="department" />
+            <End Role="app_license" EntitySet="app_license" />
+          </AssociationSet>
+          <AssociationSet Name="fk_app_license_group_id" Association="Self.fk_app_license_group_id">
+            <End Role="group" EntitySet="group" />
+            <End Role="app_license" EntitySet="app_license" />
+          </AssociationSet>
           <AssociationSet Name="fk_clone_group_oligo_id" Association="Self.fk_clone_group_oligo_id">
             <End Role="oligo" EntitySet="oligo" />
             <End Role="clone_group" EntitySet="clone_group" />
@@ -849,6 +892,25 @@
           <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
           <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
+        <EntityType Name="app_license">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="institute_num" Type="Int32" Nullable="false" />
+          <Property Name="institute_expired" Type="Boolean" />
+          <Property Name="institute_expired_dt" Type="DateTime" Precision="3" />
+          <Property Name="depart_id" Type="Int32" Nullable="false" />
+          <Property Name="depart_num" Type="Int32" Nullable="false" />
+          <Property Name="depart_expired" Type="Boolean" />
+          <Property Name="depart_expired_dt" Type="DateTime" Precision="3" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <Property Name="group_num" Type="Int32" Nullable="false" />
+          <Property Name="group_expired" Type="Boolean" />
+          <Property Name="group_expired_dt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="department" Relationship="Self.fk_app_license_depart_id" FromRole="app_license" ToRole="department" />
+          <NavigationProperty Name="group" Relationship="Self.fk_app_license_group_id" FromRole="app_license" ToRole="group" />
+        </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
             <PropertyRef Name="Id" />
@@ -937,11 +999,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="license_num" Type="Int32" />
-          <Property Name="expire_date" Type="DateTime" Precision="3" />
-          <Property Name="active" Type="Boolean" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_depart_id" FromRole="department" ToRole="app_license" />
           <NavigationProperty Name="groups" Relationship="Self.fk_group_depart_id" FromRole="department" ToRole="group" />
         </EntityType>
         <EntityType Name="dropdownitem">
@@ -960,11 +1019,9 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="depart_id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="license_num" Type="Int32" />
-          <Property Name="expire_date" Type="DateTime" Precision="3" />
-          <Property Name="active" Type="Boolean" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
           <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
           <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
         </EntityType>
@@ -1280,6 +1337,30 @@
           <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
+        <Association Name="fk_app_license_depart_id">
+          <End Role="department" Type="Self.department" Multiplicity="1" />
+          <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="department">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="app_license">
+              <PropertyRef Name="depart_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_app_license_group_id">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="app_license">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1554,6 +1635,7 @@
         </Association>
         <EntityContainer Name="ecloningEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="app_license" EntityType="Self.app_license" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
@@ -1584,6 +1666,14 @@
           <EntitySet Name="protocols" EntityType="Self.protocol" />
           <EntitySet Name="restrictions" EntityType="Self.restriction" />
           <EntitySet Name="storages" EntityType="Self.storage" />
+          <AssociationSet Name="fk_app_license_depart_id" Association="Self.fk_app_license_depart_id">
+            <End Role="department" EntitySet="departments" />
+            <End Role="app_license" EntitySet="app_license" />
+          </AssociationSet>
+          <AssociationSet Name="fk_app_license_group_id" Association="Self.fk_app_license_group_id">
+            <End Role="group" EntitySet="groups" />
+            <End Role="app_license" EntitySet="app_license" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -1693,6 +1783,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="app_license">
+            <EntityTypeMapping TypeName="ecloningModel.app_license">
+              <MappingFragment StoreEntitySet="app_license">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="institute_num" ColumnName="institute_num" />
+                <ScalarProperty Name="institute_expired" ColumnName="institute_expired" />
+                <ScalarProperty Name="institute_expired_dt" ColumnName="institute_expired_dt" />
+                <ScalarProperty Name="depart_id" ColumnName="depart_id" />
+                <ScalarProperty Name="depart_num" ColumnName="depart_num" />
+                <ScalarProperty Name="depart_expired" ColumnName="depart_expired" />
+                <ScalarProperty Name="depart_expired_dt" ColumnName="depart_expired_dt" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="group_num" ColumnName="group_num" />
+                <ScalarProperty Name="group_expired" ColumnName="group_expired" />
+                <ScalarProperty Name="group_expired_dt" ColumnName="group_expired_dt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AspNetRoles">
             <EntityTypeMapping TypeName="ecloningModel.AspNetRole">
               <MappingFragment StoreEntitySet="AspNetRoles">
@@ -1774,10 +1882,6 @@
               <MappingFragment StoreEntitySet="department">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="code" ColumnName="code" />
-                <ScalarProperty Name="license_num" ColumnName="license_num" />
-                <ScalarProperty Name="expire_date" ColumnName="expire_date" />
-                <ScalarProperty Name="active" ColumnName="active" />
                 <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1798,11 +1902,8 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="depart_id" ColumnName="depart_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="code" ColumnName="code" />
-                <ScalarProperty Name="license_num" ColumnName="license_num" />
-                <ScalarProperty Name="expire_date" ColumnName="expire_date" />
-                <ScalarProperty Name="active" ColumnName="active" />
                 <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="code" ColumnName="code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

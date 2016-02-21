@@ -1,0 +1,888 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ecloningModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="C__MigrationHistory">
+    <Key>
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
+    </Key>
+    <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+    <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="app_license">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="institute_num" Type="Int32" Nullable="false" />
+    <Property Name="institute_expired" Type="Boolean" />
+    <Property Name="institute_expired_dt" Type="DateTime" Precision="3" />
+    <Property Name="depart_id" Type="Int32" Nullable="false" />
+    <Property Name="depart_num" Type="Int32" Nullable="false" />
+    <Property Name="depart_expired" Type="Boolean" />
+    <Property Name="depart_expired_dt" Type="DateTime" Precision="3" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
+    <Property Name="group_num" Type="Int32" Nullable="false" />
+    <Property Name="group_expired" Type="Boolean" />
+    <Property Name="group_expired_dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="department" Relationship="Self.fk_app_license_depart_id" FromRole="app_license" ToRole="department" />
+    <NavigationProperty Name="group" Relationship="Self.fk_app_license_group_id" FromRole="app_license" ToRole="group" />
+  </EntityType>
+  <EntityType Name="AspNetRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
+  </EntityType>
+  <EntityType Name="AspNetUserClaim">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
+  </EntityType>
+  <EntityType Name="AspNetUserLogin">
+    <Key>
+      <PropertyRef Name="LoginProvider" />
+      <PropertyRef Name="ProviderKey" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
+  </EntityType>
+  <EntityType Name="AspNetUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+    <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
+    <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
+    <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+  </EntityType>
+  <EntityType Name="clone_group">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="group_type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="version" Type="Int32" Nullable="false" />
+    <Property Name="plasmid_id" Type="Int32" Nullable="false" />
+    <Property Name="oligo_id" Type="Int32" />
+    <Property Name="primer_id" Type="Int32" />
+    <Property Name="nuclease_id" Type="Int32" />
+    <Property Name="refgroup" Type="Int32" />
+    <Property Name="img_fn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="people_id" Type="Int32" />
+    <Property Name="submitted_to_group" Type="Boolean" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="oligo" Relationship="Self.fk_clone_group_oligo_id" FromRole="clone_group" ToRole="oligo" />
+    <NavigationProperty Name="person" Relationship="Self.fk_clone_group_people_id" FromRole="clone_group" ToRole="people" />
+    <NavigationProperty Name="plasmid" Relationship="Self.fk_clone_group_plasmid_id" FromRole="clone_group" ToRole="plasmid" />
+    <NavigationProperty Name="nuclease" Relationship="Self.fk_clone_group_pnuclease_id" FromRole="clone_group" ToRole="nuclease" />
+  </EntityType>
+  <EntityType Name="container">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="department">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_depart_id" FromRole="department" ToRole="app_license" />
+    <NavigationProperty Name="groups" Relationship="Self.fk_group_depart_id" FromRole="department" ToRole="group" />
+  </EntityType>
+  <EntityType Name="dropdownitem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="value" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="text" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="group">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="depart_id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
+    <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
+    <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
+  </EntityType>
+  <EntityType Name="group_people">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="group" Relationship="Self.fk_group_people_group_id" FromRole="group_people" ToRole="group" />
+    <NavigationProperty Name="person" Relationship="Self.fk_group_people_people_id" FromRole="group_people" ToRole="people" />
+  </EntityType>
+  <EntityType Name="ladder">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="min_bp_kDa" Type="Int32" />
+    <Property Name="max_bp_kda" Type="Int32" />
+    <Property Name="company" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="orderref" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ladder_size" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder" ToRole="ladder_size" />
+  </EntityType>
+  <EntityType Name="ladder_size">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ladder_id" Type="Int32" Nullable="false" />
+    <Property Name="size" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
+  </EntityType>
+  <EntityType Name="license">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="licence_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="people_license" Relationship="Self.fk_people_license_licence_id" FromRole="license" ToRole="people_license" />
+  </EntityType>
+  <EntityType Name="main_step">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="minus180_liquid_nitrogen">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="tower_num" Type="Int32" Nullable="false" />
+    <Property Name="drawer_num" Type="Int32" Nullable="false" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="minus20">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="drawer_up" Type="Int32" Nullable="false" />
+    <Property Name="drawer_down" Type="Int32" Nullable="false" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="minus80">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="tower_num" Type="Int32" Nullable="false" />
+    <Property Name="drawer_num" Type="Int32" Nullable="false" />
+    <Property Name="box_num" Type="Int32" Nullable="false" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="nuclease">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_pnuclease_id" FromRole="nuclease" ToRole="clone_group" />
+  </EntityType>
+  <EntityType Name="oligo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sequence" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="company" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="orderref" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="usage" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="purity" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="people_id" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="submitted_to_group" Type="Boolean" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_oligo_id" FromRole="oligo" ToRole="clone_group" />
+    <NavigationProperty Name="person" Relationship="Self.fk_oligo_people_id" FromRole="oligo" ToRole="people" />
+  </EntityType>
+  <EntityType Name="person">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="mid_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="func" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="active" Type="Boolean" />
+    <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_people_id" FromRole="people" ToRole="clone_group" />
+    <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_people_id" FromRole="people" ToRole="group_people" />
+    <NavigationProperty Name="oligoes" Relationship="Self.fk_oligo_people_id" FromRole="people" ToRole="oligo" />
+    <NavigationProperty Name="people_license" Relationship="Self.fk_people_license_people_id" FromRole="people" ToRole="people_license" />
+    <NavigationProperty Name="plasmids" Relationship="Self.fk_plasmid_people_id" FromRole="people" ToRole="plasmid" />
+    <NavigationProperty Name="primers" Relationship="Self.fk_primer_tech_id" FromRole="people" ToRole="primer" />
+    <NavigationProperty Name="probes" Relationship="Self.fk_probe_tech_id" FromRole="people" ToRole="probe" />
+    <NavigationProperty Name="projects" Relationship="Self.fk_project_people_id" FromRole="people" ToRole="project" />
+    <NavigationProperty Name="protocols" Relationship="Self.fk_protocol_people_id" FromRole="people" ToRole="protocol" />
+  </EntityType>
+  <EntityType Name="people_license">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="licence_id" Type="Int32" Nullable="false" />
+    <Property Name="licence_num" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="license" Relationship="Self.fk_people_license_licence_id" FromRole="people_license" ToRole="license" />
+    <NavigationProperty Name="person" Relationship="Self.fk_people_license_people_id" FromRole="people_license" ToRole="people" />
+  </EntityType>
+  <EntityType Name="plasmid">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sequence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="expression_system" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="expression_subsystem" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="promotor" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="polyA" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="resistance" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="reporter" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="selection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="insert" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="usage" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="plasmid_type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ref_plasmid" Type="Int32" />
+    <Property Name="img_fn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="addgene" Type="Int32" />
+    <Property Name="d" Type="DateTime" Precision="3" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="submitted_to_group" Type="Boolean" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
+    <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
+    <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />
+  </EntityType>
+  <EntityType Name="plasmid_feature">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="feature" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_feature" ToRole="plasmid_map" />
+  </EntityType>
+  <EntityType Name="plasmid_map">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="plasmid_id" Type="Int32" Nullable="false" />
+    <Property Name="show_feature" Type="Int32" Nullable="false" />
+    <Property Name="feature" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="feature_id" Type="Int32" Nullable="false" />
+    <Property Name="start" Type="Int32" Nullable="false" />
+    <Property Name="end" Type="Int32" Nullable="false" />
+    <Property Name="cut" Type="Int32" />
+    <Property Name="label" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="clockwise" Type="Int32" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="plasmid" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid_map" ToRole="plasmid" />
+    <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_map" ToRole="plasmid_feature" />
+  </EntityType>
+  <EntityType Name="primer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sequence" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="company" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="orderref" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="usage" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="purity" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="people_id" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="submitted_to_group" Type="Boolean" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="person" Relationship="Self.fk_primer_tech_id" FromRole="primer" ToRole="people" />
+    <NavigationProperty Name="probes" Relationship="Self.fk_probe_forward_primer" FromRole="primer" ToRole="probe" />
+    <NavigationProperty Name="probes1" Relationship="Self.fk_probe_reverse_primer" FromRole="primer" ToRole="probe" />
+  </EntityType>
+  <EntityType Name="probe">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sequence" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="forward_primer" Type="Int32" />
+    <Property Name="reverse_primer" Type="Int32" />
+    <Property Name="usage" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="company" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="orderref" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="people_id" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="submitted_to_group" Type="Boolean" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="person" Relationship="Self.fk_probe_tech_id" FromRole="probe" ToRole="people" />
+    <NavigationProperty Name="primer" Relationship="Self.fk_probe_forward_primer" FromRole="probe" ToRole="primer" />
+    <NavigationProperty Name="primer1" Relationship="Self.fk_probe_reverse_primer" FromRole="probe" ToRole="primer" />
+  </EntityType>
+  <EntityType Name="project">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="aim" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="start_dt" Type="DateTime" Precision="3" />
+    <Property Name="status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="finished_dt" Type="DateTime" Precision="3" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="person" Relationship="Self.fk_project_people_id" FromRole="project" ToRole="people" />
+  </EntityType>
+  <EntityType Name="protocol">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="purpose" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="versionref" Type="Int32" />
+    <Property Name="people_id" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <Property Name="submitted_to_group" Type="Boolean" />
+    <Property Name="shared_with_group" Type="Boolean" />
+    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="person" Relationship="Self.fk_protocol_people_id" FromRole="protocol" ToRole="people" />
+  </EntityType>
+  <EntityType Name="restriction">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="forward_seq" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="forward_cut" Type="Int32" Nullable="false" />
+    <Property Name="reverse_seq" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="reverse_cut" Type="Int32" Nullable="false" />
+    <Property Name="methylation" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="storage">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ref_id" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="container_id" Type="Int32" Nullable="false" />
+    <Property Name="tower_id" Type="Int32" />
+    <Property Name="drawer_id" Type="Int32" />
+    <Property Name="box_id" Type="Int32" />
+    <Property Name="box_label" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="vial_label" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="parent_link" Type="Int32" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="fk_app_license_depart_id">
+    <End Role="department" Type="Self.department" Multiplicity="1" />
+    <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="department">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="app_license">
+        <PropertyRef Name="depart_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_app_license_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="app_license">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserClaims" Type="Self.AspNetUserClaim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserClaims">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserLogins" Type="Self.AspNetUserLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserLogins">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_clone_group_oligo_id">
+    <End Role="oligo" Type="Self.oligo" Multiplicity="0..1" />
+    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="oligo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="clone_group">
+        <PropertyRef Name="oligo_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_clone_group_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="0..1" />
+    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="clone_group">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_clone_group_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="clone_group">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_clone_group_pnuclease_id">
+    <End Role="nuclease" Type="Self.nuclease" Multiplicity="0..1" />
+    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="nuclease">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="clone_group">
+        <PropertyRef Name="nuclease_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_depart_id">
+    <End Role="department" Type="Self.department" Multiplicity="1" />
+    <End Role="group" Type="Self.group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="department">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group">
+        <PropertyRef Name="depart_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_people_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="group_people" Type="Self.group_people" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_people">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_people_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="group_people" Type="Self.group_people" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_people">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_padder_size_ladder_id">
+    <End Role="ladder" Type="Self.ladder" Multiplicity="1" />
+    <End Role="ladder_size" Type="Self.ladder_size" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ladder">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ladder_size">
+        <PropertyRef Name="ladder_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_people_license_licence_id">
+    <End Role="license" Type="Self.license" Multiplicity="1" />
+    <End Role="people_license" Type="Self.people_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="license">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="people_license">
+        <PropertyRef Name="licence_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_oligo_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="0..1" />
+    <End Role="oligo" Type="Self.oligo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="oligo">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_people_license_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="people_license" Type="Self.people_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="people_license">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_primer_tech_id">
+    <End Role="people" Type="Self.person" Multiplicity="0..1" />
+    <End Role="primer" Type="Self.primer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="primer">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_probe_tech_id">
+    <End Role="people" Type="Self.person" Multiplicity="0..1" />
+    <End Role="probe" Type="Self.probe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="probe">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_project_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="project" Type="Self.project" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="project">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_protocol_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="0..1" />
+    <End Role="protocol" Type="Self.protocol" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="protocol">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map">
+        <PropertyRef Name="feature_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_probe_forward_primer">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="probe" Type="Self.probe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="probe">
+        <PropertyRef Name="forward_primer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_probe_reverse_primer">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="probe" Type="Self.probe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="probe">
+        <PropertyRef Name="reverse_primer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AspNetUserRoles">
+    <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+  </Association>
+  <EntityContainer Name="ecloningEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+    <EntitySet Name="app_license" EntityType="Self.app_license" />
+    <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+    <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
+    <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
+    <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+    <EntitySet Name="clone_group" EntityType="Self.clone_group" />
+    <EntitySet Name="containers" EntityType="Self.container" />
+    <EntitySet Name="departments" EntityType="Self.department" />
+    <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
+    <EntitySet Name="groups" EntityType="Self.group" />
+    <EntitySet Name="group_people" EntityType="Self.group_people" />
+    <EntitySet Name="ladders" EntityType="Self.ladder" />
+    <EntitySet Name="ladder_size" EntityType="Self.ladder_size" />
+    <EntitySet Name="licenses" EntityType="Self.license" />
+    <EntitySet Name="main_step" EntityType="Self.main_step" />
+    <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" />
+    <EntitySet Name="minus20" EntityType="Self.minus20" />
+    <EntitySet Name="minus80" EntityType="Self.minus80" />
+    <EntitySet Name="nucleases" EntityType="Self.nuclease" />
+    <EntitySet Name="oligoes" EntityType="Self.oligo" />
+    <EntitySet Name="people" EntityType="Self.person" />
+    <EntitySet Name="people_license" EntityType="Self.people_license" />
+    <EntitySet Name="plasmids" EntityType="Self.plasmid" />
+    <EntitySet Name="plasmid_feature" EntityType="Self.plasmid_feature" />
+    <EntitySet Name="plasmid_map" EntityType="Self.plasmid_map" />
+    <EntitySet Name="primers" EntityType="Self.primer" />
+    <EntitySet Name="probes" EntityType="Self.probe" />
+    <EntitySet Name="projects" EntityType="Self.project" />
+    <EntitySet Name="protocols" EntityType="Self.protocol" />
+    <EntitySet Name="restrictions" EntityType="Self.restriction" />
+    <EntitySet Name="storages" EntityType="Self.storage" />
+    <AssociationSet Name="fk_app_license_depart_id" Association="Self.fk_app_license_depart_id">
+      <End Role="department" EntitySet="departments" />
+      <End Role="app_license" EntitySet="app_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_app_license_group_id" Association="Self.fk_app_license_group_id">
+      <End Role="group" EntitySet="groups" />
+      <End Role="app_license" EntitySet="app_license" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+    </AssociationSet>
+    <AssociationSet Name="fk_clone_group_oligo_id" Association="Self.fk_clone_group_oligo_id">
+      <End Role="oligo" EntitySet="oligoes" />
+      <End Role="clone_group" EntitySet="clone_group" />
+    </AssociationSet>
+    <AssociationSet Name="fk_clone_group_people_id" Association="Self.fk_clone_group_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="clone_group" EntitySet="clone_group" />
+    </AssociationSet>
+    <AssociationSet Name="fk_clone_group_plasmid_id" Association="Self.fk_clone_group_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmids" />
+      <End Role="clone_group" EntitySet="clone_group" />
+    </AssociationSet>
+    <AssociationSet Name="fk_clone_group_pnuclease_id" Association="Self.fk_clone_group_pnuclease_id">
+      <End Role="nuclease" EntitySet="nucleases" />
+      <End Role="clone_group" EntitySet="clone_group" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_depart_id" Association="Self.fk_group_depart_id">
+      <End Role="department" EntitySet="departments" />
+      <End Role="group" EntitySet="groups" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_people_group_id" Association="Self.fk_group_people_group_id">
+      <End Role="group" EntitySet="groups" />
+      <End Role="group_people" EntitySet="group_people" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_people_people_id" Association="Self.fk_group_people_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="group_people" EntitySet="group_people" />
+    </AssociationSet>
+    <AssociationSet Name="fk_padder_size_ladder_id" Association="Self.fk_padder_size_ladder_id">
+      <End Role="ladder" EntitySet="ladders" />
+      <End Role="ladder_size" EntitySet="ladder_size" />
+    </AssociationSet>
+    <AssociationSet Name="fk_people_license_licence_id" Association="Self.fk_people_license_licence_id">
+      <End Role="license" EntitySet="licenses" />
+      <End Role="people_license" EntitySet="people_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_oligo_people_id" Association="Self.fk_oligo_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="oligo" EntitySet="oligoes" />
+    </AssociationSet>
+    <AssociationSet Name="fk_people_license_people_id" Association="Self.fk_people_license_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="people_license" EntitySet="people_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_people_id" Association="Self.fk_plasmid_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="plasmid" EntitySet="plasmids" />
+    </AssociationSet>
+    <AssociationSet Name="fk_primer_tech_id" Association="Self.fk_primer_tech_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="primer" EntitySet="primers" />
+    </AssociationSet>
+    <AssociationSet Name="fk_probe_tech_id" Association="Self.fk_probe_tech_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="probe" EntitySet="probes" />
+    </AssociationSet>
+    <AssociationSet Name="fk_project_people_id" Association="Self.fk_project_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="project" EntitySet="projects" />
+    </AssociationSet>
+    <AssociationSet Name="fk_protocol_people_id" Association="Self.fk_protocol_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="protocol" EntitySet="protocols" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_plasmid_id" Association="Self.fk_plasmid_map_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmids" />
+      <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_feature_id" Association="Self.fk_plasmid_map_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_probe_forward_primer" Association="Self.fk_probe_forward_primer">
+      <End Role="primer" EntitySet="primers" />
+      <End Role="probe" EntitySet="probes" />
+    </AssociationSet>
+    <AssociationSet Name="fk_probe_reverse_primer" Association="Self.fk_probe_reverse_primer">
+      <End Role="primer" EntitySet="primers" />
+      <End Role="probe" EntitySet="probes" />
+    </AssociationSet>
+    <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+      <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

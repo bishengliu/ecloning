@@ -1,0 +1,447 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ecloningModelStoreContainer" CdmEntityContainer="ecloningEntities">
+    <EntitySetMapping Name="C__MigrationHistory">
+      <EntityTypeMapping TypeName="ecloningModel.C__MigrationHistory">
+        <MappingFragment StoreEntitySet="__MigrationHistory">
+          <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+          <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+          <ScalarProperty Name="Model" ColumnName="Model" />
+          <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="app_license">
+      <EntityTypeMapping TypeName="ecloningModel.app_license">
+        <MappingFragment StoreEntitySet="app_license">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="institute_num" ColumnName="institute_num" />
+          <ScalarProperty Name="institute_expired" ColumnName="institute_expired" />
+          <ScalarProperty Name="institute_expired_dt" ColumnName="institute_expired_dt" />
+          <ScalarProperty Name="depart_id" ColumnName="depart_id" />
+          <ScalarProperty Name="depart_num" ColumnName="depart_num" />
+          <ScalarProperty Name="depart_expired" ColumnName="depart_expired" />
+          <ScalarProperty Name="depart_expired_dt" ColumnName="depart_expired_dt" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+          <ScalarProperty Name="group_num" ColumnName="group_num" />
+          <ScalarProperty Name="group_expired" ColumnName="group_expired" />
+          <ScalarProperty Name="group_expired_dt" ColumnName="group_expired_dt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AspNetRoles">
+      <EntityTypeMapping TypeName="ecloningModel.AspNetRole">
+        <MappingFragment StoreEntitySet="AspNetRoles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AspNetUserClaims">
+      <EntityTypeMapping TypeName="ecloningModel.AspNetUserClaim">
+        <MappingFragment StoreEntitySet="AspNetUserClaims">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+          <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AspNetUserLogins">
+      <EntityTypeMapping TypeName="ecloningModel.AspNetUserLogin">
+        <MappingFragment StoreEntitySet="AspNetUserLogins">
+          <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+          <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AspNetUsers">
+      <EntityTypeMapping TypeName="ecloningModel.AspNetUser">
+        <MappingFragment StoreEntitySet="AspNetUsers">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+          <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+          <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+          <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+          <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+          <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+          <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="clone_group">
+      <EntityTypeMapping TypeName="ecloningModel.clone_group">
+        <MappingFragment StoreEntitySet="clone_group">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="group_type" ColumnName="group_type" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+          <ScalarProperty Name="oligo_id" ColumnName="oligo_id" />
+          <ScalarProperty Name="primer_id" ColumnName="primer_id" />
+          <ScalarProperty Name="nuclease_id" ColumnName="nuclease_id" />
+          <ScalarProperty Name="refgroup" ColumnName="refgroup" />
+          <ScalarProperty Name="img_fn" ColumnName="img_fn" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="containers">
+      <EntityTypeMapping TypeName="ecloningModel.container">
+        <MappingFragment StoreEntitySet="container">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="category" ColumnName="category" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="departments">
+      <EntityTypeMapping TypeName="ecloningModel.department">
+        <MappingFragment StoreEntitySet="department">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="dropdownitems">
+      <EntityTypeMapping TypeName="ecloningModel.dropdownitem">
+        <MappingFragment StoreEntitySet="dropdownitem">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="value" ColumnName="value" />
+          <ScalarProperty Name="text" ColumnName="text" />
+          <ScalarProperty Name="category" ColumnName="category" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="groups">
+      <EntityTypeMapping TypeName="ecloningModel.group">
+        <MappingFragment StoreEntitySet="group">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="depart_id" ColumnName="depart_id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="code" ColumnName="code" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="group_people">
+      <EntityTypeMapping TypeName="ecloningModel.group_people">
+        <MappingFragment StoreEntitySet="group_people">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ladders">
+      <EntityTypeMapping TypeName="ecloningModel.ladder">
+        <MappingFragment StoreEntitySet="ladder">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="min_bp_kDa" ColumnName="min_bp_kDa" />
+          <ScalarProperty Name="max_bp_kda" ColumnName="max_bp_kda" />
+          <ScalarProperty Name="company" ColumnName="company" />
+          <ScalarProperty Name="orderref" ColumnName="orderref" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ladder_size">
+      <EntityTypeMapping TypeName="ecloningModel.ladder_size">
+        <MappingFragment StoreEntitySet="ladder_size">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
+          <ScalarProperty Name="size" ColumnName="size" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="licenses">
+      <EntityTypeMapping TypeName="ecloningModel.license">
+        <MappingFragment StoreEntitySet="license">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="licence_name" ColumnName="licence_name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="main_step">
+      <EntityTypeMapping TypeName="ecloningModel.main_step">
+        <MappingFragment StoreEntitySet="main_step">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="minus180_liquid_nitrogen">
+      <EntityTypeMapping TypeName="ecloningModel.minus180_liquid_nitrogen">
+        <MappingFragment StoreEntitySet="minus180_liquid_nitrogen">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="tower_num" ColumnName="tower_num" />
+          <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="minus20">
+      <EntityTypeMapping TypeName="ecloningModel.minus20">
+        <MappingFragment StoreEntitySet="minus20">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="drawer_up" ColumnName="drawer_up" />
+          <ScalarProperty Name="drawer_down" ColumnName="drawer_down" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="minus80">
+      <EntityTypeMapping TypeName="ecloningModel.minus80">
+        <MappingFragment StoreEntitySet="minus80">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="tower_num" ColumnName="tower_num" />
+          <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
+          <ScalarProperty Name="box_num" ColumnName="box_num" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="nucleases">
+      <EntityTypeMapping TypeName="ecloningModel.nuclease">
+        <MappingFragment StoreEntitySet="nuclease">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="oligoes">
+      <EntityTypeMapping TypeName="ecloningModel.oligo">
+        <MappingFragment StoreEntitySet="oligo">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="company" ColumnName="company" />
+          <ScalarProperty Name="orderref" ColumnName="orderref" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="usage" ColumnName="usage" />
+          <ScalarProperty Name="purity" ColumnName="purity" />
+          <ScalarProperty Name="modification" ColumnName="modification" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="people">
+      <EntityTypeMapping TypeName="ecloningModel.person">
+        <MappingFragment StoreEntitySet="people">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="first_name" ColumnName="first_name" />
+          <ScalarProperty Name="mid_name" ColumnName="mid_name" />
+          <ScalarProperty Name="last_name" ColumnName="last_name" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="func" ColumnName="func" />
+          <ScalarProperty Name="active" ColumnName="active" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="people_license">
+      <EntityTypeMapping TypeName="ecloningModel.people_license">
+        <MappingFragment StoreEntitySet="people_license">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="licence_id" ColumnName="licence_id" />
+          <ScalarProperty Name="licence_num" ColumnName="licence_num" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="plasmids">
+      <EntityTypeMapping TypeName="ecloningModel.plasmid">
+        <MappingFragment StoreEntitySet="plasmid">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="expression_system" ColumnName="expression_system" />
+          <ScalarProperty Name="expression_subsystem" ColumnName="expression_subsystem" />
+          <ScalarProperty Name="promotor" ColumnName="promotor" />
+          <ScalarProperty Name="polyA" ColumnName="polyA" />
+          <ScalarProperty Name="resistance" ColumnName="resistance" />
+          <ScalarProperty Name="reporter" ColumnName="reporter" />
+          <ScalarProperty Name="selection" ColumnName="selection" />
+          <ScalarProperty Name="insert" ColumnName="insert" />
+          <ScalarProperty Name="usage" ColumnName="usage" />
+          <ScalarProperty Name="plasmid_type" ColumnName="plasmid_type" />
+          <ScalarProperty Name="ref_plasmid" ColumnName="ref_plasmid" />
+          <ScalarProperty Name="img_fn" ColumnName="img_fn" />
+          <ScalarProperty Name="addgene" ColumnName="addgene" />
+          <ScalarProperty Name="d" ColumnName="d" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="plasmid_feature">
+      <EntityTypeMapping TypeName="ecloningModel.plasmid_feature">
+        <MappingFragment StoreEntitySet="plasmid_feature">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="feature" ColumnName="feature" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="plasmid_map">
+      <EntityTypeMapping TypeName="ecloningModel.plasmid_map">
+        <MappingFragment StoreEntitySet="plasmid_map">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+          <ScalarProperty Name="show_feature" ColumnName="show_feature" />
+          <ScalarProperty Name="feature" ColumnName="feature" />
+          <ScalarProperty Name="feature_id" ColumnName="feature_id" />
+          <ScalarProperty Name="start" ColumnName="start" />
+          <ScalarProperty Name="end" ColumnName="end" />
+          <ScalarProperty Name="cut" ColumnName="cut" />
+          <ScalarProperty Name="label" ColumnName="label" />
+          <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="primers">
+      <EntityTypeMapping TypeName="ecloningModel.primer">
+        <MappingFragment StoreEntitySet="primer">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="company" ColumnName="company" />
+          <ScalarProperty Name="orderref" ColumnName="orderref" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="usage" ColumnName="usage" />
+          <ScalarProperty Name="purity" ColumnName="purity" />
+          <ScalarProperty Name="modification" ColumnName="modification" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="probes">
+      <EntityTypeMapping TypeName="ecloningModel.probe">
+        <MappingFragment StoreEntitySet="probe">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="forward_primer" ColumnName="forward_primer" />
+          <ScalarProperty Name="reverse_primer" ColumnName="reverse_primer" />
+          <ScalarProperty Name="usage" ColumnName="usage" />
+          <ScalarProperty Name="company" ColumnName="company" />
+          <ScalarProperty Name="orderref" ColumnName="orderref" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="projects">
+      <EntityTypeMapping TypeName="ecloningModel.project">
+        <MappingFragment StoreEntitySet="project">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="aim" ColumnName="aim" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="start_dt" ColumnName="start_dt" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="finished_dt" ColumnName="finished_dt" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="protocols">
+      <EntityTypeMapping TypeName="ecloningModel.protocol">
+        <MappingFragment StoreEntitySet="protocol">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="category" ColumnName="category" />
+          <ScalarProperty Name="purpose" ColumnName="purpose" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="versionref" ColumnName="versionref" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
+          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
+          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="restrictions">
+      <EntityTypeMapping TypeName="ecloningModel.restriction">
+        <MappingFragment StoreEntitySet="restriction">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="forward_seq" ColumnName="forward_seq" />
+          <ScalarProperty Name="forward_cut" ColumnName="forward_cut" />
+          <ScalarProperty Name="reverse_seq" ColumnName="reverse_seq" />
+          <ScalarProperty Name="reverse_cut" ColumnName="reverse_cut" />
+          <ScalarProperty Name="methylation" ColumnName="methylation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="storages">
+      <EntityTypeMapping TypeName="ecloningModel.storage">
+        <MappingFragment StoreEntitySet="storage">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="ref_id" ColumnName="ref_id" />
+          <ScalarProperty Name="container_id" ColumnName="container_id" />
+          <ScalarProperty Name="tower_id" ColumnName="tower_id" />
+          <ScalarProperty Name="drawer_id" ColumnName="drawer_id" />
+          <ScalarProperty Name="box_id" ColumnName="box_id" />
+          <ScalarProperty Name="box_label" ColumnName="box_label" />
+          <ScalarProperty Name="vial_label" ColumnName="vial_label" />
+          <ScalarProperty Name="parent_link" ColumnName="parent_link" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="AspNetUserRoles" TypeName="ecloningModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+      <EndProperty Name="AspNetRoles">
+        <ScalarProperty Name="Id" ColumnName="RoleId" />
+      </EndProperty>
+      <EndProperty Name="AspNetUsers">
+        <ScalarProperty Name="Id" ColumnName="UserId" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping>

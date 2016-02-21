@@ -64,6 +64,26 @@ namespace ecloning.Models
 
     public class RegisterViewModel
     {
+        [Display(Name = "Department")]
+        [Required]
+        public string Department { get; set; }
+
+        [Display(Name = "Group")]
+        [Required]
+        public string Group { get; set; }
+
+        [Display(Name = "First Name")]
+        [Required]
+        public string first_name { get; set; }
+
+        [Display(Name = "Last Name")]
+        [Required]
+        public string last_name { get; set; }
+
+        [Display(Name = "Invitation Code")]
+        [Required(ErrorMessage = "The Invitation Code field is required")]
+        public string code { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

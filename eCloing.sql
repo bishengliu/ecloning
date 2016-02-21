@@ -3,7 +3,7 @@
 ------------------------------------------------------------      
 --need manually create database ecloning for each instance--
 ------------------------------------------------------------
-
+CREATE DATABASE ecloning;
 -----------------------------------------user account management---------------------------------------------------------------------
 
 
@@ -203,6 +203,7 @@ CREATE TABLE [group]
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	depart_id INT NOT NULL,
     name NVARCHAR(50) NOT NULL, 
+	code TEXT, --for registration
 	[des] TEXT,
 	CONSTRAINT uq_group_depart_id_name UNIQUE (depart_id,name),
 	CONSTRAINT fk_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)

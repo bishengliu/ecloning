@@ -4,26 +4,27 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f161b39ded7244aa8552f0afdb154250" Name="Diagram1">
-        <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="221aa8ca1e2548228fb0eb088074e297" Name="Diagram1">
+        <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="8" PointY="12.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUser" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.clone_group" Width="1.5" PointX="5.25" PointY="21" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.container" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.department" Width="1.5" PointX="1.5" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.dropdownitem" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.group" Width="1.5" PointX="3.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.container" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.department" Width="1.5" PointX="1.5" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.dropdownitem" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group" Width="1.5" PointX="3.75" PointY="13.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.group_people" Width="1.5" PointX="6" PointY="17.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.ladder" Width="1.5" PointX="5.75" PointY="7" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.ladder_size" Width="1.5" PointX="8" PointY="7.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.license" Width="1.5" PointX="5.75" PointY="31.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.main_step" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.minus180_liquid_nitrogen" Width="1.5" PointX="5.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.minus20" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.minus80" Width="1.5" PointX="7.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.nuclease" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.ladder" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.ladder_size" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.license" Width="1.5" PointX="5.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.main_step" Width="1.5" PointX="7.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus180_liquid_nitrogen" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus20" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus80" Width="1.5" PointX="9.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.nuclease" Width="1.5" PointX="3" PointY="10.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.oligo" Width="1.5" PointX="3" PointY="16.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.person" Width="1.5" PointX="0.75" PointY="18.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.people_license" Width="1.5" PointX="8" PointY="20.375" IsExpanded="true" />
@@ -34,8 +35,10 @@
         <EntityTypeShape EntityType="ecloningModel.probe" Width="1.5" PointX="8.25" PointY="24.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.project" Width="1.5" PointX="3" PointY="36.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.protocol" Width="1.5" PointX="3" PointY="40.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.restriction" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.restriction" Width="1.5" PointX="10.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.storage" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="ecloningModel.fk_app_license_depart_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_app_license_group_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_clone_group_oligo_id" ManuallyRouted="false" />
