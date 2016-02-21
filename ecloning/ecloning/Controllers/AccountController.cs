@@ -13,6 +13,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using SendGrid;
 using System.Net.Mail;
 using System.Net;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ecloning.Controllers
 {
@@ -21,6 +23,7 @@ namespace ecloning.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        ecloningEntities db = new ecloningEntities();
 
         public AccountController()
         {
@@ -76,22 +79,32 @@ namespace ecloning.Controllers
             {
                 return View(model);
             }
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            var context = new ApplicationDbContext();
+            //get email confirmation 
+            var Confirmed = context.Users.Where(c => c.Email == model.Email).Select(c => c.EmailConfirmed).FirstOrDefault();
+            if (Confirmed)
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        return RedirectToLocal(returnUrl);
+                    case SignInStatus.LockedOut:
+                        return View("Lockout");
+                    case SignInStatus.RequiresVerification:
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return View(model);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "You haven't completed the registration, please follow your email to activate your account.");
+                return View(model);
             }
         }
 
@@ -144,8 +157,10 @@ namespace ecloning.Controllers
         public ActionResult Register()
         {
             //prepare department list
-
+            ViewBag.Department = new SelectList(db.departments.OrderBy(n=>n.name).Select(d=> new { depart = d.name, name = d.name}), "depart", "name");
             //prepare group list
+            var groups = db.groups.Include("department").OrderBy(n => n.name).Select(g => new {group = g.name, depart = g.department.name });
+            ViewBag.JsonData = JsonConvert.SerializeObject(groups.ToList());
             return View();
         }
 
@@ -156,11 +171,19 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            //prepare department list
+            ViewBag.Department = new SelectList(db.departments.Select(d => new { depart = d.name, name = d.name }), "depart", "name");
+            //prepare group list
+            var groups = db.groups.Include("department").Select(g => new { group = g.name, depart = g.department.name });
+            ViewBag.JsonData = JsonConvert.SerializeObject(groups.ToList());
+
             if (ModelState.IsValid)
             {
                 //appAdmin
                 var appAdmin = new AppAdmin();
 
+                //institute admin
+                var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv(), eCloningSettings.AppHosting());
                 //db
                 ecloningEntities db = new ecloningEntities();
 
@@ -179,7 +202,6 @@ namespace ecloning.Controllers
                     return View(model);
                 }
 
-
                 //check code first
                 if (model.Email == appAdmin.email)
                 {
@@ -188,18 +210,46 @@ namespace ecloning.Controllers
                         TempData["msg"] = "Invitation Code is wrong!";
                         return View(model);
                     }
+                    else
+                    {
+                        //need to deal with appAdmin department and group
+                        //need to add first
+                        model.Department = "AppAdmin";
+                        model.Group = "AppAdmin";
+                    }
+
+                }
+                else if (model.Email == instAdmin.iEmail)
+                {
+                    if (model.code != instAdmin.iCode)
+                    {
+                        TempData["msg"] = "Invitation Code is wrong!";
+                        return View(model);
+                    }
+                    else
+                    {
+                        //need to deal with institute admin department and group
+                        //need to add first
+                        model.Department = "Institute Admin";
+                        model.Group = "Institute Admin";
+                    }
+
                 }
                 else
                 {
                     //check code in group table
+                    //researchers
                     if (group.FirstOrDefault().code != model.code)
                     {
                         TempData["msg"] = "Invitation Code is wrong!";
                         return View(model);
                     }
-
-
                 }
+
+                //get group and department again 
+                depart = db.departments.Where(d => d.name == model.Department);
+                group = db.groups.Where(g => g.depart_id == depart.FirstOrDefault().id && g.name == model.Group);
+
 
                 //try to register
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -239,7 +289,6 @@ namespace ecloning.Controllers
                     db.SaveChanges();
 
                     
-
                     //stopping auto sigin in
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
@@ -301,8 +350,8 @@ namespace ecloning.Controllers
                         var smtp = new LocalSMTP();
                     }
 
-
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("EmailSent", "Account");
+                    //return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
@@ -311,6 +360,12 @@ namespace ecloning.Controllers
             return View(model);
         }
 
+
+        [AllowAnonymous]
+        public ActionResult EmailSent()
+        {
+            return View();
+        }
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]

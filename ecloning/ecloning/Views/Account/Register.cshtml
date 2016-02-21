@@ -1,9 +1,12 @@
 ﻿@model ecloning.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
+    var JsonData = ViewBag.JsonData;
+
 }
 
 <h3 class="text-info">Create an account to join your research group</h3>
+<span id="decodeIt" class="hidden"></span>
 
 <div class="well">
     <div class="row">
@@ -17,14 +20,14 @@
                 <div class="form-group">
                     @Html.LabelFor(m => m.Department, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Department, new { @class = "form-control" })
+                        @Html.DropDownList("Department", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div id="groupDiv" class="form-group hidden">
                     @Html.LabelFor(m => m.Group, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Group, new { @class = "form-control" })
+                        @Html.DropDownList("Group", Enumerable.Empty<SelectListItem>(), "--  Select  --", htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
 
@@ -87,3 +90,52 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script src="/Scripts/jquery-2.2.0.js"></script>
+<script>
+    //aim: when use select department, show group list accordingly
+    //first need to generate the list from json and then preprare the option list
+    //then show the group input
+
+    //process json data
+    var JsonData = ("@JsonData");
+    document.getElementById("decodeIt").innerHTML = JsonData;
+    JsonData = document.getElementById("decodeIt").textContent;
+    try {
+        data = JSON.parse(JsonData);
+    } catch (e) {
+        //alert(e);
+    }
+
+    //get the selected department name
+    $('#Department').on('change', function () {
+        var depart = this.value;
+        //alert(depart);
+        //create a new array
+        var group = [];
+        $.each(data, function (index) {
+            if (data[index]["depart"] == depart)
+            {
+                //get the groups
+                group.push(data[index]["group"]);
+            }            
+        })
+        //prepare options dom
+        if (group.length > 0) {
+            var groupOption = $('#Group option');
+            $.each(group, function (index) {
+                groupOption
+                    .append($("<option></option>"))
+                    .attr("value", group[index])
+                    .text(group[index]);
+            });
+        }
+        else
+        {
+            alert('No research group found for ' + depart);
+        }
+        
+        //remove the hidden class
+        $('#groupDiv').removeClass("hidden");
+    })
+</script>
