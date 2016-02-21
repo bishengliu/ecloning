@@ -354,6 +354,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="logo\lumc.png" />
     <Content Include="Models\ecloning.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ecloning.edmx</DependentUpon>

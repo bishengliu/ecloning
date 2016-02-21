@@ -143,6 +143,9 @@ namespace ecloning.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            //prepare department list
+
+            //prepare group list
             return View();
         }
 

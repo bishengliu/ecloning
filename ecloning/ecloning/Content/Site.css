@@ -1,6 +1,14 @@
 ﻿body {
-    padding-top: 50px;
+    /*padding-top: 50px;*/
     padding-bottom: 20px;
+    /*background:#FFFFFF;*/
+    background: #EEEFEE;
+    background: -webkit-linear-gradient(#EEEFEE, #E5E7E6); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#EEEFEE, #E5E7E6); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#EEEFEE, #E5E7E6); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#EEEFEE, #E5E7E6); /* Standard syntax (must be last) */
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorstr='#EEEFEE', endColorstr='#E5E7E6'); /* IE9 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient (GradientType=1, startColorstr='#EEEFEE', endColorstr='#E5E7E6')"; /* IE8 */
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -22,3 +30,65 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+
+.top-logo{
+    /*height: 80px;*/
+    background:#FFFFFF;
+    /*background-color:#3F3F3F;*/
+}
+
+.navbar-nav > li > a, .navbar-brand {
+    padding-top:4px !important; 
+    padding-bottom:0 !important;
+    height: 28px;
+}
+.navbar {min-height:28px !important;}
+
+.navbar-default{
+    /*background-color: #4D9474;*/
+    background-color:#454545;
+    border-color: #454545;
+    border-radius:0;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: white;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  /*color: #ffbbbc;*/
+  color:mediumaquamarine;
+}
+
+
+.navbar{
+    margin-bottom: 0 !important;
+}
+
+.color-grad {
+    background: #EEEFEE;
+    background: -webkit-linear-gradient(#EEEFEE, #E5E7E6); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#EEEFEE, #E5E7E6); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#EEEFEE, #E5E7E6); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#EEEFEE, #E5E7E6); /* Standard syntax (must be last) */
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorstr='#EEEFEE', endColorstr='#E5E7E6'); /* IE9 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient (GradientType=1, startColorstr='#EEEFEE', endColorstr='#E5E7E6')"; /* IE8 */
+}
+
+
+.footer{
+    background:#537489;
+    color:white;
+    font-size:80%;
+}
+
+.float-left{
+    float:left;
+}
+
+.float-right{
+    float:right;
+}
+
