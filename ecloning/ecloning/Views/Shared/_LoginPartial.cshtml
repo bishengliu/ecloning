@@ -1,15 +1,39 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
+    //get user name
+    ecloning.Models.ecloningEntities db = new ecloning.Models.ecloningEntities();
+    var email = User.Identity.GetUserName();
+    var person = db.people.Where(e => e.email == email);
+    string name = null;
+    if (person.Count() > 0)
+    {
+        name = person.FirstOrDefault().first_name + " " + person.FirstOrDefault().last_name;
+    }
+
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+     @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+     <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+        @if (name != null)
+        {
+            <a href="~/Manage/Index" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Manage"><span class="glyphicon glyphicon-user text-info">&ensp;</span><b>@name</b><span class="caret"></span></a>
+        }
+        else
+        {
+            <a href="~/Manage/Index" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Manage"><span class="glyphicon glyphicon-user text-info">&ensp;</span><b>@User.Identity.GetUserName()</b><span class="caret"></span></a>
+        }
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="~/Manage/ChangePassword">Change Password</a></li>
+                <li><a href="~/Manage/ViewAccount">View Account Details</a></li>
+                <li><a href="~/Manage/ManageAccount">Update Account Details</a></li>
+                <li class="divider"></li>
+                <li><a href="javascript:document.getElementById('logoutForm').submit()"><span class="glyphicon glyphicon-share text-info">&ensp;</span>Log off</a></li>
+            </ul>
         </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        <li><a class="btn btn-sm" href="javascript:document.getElementById('logoutForm').submit()"><span class="glyphicon glyphicon-share text-info">&ensp;</span>Log off</a></li>
     </ul>
     }
 }

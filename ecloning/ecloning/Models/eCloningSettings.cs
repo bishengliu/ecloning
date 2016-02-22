@@ -6,6 +6,7 @@ using System.Web;
 namespace ecloning.Models
 {
     //add "AppAdmin", "Institute Admin" for both department and group
+    //set the app_license
 
 
     public static class eCloningSettings

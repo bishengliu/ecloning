@@ -79,11 +79,23 @@ namespace ecloning.Controllers
             {
                 return View(model);
             }
-            var context = new ApplicationDbContext();
-            //get email confirmation 
-            var Confirmed = context.Users.Where(c => c.Email == model.Email).Select(c => c.EmailConfirmed).FirstOrDefault();
-            if (Confirmed)
-            {
+
+            //var context = new ApplicationDbContext();
+            ////get email confirmation 
+            //var Confirmed = context.Users.Where(c => c.Email == model.Email).Select(c => c.EmailConfirmed).FirstOrDefault();
+            //if (Confirmed)
+            //{
+
+                //check whether this user is active or not
+                var person = db.people.Where(e => e.email == model.Email);
+                //check whether this user is active
+                if (person.Count() > 0 && person.FirstOrDefault().active==false)
+                {
+                    ModelState.AddModelError("", "Your account has been disabled!");
+                    return View(model);
+                }
+
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, change to shouldLockout: true
                 var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
@@ -100,12 +112,12 @@ namespace ecloning.Controllers
                         ModelState.AddModelError("", "Invalid login attempt.");
                         return View(model);
                 }
-            }
-            else
-            {
-                ModelState.AddModelError("", "You haven't completed the registration, please follow your email to activate your account.");
-                return View(model);
-            }
+            //}
+            //else
+            //{
+            //    ModelState.AddModelError("", "You haven't completed the registration, please follow your email to activate your account.");
+            //    return View(model);
+            //}
         }
 
         //
@@ -188,7 +200,9 @@ namespace ecloning.Controllers
                 ecloningEntities db = new ecloningEntities();
 
 
-                //check code in group table
+                //check registration code
+
+                //find depart and group info
                 var depart = db.departments.Where(d => d.name == model.Department);
                 if (depart.Count() == 0)
                 {
@@ -202,7 +216,7 @@ namespace ecloning.Controllers
                     return View(model);
                 }
 
-                //check code first
+                //check registration code
                 if (model.Email == appAdmin.email)
                 {
                     if(model.code != appAdmin.code)
@@ -246,10 +260,39 @@ namespace ecloning.Controllers
                     }
                 }
 
-                //get group and department again 
-                depart = db.departments.Where(d => d.name == model.Department);
-                group = db.groups.Where(g => g.depart_id == depart.FirstOrDefault().id && g.name == model.Group);
 
+                //check license based on group
+                if(model.Email != appAdmin.email && model.Email != instAdmin.iEmail)
+                {
+                    //get group and department again 
+                    depart = db.departments.Where(d => d.name == model.Department);
+                    group = db.groups.Where(g => g.depart_id == depart.FirstOrDefault().id && g.name == model.Group);
+
+                    //check how many license left
+                    var license = db.app_license.Where(l => l.depart_id == depart.FirstOrDefault().id && l.group_id == group.FirstOrDefault().id);
+                    int licenseNum = -1;
+                    bool? licenseExpired = false;
+                    if (license.Count() > 0)
+                    {
+                        licenseNum = license.FirstOrDefault().group_num;
+                        licenseExpired = license.FirstOrDefault().group_expired;
+                    }
+                    if(licenseExpired == true)
+                    {
+                        TempData["msg"] = "The license for "+model.Group+" has expired!";
+                        return View(model);
+                    }
+                    //check how many people in the same group
+                    var peopleInGroup = db.group_people.Where(g => g.group_id == group.FirstOrDefault().id).Select(p => p.people_id).ToList();
+                    var activePeople = db.people.Where(p => peopleInGroup.Contains(p.id) && p.active == true).Select(a => a.active);
+
+                    if(licenseNum >0 && activePeople.Count()>0 && activePeople.Count()> licenseNum)
+                    {
+                        TempData["msg"] = "registration failed. Maximum number of license for " + model.Group + "reached!";
+                        return View(model);
+                    }
+                }
+                
 
                 //try to register
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -320,38 +363,38 @@ namespace ecloning.Controllers
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                     //if app host in azure, use sendgrid
-                    if(eCloningSettings.AppEnv() == "Cloud")
-                    {
-                        var msg = new SendGridMessage();
+                    //if(eCloningSettings.AppEnv() == "Cloud")
+                    //{
+                    //    var msg = new SendGridMessage();
 
-                        msg.From = new MailAddress(appAdmin.email, appAdmin.appName);
-                        msg.AddTo(model.Email);
-                        msg.Subject = "Complete your registration";
+                    //    msg.From = new MailAddress(appAdmin.email, appAdmin.appName);
+                    //    msg.AddTo(model.Email);
+                    //    msg.Subject = "Complete your registration";
 
 
-                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                        //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                        msg.Html = "Thank you for your registration, please click on the link to complete your registration: <a href=\"" + callbackUrl + "\">here</a>";
+                    //    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    //    msg.Html = "Thank you for your registration, please click on the link to complete your registration: <a href=\"" + callbackUrl + "\">here</a>";
 
-                        var username = eCloningSettings.SendgridLoginName();
-                        var pswd = eCloningSettings.SendgridPsw();
-                        var credentials = new NetworkCredential(username, pswd);
-                        // Create an Web transport for sending email.
-                        var transportWeb = new Web(credentials);
+                    //    var username = eCloningSettings.SendgridLoginName();
+                    //    var pswd = eCloningSettings.SendgridPsw();
+                    //    var credentials = new NetworkCredential(username, pswd);
+                    //    // Create an Web transport for sending email.
+                    //    var transportWeb = new Web(credentials);
 
-                        // Send the email.
-                        // You can also use the **DeliverAsync** method, which returns an awaitable task.
-                        await transportWeb.DeliverAsync(msg);
-                    }
-                    if(eCloningSettings.AppEnv() == "Cloud")
-                    {
-                        //send email using local smtp
-                        var smtp = new LocalSMTP();
-                    }
+                    //    // Send the email.
+                    //    // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                    //    await transportWeb.DeliverAsync(msg);
+                    //}
+                    //if(eCloningSettings.AppEnv() == "Cloud")
+                    //{
+                    //    //send email using local smtp
+                    //    var smtp = new LocalSMTP();
+                    //}
 
-                    return RedirectToAction("EmailSent", "Account");
-                    //return RedirectToAction("Index", "Home");
+                    //return RedirectToAction("EmailSent", "Account");
+                    return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
