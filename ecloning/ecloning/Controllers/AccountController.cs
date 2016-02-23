@@ -102,7 +102,77 @@ namespace ecloning.Controllers
                 switch (result)
                 {
                     case SignInStatus.Success:
-                        return RedirectToLocal(returnUrl);
+                        //add user to role "Researcher"
+                        var context = new ApplicationDbContext();
+                        //get email confirmation 
+                        var userStore = new UserStore<ApplicationUser>(context);
+                        var userManager = new UserManager<ApplicationUser>(userStore);
+                        ApplicationUser user = context.Users.Where(u => u.UserName.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                        var Roles = userManager.GetRoles(user.Id);
+                        ecloningEntities db = new ecloningEntities();
+
+                        var appAdmin = new AppAdmin();
+                        var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv(), eCloningSettings.AppHosting());
+
+                        //auto create role AppAdmin
+                        if (model.Email == appAdmin.email)
+                        {
+                            //create role if not exist
+                            var appAdminRole = db.AspNetRoles.Where(r => r.Name == "AppAdmin").Select(r => r.Name).FirstOrDefault();
+                            if (appAdminRole == null)
+                            {
+                                IdentityRole Role = new IdentityRole("AppAdmin");
+                                context.Roles.Add(Role);
+                                context.SaveChanges();
+                            }
+
+                            //add user to AppAdmin if not
+                            if (!userManager.IsInRole(user.Id, "AppAdmin"))
+                            {
+                                userManager.AddToRole(user.Id, "AppAdmin");
+                            }
+                        }
+
+                        //auto create role InstitueAdmin
+                        if (model.Email == instAdmin.iEmail)
+                        {
+                            //create role if not exist
+                            var instAdminRole = db.AspNetRoles.Where(r => r.Name == "InstAdmin").Select(r => r.Name).FirstOrDefault();
+                            if (instAdminRole == null)
+                            {
+                                IdentityRole Role = new IdentityRole("InstAdmin");
+                                context.Roles.Add(Role);
+                                context.SaveChanges();
+                            }
+
+                            //add user to AppAdmin if not
+                            if (!userManager.IsInRole(user.Id, "InstAdmin"))
+                            {
+                                userManager.AddToRole(user.Id, "InstAdmin");
+                            }
+                        }
+
+                        //auto role researcher
+                        if (model.Email != appAdmin.email && model.Email != instAdmin.iEmail)
+                        {
+                            //the user is researcher
+                            //create role if not exist
+                            var ResearcherRole = db.AspNetRoles.Where(r => r.Name == "Researcher").Select(r => r.Name).FirstOrDefault();
+                            if (ResearcherRole == null)
+                            {
+                                IdentityRole Role = new IdentityRole("Researcher");
+                                context.Roles.Add(Role);
+                                context.SaveChanges();
+                            }
+
+                            //add user to Researcher if not
+                            if (!userManager.IsInRole(user.Id, "Researcher"))
+                            {
+                                userManager.AddToRole(user.Id, "Researcher");
+                            }
+                        }
+
+                    return RedirectToLocal(returnUrl);
                     case SignInStatus.LockedOut:
                         return View("Lockout");
                     case SignInStatus.RequiresVerification:
@@ -310,26 +380,32 @@ namespace ecloning.Controllers
                 //register sucess
                 if (result.Succeeded)
                 {
-                    //add to people table
-                    var person = new person();
+                    //check whether person already exist in people table
+                    var Person = db.people.Where(e => e.email == model.Email);
+                    if (Person.Count() == 0)
+                    {
+                        //add to people table
+                        var person = new person();
 
-                    person.first_name = model.first_name;
-                    person.last_name = model.last_name;
-                    person.email = model.Email;
-                    person.active = true;
-                    db.people.Add(person);
-                    db.SaveChanges();
+                        person.first_name = model.first_name;
+                        person.last_name = model.last_name;
+                        person.email = model.Email;
+                        person.active = true;
+                        db.people.Add(person);
+                        db.SaveChanges();
 
-                    //get persion id
-                    int people_id = db.people.Where(e => e.email == model.Email).FirstOrDefault().id;
+                        //get persion id
+                        int people_id = db.people.Where(e => e.email == model.Email).FirstOrDefault().id;
 
 
-                    //add to group_people
-                    var group_people = new group_people();
-                    group_people.group_id = group.FirstOrDefault().id;
-                    group_people.people_id = people_id;
-                    db.group_people.Add(group_people);
-                    db.SaveChanges();
+                        //add to group_people
+                        var group_people = new group_people();
+                        group_people.group_id = group.FirstOrDefault().id;
+                        group_people.people_id = people_id;
+                        db.group_people.Add(group_people);
+                        db.SaveChanges();
+                    }
+                    
 
                     
                     //stopping auto sigin in

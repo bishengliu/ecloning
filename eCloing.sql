@@ -184,6 +184,8 @@ GO
 alter table dbo.AspNetUsers Add constraint UQ_AspNetUsers_Email UNIQUE (Email);
 alter table dbo.AspNetRoles Add constraint UQ_AspNetRoles_Name UNIQUE (Name);
 
+---also need to add this to web.config
+--    <add name="DefaultConnection" providerName="System.Data.SqlClient" connectionString="server=NB0162;database=ecloning;user id=mcca;password=mcca;Connect Timeout=36000" />
 
 
 --------------------------------------------tables for  eCloning------------------------------------------------------------
