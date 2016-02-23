@@ -218,6 +218,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -440,6 +441,11 @@
     <Content Include="Views\Account\EmailSent.cshtml" />
     <Content Include="Views\Manage\ViewAccount.cshtml" />
     <Content Include="Views\Manage\EditAccount.cshtml" />
+    <Content Include="Views\Plasmid\Create.cshtml" />
+    <Content Include="Views\Plasmid\Delete.cshtml" />
+    <Content Include="Views\Plasmid\Details.cshtml" />
+    <Content Include="Views\Plasmid\Edit.cshtml" />
+    <Content Include="Views\Plasmid\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

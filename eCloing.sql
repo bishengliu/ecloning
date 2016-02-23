@@ -199,6 +199,10 @@ CREATE TABLE department --department level
 	[des] TEXT,
 	CONSTRAINT uq_department_name UNIQUE (name)
 );
+INSERT INTO [department](name,[des]) VALUES 
+( 'AppAdmin', 'SystemAdmin'),
+( 'Institute Admin', 'Institute Admin');
+
 --research group in each department--
 CREATE TABLE [group]
 (
@@ -210,6 +214,12 @@ CREATE TABLE [group]
 	CONSTRAINT uq_group_depart_id_name UNIQUE (depart_id,name),
 	CONSTRAINT fk_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)
 );
+
+INSERT INTO [group](depart_id,name,[des]) VALUES 
+( 1, 'AppAdmin', 'SystemAdmin'),
+( 2, 'Institute Admin', 'Institute Admin');
+
+
 ---lab people in each research group----
 CREATE TABLE people
 (
@@ -363,13 +373,35 @@ CREATE TABLE restriction
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(100) NOT NULL,
-	forward_seq NVARCHAR(20) NOT NULL,
-	forward_cut INT NOT NULL,
-	reverse_seq NVARCHAR(20) NOT NULL,
-	reverse_cut INT NOT NULL,
+	forward_seq NVARCHAR(20) NOT NULL, --5' to 3'
+	forward_cut INT NOT NULL, --cut after the num
+	reverse_seq NVARCHAR(20) NOT NULL, --3' to 5' 
+	reverse_cut INT NOT NULL, --cut after num
 	methylation BIT,
 	CONSTRAINT uq_restriction_name UNIQUE (name)
 );
+--K: G or T
+--M: A or C
+--R: A or G
+--Y: C or T
+--N: radom, placeholder
+
+INSERT INTO restriction (name,forward_seq,forward_cut,reverse_seq,reverse_cut) VALUES
+('AanI', 'TTATAA', 3,'AATATT', 3),
+('AatII', 'GACGTC', 5,'CTGCAG', 1),
+('Acc65I', 'GGTACC', 1,'CCATGG', 5),
+('AdeI', 'CACNNNGTG', 6,'GTGNNNCAC', 3),
+
+('AjiI', 'CACGTC', 3,'GTGCAG', 3),
+('Alu I', 'AGCT', 2,'TCGA', 2),
+('Alw44I', 'GTGCAC', 1,'CACGTG', 5),
+('Apa I', 'GGGCCC', 5,'CCCGGG', 1),
+
+('BamH I', 'GGATCC', 1,'CCTAGG', 5),
+('BauI', 'CACGAG', 1,'GTGCTC', 5),
+('BclI', 'TGATCA', 1,'ACTAGT', 5),
+('BcuI', 'ACTAGT', 5,'TGATCA', 1);
+
 
 
 --pcr primers

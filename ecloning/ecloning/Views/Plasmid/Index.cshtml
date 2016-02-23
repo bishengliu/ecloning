@@ -1,0 +1,158 @@
+﻿@model IEnumerable<ecloning.Models.plasmid>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.sequence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.expression_system)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.expression_subsystem)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.promotor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.polyA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.resistance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reporter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.selection)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.insert)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.plasmid_type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ref_plasmid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.img_fn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.addgene)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.d)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.submitted_to_group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.shared_with_group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.shared_with_people)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.des)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.person.first_name)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.sequence)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.expression_system)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.expression_subsystem)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.promotor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.polyA)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.resistance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.reporter)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.selection)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.insert)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.usage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.plasmid_type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ref_plasmid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.img_fn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.addgene)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.d)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.submitted_to_group)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.shared_with_group)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.shared_with_people)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.des)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.person.first_name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
