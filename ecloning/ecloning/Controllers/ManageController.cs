@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ecloning.Models;
+using System.Data.Entity;
 
 namespace ecloning.Controllers
 {
@@ -241,6 +242,72 @@ namespace ecloning.Controllers
             AddErrors(result);
             return View(model);
         }
+
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult ViewAccount()
+        {
+
+            var email = @User.Identity.GetUserName();
+            //string userId = User.Identity.GetUserId();
+            ecloningEntities db = new ecloningEntities();
+
+            var person = db.people.Where(e => e.email == email);
+            if (person == null)
+            {
+                ViewBag.Count = 0;
+                TempData["msg"] = "Account information is currently unvailable!";
+                return View();
+            }
+            else
+            {
+                ViewBag.Count = 1;
+                return View(person.FirstOrDefault());
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult EditAccount()
+        {
+            var email = @User.Identity.GetUserName();
+            ecloningEntities db = new ecloningEntities();
+
+            var person = db.people.Where(e => e.email == email);
+            if (person == null)
+            {
+                ViewBag.Count = 0;
+                TempData["msg"] = "Account information is currently unvailable!";
+                return View();
+            }
+            else
+            {
+                ViewBag.Count = 1;
+                return View(person.FirstOrDefault());
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult EditAccount([Bind(Include = "id,first_name,last_name")] person person)
+        {
+            ecloningEntities db = new ecloningEntities();
+            ViewBag.Count = 1;
+
+            if (ModelState.IsValid)
+            {
+                var email = @User.Identity.GetUserName();
+                var Person = db.people.Where(e => e.email == email);
+                Person.FirstOrDefault().first_name = person.first_name;
+                Person.FirstOrDefault().last_name = person.last_name;
+                db.SaveChanges();
+                return RedirectToAction("ViewAccount");
+            }
+            return View(person);
+        }
+
+
 
         //
         // GET: /Manage/SetPassword

@@ -224,7 +224,7 @@ CREATE TABLE people
 
 CREATE TABLE group_people
 (
-    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    id INT NOT NULL PRIMARY KEY IDENTITY(1,1),	
 	group_id INT NOT NULL,
     people_id INT NOT NULL,
 	CONSTRAINT uq_group_people_group_id_people_id UNIQUE (group_id, people_id),

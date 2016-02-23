@@ -437,6 +437,8 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Account\EmailSent.cshtml" />
+    <Content Include="Views\Manage\ViewAccount.cshtml" />
+    <Content Include="Views\Manage\EditAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -26,9 +26,8 @@
             <a href="~/Manage/Index" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Manage"><span class="glyphicon glyphicon-user text-info">&ensp;</span><b>@User.Identity.GetUserName()</b><span class="caret"></span></a>
         }
             <ul class="dropdown-menu" role="menu">
-                <li><a href="~/Manage/ChangePassword">Change Password</a></li>
-                <li><a href="~/Manage/ViewAccount">View Account Details</a></li>
-                <li><a href="~/Manage/ManageAccount">Update Account Details</a></li>
+                <li><a href="~/Manage/ChangePassword"><span class="glyphicon glyphicon-refresh text-info">&ensp;</span>Change Password</a></li>
+                <li><a href="~/Manage/ViewAccount"><span class="glyphicon glyphicon-eye-open text-info">&ensp;</span>Account Details</a></li>
                 <li class="divider"></li>
                 <li><a href="javascript:document.getElementById('logoutForm').submit()"><span class="glyphicon glyphicon-share text-info">&ensp;</span>Log off</a></li>
             </ul>

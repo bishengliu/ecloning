@@ -92,3 +92,12 @@ textarea {
     float:right;
 }
 
+/*add * for forms*/
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
+.required:after {
+  content:"*";
+  color:red;
+}
