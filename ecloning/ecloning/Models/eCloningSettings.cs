@@ -57,5 +57,8 @@ namespace ecloning.Models
         {
             return "3ZxaOlh6823UTz2pUP7ExHi9qy53uf65";
         }
+
+        //upload to azure directoryName
+        public readonly static string plasmidDir = "plasmid";
     }
 }

@@ -9,8 +9,10 @@ namespace ecloning
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
-
+                        "~/Scripts/jquery-{version}.js",
+                        "~/Scripts/jquery.tokeninput.js",
+                        "~/Scripts/chosen.jquery.js",
+                        "~/Scripts/jquery-ui-{version}.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
@@ -21,11 +23,26 @@ namespace ecloning
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap-datepicker.js",
+                      "~/Scripts/bootstrap-datepicker.min.js",
+                      "~/Scripts/datepicker.js",
                       "~/Scripts/respond.js"));
+            bundles.Add(new ScriptBundle("~/bundles/d3").Include(
+                      "~/Scripts/d3/d3*"));
+            bundles.Add(new ScriptBundle("~/bundles/nvd3").Include(
+                      "~/Scripts/nv.d3.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-datepicker.css",
+                      "~/Content/nv.d3.css",
+                      "~/Content/token-input.css",
+                      "~/Content/token-input-facebook.css",
+                      "~/Content/token-input-mac.css",
+                      "~/Content/chosen.css",
                       "~/Content/site.css"));
+
+
         }
     }
 }

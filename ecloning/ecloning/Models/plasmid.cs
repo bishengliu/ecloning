@@ -34,7 +34,7 @@ namespace ecloning.Models
         public string insert { get; set; }
         public string usage { get; set; }
         public string plasmid_type { get; set; }
-        public Nullable<int> ref_plasmid { get; set; }
+        public string ref_plasmid { get; set; }
         public string img_fn { get; set; }
         public Nullable<int> addgene { get; set; }
         public Nullable<System.DateTime> d { get; set; }
@@ -43,6 +43,7 @@ namespace ecloning.Models
         public Nullable<bool> shared_with_group { get; set; }
         public string shared_with_people { get; set; }
         public string des { get; set; }
+        public string insert_species { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<clone_group> clone_group { get; set; }

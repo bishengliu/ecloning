@@ -302,9 +302,10 @@ CREATE TABLE plasmid
 	reporter NVARCHAR(200),
 	selection NVARCHAR(200), --selection marker
 	[insert] NVARCHAR(200), --gene or oligo etc.
+	insert_species NVARCHAR(200),
 	usage NVARCHAR(200), --RNAi, luciferase, Cre/Lox etc. check addgene
 	plasmid_type NVARCHAR(200),
-	ref_plasmid INT,
+	ref_plasmid NVARCHAR(100),
 	img_fn NVARCHAR(500), --upload image/ how the plasmid works
 	addgene INT, --cite addgene plasmid# like, 12260
 	d DATETIME,
@@ -696,4 +697,127 @@ CREATE TABLE dropdownitem
 		[text] NVARCHAR(100),
 		category NVARCHAR(100)
 );
+INSERT INTO dropdownitem VALUES
+
+--plasmid expression system
+('Mammalian', 'Mammalian', 'ExpSystem'),
+('Bacteria', 'Bacteria', 'ExpSystem'),
+('Insect', 'Insect', 'ExpSystem'),
+('Worms', 'Worms', 'ExpSystem'),
+('Yeast', 'Yeast', 'Yeast'),
+('Plant', 'Plant', 'ExpSystem'),
+
+--plasmid expeimental usage
+('Mouse Targeting', 'Mouse Targeting', 'PlasmidUse'),
+('Lentiviral', 'Lentiviral', 'PlasmidUse'),
+('Retroviral', 'Retroviral', 'PlasmidUse'),
+('Adenoviral', 'Adenoviral', 'PlasmidUse'),
+('AAV', 'AAV', 'PlasmidUse'),
+('RNAi', 'RNAi', 'PlasmidUse'),
+('Cre/Lox', 'Cre/Lox', 'PlasmidUse'),
+('CRISPR', 'CRISPR', 'PlasmidUse'),
+('TALEN', 'TALEN', 'PlasmidUse'),
+('Luciferase', 'Luciferase', 'PlasmidUse'),
+('Synthetic Biology', 'Synthetic Biology', 'PlasmidUse'),
+('Other', 'Other', 'PlasmidUse'),
+('Unspecified', 'Unspecified', 'PlasmidUse'),
+
+--plasmid type
+('Encodes one insert', 'Encodes one insert', 'PlasmidType'),
+('Encodes gRNA/shRNA', 'Encodes gRNA/shRNA', 'PlasmidType'),
+('Empty backbone', 'Empty backbone', 'PlasmidType'),
+('Encodes multiple inserts', 'Encodes multiple inserts', 'PlasmidType'),
+('Pooled library', 'Pooled library', 'PlasmidType'),
+('Bacterial strain', 'Bacterial strain', 'PlasmidType'),
+
+--plasmid species
+('Human', 'Human', 'InsertSpecies'),
+('Mouse', 'Mouse', 'InsertSpecies'),
+('Rat', 'Rat', 'InsertSpecies'),
+('Chicken', 'Chicken', 'InsertSpecies'),
+('Bovine', 'Bovine', 'InsertSpecies'),
+('Frog', 'Frog', 'InsertSpecies'),
+('Zebrafish', 'Zebrafish', 'InsertSpecies'),
+('Fly', 'Fly', 'InsertSpecies'),
+('Nematode', 'Nematode', 'InsertSpecies'),
+('Budding Yeast', 'Budding Yeast', 'InsertSpecies'),
+('Fission Yeast', 'Fission Yeast', 'InsertSpecies'),
+('Mustard Weed', 'Mustard Weed', 'InsertSpecies'),
+('Synthetic', 'Synthetic', 'InsertSpecies'),
+('Other', 'Other', 'InsertSpecies'),
+
+--slectable marker
+('Neomycin', 'Neomycin', 'SelectMarker'),
+('Puromycin', 'Puromycin', 'SelectMarker'),
+('Hygromycin', 'Hygromycin', 'SelectMarker'),
+('Zeocin', 'Zeocin', 'SelectMarker'),
+('Blasticidin', 'Blasticidin', 'SelectMarker'),
+('Gentamicin', 'Gentamicin', 'SelectMarker'),
+('TRP1', 'TRP1', 'SelectMarker'),
+('LEU2', 'LEU2', 'SelectMarker'),
+('URA3', 'URA3', 'SelectMarker'),
+('HIS3', 'HIS3', 'SelectMarker'),
+('Basta', 'Basta', 'SelectMarker'),
+('Other', 'Other', 'SelectMarker'),
+
+
+--Resistance
+('Ampicillin', 'Ampicillin', 'Resistance'),
+('Kanamycin', 'Kanamycin', 'Resistance'),
+('Tetracycline', 'Tetracycline', 'Resistance'),
+('Chloramphenicol', 'Chloramphenicol', 'Resistance'),
+('Streptomycin', 'Streptomycin', 'Resistance'),
+('Hygromycin', 'Hygromycin', 'Resistance'),
+('Gentamycin', 'Gentamycin', 'Resistance'),
+('Bleocin(Zeocin)', 'Bleocin(Zeocin)', 'Resistance'),
+('Spectinomycin', 'Spectinomycin', 'Resistance'),
+('Nourseothricin(clonNat)', 'Nourseothricin(clonNat)', 'Resistance'),
+('Other', 'Other', 'Resistance'),
+
+--promotors
+('ACT5C', 'ACT5C', 'Promotor'),
+('COPIA', 'COPIA', 'Promotor'),
+('UBC', 'UBC', 'Promotor'),
+('SV40', 'SV40', 'Promotor'),
+('EF1a', 'EF1a', 'Promotor'),
+('SFFV', 'SFFV', 'Promotor'),
+('PGK', 'PGK', 'Promotor'),
+('CMV', 'CMV', 'Promotor'),
+('CAG', 'CAG', 'Promotor'),
+('Other', 'Other', 'Promotor'),
+
+--reporter
+('GFP', 'GFP', 'Reporter'),
+('DsRed', 'DsRed', 'Reporter'),
+('Katushka', 'Katushka', 'Reporter'),
+('mCherry', 'mCherry', 'Reporter'),
+('BFP', 'BFP', 'Reporter'),
+('Luciferase', 'Luciferase', 'Reporter'),
+('LacZ', 'LacZ', 'Reporter'),
+('Other', 'Other', 'Reporter'),
+
+--POLY A
+('rBGpA', 'rBGpA', 'PolyA'),
+('TKpA', 'TKpA', 'PolyA'),
+('bGHpA', 'bGHpA', 'PolyA'),
+('SV40pA', 'SV40pA', 'PolyA'),
+('Other', 'Other', 'PolyA'),
+
+--true /false
+('true', 'Yes', 'TF'),
+('false', 'No', 'TF');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

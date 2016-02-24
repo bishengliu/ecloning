@@ -305,7 +305,7 @@
     <Property Name="insert" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="usage" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="plasmid_type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="ref_plasmid" Type="Int32" />
+    <Property Name="ref_plasmid" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="img_fn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
     <Property Name="addgene" Type="Int32" />
     <Property Name="d" Type="DateTime" Precision="3" />
@@ -314,6 +314,7 @@
     <Property Name="shared_with_group" Type="Boolean" />
     <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
     <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />

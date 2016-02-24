@@ -11,8 +11,7 @@ namespace ecloning.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class person
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -30,10 +29,8 @@ namespace ecloning.Models
         }
     
         public int id { get; set; }
-        [Required(ErrorMessage = "Required")]
         public string first_name { get; set; }
         public string mid_name { get; set; }
-        [Required(ErrorMessage = "Required")]
         public string last_name { get; set; }
         public string email { get; set; }
         public string func { get; set; }

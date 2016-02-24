@@ -277,7 +277,7 @@
     <Property Name="insert" Type="nvarchar" MaxLength="200" />
     <Property Name="usage" Type="nvarchar" MaxLength="200" />
     <Property Name="plasmid_type" Type="nvarchar" MaxLength="200" />
-    <Property Name="ref_plasmid" Type="int" />
+    <Property Name="ref_plasmid" Type="nvarchar" MaxLength="100" />
     <Property Name="img_fn" Type="nvarchar" MaxLength="500" />
     <Property Name="addgene" Type="int" />
     <Property Name="d" Type="datetime" />
@@ -286,6 +286,7 @@
     <Property Name="shared_with_group" Type="bit" />
     <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
     <Property Name="des" Type="text" />
+    <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
   </EntityType>
   <EntityType Name="plasmid_feature">
     <Key>

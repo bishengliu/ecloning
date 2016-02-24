@@ -298,6 +298,7 @@
           <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
           <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
           <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="insert_species" ColumnName="insert_species" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -282,7 +282,7 @@
           <Property Name="insert" Type="nvarchar" MaxLength="200" />
           <Property Name="usage" Type="nvarchar" MaxLength="200" />
           <Property Name="plasmid_type" Type="nvarchar" MaxLength="200" />
-          <Property Name="ref_plasmid" Type="int" />
+          <Property Name="ref_plasmid" Type="nvarchar" MaxLength="100" />
           <Property Name="img_fn" Type="nvarchar" MaxLength="500" />
           <Property Name="addgene" Type="int" />
           <Property Name="d" Type="datetime" />
@@ -291,6 +291,7 @@
           <Property Name="shared_with_group" Type="bit" />
           <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
           <Property Name="des" Type="text" />
+          <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="plasmid_feature">
           <Key>
@@ -1187,7 +1188,7 @@
           <Property Name="insert" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="usage" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="plasmid_type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="ref_plasmid" Type="Int32" />
+          <Property Name="ref_plasmid" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="img_fn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="addgene" Type="Int32" />
           <Property Name="d" Type="DateTime" Precision="3" />
@@ -1196,6 +1197,7 @@
           <Property Name="shared_with_group" Type="Boolean" />
           <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
           <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
           <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />
@@ -2070,6 +2072,7 @@
                 <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
                 <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
                 <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="insert_species" ColumnName="insert_species" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
