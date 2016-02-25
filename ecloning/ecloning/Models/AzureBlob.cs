@@ -118,7 +118,7 @@ namespace ecloning.Models
             CloudBlobContainer container = blobClient.GetContainerReference(directoryName);
 
 
-            Create the container if it doesn't already exist.
+            //Create the container if it doesn't already exist.
             container.CreateIfNotExists();
 
 

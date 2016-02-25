@@ -107,9 +107,10 @@ namespace ecloning.Controllers
             ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value",plasmid.shared_with_people);
             if (ModelState.IsValid)
             {
+                plasmid.d = DateTime.Now;
                 db.plasmids.Add(plasmid);
 
-
+                var timeStamp = DateTime.Now.Millisecond.ToString();
                 string fileName = null;
                 string fileExtension = null;
 
@@ -124,7 +125,7 @@ namespace ecloning.Controllers
                     {
                         try
                         {
-                            fileName = Path.GetFileName(file.FileName);
+                            fileName = timeStamp + Path.GetFileName(file.FileName);
                             AzureBlob azureBlob = new AzureBlob();
                             azureBlob.directoryName = eCloningSettings.plasmidDir;
                             azureBlob.AzureBlobUpload(fileName, file);
@@ -139,7 +140,7 @@ namespace ecloning.Controllers
                 else
                 {
                     //upload to local plasmid folder
-                    var plasmidPath = "~/App_Data/plasmid";
+                    var plasmidPath =eCloningSettings.filePath + "plasmid";
                     if (file != null && file.FileName != null && file.ContentLength > 0)
                     {
                         try

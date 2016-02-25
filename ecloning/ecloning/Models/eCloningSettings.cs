@@ -60,5 +60,8 @@ namespace ecloning.Models
 
         //upload to azure directoryName
         public readonly static string plasmidDir = "plasmid";
+
+        //local data path
+        public readonly static string filePath = "~/App_Data/";
     }
 }

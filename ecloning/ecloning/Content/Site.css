@@ -129,3 +129,20 @@ textarea {
     cursor: inherit;
     display: block;
 }
+
+/*change default modal widith*/
+.modal-body
+{
+	width: 1200px;
+	
+}
+.modal-content
+{
+	width: 1200px;
+	
+}
+.modal-dialog
+{
+	width: 1200px;
+	
+}
