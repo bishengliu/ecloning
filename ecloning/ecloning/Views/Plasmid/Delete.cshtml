@@ -1,193 +1,160 @@
 ﻿@model ecloning.Models.plasmid
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete Plasmid";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string id = null;
+    string refId = "#";
+    id = Model.name;
+    refId = refId + id;
 }
+<div class="row">
+    <br/>
+    <div class="col-sm-6 col-sm-offset-4 col-xs-12">
+        <div class="text-danger head3-size">Are you sure you want to delete this?</div>
+    </div>
+    <div class="col-sm-2 col-xs-12">
+            <div>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
 
-<h2>Delete</h2>
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Delete" class="btn btn-link" /> |
+                        @Html.ActionLink("Back", "Index", null, new { @class="btn btn-link"})
+                    </div>
+                }
+            </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>plasmid</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.name)
-        </dd>
+    </div>
+</div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.sequence)
-        </dt>
+<div class="table-responsive">
+    <table class="table table-condensed">
+            <tr>
+                <td class="col-sm-6">
+                    <span class="text-danger">@Html.DisplayFor(model => model.name)</span>&nbsp;&nbsp;
+                    <span>
+                        <!-- Trigger the modal with a button -->
+                        <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open  text-warning"></i>&nbsp;Full Sequence</button>
+                        <!-- Modal -->
+                        <div id=@id class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title text-center text-info">Plasmid full sequence</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-1"></div>
+                                            <div class="col-sm-10">
+                                                <p class="text-center">-- @Model.name --</p><br />
+                                                @Html.DisplayFor(model => model.sequence)
+                                            </div>
+                                            <div class="col-sm-1"></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
 
-        <dd>
-            @Html.DisplayFor(model => model.sequence)
-        </dd>
+                    <br />
+                    <span class="text-info"><strong>Expression: </strong></span><span>@Html.DisplayFor(model => model.expression_system)</span>&nbsp;&nbsp;<span>@Html.DisplayFor(model => model.expression_subsystem)</span><br />
+                    <span class="text-info"><strong>Insert/Gene: </strong></span>
+                    @if (Model.insert != null)
+                    {
+                        <span>@Html.DisplayFor(model => model.insert_species)</span>
+                        <span>&nbsp; &nbsp;</span><span>@Html.DisplayFor(model => model.insert)</span>
+                        if (Model.promotor != null)
+                        {
+                            <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Promotor: </strong></span><span>@Html.DisplayFor(model => model.promotor)</span>
+                        }
+                        if (Model.polyA != null)
+                        {
+                            <span>&nbsp; &nbsp;</span><span class="text-info"><strong>PolyA: </strong></span><span>@Html.DisplayFor(model => model.polyA)</span><br />
+                        }
+                        else
+                        {
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        <span>None</span><br />
+                    }
+                    <span class="text-info"><strong>Resistance: </strong></span><span>@Html.DisplayFor(model => model.resistance)</span>
+                    @if (Model.selection != null)
+                    {
+                        <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Selection: </strong></span><span>@Html.DisplayFor(model => model.selection)</span>
+                    }
+                    @if (Model.reporter != null)
+                    {
+                        <span>&nbsp;&nbsp;</span><span class="text-info"><strong>Reporter: </strong></span><span>@Html.DisplayFor(model => model.reporter)</span><br />
+                    }
+                    else
+                    {
+                        <br />
+                    }
+                    <span class="text-info"><strong>Experimental Use: </strong></span><span>@Html.DisplayFor(model => model.usage)</span>
+                    @if (Model.plasmid_type != null)
+                    {
+                        <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Plasmid Type: </strong></span><span>@Html.DisplayFor(model => model.plasmid_type)</span><br />
+                    }
+                    else
+                    {
+                        <br />
+                    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.expression_system)
-        </dt>
+                    @if (Model.img_fn != null)
+                    {
+                        <span class="text-info"><strong>Linked File: </strong></span>
+                        <span>
+                            <a href="@Url.Action("Download", "Plasmid", new { fileName=Model.img_fn })">
+                                <span style="color:black">@Model.img_fn</span>&nbsp;&nbsp;<i class="glyphicon glyphicon-download text-info"></i>
+                            </a>
+                        </span><span>&nbsp;&nbsp;</span>
+                    }
 
-        <dd>
-            @Html.DisplayFor(model => model.expression_system)
-        </dd>
+                    @if (Model.ref_plasmid != null)
+                    {
+                        <span class="text-info"><strong>Linked Plasmid(s): </strong></span><span>@Html.DisplayFor(model => model.ref_plasmid)</span><span>&nbsp;&nbsp;</span>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.expression_subsystem)
-        </dt>
+                    }
+                    @if (Model.addgene != null)
+                    {
+                        <span class="text-info"><strong>Addgene#: </strong></span><span>@Html.DisplayFor(model => model.addgene)</span><br />
+                    }
+                    else
+                    {
+                        <br />
+                    }
 
-        <dd>
-            @Html.DisplayFor(model => model.expression_subsystem)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.promotor)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.promotor)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.polyA)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.polyA)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.resistance)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.resistance)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.reporter)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.reporter)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.selection)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.selection)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.insert)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.insert)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.usage)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.usage)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.plasmid_type)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.plasmid_type)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ref_plasmid)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ref_plasmid)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.img_fn)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.img_fn)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.addgene)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.addgene)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.d)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.d)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.submitted_to_group)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.submitted_to_group)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.shared_with_group)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.shared_with_group)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.shared_with_people)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.shared_with_people)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.des)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.des)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.person.first_name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.person.first_name)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+                    @if (Model.submitted_to_group == true || Model.shared_with_group == true || Model.shared_with_people != null)
+                    {
+                        <span class="text-info"><strong>Status: </strong></span>
+                    }
+                    <span>@if (Model.submitted_to_group == true)
+                    { <span>Submitted to the group plasmid libaray</span>}</span>
+                    &nbsp;&nbsp;
+                    <span>@if (Model.shared_with_group == true)
+                    { <span>In the group plasmid libaray</span>}</span>
+                    &nbsp;&nbsp;
+                    <span>@if (Model.shared_with_people != null)
+                    { <span>Shared with: @Model.shared_with_people</span>}</span>
+                    <br />
+                    <br />
+                    <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(model => model.des)</span>
+                </td>
+                <td class="col-sm-4">
+                    <span>Plasmid Map</span>
+                </td>
+            </tr>
+    </table>
 </div>

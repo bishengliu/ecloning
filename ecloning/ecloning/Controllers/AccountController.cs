@@ -112,7 +112,7 @@ namespace ecloning.Controllers
                         ecloningEntities db = new ecloningEntities();
 
                         var appAdmin = new AppAdmin();
-                        var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv(), eCloningSettings.AppHosting());
+                        var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv, eCloningSettings.AppHosting);
 
                         //auto create role AppAdmin
                         if (model.Email == appAdmin.email)
@@ -265,7 +265,7 @@ namespace ecloning.Controllers
                 var appAdmin = new AppAdmin();
 
                 //institute admin
-                var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv(), eCloningSettings.AppHosting());
+                var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv, eCloningSettings.AppHosting);
                 //db
                 ecloningEntities db = new ecloningEntities();
 

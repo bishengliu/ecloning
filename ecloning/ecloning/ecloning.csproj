@@ -344,6 +344,7 @@
     <Compile Include="Models\plasmid.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PlasmidViewModel.cs" />
     <Compile Include="Models\plasmid_feature.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -608,9 +609,10 @@
     <Content Include="Views\Manage\EditAccount.cshtml" />
     <Content Include="Views\Plasmid\Create.cshtml" />
     <Content Include="Views\Plasmid\Delete.cshtml" />
-    <Content Include="Views\Plasmid\Details.cshtml" />
     <Content Include="Views\Plasmid\Edit.cshtml" />
     <Content Include="Views\Plasmid\Index.cshtml" />
+    <Content Include="Views\Plasmid\FileError.cshtml" />
+    <Content Include="Views\Plasmid\FileNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

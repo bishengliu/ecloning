@@ -12,56 +12,30 @@ namespace ecloning.Models
     public static class eCloningSettings
     {
         //set app hosting
-        public static string AppHosting()
-        {
-            return "Cloud";
-            //return "Local";
-        }
+        //public readonly static string AppHosting = "Cloud";
+        public readonly static string AppHosting = "Local";
         //set env
-        public static string AppEnv()
-        {
-            return "Developement";
-        }
+        public readonly static string AppEnv = "Developement";
 
         //set the institute name
-        public static string Institute()
-        {
-            return "eCloning";
-        }
-
+        public readonly static string Institute = "eCloning";
 
         //sendgrid
-        public static string SendgridLoginName()
-        {
-            return "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
-        }
-        public static string SendgridPsw()
-        {
-            return "boL5MRQUCtbM1K8";
-        }
+        public readonly static string SendgridLoginName = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
+        public readonly static string SendgridPsw = "boL5MRQUCtbM1K8";
 
         //institute Admin
-        public static string iEmail()
-        {
-            return "bishengliu@gmail.com";
-        }
-        public static string iFirstName()
-        {
-            return "Bisheng";
-        }
-        public static string iLastName()
-        {
-            return "Liu";
-        }
-        public static string iCode()
-        {
-            return "3ZxaOlh6823UTz2pUP7ExHi9qy53uf65";
-        }
+        public readonly static string iEmail = "bishengliu@gmail.com";
+        public readonly static string iFirstName = "Bisheng";
+        public readonly static string iLastName = "Liu";
+        public readonly static string iCode = "3ZxaOlh6823UTz2pUP7ExHi9qy53uf65";
+
 
         //upload to azure directoryName
         public readonly static string plasmidDir = "plasmid";
 
         //local data path
         public readonly static string filePath = "~/App_Data/";
+
     }
 }

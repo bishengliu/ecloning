@@ -1,9 +1,10 @@
-﻿@model ecloning.Models.plasmid
+﻿@model ecloning.Models.PlasmidViewModel
 
 @{
     ViewBag.Title = "Add Plasmid";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var JsonPlasmid = ViewBag.JsonPlasmid;
+    var db = new ecloning.Models.ecloningEntities();
 
 }
 <div class="container">
@@ -41,7 +42,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group required">
                             @Html.LabelFor(model => model.expression_system, "Expression System", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
                                 @Html.DropDownList("expression_system", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
@@ -74,17 +75,17 @@
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @Html.LabelFor(model => model.resistance, "Resistance", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
-                                @Html.DropDownList("resistance", null, new { @class = "form-control", multiple = "multiple" })
+                                @Html.ListBoxFor(model=>model.resistance, new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
                                 @Html.ValidationMessageFor(model => model.resistance, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
                             @Html.LabelFor(model => model.reporter, "Reporter", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
-                                @Html.DropDownList("reporter", null, new { @class = "form-control", multiple = "multiple" })
+                                @Html.ListBoxFor(model=>model.reporter, new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
                                 @Html.ValidationMessageFor(model => model.reporter, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -92,11 +93,11 @@
                         <div class="form-group">
                             @Html.LabelFor(model => model.selection, "Selection Marker", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
-                                @Html.DropDownList("selection", null, new { @class = "form-control", multiple = "multiple" })
+                                @Html.ListBoxFor(model=>model.selection, new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
                                 @Html.ValidationMessageFor(model => model.selection, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group required">
                             @Html.LabelFor(model => model.insert, "Insert/Gene", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
                                 @Html.EditorFor(model => model.insert, new { htmlAttributes = new { @class = "form-control" } })
@@ -110,10 +111,10 @@
                                 @Html.ValidationMessageFor(model => model.insert_species, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group required">
                             @Html.LabelFor(model => model.usage, "Experimental Use", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
-                                @Html.DropDownList("usage", null, new { @class = "form-control", multiple = "multiple" })
+                                @Html.ListBoxFor(model=>model.usage, new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
                                 @Html.ValidationMessageFor(model => model.usage, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -122,14 +123,6 @@
                             <div class="col-md-6">
                                 @Html.DropDownList("plasmid_type", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.plasmid_type, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ref_plasmid, "Linked Plasmid", htmlAttributes: new { @class = "control-label col-md-4" })
-                            <div class="col-md-6">
-                                @Html.EditorFor(model => model.ref_plasmid, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ref_plasmid, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
@@ -144,6 +137,13 @@
                                         </span>
                                     </div>
                                 @Html.ValidationMessageFor(model => model.img_fn, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ref_plasmid, "Linked Plasmid", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ref_plasmid, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ref_plasmid, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
@@ -232,7 +232,6 @@
     document.getElementById("decodeIt").innerHTML = JsonPlasmid;
     JsonPlasmid = document.getElementById("decodeIt").textContent;
 
-
     $(document).ready(function () {
 
         $("#ref_plasmid").tokenInput(JsonPlasmid, {
@@ -244,7 +243,7 @@
             tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
         });
 
-        $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+        //$("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
     });
 
 

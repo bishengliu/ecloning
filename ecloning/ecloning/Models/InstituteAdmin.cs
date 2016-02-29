@@ -27,9 +27,9 @@ namespace ecloning.Models
             else
             {
                 //need to hard code an institute admin in eCloningSettings
-                this.iEmail = eCloningSettings.iEmail();
-                this.iFirstName = eCloningSettings.iFirstName();
-                this.iLastName = eCloningSettings.iLastName();
+                this.iEmail = eCloningSettings.iEmail;
+                this.iFirstName = eCloningSettings.iFirstName;
+                this.iLastName = eCloningSettings.iLastName;
             }
         }
 
