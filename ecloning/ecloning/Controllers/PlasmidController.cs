@@ -620,6 +620,28 @@ namespace ecloning.Controllers
             plasmid plasmid = db.plasmids.Find(id);
             db.plasmids.Remove(plasmid);
             db.SaveChanges();
+            //remove any uploaded file
+            if(plasmid.img_fn != null)
+            {
+                if (eCloningSettings.AppHosting == "Cloud")
+                {
+                    //delete from azure
+                    //delete from azure
+                    AzureBlob azureBlob = new AzureBlob();
+                    azureBlob.directoryName = eCloningSettings.plasmidDir;
+                    azureBlob.AzureBlobDelete(plasmid.img_fn);
+                }
+                else
+                {
+                    //delete from local
+                    //delete from local
+                    string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.plasmidDir + "/" + plasmid.img_fn);
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Delete(path);
+                    }
+                }
+            }
             return RedirectToAction("Index");
         }
 
