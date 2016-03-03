@@ -10,6 +10,7 @@ using ecloning.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ecloning.Controllers
 {
@@ -157,7 +158,7 @@ namespace ecloning.Controllers
                 //new instance of plasmid model
                 var Plasmid = new plasmid();
                 Plasmid.name = plasmid.name;
-                Plasmid.sequence = plasmid.sequence;
+                Plasmid.sequence = Regex.Replace(plasmid.sequence.Trim(), @"[^\u0000-\u007F]", string.Empty);
                 Plasmid.expression_subsystem = plasmid.expression_subsystem;
                 Plasmid.expression_system = plasmid.expression_system;
                 Plasmid.promotor = plasmid.promotor;
@@ -237,7 +238,7 @@ namespace ecloning.Controllers
         }
 
         [Authorize]
-        [HttpGet]public ActionResult Download(string fileName)
+        public ActionResult Download(string fileName)
         {
             if(eCloningSettings.AppHosting == "Cloud")
             {
@@ -257,7 +258,7 @@ namespace ecloning.Controllers
                 }
                 catch (Exception)
                 {
-                    return FileError();
+                    return RedirectToAction("FileError");
                 }
             }
             else
@@ -265,12 +266,14 @@ namespace ecloning.Controllers
                 //download from local
                 try
                 {
-                    byte[] fileBytes = System.IO.File.ReadAllBytes(eCloningSettings.filePath + "/" + fileName);
+                    var plasmidPath = eCloningSettings.filePath + eCloningSettings.plasmidDir;
+                    var path = Path.Combine(Server.MapPath(plasmidPath), fileName);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(path);
                     return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
                 }
                 catch(Exception)
                 {
-                    return FileError();
+                    return RedirectToAction("FileError");
                 }
             }
             return RedirectToAction("Index");
@@ -496,7 +499,7 @@ namespace ecloning.Controllers
                 //new instance of plasmid model
                 var Plasmid = db.plasmids.Find(plasmid.id);
                 Plasmid.name = plasmid.name;
-                Plasmid.sequence = plasmid.sequence;
+                Plasmid.sequence = Regex.Replace(plasmid.sequence.Trim(), @"[^\u0000-\u007F]", string.Empty);
                 Plasmid.expression_subsystem = plasmid.expression_subsystem;
                 Plasmid.expression_system = plasmid.expression_system;
                 Plasmid.promotor = plasmid.promotor;
@@ -597,6 +600,24 @@ namespace ecloning.Controllers
         }
 
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult Search()
+        {
+            ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value");
+            ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
+            ViewBag.selection = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
+            ViewBag.usage = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value");
+            ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value");
+            ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value");
+            ViewBag.reporter = new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value");
+            return View();
+        }
+
+
+
+
+
         // GET: Plasmid/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -626,14 +647,12 @@ namespace ecloning.Controllers
                 if (eCloningSettings.AppHosting == "Cloud")
                 {
                     //delete from azure
-                    //delete from azure
                     AzureBlob azureBlob = new AzureBlob();
                     azureBlob.directoryName = eCloningSettings.plasmidDir;
                     azureBlob.AzureBlobDelete(plasmid.img_fn);
                 }
                 else
                 {
-                    //delete from local
                     //delete from local
                     string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.plasmidDir + "/" + plasmid.img_fn);
                     if (System.IO.File.Exists(path))

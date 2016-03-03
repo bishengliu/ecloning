@@ -1,0 +1,143 @@
+﻿@model IEnumerable<ecloning.Models.plasmid>
+@{
+    ViewBag.Title = "Search Plasmid";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var db = new ecloning.Models.ecloningEntities();
+}
+
+<div class="row">
+    <div class="col-sm-2 col-sm-offset-1">
+        <h3 class="text-warning">Find Plasmids</h3>
+    </div>
+    <div class="col-sm-2 col-xs-4">
+        <h3>
+            <a class="btn btn-sm btn-info" href="@Url.Action("Index", "Plasmid")">
+                <i class="glyphicon glyphicon-arrow-left text-danger"></i>
+                <span>Back</span>
+            </a>
+        </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs">
+
+    </div>
+    <div class="col-sm-10">
+        <hr class="dotted-line" />
+        <div class="row">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
+                            <div class="form-group">
+                                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.Editor("name", new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Expression System", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("expression_system", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Promoter", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("promotor", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Poly A", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("polyA", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
+                            <div class="form-group">
+                                @Html.Label("Resistance", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.ListBox("resistance", new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Reporter", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.ListBox("reporter", new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Selection Marker", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.ListBox("selection", new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Insert/Gene", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.Editor("insert", new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
+                            <div class="form-group">
+                                @Html.Label("Experimental Use", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.ListBox("usage", new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-4 col-lg-offset-4 col-md-6 col-xs-12">
+                                    <input type="submit" value="Find Plasmid" class="btn btn-block btn-primary" />
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-1 hidden-xs">
+
+    </div>
+</div>
+
+
+
+<br/>
+<div class="row">
+    <div class="col-sm-2 col-sm-offset-1">
+        <h3 class="text-info">Plasmids Found</h3>
+    </div>
+</div>
+
+
+
+
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#expression_system").chosen();
+        $("#promotor").chosen();
+        $("#polyA").chosen();
+        $("#reporter").chosen();
+        $("#selection").chosen();
+        $("#usage").chosen();
+        $("#resistance").chosen();
+    });
+</script>

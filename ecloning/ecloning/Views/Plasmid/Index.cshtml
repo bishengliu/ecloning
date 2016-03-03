@@ -6,10 +6,10 @@
 
 }
 <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-2 col-sm-offset-1">
         <h3 class="text-warning">Plasmids</h3>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-2 col-xs-4">
         <h3>
             <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Plasmid")">
                 <i class="glyphicon glyphicon-plus text-danger"></i>
@@ -17,154 +17,208 @@
             </a>
         </h3>
     </div>
+    <div class="col-sm-7 col-xs-4">
+        <h3>
+            <a class="btn btn-sm btn-info" href="@Url.Action("Search", "Plasmid")">
+                <i class="glyphicon glyphicon-search text-danger"></i>
+                <span>Find Plasmid</span>
+            </a>
+        </h3>
+    </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-condensed">
-        @foreach (var item in Model)
-        {
-            string id = null;
-            string refId = "#";
-            id = item.name;
-            refId = refId + id;
-            <tr>
-                <td class="col-sm-6">
-                    <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
-                    @if (item.sequence != null)
-                    {
-                        <span>
-                            <!-- Trigger the modal with a button -->
-                            <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open text-warning"></i>&nbsp;Full Sequence</button>
-                            <!-- Modal -->
-                            <div id=@id class="modal fade" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title text-center text-info">Plasmid full sequence</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-sm-1"></div>
-                                                <div class="col-sm-10">
-                                                    <p class="text-center">-- @Html.DisplayFor(modelItem => item.name) --</p><br />
-                                                    @Html.DisplayFor(modelItem => item.sequence)
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        <div class="table-responsive">
+            <table class="table table-hover table-condensed">
+                @foreach (var item in Model)
+                {
+                    string id = null;
+                    string refId = "#";
+                    id = item.name;
+                    refId = refId + id;
+                    <tr>
+                        <td class="col-sm-6">
+                            <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
+                            @if (item.sequence != null)
+                            {
+                                //count sequence
+                                int countSeq = item.sequence.Length;
+                                int len = countSeq.ToString().Length;
+                                //sequence is divided by 125
+                                var divide = (double)countSeq / (double)125;
+                                int repeat = (int)Math.Truncate(divide);
+                                //start with 1
+                                int countLeft = 1;
+                                int countRight = 125;
+
+                                <span>
+                                    <!-- Trigger the modal with a button -->
+                                    <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open text-warning"></i>&nbsp;Full Sequence</button>
+                                    <!-- Modal -->
+                                    <div id=@id class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title text-center text-info">Plasmid @item.name full sequence</h4>
                                                 </div>
-                                                <div class="col-sm-1"></div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-1 text-right hidden-xs">
+                                                            <p class="giraffe-seq-count">
+                                                                @for (int i = 0; i < repeat; i++)
+                                                                {
+                                                                    @countLeft<br />
+                                                                    countLeft = countLeft + 125;
+                                                                }
+                                                                @if (countLeft < countSeq)
+                                                                {
+                                                                    <span>@countLeft</span>
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            @{
+                                                                var seq = ecloning.Models.WordWrap.Wrap(item.sequence, 125);
+                                                            }
+                                                            <p class="giraffe-seq-textarea">@Html.Raw(seq)</p>
+                                                        </div>
+                                                        <div class="col-sm-1 text-left hidden-xs">
+                                                            <p class="giraffe-seq-count" style="position:relative; left:-45px;">
+                                                                @for (int i = 0; i < repeat; i++)
+                                                                {
+                                                                    @countRight<br />
+                                                                    countRight = countRight + 125;
+                                                                }
+                                                                @if ((countRight - 125) < countSeq)
+                                                                {
+                                                                    <span>@countSeq</span>
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </span>
-                    }
-                    <br/>
-                    <span class="text-info"><strong>Expression: </strong></span><span>@Html.DisplayFor(modelItem => item.expression_system)</span>&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => item.expression_subsystem)</span><br />
-                    <span class="text-info"><strong>Insert/Gene: </strong></span>
-                    @if (item.insert != null)
-                    {
-                        <span>@Html.DisplayFor(modelItem => item.insert_species)</span>
-                        <span>&nbsp; &nbsp;</span><span>@Html.DisplayFor(modelItem => item.insert)</span>
-                        if (item.promotor != null)
-                        {
-                            <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Promotor: </strong></span><span>@Html.DisplayFor(modelItem => item.promotor)</span>
-                        }
-                        if (item.polyA != null)
-                        {
-                            <span>&nbsp; &nbsp;</span><span class="text-info"><strong>PolyA: </strong></span><span>@Html.DisplayFor(modelItem => item.polyA)</span><br />
-                        }
-                        else
-                        {
-                            <br/>
-                        }
-                    }
-                    else
-                    {
-                        <span>None</span><br/>
-                    }
-                    <span class="text-info"><strong>Resistance: </strong></span><span>@Html.DisplayFor(modelItem => item.resistance)</span>
-                    @if (item.selection != null)
-                    {
-                        <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Selection: </strong></span><span>@Html.DisplayFor(modelItem => item.selection)</span>
-                    }
-                    @if (item.reporter != null)
-                    {
-                        <span>&nbsp;&nbsp;</span><span class="text-info"><strong>Reporter: </strong></span><span>@Html.DisplayFor(modelItem => item.reporter)</span><br />
-                    }
-                    else
-                    {
-                        <br/>
-                    }
-                    <span class="text-info"><strong>Experimental Use: </strong></span><span>@Html.DisplayFor(modelItem => item.usage)</span>
-                    @if (item.plasmid_type != null)
-                    {
-                        <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Plasmid Type: </strong></span><span>@Html.DisplayFor(modelItem => item.plasmid_type)</span><br />
-                    }
-                    else
-                    {
-                        <br/>
-                    }
-                    
-                    @if (item.img_fn != null)
-                    {
-                        <span class="text-info"><strong>Linked File: </strong></span>
-                        <span>
-                            <a href="@Url.Action("Download", "Plasmid", new { fileName=item.img_fn })">
-                                <span style="color:black">@item.img_fn</span>&nbsp;&nbsp;<i class="glyphicon glyphicon-download text-info"></i>
-                            </a>
-                        </span><span>&nbsp;&nbsp;</span>
-                    }
+                                </span>
+                                                                }
+                            <br />
+                            <span class="text-info"><strong>Expression: </strong></span><span>@Html.DisplayFor(modelItem => item.expression_system)</span>&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => item.expression_subsystem)</span><br />
+                            <span class="text-info"><strong>Insert/Gene: </strong></span>
+                            @if (item.insert != null)
+                            {
+                                <span>@Html.DisplayFor(modelItem => item.insert_species)</span>
+                                <span>&nbsp; &nbsp;</span><span>@Html.DisplayFor(modelItem => item.insert)</span>
+                                if (item.promotor != null)
+                                {
+                                    <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Promotor: </strong></span><span>@Html.DisplayFor(modelItem => item.promotor)</span>
+                                }
+                                if (item.polyA != null)
+                                {
+                                    <span>&nbsp; &nbsp;</span><span class="text-info"><strong>PolyA: </strong></span><span>@Html.DisplayFor(modelItem => item.polyA)</span><br />
+                                }
+                                else
+                                {
+                                    <br />
+                                }
+                            }
+                            else
+                            {
+                                <span>None</span><br />
+                            }
+                            <span class="text-info"><strong>Resistance: </strong></span><span>@Html.DisplayFor(modelItem => item.resistance)</span>
+                            @if (item.selection != null)
+                            {
+                                <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Selection: </strong></span><span>@Html.DisplayFor(modelItem => item.selection)</span>
+                            }
+                            @if (item.reporter != null)
+                            {
+                                <span>&nbsp;&nbsp;</span><span class="text-info"><strong>Reporter: </strong></span><span>@Html.DisplayFor(modelItem => item.reporter)</span><br />
+                            }
+                            else
+                            {
+                                <br />
+                            }
+                            <span class="text-info"><strong>Experimental Use: </strong></span><span>@Html.DisplayFor(modelItem => item.usage)</span>
+                            @if (item.plasmid_type != null)
+                            {
+                                <span>&nbsp; &nbsp;</span><span class="text-info"><strong>Plasmid Type: </strong></span><span>@Html.DisplayFor(modelItem => item.plasmid_type)</span><br />
+                            }
+                            else
+                            {
+                                <br />
+                            }
 
-                    @if (item.ref_plasmid != null)
-                    {
-                        <span class="text-info"><strong>Linked Plasmid(s): </strong></span><span>@Html.DisplayFor(modelItem => item.ref_plasmid)</span><span>&nbsp;&nbsp;</span>
+                            @if (item.img_fn != null)
+                            {
+                                <span class="text-info"><strong>Linked File: </strong></span>
+                                <span>
+                                    <a href="@Url.Action("Download", "Plasmid", new { fileName=item.img_fn })">
+                                        <span style="color:black">@item.img_fn</span><i class="glyphicon glyphicon-arrow-down" style="font-size:80%; color:black;"></i>
+                                    </a>
+                                </span><span>&nbsp;&nbsp;</span>
+                            }
 
-                    }
-                    @if(item.addgene != null)
-                    {
-                        <span class="text-info"><strong>Addgene#: </strong></span><span>@Html.DisplayFor(modelItem => item.addgene)</span><br />
-                    }
-                    else
-                    {
-                        <br/>
-                    }
+                            @if (item.ref_plasmid != null)
+                            {
+                                <span class="text-info"><strong>Linked Plasmid(s): </strong></span><span>@Html.DisplayFor(modelItem => item.ref_plasmid)</span><span>&nbsp;&nbsp;</span>
 
-                    @if (item.submitted_to_group == true || item.shared_with_group == true || item.shared_with_people != null)
-                    {
-                        <span class="text-info"><strong>Status: </strong></span>
-                    }
-                    <span>@if(item.submitted_to_group ==true) { <span>Submitted to the group plasmid libaray</span>}</span>
-                    &nbsp;&nbsp;
-                    <span>@if(item.shared_with_group ==true) { <span>In the group plasmid libaray</span>}</span>
-                    &nbsp;&nbsp;
-                    <span>@if(item.shared_with_people != null) { <span>Shared with: @item.shared_with_people</span>}</span>
-                    <br/>
-                    <br/>
-                    <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
-                </td>
-                <td class="col-sm-4">
-                    <span>Plasmid Map</span>
-                </td>
-                <td class="col-sm-2">
-                    @if (item.submitted_to_group != true || item.shared_with_group != true)
-                    {
-                        <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
-                            <i class="glyphicon glyphicon-pencil text-info"></i>
-                            <span>Edit</span>
-                        </a>
-                        <br />
-                        <a href="@Url.Action("Delete", "Plasmid", new { id = item.id })">
-                            <i class="glyphicon glyphicon-trash text-info"></i>
-                            <span>Delete</span>
-                        </a>
-                    }
-                </td>
-            </tr>
-        }
+                            }
+                            @if (item.addgene != null)
+                            {
+                                <span class="text-info"><strong>Addgene#: </strong></span><span>@Html.DisplayFor(modelItem => item.addgene)</span><br />
+                            }
+                            else
+                            {
+                                <br />
+                            }
 
-    </table>
+                            @if (item.submitted_to_group == true || item.shared_with_group == true || item.shared_with_people != null)
+                            {
+                                <span class="text-info"><strong>Status: </strong></span>
+                            }
+                            <span>@if (item.submitted_to_group == true)
+                            { <span>Submitted to the group plasmid libaray</span>}</span>
+                            &nbsp;&nbsp;
+                            <span>@if (item.shared_with_group == true)
+                            { <span>In the group plasmid libaray</span>}</span>
+                            &nbsp;&nbsp;
+                            <span>@if (item.shared_with_people != null)
+                            { <span>Shared with: @item.shared_with_people</span>}</span>
+                            <br />
+                            <br />
+                            <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
+                        </td>
+                        <td class="col-sm-4">
+                            <span>Plasmid Map</span>
+                        </td>
+                        <td class="col-sm-2">
+                            @if (item.submitted_to_group != true || item.shared_with_group != true)
+                            {
+                                <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
+                                    <i class="glyphicon glyphicon-pencil text-info"></i>
+                                    <span>Edit</span>
+                                </a>
+                                <br />
+                                <a href="@Url.Action("Delete", "Plasmid", new { id = item.id })">
+                                    <i class="glyphicon glyphicon-trash text-info"></i>
+                                    <span>Delete</span>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                                                                }
+
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-1 hidden-xs"></div>
 </div>
+
 

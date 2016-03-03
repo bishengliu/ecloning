@@ -9,10 +9,10 @@ namespace ecloning
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery.tokeninput.js",
+                        "~/Scripts/jquery-{version}.js",                        
                         "~/Scripts/chosen.jquery.js",
-                        "~/Scripts/jquery-ui-{version}.js"));
+                        "~/Scripts/jquery-ui-{version}.js",
+                        "~/Scripts/jquery.tokeninput.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 

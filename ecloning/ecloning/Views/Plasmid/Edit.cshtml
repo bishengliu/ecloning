@@ -11,7 +11,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-offset-2 col-sm-offset-4 col-sm-4">
-            <h3 class="">Edit Plasmid</h3>
+            <h3 class="text-warning">Edit Plasmid</h3>
         </div>
         <div class="col-sm-offset-0 col-sm-4 col-xs-offset-4" style="position:relative;top:15px;">
             @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
@@ -20,7 +20,7 @@
     <hr class="dotted-line" />
     <span id="decodeIt" class="hidden"></span>
     <div class="row">
-        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return uploadSize();" }))
         {
             @Html.AntiForgeryToken()
             <div class="form-horizontal">
@@ -140,6 +140,7 @@
                                     </span>
                                 </div>
                                 @Html.ValidationMessageFor(model => model.img_fn, "", new { @class = "text-danger" })
+                                <p id="max_size" class="text-danger" style="font-size:90%;"></p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -222,6 +223,20 @@
 @Scripts.Render("~/bundles/jquery")
 
 <script>
+    function uploadSize() {
+
+        if (typeof ($('#img_fn')[0].files) != "undefined") {
+            //check upload file size
+            alert("1");
+            var size = parseFloat($('#img_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+            if (size > 10) {
+                $('#max_size').text('Maximum upload file size is 10MB!');
+                return false;
+            }
+        }
+    }
+</script>
+<script>
     function getFilePath() {
         var fullPath = document.getElementById("img_fn").value;
         fileName = fullPath.split(/(\\|\/)/g).pop();
@@ -235,21 +250,26 @@
     document.getElementById("decodeIt").innerHTML = JsonPlasmid;
     JsonPlasmid = document.getElementById("decodeIt").textContent;
 
+    try {
+        JsonPlasmid = JSON.parse(JsonPlasmid);
 
-    $(document).ready(function () {
+        $(document).ready(function () {
+            $("#ref_plasmid").tokenInput(JsonPlasmid, {
+                theme: 'facebook',
+                hintText: 'Type plasmid\'s name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "name",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.usage + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
 
-        $("#ref_plasmid").tokenInput(JsonPlasmid, {
-            theme: 'facebook',
-            hintText: 'Type plasmid\'s name to search',
-            //tokenLimit: 1,
-            propertyToSearch: "name",
-            resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.usage + "</span></p></li>" },
-            tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            //$("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
         });
-
-        //$("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
-    });
-
+    }
+    catch (e) {
+        $("#ref_plasmid").addClass("hidden");
+        $(".token-input-list-facebook").addClass("hidden");
+    }
 
 </script>
 <script>
@@ -265,5 +285,15 @@
         $("#plasmid_type").chosen();
         $("#resistance").chosen();
         $("#people_id").chosen();
+    });
+</script>
+
+<script>
+    //remove all non letter in the seqeuce input
+    $('#sequence').change(function () {
+        var before = $('#sequence').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z 0-9]+/g, '').toUpperCase();
+        $('#sequence').val(after);
     });
 </script>
