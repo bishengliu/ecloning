@@ -41,10 +41,40 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>
+                        <a href="@Url.Action("Index", "Home")">
+                            @*<i class="glyphicon glyphicon-home text-info"></i>*@
+                            <span class="text-text-info">Home</span>
+                        </a>
+                    </li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                       <li>@Html.ActionLink("Plasmids", "Index", "Plasmid")</li>
+                       <li>
+                           <a href="@Url.Action("Index", "Plasmid")">
+                               @*<i class="glyphicon glyphicon-th-list text-info"></i>*@
+                               <span class="text-text-info">Plasmids</span>
+                           </a>
+                       </li>
+
+
+
+
+
+
+
+                        //shared with group
+                        <li class="dropdown">
+                            @*<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Manage"><span class="glyphicon glyphicon-th text-info">&ensp;</span>Group<span class="caret"></span></a>*@
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Shared ">Group Shared<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="@Url.Action("General", "Plasmid")">
+                                        @*<i class="glyphicon glyphicon-th-list text-info"></i>*@
+                                        <span class="text-text-info">Plasmids</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     }
 
                 </ul>

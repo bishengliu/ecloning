@@ -21,7 +21,19 @@ namespace ecloning.Controllers
         // GET: Plasmid
         public ActionResult Index()
         {
-            var plasmids = db.plasmids.Include(p => p.person);
+            //get current login email
+            var email = User.Identity.GetUserName();
+            //only show my plasmids
+            var plasmids = db.plasmids.Include(p => p.person).Where(p=>p.person.email==email);
+            ViewBag.Count = plasmids.Count();
+            return View(plasmids.ToList());
+        }
+
+        public ActionResult General()
+        {
+            //only show group shared plasmids
+            var plasmids = db.plasmids.Include(p => p.person).Where(p => p.shared_with_group == true);
+            ViewBag.Count = plasmids.Count();
             return View(plasmids.ToList());
         }
 
@@ -602,8 +614,12 @@ namespace ecloning.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult Search()
+        public ActionResult Search(string scope)
         {
+            //scope == "personal" or  "group"
+            ViewBag.Scope = scope;
+            ViewBag.Count = -2; //initial status
+
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value");
             ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
             ViewBag.selection = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
@@ -611,9 +627,31 @@ namespace ecloning.Controllers
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value");
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value");
             ViewBag.reporter = new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value");
+
+            ViewBag.name = "";
+            ViewBag.insert = "";
             return View();
         }
+        [Authorize]
+        [HttpPost]
+        public ActionResult Search(string scope, string name, string expression_system, string promotor, string polyA, string[] resistance, string[] reporter, string[] selection, string insert, string[] usage)
+        {
+            //scope == "personal" or  "group"
+            ViewBag.Scope = scope;
+            ViewBag.Count = -2; //initial status
 
+            ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value", expression_system);
+            ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value", resistance);
+            ViewBag.selection = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value", selection);
+            ViewBag.usage = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value", usage);
+            ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value", promotor);
+            ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value", polyA);
+            ViewBag.reporter = new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value", reporter);
+
+            ViewBag.name = name;
+            ViewBag.insert = insert;
+            return View();
+        }
 
 
 

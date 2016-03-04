@@ -7,20 +7,12 @@
 }
 <div class="row">
     <div class="col-sm-2 col-sm-offset-1">
-        <h3 class="text-warning">Plasmids</h3>
+        <h3 class="text-warning">Group Plasmids</h3>
     </div>
 
     <div class="col-sm-2 col-xs-6">
         <h3>
-            <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Plasmid")">
-                <i class="glyphicon glyphicon-plus text-danger"></i>
-                <span>Add Plasmid</span>
-            </a>
-        </h3>
-    </div>
-    <div class="col-sm-5 col-xs-6">
-        <h3>
-            <a class="btn btn-sm btn-info" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
+            <a class="btn btn-sm btn-info" href="@Url.Action("Search", "Plasmid", new { scope ="group"})">
                 <i class="glyphicon glyphicon-search text-danger"></i>
                 <span>Find Plasmid</span>
             </a>
@@ -46,11 +38,11 @@ else
             <div class="table-responsive">
                 <table class="table table-hover table-condensed">
                     @foreach (var item in Model)
-                    {
-                        string id = null;
-                        string refId = "#";
-                        id = item.name;
-                        refId = refId + id;
+                {
+                    string id = null;
+                    string refId = "#";
+                    id = item.name;
+                    refId = refId + id;
                         <tr>
                             <td class="col-sm-6">
                                 <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
@@ -192,48 +184,29 @@ else
                                 {
                                     <br />
                                 }
-
-                                @if (item.submitted_to_group == true || item.shared_with_group == true || item.shared_with_people != null)
-                                {
-                                    <span class="text-info"><strong>Status: </strong></span>
-                                }
-                                <span>
-                                    @if (item.submitted_to_group == true)
-                                    { <span>Submitted to the group plasmid libaray</span>}
-                                </span>
-                                &nbsp;&nbsp;
-                                <span>
-                                    @if (item.shared_with_group == true)
-                                    { <span>In the group plasmid libaray</span>}
-                                </span>
-                                &nbsp;&nbsp;
-                                <span>
-                                    @if (item.shared_with_people != null)
-                                    { <span>Shared with: @item.shared_with_people</span>}
-                                </span>
+                    <br />
+                    <br />
+                    <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
+                </td>
+                <td class="col-sm-4">
+                    <span>Plasmid Map</span>
+                </td>
+                <td class="col-sm-2">
+                    @if (item.submitted_to_group != true || item.shared_with_group != true)
+                    {
+                        <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
+                            <i class="glyphicon glyphicon-pencil text-info"></i>
+                            <span>Edit</span>
+                        </a>
                                 <br />
-                                <br />
-                                <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
-                            </td>
-                            <td class="col-sm-4">
-                                <span>Plasmid Map</span>
-                            </td>
-                            <td class="col-sm-2">
-                                @if (item.submitted_to_group != true || item.shared_with_group != true)
-                                {
-                                    <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
-                                        <i class="glyphicon glyphicon-pencil text-info"></i>
-                                        <span>Edit</span>
-                                    </a>
-                                    <br />
-                                    <a href="@Url.Action("Delete", "Plasmid", new { id = item.id })">
-                                        <i class="glyphicon glyphicon-trash text-info"></i>
-                                        <span>Delete</span>
-                                    </a>
-                                }
-                            </td>
-                        </tr>
+                                <a href="@Url.Action("Delete", "Plasmid", new { id = item.id })">
+                                    <i class="glyphicon glyphicon-trash text-info"></i>
+                                    <span>Delete</span>
+                                </a>
                     }
+                </td>
+            </tr>
+                }
 
                 </table>
             </div>
@@ -241,6 +214,3 @@ else
         <div class="col-sm-1 hidden-xs"></div>
     </div>
 }
-
-
-
