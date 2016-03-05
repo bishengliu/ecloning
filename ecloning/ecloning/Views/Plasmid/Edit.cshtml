@@ -174,32 +174,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group hidden">
-                            @Html.LabelFor(model => model.submitted_to_group, "Submit to the Group Libaray", htmlAttributes: new { @class = "control-label col-md-4" })
-                            <div class="col-md-6">
-                                @Html.DropDownList("submitted_to_group", null, htmlAttributes: new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.submitted_to_group, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group hidden">
-                            @Html.LabelFor(model => model.shared_with_group, htmlAttributes: new { @class = "control-label col-md-4" })
-                            <div class="col-md-6">
-                                <div class="checkbox">
-                                    @Html.EditorFor(model => model.shared_with_group)
-                                    @Html.ValidationMessageFor(model => model.shared_with_group, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group hidden">
-                            @Html.LabelFor(model => model.shared_with_people, htmlAttributes: new { @class = "control-label col-md-4" })
-                            <div class="col-md-6">
-                                @Html.EditorFor(model => model.shared_with_people, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.shared_with_people, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             @Html.LabelFor(model => model.des, "Remarks", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">

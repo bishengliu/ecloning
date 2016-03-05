@@ -393,6 +393,8 @@
     <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.vertical-tabs.css" />
+    <Content Include="Content\bootstrap.vertical-tabs.min.css" />
     <Content Include="Content\chosen-sprite%402x.png" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.css" />
@@ -619,7 +621,6 @@
     <Content Include="Views\Plasmid\FileError.cshtml" />
     <Content Include="Views\Plasmid\FileNotFound.cshtml" />
     <Content Include="Views\Plasmid\Search.cshtml" />
-    <Content Include="Views\Plasmid\General.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

@@ -142,6 +142,7 @@
     <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
     <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
     <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
+    <NavigationProperty Name="group_shared" Relationship="Self.fk_group_shared_group_id" FromRole="group" ToRole="group_shared" />
   </EntityType>
   <EntityType Name="group_people">
     <Key>
@@ -152,6 +153,17 @@
     <Property Name="people_id" Type="Int32" Nullable="false" />
     <NavigationProperty Name="group" Relationship="Self.fk_group_people_group_id" FromRole="group_people" ToRole="group" />
     <NavigationProperty Name="person" Relationship="Self.fk_group_people_people_id" FromRole="group_people" ToRole="people" />
+  </EntityType>
+  <EntityType Name="group_shared">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
+    <Property Name="resource_id" Type="Int32" Nullable="false" />
+    <Property Name="category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="sratus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="group" Relationship="Self.fk_group_shared_group_id" FromRole="group_shared" ToRole="group" />
   </EntityType>
   <EntityType Name="ladder">
     <Key>
@@ -249,9 +261,6 @@
     <Property Name="modification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="people_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="submitted_to_group" Type="Boolean" />
-    <Property Name="shared_with_group" Type="Boolean" />
-    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="dt" Type="DateTime" Precision="3" />
     <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_oligo_id" FromRole="oligo" ToRole="clone_group" />
     <NavigationProperty Name="person" Relationship="Self.fk_oligo_people_id" FromRole="oligo" ToRole="people" />
@@ -310,9 +319,6 @@
     <Property Name="addgene" Type="Int32" />
     <Property Name="d" Type="DateTime" Precision="3" />
     <Property Name="people_id" Type="Int32" Nullable="false" />
-    <Property Name="submitted_to_group" Type="Boolean" />
-    <Property Name="shared_with_group" Type="Boolean" />
-    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
@@ -361,9 +367,6 @@
     <Property Name="modification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="people_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="submitted_to_group" Type="Boolean" />
-    <Property Name="shared_with_group" Type="Boolean" />
-    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="dt" Type="DateTime" Precision="3" />
     <NavigationProperty Name="person" Relationship="Self.fk_primer_tech_id" FromRole="primer" ToRole="people" />
     <NavigationProperty Name="probes" Relationship="Self.fk_probe_forward_primer" FromRole="primer" ToRole="probe" />
@@ -384,9 +387,6 @@
     <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="people_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="submitted_to_group" Type="Boolean" />
-    <Property Name="shared_with_group" Type="Boolean" />
-    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="dt" Type="DateTime" Precision="3" />
     <NavigationProperty Name="person" Relationship="Self.fk_probe_tech_id" FromRole="probe" ToRole="people" />
     <NavigationProperty Name="primer" Relationship="Self.fk_probe_forward_primer" FromRole="probe" ToRole="primer" />
@@ -580,6 +580,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_group_shared_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="group_shared" Type="Self.group_shared" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_shared">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_group_people_people_id">
     <End Role="people" Type="Self.person" Multiplicity="1" />
     <End Role="group_people" Type="Self.group_people" Multiplicity="*" />
@@ -765,6 +777,7 @@
     <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
     <EntitySet Name="groups" EntityType="Self.group" />
     <EntitySet Name="group_people" EntityType="Self.group_people" />
+    <EntitySet Name="group_shared" EntityType="Self.group_shared" />
     <EntitySet Name="ladders" EntityType="Self.ladder" />
     <EntitySet Name="ladder_size" EntityType="Self.ladder_size" />
     <EntitySet Name="licenses" EntityType="Self.license" />
@@ -824,6 +837,10 @@
     <AssociationSet Name="fk_group_people_group_id" Association="Self.fk_group_people_group_id">
       <End Role="group" EntitySet="groups" />
       <End Role="group_people" EntitySet="group_people" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
+      <End Role="group" EntitySet="groups" />
+      <End Role="group_shared" EntitySet="group_shared" />
     </AssociationSet>
     <AssociationSet Name="fk_group_people_people_id" Association="Self.fk_group_people_people_id">
       <End Role="people" EntitySet="people" />

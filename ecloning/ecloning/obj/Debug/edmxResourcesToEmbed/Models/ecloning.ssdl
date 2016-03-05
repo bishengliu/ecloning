@@ -142,6 +142,16 @@
     <Property Name="group_id" Type="int" Nullable="false" />
     <Property Name="people_id" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="group_shared">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="resource_id" Type="int" Nullable="false" />
+    <Property Name="category" Type="nvarchar" MaxLength="50" />
+    <Property Name="sratus" Type="nvarchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="ladder">
     <Key>
       <PropertyRef Name="id" />
@@ -234,9 +244,6 @@
     <Property Name="modification" Type="nvarchar" MaxLength="100" />
     <Property Name="people_id" Type="int" />
     <Property Name="des" Type="text" />
-    <Property Name="submitted_to_group" Type="bit" />
-    <Property Name="shared_with_group" Type="bit" />
-    <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
     <Property Name="dt" Type="datetime" />
   </EntityType>
   <EntityType Name="people">
@@ -282,9 +289,6 @@
     <Property Name="addgene" Type="int" />
     <Property Name="d" Type="datetime" />
     <Property Name="people_id" Type="int" Nullable="false" />
-    <Property Name="submitted_to_group" Type="bit" />
-    <Property Name="shared_with_group" Type="bit" />
-    <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
     <Property Name="des" Type="text" />
     <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
   </EntityType>
@@ -327,9 +331,6 @@
     <Property Name="modification" Type="nvarchar" MaxLength="100" />
     <Property Name="people_id" Type="int" />
     <Property Name="des" Type="text" />
-    <Property Name="submitted_to_group" Type="bit" />
-    <Property Name="shared_with_group" Type="bit" />
-    <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
     <Property Name="dt" Type="datetime" />
   </EntityType>
   <EntityType Name="probe">
@@ -347,9 +348,6 @@
     <Property Name="location" Type="nvarchar" MaxLength="100" />
     <Property Name="people_id" Type="int" />
     <Property Name="des" Type="text" />
-    <Property Name="submitted_to_group" Type="bit" />
-    <Property Name="shared_with_group" Type="bit" />
-    <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
     <Property Name="dt" Type="datetime" />
   </EntityType>
   <EntityType Name="project">
@@ -578,6 +576,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_group_shared_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="group_shared" Type="Self.group_shared" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_shared">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_oligo_people_id">
     <End Role="people" Type="Self.people" Multiplicity="0..1" />
     <End Role="oligo" Type="Self.oligo" Multiplicity="*" />
@@ -748,6 +758,7 @@
     <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="group_people" EntityType="Self.group_people" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="group_shared" EntityType="Self.group_shared" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ladder" EntityType="Self.ladder" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ladder_size" EntityType="Self.ladder_size" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
@@ -819,6 +830,10 @@
     <AssociationSet Name="fk_group_people_people_id" Association="Self.fk_group_people_people_id">
       <End Role="people" EntitySet="people" />
       <End Role="group_people" EntitySet="group_people" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="group_shared" EntitySet="group_shared" />
     </AssociationSet>
     <AssociationSet Name="fk_oligo_people_id" Association="Self.fk_oligo_people_id">
       <End Role="people" EntitySet="people" />

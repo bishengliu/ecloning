@@ -40,6 +40,7 @@ namespace ecloning
                       "~/Content/token-input-facebook.css",
                       "~/Content/token-input-mac.css",
                       "~/Content/chosen.css",
+                      "~/Content/bootstrap.vertical-tabs.min.css",
                       "~/Content/site.css"));
 
 
