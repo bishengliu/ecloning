@@ -19,6 +19,7 @@ namespace ecloning.Models
         {
             this.app_license = new HashSet<app_license>();
             this.group_people = new HashSet<group_people>();
+            this.group_shared = new HashSet<group_shared>();
         }
     
         public int id { get; set; }
@@ -32,5 +33,7 @@ namespace ecloning.Models
         public virtual department department { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group_people> group_people { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<group_shared> group_shared { get; set; }
     }
 }

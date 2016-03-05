@@ -37,6 +37,7 @@ namespace ecloning.Models
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }
         public virtual DbSet<group> groups { get; set; }
         public virtual DbSet<group_people> group_people { get; set; }
+        public virtual DbSet<group_shared> group_shared { get; set; }
         public virtual DbSet<ladder> ladders { get; set; }
         public virtual DbSet<ladder_size> ladder_size { get; set; }
         public virtual DbSet<license> licenses { get; set; }

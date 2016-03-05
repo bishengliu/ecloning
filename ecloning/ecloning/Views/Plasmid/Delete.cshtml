@@ -136,7 +136,7 @@
                         <br />
                     }
 
-                    @if (Model.submitted_to_group == true || Model.shared_with_group == true || Model.shared_with_people != null)
+                    @*@if (Model.submitted_to_group == true || Model.shared_with_group == true || Model.shared_with_people != null)
                     {
                         <span class="text-info"><strong>Status: </strong></span>
                     }
@@ -149,7 +149,7 @@
                     <span>@if (Model.shared_with_people != null)
                     { <span>Shared with: @Model.shared_with_people</span>}</span>
                     <br />
-                    <br />
+                    <br />*@
                     <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(model => model.des)</span>
                 </td>
                 <td class="col-sm-4">

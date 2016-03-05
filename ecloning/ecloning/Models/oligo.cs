@@ -31,9 +31,6 @@ namespace ecloning.Models
         public string modification { get; set; }
         public Nullable<int> people_id { get; set; }
         public string des { get; set; }
-        public Nullable<bool> submitted_to_group { get; set; }
-        public Nullable<bool> shared_with_group { get; set; }
-        public string shared_with_people { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

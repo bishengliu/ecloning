@@ -29,13 +29,13 @@ namespace ecloning.Controllers
             return View(plasmids.ToList());
         }
 
-        public ActionResult General()
-        {
-            //only show group shared plasmids
-            var plasmids = db.plasmids.Include(p => p.person).Where(p => p.shared_with_group == true);
-            ViewBag.Count = plasmids.Count();
-            return View(plasmids.ToList());
-        }
+        //public ActionResult General()
+        //{
+        //    //only show group shared plasmids
+        //    var plasmids = db.plasmids.Include(p => p.person);
+        //    ViewBag.Count = plasmids.Count();
+        //    return View(plasmids.ToList());
+        //}
 
         // GET: Plasmid/Create
         [Authorize]
@@ -67,9 +67,9 @@ namespace ecloning.Controllers
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value");
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value");
             ViewBag.reporter = new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value");
-            ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", "false");
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value");
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value");
+            //ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", "false");
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value");
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value");
 
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
@@ -84,7 +84,7 @@ namespace ecloning.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,sequence,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,submitted_to_group,shared_with_group,shared_with_people,des")] PlasmidViewModel plasmid)
+        public ActionResult Create([Bind(Include = "id,name,sequence,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
@@ -96,9 +96,9 @@ namespace ecloning.Controllers
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value",plasmid.plasmid_type);
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value",plasmid.promotor);
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value",plasmid.polyA);
-            ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value",plasmid.shared_with_group);
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value",plasmid.shared_with_people);
+            //ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value",plasmid.shared_with_group);
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value",plasmid.shared_with_people);
 
             //ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value", plasmid.resistance);
             //ViewBag.selection = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value", plasmid.selection);
@@ -185,9 +185,9 @@ namespace ecloning.Controllers
                 Plasmid.addgene = plasmid.addgene;
                 Plasmid.d = plasmid.d;
                 Plasmid.people_id = plasmid.people_id;
-                Plasmid.submitted_to_group = plasmid.submitted_to_group;
-                Plasmid.shared_with_group = plasmid.shared_with_group;
-                Plasmid.shared_with_people = plasmid.shared_with_people;
+                //Plasmid.submitted_to_group = plasmid.submitted_to_group;
+                //Plasmid.shared_with_group = plasmid.shared_with_group;
+                //Plasmid.shared_with_people = plasmid.shared_with_people;
                 Plasmid.des = plasmid.des;
                 Plasmid.insert_species = plasmid.insert_species;
 
@@ -399,9 +399,9 @@ namespace ecloning.Controllers
             Plasmid.addgene = plasmid.addgene;
             Plasmid.d = plasmid.d;
             Plasmid.people_id = plasmid.people_id;
-            Plasmid.submitted_to_group = plasmid.submitted_to_group;
-            Plasmid.shared_with_group = plasmid.shared_with_group;
-            Plasmid.shared_with_people = plasmid.shared_with_people;
+            //Plasmid.submitted_to_group = plasmid.submitted_to_group;
+            //Plasmid.shared_with_group = plasmid.shared_with_group;
+            //Plasmid.shared_with_people = plasmid.shared_with_people;
             Plasmid.des = plasmid.des;
             Plasmid.insert_species = plasmid.insert_species;
             Plasmid.img_fn = plasmid.img_fn;
@@ -418,9 +418,9 @@ namespace ecloning.Controllers
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value", plasmid.plasmid_type);
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value", plasmid.promotor);
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value", plasmid.polyA);
-            ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_group);
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_people);
+            //ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_group);
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_people);
             return View(Plasmid);
         }
 
@@ -429,7 +429,7 @@ namespace ecloning.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,submitted_to_group,shared_with_group,shared_with_people,des")] PlasmidViewModel plasmid)
+        public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
@@ -441,9 +441,9 @@ namespace ecloning.Controllers
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value", plasmid.plasmid_type);
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value", plasmid.promotor);
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value", plasmid.polyA);
-            ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_group);
-            ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_people);
+            //ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_group);
+            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_people);
 
 
 
@@ -526,9 +526,9 @@ namespace ecloning.Controllers
                 Plasmid.addgene = plasmid.addgene;
                 Plasmid.d = plasmid.d;
                 Plasmid.people_id = plasmid.people_id;
-                Plasmid.submitted_to_group = plasmid.submitted_to_group;
-                Plasmid.shared_with_group = plasmid.shared_with_group;
-                Plasmid.shared_with_people = plasmid.shared_with_people;
+                //Plasmid.submitted_to_group = plasmid.submitted_to_group;
+                //Plasmid.shared_with_group = plasmid.shared_with_group;
+                //Plasmid.shared_with_people = plasmid.shared_with_people;
                 Plasmid.des = plasmid.des;
                 Plasmid.insert_species = plasmid.insert_species;
                 Plasmid.img_fn = plasmid.img_fn;

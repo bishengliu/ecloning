@@ -193,7 +193,7 @@ else
                                     <br />
                                 }
 
-                                @if (item.submitted_to_group == true || item.shared_with_group == true || item.shared_with_people != null)
+                                @*@if (item.submitted_to_group == true || item.shared_with_group == true || item.shared_with_people != null)
                                 {
                                     <span class="text-info"><strong>Status: </strong></span>
                                 }
@@ -212,15 +212,14 @@ else
                                     { <span>Shared with: @item.shared_with_people</span>}
                                 </span>
                                 <br />
-                                <br />
+                                <br />*@
                                 <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
                             </td>
                             <td class="col-sm-4">
                                 <span>Plasmid Map</span>
                             </td>
                             <td class="col-sm-2">
-                                @if (item.submitted_to_group != true || item.shared_with_group != true)
-                                {
+
                                     <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
                                         <i class="glyphicon glyphicon-pencil text-info"></i>
                                         <span>Edit</span>
@@ -230,7 +229,7 @@ else
                                         <i class="glyphicon glyphicon-trash text-info"></i>
                                         <span>Delete</span>
                                     </a>
-                                }
+
                             </td>
                         </tr>
                     }

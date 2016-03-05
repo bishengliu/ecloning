@@ -147,6 +147,16 @@
           <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="people_id" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="group_shared">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="resource_id" Type="int" Nullable="false" />
+          <Property Name="category" Type="nvarchar" MaxLength="50" />
+          <Property Name="sratus" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="ladder">
           <Key>
             <PropertyRef Name="id" />
@@ -239,9 +249,6 @@
           <Property Name="modification" Type="nvarchar" MaxLength="100" />
           <Property Name="people_id" Type="int" />
           <Property Name="des" Type="text" />
-          <Property Name="submitted_to_group" Type="bit" />
-          <Property Name="shared_with_group" Type="bit" />
-          <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
           <Property Name="dt" Type="datetime" />
         </EntityType>
         <EntityType Name="people">
@@ -287,9 +294,6 @@
           <Property Name="addgene" Type="int" />
           <Property Name="d" Type="datetime" />
           <Property Name="people_id" Type="int" Nullable="false" />
-          <Property Name="submitted_to_group" Type="bit" />
-          <Property Name="shared_with_group" Type="bit" />
-          <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
           <Property Name="des" Type="text" />
           <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
         </EntityType>
@@ -332,9 +336,6 @@
           <Property Name="modification" Type="nvarchar" MaxLength="100" />
           <Property Name="people_id" Type="int" />
           <Property Name="des" Type="text" />
-          <Property Name="submitted_to_group" Type="bit" />
-          <Property Name="shared_with_group" Type="bit" />
-          <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
           <Property Name="dt" Type="datetime" />
         </EntityType>
         <EntityType Name="probe">
@@ -352,9 +353,6 @@
           <Property Name="location" Type="nvarchar" MaxLength="100" />
           <Property Name="people_id" Type="int" />
           <Property Name="des" Type="text" />
-          <Property Name="submitted_to_group" Type="bit" />
-          <Property Name="shared_with_group" Type="bit" />
-          <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
           <Property Name="dt" Type="datetime" />
         </EntityType>
         <EntityType Name="project">
@@ -583,6 +581,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_group_shared_group_id">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="group_shared" Type="Self.group_shared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_shared">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_oligo_people_id">
           <End Role="people" Type="Self.people" Multiplicity="0..1" />
           <End Role="oligo" Type="Self.oligo" Multiplicity="*" />
@@ -753,6 +763,7 @@
           <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group_people" EntityType="Self.group_people" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="group_shared" EntityType="Self.group_shared" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ladder" EntityType="Self.ladder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ladder_size" EntityType="Self.ladder_size" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
@@ -824,6 +835,10 @@
           <AssociationSet Name="fk_group_people_people_id" Association="Self.fk_group_people_people_id">
             <End Role="people" EntitySet="people" />
             <End Role="group_people" EntitySet="group_people" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
+            <End Role="group" EntitySet="group" />
+            <End Role="group_shared" EntitySet="group_shared" />
           </AssociationSet>
           <AssociationSet Name="fk_oligo_people_id" Association="Self.fk_oligo_people_id">
             <End Role="people" EntitySet="people" />
@@ -1025,6 +1040,7 @@
           <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
           <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
           <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
+          <NavigationProperty Name="group_shared" Relationship="Self.fk_group_shared_group_id" FromRole="group" ToRole="group_shared" />
         </EntityType>
         <EntityType Name="group_people">
           <Key>
@@ -1035,6 +1051,17 @@
           <Property Name="people_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="group" Relationship="Self.fk_group_people_group_id" FromRole="group_people" ToRole="group" />
           <NavigationProperty Name="person" Relationship="Self.fk_group_people_people_id" FromRole="group_people" ToRole="people" />
+        </EntityType>
+        <EntityType Name="group_shared">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <Property Name="resource_id" Type="Int32" Nullable="false" />
+          <Property Name="category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="sratus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="group" Relationship="Self.fk_group_shared_group_id" FromRole="group_shared" ToRole="group" />
         </EntityType>
         <EntityType Name="ladder">
           <Key>
@@ -1132,9 +1159,6 @@
           <Property Name="modification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="people_id" Type="Int32" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="submitted_to_group" Type="Boolean" />
-          <Property Name="shared_with_group" Type="Boolean" />
-          <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_oligo_id" FromRole="oligo" ToRole="clone_group" />
           <NavigationProperty Name="person" Relationship="Self.fk_oligo_people_id" FromRole="oligo" ToRole="people" />
@@ -1193,9 +1217,6 @@
           <Property Name="addgene" Type="Int32" />
           <Property Name="d" Type="DateTime" Precision="3" />
           <Property Name="people_id" Type="Int32" Nullable="false" />
-          <Property Name="submitted_to_group" Type="Boolean" />
-          <Property Name="shared_with_group" Type="Boolean" />
-          <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
@@ -1244,9 +1265,6 @@
           <Property Name="modification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="people_id" Type="Int32" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="submitted_to_group" Type="Boolean" />
-          <Property Name="shared_with_group" Type="Boolean" />
-          <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="person" Relationship="Self.fk_primer_tech_id" FromRole="primer" ToRole="people" />
           <NavigationProperty Name="probes" Relationship="Self.fk_probe_forward_primer" FromRole="primer" ToRole="probe" />
@@ -1267,9 +1285,6 @@
           <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="people_id" Type="Int32" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="submitted_to_group" Type="Boolean" />
-          <Property Name="shared_with_group" Type="Boolean" />
-          <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="person" Relationship="Self.fk_probe_tech_id" FromRole="probe" ToRole="people" />
           <NavigationProperty Name="primer" Relationship="Self.fk_probe_forward_primer" FromRole="probe" ToRole="primer" />
@@ -1463,6 +1478,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_group_shared_group_id">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="group_shared" Type="Self.group_shared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_shared">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_group_people_people_id">
           <End Role="people" Type="Self.person" Multiplicity="1" />
           <End Role="group_people" Type="Self.group_people" Multiplicity="*" />
@@ -1648,6 +1675,7 @@
           <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
           <EntitySet Name="groups" EntityType="Self.group" />
           <EntitySet Name="group_people" EntityType="Self.group_people" />
+          <EntitySet Name="group_shared" EntityType="Self.group_shared" />
           <EntitySet Name="ladders" EntityType="Self.ladder" />
           <EntitySet Name="ladder_size" EntityType="Self.ladder_size" />
           <EntitySet Name="licenses" EntityType="Self.license" />
@@ -1707,6 +1735,10 @@
           <AssociationSet Name="fk_group_people_group_id" Association="Self.fk_group_people_group_id">
             <End Role="group" EntitySet="groups" />
             <End Role="group_people" EntitySet="group_people" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
+            <End Role="group" EntitySet="groups" />
+            <End Role="group_shared" EntitySet="group_shared" />
           </AssociationSet>
           <AssociationSet Name="fk_group_people_people_id" Association="Self.fk_group_people_people_id">
             <End Role="people" EntitySet="people" />
@@ -1918,6 +1950,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="group_shared">
+            <EntityTypeMapping TypeName="ecloningModel.group_shared">
+              <MappingFragment StoreEntitySet="group_shared">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="resource_id" ColumnName="resource_id" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="sratus" ColumnName="sratus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ladders">
             <EntityTypeMapping TypeName="ecloningModel.ladder">
               <MappingFragment StoreEntitySet="ladder">
@@ -2017,9 +2060,6 @@
                 <ScalarProperty Name="modification" ColumnName="modification" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
                 <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
-                <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
-                <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2068,9 +2108,6 @@
                 <ScalarProperty Name="addgene" ColumnName="addgene" />
                 <ScalarProperty Name="d" ColumnName="d" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
-                <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
-                <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
-                <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="insert_species" ColumnName="insert_species" />
               </MappingFragment>
@@ -2116,9 +2153,6 @@
                 <ScalarProperty Name="modification" ColumnName="modification" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
                 <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
-                <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
-                <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2137,9 +2171,6 @@
                 <ScalarProperty Name="location" ColumnName="location" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
                 <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
-                <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
-                <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
               </MappingFragment>
             </EntityTypeMapping>
