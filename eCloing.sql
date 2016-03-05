@@ -310,9 +310,9 @@ CREATE TABLE plasmid
 	addgene INT, --cite addgene plasmid# like, 12260
 	d DATETIME,
 	people_id INT NOT NULL, --the person who add this plasmid
-	submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
+	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	[des] TEXT,
 	CONSTRAINT fk_plasmid_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_plasmid_name_people_id UNIQUE (name,people_id)
@@ -419,9 +419,9 @@ CREATE TABLE [primer]
 	modification NVARCHAR(100), --Non (default), phosphorylated
 	people_id INT,
 	[des] TEXT,
-	submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
+	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_primer_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_primer_name UNIQUE (name)
@@ -441,9 +441,9 @@ CREATE TABLE [oligo]
 	modification NVARCHAR(100), --Non (default), phosphorylated
 	people_id INT,
 	[des] TEXT,
-	submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
+	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_oligo_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_oligo_name UNIQUE (name)
@@ -462,15 +462,32 @@ CREATE TABLE [probe] --pcr probe
 	location NVARCHAR(100),
 	people_id INT,
 	[des] TEXT,
-	submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
+	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
+	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
+	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_probe_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_probe_forward_primer FOREIGN KEY (forward_primer) REFERENCES primer(id),
 	CONSTRAINT fk_probe_reverse_primer FOREIGN KEY (reverse_primer) REFERENCES primer(id),
 	CONSTRAINT uq_probe_name UNIQUE (name)
 );
+
+
+--table for group sharing
+CREATE TABLE group_shared
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	group_id INT NOT NULL,
+	resource_id INT NOT NULL, --plasmid, oligo, primer etc that can be shared
+	category NVARCHAR(50), --plasmid, primer, oligo, probe etc
+	sratus NVARCHAR(50), --submitted, appproved
+	CONSTRAINT fk_group_shared_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
+	CONSTRAINT uq_group_id_resource_id_category UNIQUE (group_id, resource_id, category)
+);
+
+
+
+
 
 CREATE TABLE nuclease
 (
