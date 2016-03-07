@@ -3,24 +3,21 @@
     ViewBag.Title = "Search Plasmid";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var db = new ecloning.Models.ecloningEntities();
-    string Scope = (string)ViewBag.Scope;
     int Count = (int)ViewBag.Count;
     string name = (string)ViewBag.name;
     string insert = (string)ViewBag.insert;
+    int sharedPlasmidCount =(int)ViewBag.sharedPlasmidCount;
+    List<int> sharedPlasmidId = null;
+    if(sharedPlasmidCount > 0)
+    {
+        sharedPlasmidId = (List<int>)ViewBag.sharedPlasmidId;
+    }
 }
 
 <div class="row">
     <div class="col-sm-11 col-sm-offset-1 text-center">
         <h3 class="text-warning">Find Plasmids</h3>
     </div>
-    @*<div class="col-sm-2 col-xs-4">
-        <h3>
-            <a class="btn btn-sm btn-info" href="@Url.Action("Index", "Plasmid")">
-                <i class="glyphicon glyphicon-arrow-left text-danger"></i>
-                <span>Back</span>
-            </a>
-        </h3>
-    </div>*@
 </div>
 
 <div class="row">
@@ -41,6 +38,12 @@
                                 @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-4" })
                                 <div class="col-md-6 col-xs-12">
                                     @Html.Editor("name", new { htmlAttributes = new { @class = "form-control", @Value=name } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Insert/Gene", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.Editor("insert", new { htmlAttributes = new { @class = "form-control", @Value = insert } })
                                 </div>
                             </div>
                             <div class="form-group">
@@ -69,39 +72,38 @@
                             <div class="form-group">
                                 @Html.Label("Resistance", htmlAttributes: new { @class = "control-label col-md-4" })
                                 <div class="col-md-6 col-xs-12">
-                                    @Html.ListBox("resistance", new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.Label("Reporter", htmlAttributes: new { @class = "control-label col-md-4" })
-                                <div class="col-md-6 col-xs-12">
-                                    @Html.ListBox("reporter", new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                    <span class="text-info" style="font-size:85%"><em>Resistance 1:</em></span><br/>
+                                    @Html.DropDownList("resistance1", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                    <span class="text-info" style="font-size:85%"><em>Resistance 2:</em></span><br />
+                                    @Html.DropDownList("resistance2", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                @Html.Label("Selection Marker", htmlAttributes: new { @class = "control-label col-md-4" })
+                                @Html.Label("Selection", htmlAttributes: new { @class = "control-label col-md-4" })
                                 <div class="col-md-6 col-xs-12">
-                                    @Html.ListBox("selection", new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                    <span class="text-info" style="font-size:85%"><em>Marker 1:</em></span><br />
+                                    @Html.DropDownList("selection1", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                    <span class="text-info" style="font-size:85%"><em>Marker 2:</em></span><br />
+                                    @Html.DropDownList("selection2", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
                                 </div>
                             </div>
-                            <div class="form-group">
-                                @Html.Label("Insert/Gene", htmlAttributes: new { @class = "control-label col-md-4" })
-                                <div class="col-md-6 col-xs-12">
-                                    @Html.Editor("insert", new { htmlAttributes = new { @class = "form-control", @Value = insert } })
-                                </div>
-                            </div>
+
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
                             <div class="form-group">
-                                @Html.Label("Experimental Use", htmlAttributes: new { @class = "control-label col-md-4" })
+                                @Html.Label("Reporter", htmlAttributes: new { @class = "control-label col-md-4" })
                                 <div class="col-md-6 col-xs-12">
-                                    @Html.ListBox("usage", new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                    @Html.DropDownList("reporter", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-offset-4 col-lg-offset-4 col-md-6 col-xs-12">
-                                    <input type="text" name="scope" value=@Scope class="hidden" />
+                                @Html.Label("Experimental Use", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    <span class="text-info" style="font-size:85%"><em>Usage 1:</em></span><br />
+                                    @Html.DropDownList("usage1", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                    <span class="text-info" style="font-size:85%"><em>Usage 2:</em></span><br />
+                                    @Html.DropDownList("usage2", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="form-group">
@@ -126,36 +128,35 @@
 @if (Count > -2)
 {
     <div class="row">
-        <div class="col-sm-2 col-sm-offset-1">
-            <h3 class="text-info">Plasmids Found</h3>
+        <div class="col-sm-11 col-sm-offset-1 text-center">
+            <h3 class="text-warning">Plasmids Found</h3>
         </div>
-        @if (Count == -1)
+    </div>
+        if (Count == -1)
         {
             //user have not typed anything when clicking the search button
-            <hr class="dotted-line" />
-            <br />
             <div class="row">
+
                 <div class="col-sm-1 hidden-xs"></div>
-                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
-                    <h4 class="text-warning">You haven't typed anything.</h4>
+                <div class="col-sm-10 col-xs-12">
+                    <hr class="dotted-line" />
+                    <h4 class="text-danger col-sm-offset-1">You haven't typed anything.</h4>
                 </div>
             </div>
         }
         else if(Count == 0)
         {
             //nothing found
-            <hr class="dotted-line" />
-            <br />
             <div class="row">
                 <div class="col-sm-1 hidden-xs"></div>
-                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
-                    <h4 class="text-warning">No matched plasmid!</h4>
+                <div class="col-sm-10 col-xs-12">
+                    <hr class="dotted-line" />
+                    <h4 class="text-danger col-sm-offset-1">No matched plasmid!</h4>
                 </div>
             </div>
         }
         else
         {
-            <div class="row">
                 <div class="row">
                     <div class="col-sm-1 hidden-xs"></div>
                     <div class="col-sm-10">
@@ -309,25 +310,6 @@
                                                 <br />
                                             }
 
-                                            @if (item.submitted_to_group == true || item.shared_with_group == true || item.shared_with_people != null)
-                                            {
-                                                <span class="text-info"><strong>Status: </strong></span>
-                                            }
-                                            <span>
-                                                @if (item.submitted_to_group == true)
-                                                { <span>Submitted to the group plasmid libaray</span>}
-                                            </span>
-                                            &nbsp;&nbsp;
-                                            <span>
-                                                @if (item.shared_with_group == true)
-                                                { <span>In the group plasmid libaray</span>}
-                                            </span>
-                                            &nbsp;&nbsp;
-                                            <span>
-                                                @if (item.shared_with_people != null)
-                                                { <span>Shared with: @item.shared_with_people</span>}
-                                            </span>
-                                            <br />
                                             <br />
                                             <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
                                         </td>
@@ -335,7 +317,11 @@
                                             <span>Plasmid Map</span>
                                         </td>
                                         <td class="col-sm-2">
-                                            @if (item.submitted_to_group != true || item.shared_with_group != true)
+                                            @if (sharedPlasmidId.Count >0 && sharedPlasmidId.Contains(item.id))
+                                            {
+
+                                            }
+                                            else
                                             {
                                                 <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
                                                     <i class="glyphicon glyphicon-pencil text-info"></i>
@@ -356,10 +342,8 @@
                     </div>
                     <div class="col-sm-1 hidden-xs"></div>
                 </div>
-            </div>
         }
 
-    </div>
 }
 
 @Scripts.Render("~/bundles/jquery")
@@ -371,8 +355,11 @@
         $("#promotor").chosen();
         $("#polyA").chosen();
         $("#reporter").chosen();
-        $("#selection").chosen();
-        $("#usage").chosen();
-        $("#resistance").chosen();
+        $("#selection1").chosen();
+        $("#selection2").chosen();
+        $("#usage1").chosen();
+        $("#usage2").chosen();
+        $("#resistance1").chosen();
+        $("#resistance2").chosen();
     });
 </script>

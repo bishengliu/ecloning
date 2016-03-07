@@ -61,6 +61,11 @@
                                     string refId = "#";
                                     id = item.name;
                                     refId = refId + id;
+
+                                    //for submit
+                                    string shareId = item.name.Trim() + item.id.ToString();
+                                    string hrefShareId = "#" + shareId;
+
                                     <tr>
                                         <td class="col-sm-6">
                                             <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
@@ -220,6 +225,31 @@
                                                 <i class="glyphicon glyphicon-trash text-info"></i>
                                                 <span>Delete</span>
                                             </a>
+                                            <br/>
+                                                    <!-- Trigger the modal with a button -->
+                                                    <a data-toggle="modal" href="@Url.Action("SharePlasmid", "Plasmid", new { id = item.id })" data-target=@hrefShareId>
+                                                        <i class="glyphicon glyphicon-star text-info"></i>
+                                                        <span>Submit</span>
+                                                    </a>
+                                                    <!-- Modal -->
+                                                    <div id=@shareId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Submit Plasmid to Group(s)</h4>
+                                                                </div>
+                                                                <div class="modal-body"></div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
 
                                         </td>
                                     </tr>

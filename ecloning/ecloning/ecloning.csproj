@@ -300,6 +300,7 @@
     <Compile Include="Models\group.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GroupInfo.cs" />
     <Compile Include="Models\group_people.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -621,6 +622,8 @@
     <Content Include="Views\Plasmid\FileError.cshtml" />
     <Content Include="Views\Plasmid\FileNotFound.cshtml" />
     <Content Include="Views\Plasmid\Search.cshtml" />
+    <Content Include="Views\Plasmid\SharePlasmid.cshtml" />
+    <Content Include="Views\Shared\_Layout_Empty.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

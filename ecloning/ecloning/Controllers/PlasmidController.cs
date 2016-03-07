@@ -650,45 +650,138 @@ namespace ecloning.Controllers
             return View(plasmid);
         }
 
-
         [Authorize]
         [HttpGet]
-        public ActionResult Search(string scope)
+        public ActionResult Search()
         {
-            //scope == "personal" or  "group"
-            ViewBag.Scope = scope;
             ViewBag.Count = -2; //initial status
 
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value");
-            ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
-            ViewBag.selection = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
-            ViewBag.usage = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value");
+            ViewBag.resistance1 = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
+            ViewBag.resistance2 = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
+            ViewBag.selection1 = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
+            ViewBag.selection2 = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
+            ViewBag.usage1 = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value");
+            ViewBag.usage2 = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value");
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value");
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value");
             ViewBag.reporter = new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value");
 
             ViewBag.name = "";
             ViewBag.insert = "";
+            ViewBag.sharedPlasmidCount = 0;
             return View();
         }
         [Authorize]
         [HttpPost]
-        public ActionResult Search(string scope, string name, string expression_system, string promotor, string polyA, string[] resistance, string[] reporter, string[] selection, string insert, string[] usage)
+        public ActionResult Search(string name, string expression_system, string promotor, string polyA, string resistance1, string resistance2, string reporter, string selection1, string selection2, string insert, string usage1, string usage2)
         {
-            //scope == "personal" or  "group"
-            ViewBag.Scope = scope;
             ViewBag.Count = -2; //initial status
 
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value", expression_system);
-            ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value", resistance);
-            ViewBag.selection = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value", selection);
-            ViewBag.usage = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value", usage);
+            ViewBag.resistance1 = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
+            ViewBag.resistance2 = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
+            ViewBag.selection1 = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
+            ViewBag.selection2 = new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value");
+            ViewBag.usage1 = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value");
+            ViewBag.usage2 = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value");
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value", promotor);
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value", polyA);
             ViewBag.reporter = new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value", reporter);
 
             ViewBag.name = name;
             ViewBag.insert = insert;
+
+            //validate user input
+            name = string.IsNullOrWhiteSpace(name) ? null : name;
+            expression_system = string.IsNullOrWhiteSpace(expression_system) ? null : expression_system;
+            promotor= string.IsNullOrWhiteSpace(promotor) ? null : promotor;
+            polyA = string.IsNullOrWhiteSpace(polyA) ? null : polyA;
+            insert = string.IsNullOrWhiteSpace(insert) ? null : insert;
+            resistance1 = string.IsNullOrWhiteSpace(resistance1) ? null : resistance1;
+            resistance2 = string.IsNullOrWhiteSpace(resistance2) ? null : resistance2;
+            selection1 = string.IsNullOrWhiteSpace(selection1) ? null : selection1;
+            selection2 = string.IsNullOrWhiteSpace(selection2) ? null : selection2;
+            usage1 = string.IsNullOrWhiteSpace(usage1) ? null : usage1;
+            usage2 = string.IsNullOrWhiteSpace(usage2) ? null : usage2;
+            reporter = string.IsNullOrWhiteSpace(reporter) ? null : reporter;
+            if (name == null && expression_system == null && promotor == null && polyA == null && insert == null && resistance1== null && resistance2 == null && reporter== null && selection1== null && usage1 == null && selection2 == null && usage2 == null)
+            {
+                //user didn't type anything before cliking search
+                ViewBag.Count = -1;
+                ViewBag.sharedPlasmidCount = 0;
+                return View();
+            }
+
+
+            var plasmids = db.plasmids.Include(p => p.person)
+                .Where(p=>(name==null? true : p.name.Contains(name)))
+                .Where(p => (expression_system == null ? true : p.expression_system.Contains(expression_system)))
+                .Where(p => (promotor == null ? true : p.promotor.Contains(promotor)))
+                .Where(p => (polyA == null ? true : p.polyA.Contains(polyA)))
+                .Where(p => (insert == null ? true : p.insert.Contains(insert)))
+                .Where(p => (reporter == null ? true : p.reporter.Contains(reporter)))
+                .Where(p => (resistance1 == null ? true : p.resistance.Contains(resistance1)))
+                .Where(p => (resistance2 == null ? true : p.resistance.Contains(resistance2)))
+                .Where(p => (selection1 == null ? true : p.resistance.Contains(selection1)))
+                .Where(p => (selection2 == null ? true : p.resistance.Contains(selection2)))
+                .Where(p => (usage1 == null ? true : p.resistance.Contains(usage1)))
+                .Where(p => (usage2 == null ? true : p.resistance.Contains(usage2)));
+
+            ViewBag.Count = plasmids.Count();
+
+            //get all the shared plasmid id
+            //get current login email
+            var userId = User.Identity.GetUserId();
+            //get people id
+            var userInfo = new UserInfo(userId);
+            int peopleId = userInfo.PersonId;
+
+            //get groupId
+            var groupInfo = new GroupInfo(peopleId);
+            IList<int> groupId = groupInfo.groupId;
+
+            //get group shared plasmid ids
+            var shared_plasmid = db.group_shared.Where(c => c.category == "plasmid").Where(g => groupId.Contains(g.group_id));
+            ViewBag.sharedPlasmidCount = 0;
+            if (shared_plasmid.Count() > 0)
+            {
+                List<int> sharedPlasmidId = shared_plasmid.Select(p => p.resource_id).ToList();
+                ViewBag.sharedPlasmidCount = 1;
+                ViewBag.sharedPlasmidId = sharedPlasmidId;
+            }
+
+            return View(plasmids.ToList());
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult SharePlasmid(int? id)
+        {
+            //id is the plasmid table id
+            if(id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //find the plasmid
+            var plasmid = db.plasmids.Find(id);
+            if(plasmid == null)
+            {
+                return HttpNotFound();
+            }
+
+            //get the group info
+            //get current login email
+            var userId = User.Identity.GetUserId();
+            //get people id
+            var userInfo = new UserInfo(userId);
+            int peopleId = userInfo.PersonId;
+
+            //get groupId
+            var groupInfo = new GroupInfo(peopleId);
+            Dictionary<int, string> groupIdName = groupInfo.groupIdName;
+            ViewBag.groupIdName = groupIdName;
+            ViewBag.Id = id;
             return View();
         }
 

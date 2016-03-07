@@ -21,6 +21,7 @@ namespace ecloning.Models
             this.userEmail = email;
             var person = db.people.Where(e => e.email == email).FirstOrDefault();
             this.userName = person.first_name + " " + person.last_name;
+            this.PersonId = person.id;
         }
     }
 }
