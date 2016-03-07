@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" sizes="32x32" type="image/x-icon" href="~/logo/eCloning.ico" />
     <title>@ViewBag.Title - eCloning</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -12,15 +13,15 @@
     <div class="container-fluid top-logo">
         <div class="container" style="padding-top:20px;">
             <div class="row">
-                <div class="col-xs-7">
-                    <span class="text-danger">eCloning</span><br/>
-                    <span>Molecular Cloning is never so easy</span>
-                </div>
-                <div class="col-xs-5">
+                <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <img class="img-responsive" src="~/logo/lumc.png" height="40" style="height:40px !important"/>
-                        </div>
+                        <img class="img-responsive" src="~/logo/eCloning-new1.jpg" height="40" style="height:40px !important" />
+                        <span class="hidden-xs appdescription">A preofessional website for Molecualr Cloning!</span>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-5">
+                    <div class="row">
+                            <img class="col-sm-6 hidden-xs img-responsive" src="~/logo/lumc.png" height="40" style="height:40px !important"/>
                         <div class="col-sm-6">
                             @Html.Partial("_LoginPartial")
                         </div>
@@ -36,7 +37,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>                    
                 </button>
             </div>
             <div class="navbar-collapse collapse">
@@ -53,25 +54,6 @@
                                <span class="text-text-info">Plasmids</span>
                            </a>
                        </li>
-
-
-
-
-
-
-
-                        //shared with group
-                        @*<li class="dropdown">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="Manage"><span class="glyphicon glyphicon-th text-info">&ensp;</span>Group<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="@Url.Action("General", "Plasmid")">
-                                        <i class="glyphicon glyphicon-th-list text-info"></i>
-                                        <span class="text-text-info">Plasmids</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>*@
                     }
 
                 </ul>

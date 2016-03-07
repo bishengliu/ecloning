@@ -23,7 +23,7 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-1 hidden-xs">&nbsp;</div>
+                <div class="col-sm-2 hidden-xs">&nbsp;</div>
                 <div class="col-sm-10 col-xs-12">
                     <br/>
                     @using (Html.BeginForm())
@@ -34,7 +34,7 @@
                             <div class="form-group required">
                                 @Html.Label("Group(s)", htmlAttributes: new { @class = "control-label col-md-3" })
                                 <div class="col-md-6">
-                                    @Html.DropDownList("group", listItems, "-- Select --", new { @class = "form-control" })
+                                    @Html.DropDownList("group", listItems, new { @class = "form-control", multiple = "multiple", required = "required" })
                                 </div>
                             </div>
                             <div class="form-group">
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-offset-5 col-sm-2">
+                                <div class="col-md-6 col-md-offset-3 col-xs-12">
                                     <input type="submit" value="Share Plasmid" class="btn btn-block btn-primary" />
                                 </div>
                             </div>
@@ -56,6 +56,3 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
             </div>
-
-    
-

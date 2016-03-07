@@ -8,13 +8,15 @@
     //for the shared
     int GroupCount =(int)ViewBag.GroupCount;
 
+    var msg = (string)TempData["msg"];
+
 }
 <div class="row">
     <div class="col-sm-2 col-sm-offset-1">
         <h3 class="text-warning">Plasmids</h3>
     </div>
 
-    <div class="col-sm-2 col-xs-2">
+    <div class="col-sm-2 col-xs-6">
         <h3>
             <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Plasmid")">
                 <i class="glyphicon glyphicon-plus text-danger"></i>
@@ -22,7 +24,7 @@
             </a>
         </h3>
     </div>
-    <div class="col-sm-2 col-xs-2">
+    <div class="col-sm-2 col-xs-6">
         <h3>
             <a class="btn btn-sm btn-info" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
                 <i class="glyphicon glyphicon-search text-danger"></i>
@@ -31,7 +33,7 @@
         </h3>
     </div>
 </div>
-
+<p class="text-danger text-center">@msg</p>
     <div class="row">
         <div class="col-sm-1 hidden-xs"></div>
         <div class="col-sm-10">

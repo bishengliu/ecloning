@@ -34,9 +34,8 @@ textarea {
 
 
 .top-logo{
-    /*height: 80px;*/
     background:#FFFFFF;
-    /*background-color:#3F3F3F;*/
+
 }
 
 .navbar-nav > li > a, .navbar-brand {
@@ -166,4 +165,10 @@ textarea {
     font-family: courier !important;
     font-size: 12px;
     color:#85adad;
+}
+
+.appdescription{
+    color:#333333;
+    font-size:100%;
+    font-family: Orbitron, Tahoma, Geneva, sans-serif;
 }

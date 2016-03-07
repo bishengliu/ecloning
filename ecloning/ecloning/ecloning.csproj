@@ -440,6 +440,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="logo\eCloning-new1.jpg" />
+    <Content Include="logo\eCloning-new2.jpg" />
+    <Content Include="logo\eCloning.ico" />
+    <Content Include="logo\eCloning.jpg" />
+    <Content Include="logo\eCloning2.ico" />
     <Content Include="logo\lumc.png" />
     <Content Include="Models\ecloning.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -490,6 +495,10 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="fonts\orbitron-black.otf" />
+    <Content Include="fonts\orbitron-bold.otf" />
+    <Content Include="fonts\orbitron-light.otf" />
+    <Content Include="fonts\orbitron-medium.otf" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -785,6 +785,48 @@ namespace ecloning.Controllers
             return View();
         }
 
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SharePlasmid(string[] group, int plasmid_table_id)
+        {
+            if (group.Count() == 0)
+            {
+                TempData["msg"] = "You must select at least one group to share your plasmid!";
+            }
+            if (plasmid_table_id == 0)
+            {
+                TempData["msg"] = "Something went wrong, please try again!";
+            }
+            else
+            {
+                var plasmid = db.plasmids.Find(plasmid_table_id);
+                if (plasmid == null)
+                {
+                    TempData["msg"] = "Something went wrong, please try again!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    //share the plasmid
+                    //parse group id sting into int
+                    foreach(string i in group)
+                    {
+                        //parse to int
+                        int groupId = Int32.Parse(i);
+                        var share = new group_shared();
+                        share.group_id = groupId;
+                        share.resource_id = plasmid.id;
+                        share.category = "plasmid";
+                        db.group_shared.Add(share);
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
         // GET: Plasmid/Delete/5
         public ActionResult Delete(int? id)
         {
