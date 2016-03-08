@@ -1,0 +1,99 @@
+﻿@model ecloning.Models.plasmid_map
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>plasmid_map</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.show_feature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.show_feature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.feature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.feature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.start)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.start)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.end)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.end)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.label)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.label)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.clockwise)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.clockwise)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.des)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.des)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.plasmid.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.plasmid.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.plasmid_feature.feature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.plasmid_feature.feature)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

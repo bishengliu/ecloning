@@ -29,6 +29,13 @@ namespace ecloning
                       "~/Scripts/respond.js"));
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3*"));
+            bundles.Add(new ScriptBundle("~/bundles/giraffe").Include(
+                      "~/Scripts/giraffe/analyze.js",
+                      "~/Scripts/giraffe/bio.js",
+                      "~/Scripts/giraffe/draw.js",
+                      "~/Scripts/giraffe/raphael-min.js",
+                      "~/Scripts/giraffe/scale.raphael.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/nvd3").Include(
                       "~/Scripts/nv.d3.min.js"));
 
@@ -42,7 +49,6 @@ namespace ecloning
                       "~/Content/chosen.css",
                       "~/Content/bootstrap.vertical-tabs.min.css",
                       "~/Content/site.css"));
-
 
         }
     }

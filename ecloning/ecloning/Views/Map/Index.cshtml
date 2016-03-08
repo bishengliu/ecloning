@@ -1,0 +1,157 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
+
+@{
+    ViewBag.Title = "Plasmid Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Name = (string)ViewBag.Name;
+    int plasmidId = (int)ViewBag.Id;
+    string Sequence = (string)ViewBag.Sequence;
+    int seqCount = 0;
+    if(Sequence != null)
+    {
+        seqCount = Sequence.Count();
+    }
+    var features = ViewBag.Features;
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-warning text-center">@Name (@seqCount bp)</h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<span id="sequence" class="hidden">@seqCount</span>
+<span id="name" class="hidden">@Name</span>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-5 col-md-offset-1">        
+        <div id="giraffe-map"></div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-5">
+        <div class="col-md-12 hidden-sm hidden-xs"><br/><br/></div>
+        <div class="row">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-4">
+                <a class="btn btn-link" href="@Url.Action("Create", "Map", new { plasmid_id = plasmidId })">
+                    <i class="glyphicon glyphicon-plus text-danger"></i>
+                    <span>Features</span>
+                </a>
+            </div>
+            <div class="col-sm-3 col-xs-4">
+                <a class="btn btn-link" href="@Url.Action("Create", "Map", new { plasmid_id = plasmidId })">
+                    <i class="glyphicon glyphicon-pencil text-danger"></i>
+                    <span>Features</span>
+                </a>
+            </div>
+            <div class="col-sm-3 col-xs-4">
+                <a class="btn btn-link" href="@Url.Action("Create", "Map", new { plasmid_id = plasmidId })">
+                    <i class="glyphicon glyphicon-trash text-danger"></i>
+                    <span>Features</span>
+                </a>
+            </div>            
+        </div>
+        <div>
+            <div class="table-responsive col-md-10">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>
+                            Feature
+                        </th>
+                        <th>
+                            Label
+                        </th>
+                        <th>
+                            Start Position
+                        </th>
+                        <th>
+                            End Position
+                        </th>
+                        <th>
+                            Clockwise
+                        </th>
+                        <th>
+                            Cut Position
+                        </th>
+                        <th>
+                            Show Feature
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.label)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.start)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.end)
+                            </td>
+                            <td>
+                                @if (item.clockwise == 1)
+                                {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.cut)
+                            </td>
+                            <td>
+                                @if (item.show_feature == 1)
+                                {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+            <div class="col-md-2 hidden-sm hidden-xs"></div>
+        </div>
+    </div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+
+<script>
+
+    //get plasmid feature json data
+    var features = ("@features");
+    document.getElementById("decodeIt").innerHTML = features;
+    features = document.getElementById("decodeIt").textContent;
+
+    //get full sequence
+    seqCount= document.getElementById("sequence").textContent;
+    seqCount = parseInt(seqCount)
+    //get plasmid name
+    name = document.getElementById("name").textContent;
+    try
+    {
+        features = JSON.parse(features);
+        console.log(features);
+        data = [seqCount, features];
+        console.log(data);
+        var gd = GiraffeDraw();
+        gd.read(data);
+        gd.CircularMap({ 'map_dom_id': 'giraffe-map', 'plasmid_name': name })
+    }
+    catch(e)
+    {
+        alert(e);
+    }
+</script>
