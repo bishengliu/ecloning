@@ -56,7 +56,11 @@
                     else
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover table-condensed">
+                            <table id="myPlasmid" class="table table-hover table-condensed">
+                                <thead>
+
+                                </thead>
+                                <tbody>
                                 @foreach (var item in Model)
                                 {
                                     string id = null;
@@ -256,8 +260,8 @@
                                                     </div>
                                         </td>
                                     </tr>
-                                 }
-
+                                 }                                
+                                </tbody>
                             </table>
                         </div>
                      }
@@ -301,7 +305,7 @@
                                         IQueryable<ecloning.Models.plasmid> Plasmids = (IQueryable<ecloning.Models.plasmid>)ViewData["sharePlasmid" + tag];
                                         <div class="tab-pane fade in" id=@groupName>
                                             <div class="table-responsive">
-                                                <table class="table table-hover table-condensed">
+                                                <table id="groupPlasmid" class="table table-hover table-condensed">
                                                     @foreach (var item in Plasmids.ToList())
                                                     {
                                                         string id = null;
@@ -476,12 +480,27 @@
         <div class="col-sm-1 hidden-xs"></div>
     </div>
 
-
 @Scripts.Render("~/bundles/jquery")
-<script>
+
+<script type="text/javascript">
     $(document).ready(function(){
         $("#vert-tab li:first-child").addClass("active");
-        $("#vert-content div:first-child").addClass("active")   
+        $("#vert-content div:first-child").addClass("active");
     });
-</script>
 
+    $(window).load(function () {
+        // executes when complete page is fully loaded, including all frames, objects and images
+        $('#myPlasmid').paging({
+            limit: 20,
+            rowDisplayStyle: 'block',
+            activePage: 0,
+            rows: []
+        });        
+        $('#groupPlasmid').paging({
+            limit: 20,
+            rowDisplayStyle: 'block',
+            activePage: 0,
+            rows: []
+        });
+    });  
+</script>

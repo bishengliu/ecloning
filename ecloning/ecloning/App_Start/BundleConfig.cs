@@ -11,7 +11,7 @@ namespace ecloning
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",                        
                         "~/Scripts/chosen.jquery.js",
-                        "~/Scripts/jquery-ui-{version}.js",
+                        "~/Scripts/jquery-ui-{version}.js",                        
                         "~/Scripts/jquery.tokeninput.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -47,7 +47,7 @@ namespace ecloning
                       "~/Content/token-input-facebook.css",
                       "~/Content/token-input-mac.css",
                       "~/Content/chosen.css",
-                      "~/Content/bootstrap.vertical-tabs.min.css",
+                      "~/Content/bootstrap.vertical-tabs.min.css", 
                       "~/Content/site.css"));
 
         }

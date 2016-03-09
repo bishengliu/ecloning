@@ -400,6 +400,23 @@
     <Content Include="Content\chosen-sprite%402x.png" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.css" />
+    <Content Include="Content\datatable\dataTables.bootstrap.css" />
+    <Content Include="Content\datatable\dataTables.bootstrap.min.css" />
+    <Content Include="Content\datatable\dataTables.bootstrap4.css" />
+    <Content Include="Content\datatable\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\datatable\dataTables.foundation.css" />
+    <Content Include="Content\datatable\dataTables.foundation.min.css" />
+    <Content Include="Content\datatable\dataTables.jqueryui.css" />
+    <Content Include="Content\datatable\dataTables.jqueryui.min.css" />
+    <Content Include="Content\datatable\dataTables.material.css" />
+    <Content Include="Content\datatable\dataTables.material.min.css" />
+    <Content Include="Content\datatable\dataTables.semanticui.css" />
+    <Content Include="Content\datatable\dataTables.semanticui.min.css" />
+    <Content Include="Content\datatable\dataTables.uikit.css" />
+    <Content Include="Content\datatable\dataTables.uikit.min.css" />
+    <Content Include="Content\datatable\jquery.dataTables.css" />
+    <Content Include="Content\datatable\jquery.dataTables.min.css" />
+    <Content Include="Content\datatable\jquery.dataTables_themeroller.css" />
     <Content Include="Content\nv.d3.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -457,6 +474,11 @@
       <DependentUpon>ecloning.edmx</DependentUpon>
       <LastGenOutput>ecloning.cs</LastGenOutput>
     </Content>
+    <Content Include="pager\first.png" />
+    <Content Include="pager\last.png" />
+    <Content Include="pager\next.png" />
+    <Content Include="pager\pager.css" />
+    <Content Include="pager\prev.png" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -503,6 +525,23 @@
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\datatable\dataTables.bootstrap.js" />
+    <Content Include="Scripts\datatable\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\datatable\dataTables.bootstrap4.js" />
+    <Content Include="Scripts\datatable\dataTables.bootstrap4.min.js" />
+    <Content Include="Scripts\datatable\dataTables.foundation.js" />
+    <Content Include="Scripts\datatable\dataTables.foundation.min.js" />
+    <Content Include="Scripts\datatable\dataTables.jqueryui.js" />
+    <Content Include="Scripts\datatable\dataTables.jqueryui.min.js" />
+    <Content Include="Scripts\datatable\dataTables.material.js" />
+    <Content Include="Scripts\datatable\dataTables.material.min.js" />
+    <Content Include="Scripts\datatable\dataTables.semanticui.js" />
+    <Content Include="Scripts\datatable\dataTables.semanticui.min.js" />
+    <Content Include="Scripts\datatable\dataTables.uikit.js" />
+    <Content Include="Scripts\datatable\dataTables.uikit.min.js" />
+    <Content Include="Scripts\datatable\jquery.dataTables.js" />
+    <Content Include="Scripts\datatable\jquery.dataTables.min.js" />
+    <Content Include="Scripts\datatable\jquery.js" />
     <Content Include="Scripts\giraffe\analyze.js" />
     <Content Include="Scripts\giraffe\bio.js" />
     <Content Include="Scripts\giraffe\draw.js" />
@@ -513,6 +552,8 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
+    <Content Include="Scripts\jquery.tablesorter.min.js" />
+    <Content Include="Scripts\jquery.tablesorter.pager.js" />
     <Content Include="Scripts\jquery.tokeninput.js" />
     <Content Include="Scripts\jquery.tokeninput.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -587,12 +628,18 @@
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\nv.d3.min.js" />
+    <Content Include="Scripts\paging.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\upload.validate.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="sorter\asc.gif" />
+    <Content Include="sorter\bg.gif" />
+    <Content Include="sorter\desc.gif" />
+    <Content Include="sorter\style.css" />
+    <Content Include="tablesorter.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
