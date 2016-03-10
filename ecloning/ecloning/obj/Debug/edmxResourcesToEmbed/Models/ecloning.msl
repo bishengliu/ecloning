@@ -304,6 +304,7 @@
           <ScalarProperty Name="people_id" ColumnName="people_id" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="insert_species" ColumnName="insert_species" />
+          <ScalarProperty Name="seq_length" ColumnName="seq_length" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -291,6 +291,7 @@
     <Property Name="people_id" Type="int" Nullable="false" />
     <Property Name="des" Type="text" />
     <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
+    <Property Name="seq_length" Type="int" />
   </EntityType>
   <EntityType Name="plasmid_feature">
     <Key>

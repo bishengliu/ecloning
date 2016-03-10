@@ -19,6 +19,8 @@ namespace ecloning.Models
         [RegularExpression("^[ATGCatgc ]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
         public string sequence { get; set; }
         [Required(ErrorMessage = "Required")]
+        public int seq_length { get; set; }
+        [Required(ErrorMessage = "Required")]
         public string expression_system { get; set; }
         public string expression_subsystem { get; set; }
         public string promotor { get; set; }

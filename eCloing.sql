@@ -294,6 +294,7 @@ CREATE TABLE plasmid
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(200) NOT NULL,
 	[sequence] TEXT,
+	seq_length INT, --for creating maps
 	expression_system NVARCHAR(100), --manmalian, baterial, yeast, worm, insert etc.
 	expression_subsystem NVARCHAR(100), --in detail which bateria, cell or yeast --check addgene
 	promotor NVARCHAR(100),

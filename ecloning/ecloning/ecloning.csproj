@@ -511,6 +511,10 @@
     <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
     <Content Include="Content\bootstrap-datepicker.min.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
+    <Content Include="fonts\orbitron-black.otf" />
+    <Content Include="fonts\orbitron-bold.otf" />
+    <Content Include="fonts\orbitron-light.otf" />
+    <Content Include="fonts\orbitron-medium.otf" />
     <EntityDeploy Include="Models\ecloning.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
@@ -518,10 +522,6 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
-    <Content Include="fonts\orbitron-black.otf" />
-    <Content Include="fonts\orbitron-bold.otf" />
-    <Content Include="fonts\orbitron-light.otf" />
-    <Content Include="fonts\orbitron-medium.otf" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

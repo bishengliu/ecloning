@@ -142,7 +142,7 @@ namespace ecloning.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,sequence,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
+        public ActionResult Create([Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
@@ -222,6 +222,7 @@ namespace ecloning.Controllers
                 var Plasmid = new plasmid();
                 Plasmid.name = plasmid.name;
                 Plasmid.sequence = Regex.Replace(plasmid.sequence.Trim(), @"[^\u0000-\u007F]", string.Empty);
+                Plasmid.seq_length = plasmid.seq_length;
                 Plasmid.expression_subsystem = plasmid.expression_subsystem;
                 Plasmid.expression_system = plasmid.expression_system;
                 Plasmid.promotor = plasmid.promotor;
@@ -474,7 +475,7 @@ namespace ecloning.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
+        public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
@@ -554,6 +555,7 @@ namespace ecloning.Controllers
                 var Plasmid = db.plasmids.Find(plasmid.id);
                 Plasmid.name = plasmid.name;
                 Plasmid.sequence = Regex.Replace(plasmid.sequence.Trim(), @"[^\u0000-\u007F]", string.Empty);
+                Plasmid.seq_length = plasmid.seq_length;
                 Plasmid.expression_subsystem = plasmid.expression_subsystem;
                 Plasmid.expression_system = plasmid.expression_system;
                 Plasmid.promotor = plasmid.promotor;

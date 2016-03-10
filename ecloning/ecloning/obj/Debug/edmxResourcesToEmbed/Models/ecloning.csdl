@@ -321,6 +321,7 @@
     <Property Name="people_id" Type="Int32" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="seq_length" Type="Int32" />
     <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
     <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />

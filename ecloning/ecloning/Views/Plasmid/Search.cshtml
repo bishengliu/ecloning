@@ -171,74 +171,7 @@
                                     <tr>
                                         <td class="col-sm-6">
                                             <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
-                                            @if (item.sequence != null)
-                                            {
-                                                //count sequence
-                                                int countSeq = item.sequence.Length;
-                                                int len = countSeq.ToString().Length;
-                                                //sequence is divided by 125
-                                                var divide = (double)countSeq / (double)125;
-                                                int repeat = (int)Math.Truncate(divide);
-                                                //start with 1
-                                                int countLeft = 1;
-                                                int countRight = 125;
 
-                                                <span>
-                                                    <!-- Trigger the modal with a button -->
-                                                    <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open text-warning"></i>&nbsp;Full Sequence</button>
-                                                    <!-- Modal -->
-                                                    <div id=@id class="modal fade" role="dialog">
-                                                        <div class="modal-dialog">
-                                                            <!-- Modal content-->
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                    <h4 class="modal-title text-center text-info">Plasmid @item.name full sequence</h4>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row">
-                                                                        <div class="col-sm-1 text-right hidden-xs">
-                                                                            <p class="giraffe-seq-count">
-                                                                                @for (int i = 0; i < repeat; i++)
-                                                                                {
-                                                                                    @countLeft<br />
-                                                                                    countLeft = countLeft + 125;
-                                                                                }
-                                                                                @if (countLeft < countSeq)
-                                                                                {
-                                                                                    <span>@countLeft</span>
-                                                                                }
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="col-sm-10">
-                                                                            @{
-                                                                                var seq = ecloning.Models.WordWrap.Wrap(item.sequence, 125);
-                                                                            }
-                                                                            <p class="giraffe-seq-textarea">@Html.Raw(seq)</p>
-                                                                        </div>
-                                                                        <div class="col-sm-1 text-left hidden-xs">
-                                                                            <p class="giraffe-seq-count" style="position:relative; left:-45px;">
-                                                                                @for (int i = 0; i < repeat; i++)
-                                                                                {
-                                                                                    @countRight<br />
-                                                                                    countRight = countRight + 125;
-                                                                                }
-                                                                                @if ((countRight - 125) < countSeq)
-                                                                                {
-                                                                                    <span>@countSeq</span>
-                                                                                }
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            }
                                             <br />
                                             <span class="text-info"><strong>Expression: </strong></span><span>@Html.DisplayFor(modelItem => item.expression_system)</span>&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => item.expression_subsystem)</span><br />
                                             <span class="text-info"><strong>Insert/Gene: </strong></span>
@@ -314,7 +247,80 @@
                                             <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
                                         </td>
                                         <td class="col-sm-4">
-                                            <span>Plasmid Map</span>
+                                                                                        @if (item.sequence != null)
+                                            {
+                                                //count sequence
+                                                int countSeq = item.sequence.Length;
+                                                int len = countSeq.ToString().Length;
+                                                //sequence is divided by 125
+                                                var divide = (double)countSeq / (double)125;
+                                                int repeat = (int)Math.Truncate(divide);
+                                                //start with 1
+                                                int countLeft = 1;
+                                                int countRight = 125;
+
+                                                <span>
+                                                    <!-- Trigger the modal with a button -->
+                                                    <a data-toggle="modal" data-target=@refId>
+                                                        <i class="glyphicon glyphicon-eye-open text-warning"></i>
+                                                        <span>Full Sequence</span>
+                                                    </a>
+                                                    <br />
+                                                    <!-- Modal -->
+                                                    <div id=@id class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Plasmid @item.name (@item.seq_length bp)</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-1 text-right hidden-xs">
+                                                                            <p class="giraffe-seq-count">
+                                                                                @for (int i = 0; i < repeat; i++)
+                                                                                {
+                                                                                    @countLeft<br />
+                                                                                    countLeft = countLeft + 125;
+                                                                                }
+                                                                                @if (countLeft < countSeq)
+                                                                                {
+                                                                                    <span>@countLeft</span>
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="col-sm-10">
+                                                                            @{
+                                                                                var seq = ecloning.Models.WordWrap.Wrap(item.sequence, 125);
+                                                                            }
+                                                                            <p class="giraffe-seq-textarea">@Html.Raw(seq)</p>
+                                                                        </div>
+                                                                        <div class="col-sm-1 text-left hidden-xs">
+                                                                            <p class="giraffe-seq-count" style="position:relative; left:-45px;">
+                                                                                @for (int i = 0; i < repeat; i++)
+                                                                                {
+                                                                                    @countRight<br />
+                                                                                    countRight = countRight + 125;
+                                                                                }
+                                                                                @if ((countRight - 125) < countSeq)
+                                                                                {
+                                                                                    <span>@countSeq</span>
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </span>
+                                            }
+                                            <span class="glyphicon glyphicon-resize-horizontal text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length)</span>
+                                            <br />
                                         </td>
                                         <td class="col-sm-2">
                                             @if (sharedPlasmidId.Count >0 && sharedPlasmidId.Contains(item.id))

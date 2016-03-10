@@ -53,7 +53,6 @@ namespace ecloning.Models
 }
 
 
-
 namespace ecloning.Models
 {
     using System;
@@ -68,11 +67,13 @@ namespace ecloning.Models
             this.clone_group = new HashSet<clone_group>();
             this.plasmid_map = new HashSet<plasmid_map>();
         }
-    
+
         public int id { get; set; }
         [Required(ErrorMessage = "Required")]
         public string name { get; set; }
         public string sequence { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int seq_length { get; set; }
         [Required(ErrorMessage = "Required")]
         public string expression_system { get; set; }
         public string expression_subsystem { get; set; }
@@ -97,7 +98,7 @@ namespace ecloning.Models
         public string shared_with_people { get; set; }
         public string des { get; set; }
         public string insert_species { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<clone_group> clone_group { get; set; }
         public virtual person person { get; set; }

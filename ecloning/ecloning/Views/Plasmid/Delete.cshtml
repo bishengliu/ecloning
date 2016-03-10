@@ -35,36 +35,7 @@
             <tr>
                 <td class="col-sm-6">
                     <span class="text-danger">@Html.DisplayFor(model => model.name)</span>&nbsp;&nbsp;
-                    <span>
-                        <!-- Trigger the modal with a button -->
-                        <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open  text-warning"></i>&nbsp;Full Sequence</button>
-                        <!-- Modal -->
-                        <div id=@id class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <!-- Modal content-->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title text-center text-info">Plasmid full sequence</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-sm-1"></div>
-                                            <div class="col-sm-10">
-                                                <p class="text-center">-- @Model.name --</p><br />
-                                                @Html.DisplayFor(model => model.sequence)
-                                            </div>
-                                            <div class="col-sm-1"></div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </span>
-
+                    
                     <br />
                     <span class="text-info"><strong>Expression: </strong></span><span>@Html.DisplayFor(model => model.expression_system)</span>&nbsp;&nbsp;<span>@Html.DisplayFor(model => model.expression_subsystem)</span><br />
                     <span class="text-info"><strong>Insert/Gene: </strong></span>
@@ -135,25 +106,48 @@
                     {
                         <br />
                     }
-
-                    @*@if (Model.submitted_to_group == true || Model.shared_with_group == true || Model.shared_with_people != null)
-                    {
-                        <span class="text-info"><strong>Status: </strong></span>
-                    }
-                    <span>@if (Model.submitted_to_group == true)
-                    { <span>Submitted to the group plasmid libaray</span>}</span>
-                    &nbsp;&nbsp;
-                    <span>@if (Model.shared_with_group == true)
-                    { <span>In the group plasmid libaray</span>}</span>
-                    &nbsp;&nbsp;
-                    <span>@if (Model.shared_with_people != null)
-                    { <span>Shared with: @Model.shared_with_people</span>}</span>
-                    <br />
-                    <br />*@
                     <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(model => model.des)</span>
                 </td>
                 <td class="col-sm-4">
-                    <span>Plasmid Map</span>
+                    @if (Model.sequence != null)
+                    {
+                        <span>
+                            <!-- Trigger the modal with a button -->
+                            <a data-toggle="modal" data-target=@refId>
+                                <i class="glyphicon glyphicon-eye-open text-warning"></i>
+                                <span>Full Sequence</span>
+                            </a>
+                            <br />
+                            <!-- Modal -->
+                            <div id=@id class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title text-center text-info">Plasmid @Model.name (@Model.seq_length bp)</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <div class="col-sm-10">
+                                                    <p class="text-center">-- @Model.name --</p><br />
+                                                    @Html.DisplayFor(model => model.sequence)
+                                                </div>
+                                                <div class="col-sm-1"></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
+                    }
+
+                    <span class="glyphicon glyphicon-resize-horizontal text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(model => model.seq_length)</span>
+                    <br />
                 </td>
             </tr>
     </table>
