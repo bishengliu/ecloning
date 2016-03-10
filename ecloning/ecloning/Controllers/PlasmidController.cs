@@ -451,6 +451,7 @@ namespace ecloning.Controllers
             Plasmid.des = plasmid.des;
             Plasmid.insert_species = plasmid.insert_species;
             Plasmid.img_fn = plasmid.img_fn;
+            Plasmid.seq_length = (int)plasmid.seq_length;
 
 
 
@@ -464,9 +465,6 @@ namespace ecloning.Controllers
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value", plasmid.plasmid_type);
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value", plasmid.promotor);
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value", plasmid.polyA);
-            //ViewBag.submitted_to_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "value", "text", plasmid.submitted_to_group);
-            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_group);
-            //ViewBag.shared_with_group = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.text), "text", "value", plasmid.shared_with_people);
             return View(Plasmid);
         }
 

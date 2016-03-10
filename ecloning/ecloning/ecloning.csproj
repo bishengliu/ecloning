@@ -458,6 +458,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="logo\eCloning-2.ico" />
     <Content Include="logo\eCloning-new1.jpg" />
     <Content Include="logo\eCloning-new2.jpg" />
     <Content Include="logo\eCloning.ico" />
