@@ -14,6 +14,13 @@ namespace ecloning.Models
     
     public partial class common_feature
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public common_feature()
+        {
+            this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
+            this.plasmid_map = new HashSet<plasmid_map>();
+        }
+    
         public int id { get; set; }
         public int feature_id { get; set; }
         public string label { get; set; }
@@ -21,5 +28,9 @@ namespace ecloning.Models
         public string des { get; set; }
     
         public virtual plasmid_feature plasmid_feature { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }
 }

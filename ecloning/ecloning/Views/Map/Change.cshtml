@@ -58,7 +58,7 @@
                                 @Html.DisplayFor(modelItem => item.plasmid_feature.des)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.label)
+                                @Html.DisplayFor(modelItem => item.common_feature.label)
                             </td>
                             <td>
                                 <a href="#" id=@startId data-type="number" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="start"})" data-title="Enter start position" data-clear=false>@Html.DisplayFor(modelItem => item.start)</a>

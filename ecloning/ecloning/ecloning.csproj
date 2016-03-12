@@ -359,6 +359,9 @@
     <Compile Include="Models\plasmid_map.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\plasmid_map_backup.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\primer.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

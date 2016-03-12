@@ -18,6 +18,7 @@ namespace ecloning.Models
         public plasmid_feature()
         {
             this.common_feature = new HashSet<common_feature>();
+            this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
             this.plasmid_map = new HashSet<plasmid_map>();
         }
     
@@ -27,6 +28,8 @@ namespace ecloning.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<common_feature> common_feature { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }

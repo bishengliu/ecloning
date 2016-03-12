@@ -375,13 +375,34 @@ CREATE TABLE plasmid_map
 	start INT NOT NULL,
 	[end] INT NOT NULL,
 	cut INT, --enzyme cut only clude unique and 2 cuts
-	label NVARCHAR(200) NOT NULL,
+	common_id INT NOT NULL, --ref to common_feature id;
 	clockwise INT NOT NULL, -- 1 or 0
 	[des] TEXT,
 	CONSTRAINT fk_plasmid_map_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
+	CONSTRAINT fk_plasmid_map_ccommon_id FOREIGN KEY (common_id) REFERENCES common_feature(id),
 	CONSTRAINT fk_plasmid_map_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id)
 );
 
+
+--used to restore feature for automatically updating features when seq is provided
+CREATE TABLE plasmid_map_backup
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	plasmid_id INT NOT NULL,
+	--type_id INT, --linear or circlular
+	show_feature INT NOT NULL, -- 1 or 0
+	feature NVARCHAR(200) NOT NULL,
+	feature_id INT NOT NULL,
+	start INT NOT NULL,
+	[end] INT NOT NULL,
+	cut INT, --enzyme cut only clude unique and 2 cuts
+	common_id INT NOT NULL, --ref to common_feature id;
+	clockwise INT NOT NULL, -- 1 or 0
+	[des] TEXT,
+	CONSTRAINT fk_plasmid_map_backup_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
+	CONSTRAINT fk_plasmid_map_backup_ccommon_id FOREIGN KEY (common_id) REFERENCES common_feature(id),
+	CONSTRAINT fk_plasmid_map_backup_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id)
+);
 
 --restriction
 CREATE TABLE restriction
@@ -838,7 +859,7 @@ INSERT INTO dropdownitem VALUES
 --0/1--
 --true /false
 (1, 'Yes', 'YN01'),
-(0, 'No', 'YN01');
+(0, 'No', 'YN01'),
 
 --true /false
 ('true', 'Yes', 'TF'),

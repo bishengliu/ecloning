@@ -12,7 +12,7 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class plasmid_map
+    public partial class plasmid_map_backup
     {
         public int id { get; set; }
         public int plasmid_id { get; set; }

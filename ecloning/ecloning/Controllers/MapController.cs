@@ -40,7 +40,7 @@ namespace ecloning.Controllers
 
             //pass json
 
-            var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.label, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
+            var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature.label, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
 
 
@@ -63,7 +63,7 @@ namespace ecloning.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,plasmid_id,show_feature,feature,feature_id,start,end,cut,label,clockwise,des")] plasmid_map plasmid_map)
+        public ActionResult Create([Bind(Include = "id,plasmid_id,show_feature,feature,feature_id,start,end,cut,common_id,clockwise,des")] plasmid_map plasmid_map)
         {
             if (ModelState.IsValid)
             {
