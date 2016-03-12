@@ -30,8 +30,8 @@ namespace ecloning
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3*"));
 
-            //bundles.Add(new ScriptBundle("~/bundles/editable").Include(
-            //          "~/Scripts/bootstrap-editable/js/bootstrap-editable.js"));
+            bundles.Add(new ScriptBundle("~/bundles/editable").Include(
+                      "~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/giraffe").Include(
                       "~/Scripts/giraffe/analyze.js",

@@ -14,7 +14,7 @@ namespace ecloning.Controllers
     public class MapController : Controller
     {
         private ecloningEntities db = new ecloningEntities();
-
+        [Authorize]
         // GET: Map
         public ActionResult Index(int? id)
         {
@@ -48,7 +48,7 @@ namespace ecloning.Controllers
             return View(plasmid_map.ToList());
         }
 
-
+        [Authorize]
         // GET: Map/Create
         public ActionResult Create()
         {
@@ -60,6 +60,7 @@ namespace ecloning.Controllers
         // POST: Map/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,plasmid_id,show_feature,feature,feature_id,start,end,cut,label,clockwise,des")] plasmid_map plasmid_map)
@@ -106,6 +107,7 @@ namespace ecloning.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int[] id, int[] show_feature, int plasmid_id)
         {
@@ -118,7 +120,8 @@ namespace ecloning.Controllers
             return RedirectToAction("Index", new { id = plasmid_id });
         }
 
-
+        [Authorize]
+        [HttpGet]
         public ActionResult Change(int? plasmid_id)
         {
             //only for plasmid sequence is NOT provided
@@ -144,7 +147,53 @@ namespace ecloning.Controllers
             return View(plasmid_map.ToList());
         }
 
+        [Authorize]
+        [HttpPost]
+        public ActionResult Change(int? plasmid_id, string target, int pk, int value)
+        {
+            //only for plasmid sequence is NOT provided
+            //allow edit everyware except Feature and Label
+            //id is plasmid table id and plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            //save the changes to plasmid_map table
+            //find the feature
+            var plasmid_map = db.plasmid_map.Find(pk);
+            if(target == "start")
+            {
+                plasmid_map.start = value;
+            }
+            else if(target == "end")
+            {
+                plasmid_map.end = value;
+            }
+            else if(target == "cut")
+            {
+                plasmid_map.cut = value;
+            }
+            else if(target == "clockwise")
+            {
+                plasmid_map.clockwise = value;
+            }
+            else
+            {
+                //show feature
+                plasmid_map.show_feature = value;
+            }
 
+            db.SaveChanges();
+            return RedirectToAction("Change", new { plasmid_id = plasmid_id });
+        }
+
+
+        [Authorize]
         // GET: Map/Delete/5
         public ActionResult Delete(int? plasmid_id)
         {
@@ -166,7 +215,7 @@ namespace ecloning.Controllers
             ViewBag.Count = plasmid_map.Count();
             return View(plasmid_map.ToList());
         }
-
+        [Authorize]
         // POST: Map/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
