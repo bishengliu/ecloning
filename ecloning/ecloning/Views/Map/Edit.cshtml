@@ -1,110 +1,124 @@
-﻿@model ecloning.Models.plasmid_map
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
 
-@{
-    ViewBag.Title = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+    @{
+        ViewBag.Title = "Edit";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        int Count = (int)ViewBag.Count;
+        string Name = (string)ViewBag.Name;
+        int seqCount = (int)ViewBag.SeqLength;
+        int plasmidId = (int)ViewBag.PlasmidId;        
+        int i = 0;
+    }
 
-<h2>Edit</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>plasmid_map</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.id)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.plasmid_id, "plasmid_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("plasmid_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.show_feature, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.show_feature, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.show_feature, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.feature, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.feature, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.feature, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.feature_id, "feature_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("feature_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.feature_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.start, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.start, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.start, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.end, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.end, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.end, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.cut, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.cut, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.cut, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.label, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.label, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.label, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.clockwise, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.clockwise, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.clockwise, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.des, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.des, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="text-warning text-center">Edit Features of @Name (@seqCount bp)</h3>
         </div>
     </div>
+    <br />
+@if(Count == 0)
+{
+    <div class="text-info">
+        <p>No feature found for plasmid <em>@Name</em>.</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="table-responsive col-xs-12 col-sm-12 col-md-12 col-bg-12">
+                        <table class="table table-hover table-condensed">
+                            <tr>
+
+                                <th>
+                                    Feature
+                                </th>
+                                <th>
+                                    Label
+                                </th>
+                                <th>
+                                    Start Position
+                                </th>
+                                <th>
+                                    End Position
+                                </th>
+                                <th>
+                                    Clockwise
+                                </th>
+                                <th>
+                                    Cut Position
+                                </th>
+                                <th>
+                                    Show Feature
+                                </th>
+
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.label)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.start)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.end)
+                                    </td>
+                                    <td>
+                                        @if (item.clockwise == 1)
+                                        {
+                                            <span>Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span>No</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.cut)
+                                    </td>
+                                    <td>
+                                        <input type="text" name="id[]" value=@item.id class="hidden" />
+                                        <select name="show_feature[]" class = "form-control col-md-6">
+                                                    @if (item.show_feature == 1)
+                                                    {
+                                                        <option value="1" selected="selected">Yes</option>
+                                                        <option value="0">No</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="1">Yes</option>
+                                                        <option value="0" selected="selected">No</option>
+                                                    }
+                                                </select>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+
+                        </table>
+                    </div>
+                    <div class="col-xs-12 col-md-10">
+                        <input type="text" name="plasmid_id" value=@plasmidId class="hidden" />
+                        <input type="submit" value="Update Features" class="btn btn-primary" />
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+    
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+    

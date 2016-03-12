@@ -1,105 +1,119 @@
-﻿@model ecloning.Models.plasmid_map
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete Features";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+    string Name = (string)ViewBag.Name;
+    int seqCount = (int)ViewBag.SeqLength;
+    int plasmidId = (int)ViewBag.PlasmidId;
 }
 
-<h2>Delete</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-warning text-center">Remove Features of @Name (@seqCount bp)</h3>
+    </div>
+</div>
+<br/>
+<span class="text-danger">
+    @TempData["msg"]
+</span>
+<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+    <p class="text-info">Select the features you want to delete:</p>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>plasmid_map</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.show_feature)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.show_feature)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.feature)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.feature)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.start)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.start)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.end)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.end)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.cut)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.cut)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.label)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.label)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.clockwise)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.clockwise)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.des)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.des)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.plasmid.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.plasmid.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.plasmid_feature.feature)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.plasmid_feature.feature)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <div class="table-responsive">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>
+                            <span class="glyphicon glyphicon-trash text-danger"></span>
+                        </th>
+                        <th>
+                            Feature
+                        </th>
+                        <th>
+                            Label
+                        </th>
+                        <th>
+                            Start Position
+                        </th>
+                        <th>
+                            End Position
+                        </th>
+                        <th>
+                            Clockwise
+                        </th>
+                        <th>
+                            Cut Position
+                        </th>
+                        <th>
+                            Show Feature
+                        </th>
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="id[]" value=@item.id />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.label)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.start)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.end)
+                            </td>
+                            <td>
+                                @if (item.clockwise == 1)
+                        {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.cut)
+                            </td>
+                            <td>
+                                @if (item.show_feature == 1)
+                        {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+
+                </table>
+            </div>
+
+            
+            <div class="form-group">
+                <div class="col-xs-12 col-md-10">
+                    <input type="text" name="plasmid_id" value=@plasmidId class="hidden" />
+                    <input type="submit" value="Delete Feature" class="btn btn-primary" />
+                </div>
+            </div>
         </div>
     }
 </div>
+
+
+
+

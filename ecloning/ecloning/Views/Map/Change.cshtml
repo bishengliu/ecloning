@@ -1,0 +1,95 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
+
+@{
+    ViewBag.Title = "Plasmid Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Name = (string)ViewBag.Name;
+    int plasmidId = (int)ViewBag.Id;
+    string Sequence = (string)ViewBag.Sequence;
+    int seqCount = (int)ViewBag.SeqLength;
+    var features = ViewBag.Features;
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-warning text-center">Edit Features of Plasmid <em>@Name</em> Map(@seqCount bp)</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+        <p class="text-info">Click on each value to edit:</p>
+        <div class="table-responsive">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>
+                            Feature
+                        </th>
+                        <th>
+                            Label
+                        </th>
+                        <th>
+                            Start Position
+                        </th>
+                        <th>
+                            End Position
+                        </th>
+                        <th>
+                            Clockwise
+                        </th>
+                        <th>
+                            Cut Position
+                        </th>
+                        <th>
+                            Show Feature
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.label)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.start)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.end)
+                            </td>
+                            <td>
+                                @if (item.clockwise == 1)
+                                {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.cut)
+                            </td>
+                            <td>
+                                @if (item.show_feature == 1)
+                                {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+    </div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jquery")

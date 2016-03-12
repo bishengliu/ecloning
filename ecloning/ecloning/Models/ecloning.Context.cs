@@ -32,6 +32,7 @@ namespace ecloning.Models
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<clone_group> clone_group { get; set; }
+        public virtual DbSet<common_feature> common_feature { get; set; }
         public virtual DbSet<container> containers { get; set; }
         public virtual DbSet<department> departments { get; set; }
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }

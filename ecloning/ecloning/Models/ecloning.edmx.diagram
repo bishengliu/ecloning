@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="896c5546d05b489fb43fbc904016e6a6" Name="Diagram1">
+      <Diagram DiagramId="6fd4c8cb0a734aadb5bce4d395dda1b6" Name="Diagram1">
         <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="9" PointY="8.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
@@ -12,6 +12,7 @@
         <EntityTypeShape EntityType="ecloningModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUser" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.clone_group" Width="1.5" PointX="5.25" PointY="20.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_feature" Width="1.5" PointX="5.25" PointY="43.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.container" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.department" Width="1.5" PointX="1.5" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.dropdownitem" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
@@ -30,7 +31,7 @@
         <EntityTypeShape EntityType="ecloningModel.person" Width="1.5" PointX="0.75" PointY="17.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.people_license" Width="1.5" PointX="6" PointY="14.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.plasmid" Width="1.5" PointX="3" PointY="23.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="3" PointY="43.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="3" PointY="43.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.plasmid_map" Width="1.5" PointX="5.25" PointY="27" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.primer" Width="1.5" PointX="3" PointY="30.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.probe" Width="1.5" PointX="8.25" PointY="24" IsExpanded="true" />
@@ -46,6 +47,7 @@
         <AssociationConnector Association="ecloningModel.fk_clone_group_people_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_clone_group_plasmid_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_clone_group_pnuclease_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_feature_feature_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_group_depart_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_group_people_group_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_group_shared_group_id" ManuallyRouted="false" />

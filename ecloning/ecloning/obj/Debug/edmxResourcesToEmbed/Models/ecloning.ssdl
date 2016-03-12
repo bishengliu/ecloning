@@ -99,6 +99,16 @@
     <Property Name="shared_with_group" Type="bit" />
     <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
   </EntityType>
+  <EntityType Name="common_feature">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="feature_id" Type="int" Nullable="false" />
+    <Property Name="label" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="sequence" Type="text" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
   <EntityType Name="container">
     <Key>
       <PropertyRef Name="id" />
@@ -395,6 +405,7 @@
     <Property Name="reverse_seq" Type="nvarchar" MaxLength="20" Nullable="false" />
     <Property Name="reverse_cut" Type="int" Nullable="false" />
     <Property Name="methylation" Type="bit" />
+    <Property Name="common" Type="bit" />
   </EntityType>
   <EntityType Name="storage">
     <Key>
@@ -482,6 +493,18 @@
       </Principal>
       <Dependent Role="clone_group">
         <PropertyRef Name="nuclease_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_feature_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_feature">
+        <PropertyRef Name="feature_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -754,6 +777,7 @@
     <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="clone_group" EntityType="Self.clone_group" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="common_feature" EntityType="Self.common_feature" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
@@ -803,6 +827,10 @@
     <AssociationSet Name="fk_clone_group_pnuclease_id" Association="Self.fk_clone_group_pnuclease_id">
       <End Role="nuclease" EntitySet="nuclease" />
       <End Role="clone_group" EntitySet="clone_group" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_feature_feature_id" Association="Self.fk_common_feature_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="common_feature" EntitySet="common_feature" />
     </AssociationSet>
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />

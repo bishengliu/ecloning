@@ -338,16 +338,29 @@ CREATE TABLE plasmid_feature
 );
 INSERT INTO plasmid_feature
 VALUES
-('feature',  'Generic Features'),
-('promoter', 'Promoters'),
-('primer', 'Primers'),
-('enzyme',  'Enzymes'),
-('gene', 'Genes'),
-('origin', 'Origins'),
+('feature',  'Generic Feature'),
+('promoter', 'Promoter'),
+('primer', 'Primer'),
+('enzyme',  'Enzyme'),
+('gene', 'Gene'),
+('origin', 'Origin'),
 ('regulatory',  'Regulatory'),
-('terminator',  'Terminators'),
-('exact_feature', 'Exact Features'),
+('terminator',  'Terminator'),
+('exact_feature', 'Exact Feature'),
 ('orf', 'ORF');
+
+--table to hold commonly used plasmid feature for auto genereation plasmid map
+--main feature
+CREATE TABLE common_feature
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	feature_id INT NOT NULL,
+	label NVARCHAR(200) NOT NULL,
+	[sequence] text NOT NULL,
+	[des] TEXT,
+	CONSTRAINT fk_common_feature_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id),
+	CONSTRAINT uq_common_feature_label UNIQUE (label)
+);
 
 
 --need use addgene giraffe
@@ -380,6 +393,7 @@ CREATE TABLE restriction
 	reverse_seq NVARCHAR(20) NOT NULL, --3' to 5' 
 	reverse_cut INT NOT NULL, --cut after num
 	methylation BIT,
+	common BIT,
 	CONSTRAINT uq_restriction_name UNIQUE (name)
 );
 --K: G or T
@@ -388,21 +402,21 @@ CREATE TABLE restriction
 --Y: C or T
 --N: radom, placeholder
 
-INSERT INTO restriction (name,forward_seq,forward_cut,reverse_seq,reverse_cut) VALUES
-('AanI', 'TTATAA', 3,'AATATT', 3),
-('AatII', 'GACGTC', 5,'CTGCAG', 1),
-('Acc65I', 'GGTACC', 1,'CCATGG', 5),
-('AdeI', 'CACNNNGTG', 6,'GTGNNNCAC', 3),
 
-('AjiI', 'CACGTC', 3,'GTGCAG', 3),
-('Alu I', 'AGCT', 2,'TCGA', 2),
-('Alw44I', 'GTGCAC', 1,'CACGTG', 5),
-('Apa I', 'GGGCCC', 5,'CCCGGG', 1),
+INSERT INTO restriction (name,forward_seq,forward_cut,reverse_seq,reverse_cut,common) VALUES
+('AanI', 'TTATAA', 3,'AATATT', 3, 0),
+('AatII', 'GACGTC', 5,'CTGCAG', 1, 0),
+('Acc65I', 'GGTACC', 1,'CCATGG', 5, 0),
+('AdeI', 'CACNNNGTG', 6,'GTGNNNCAC', 3, 0),
+('AjiI', 'CACGTC', 3,'GTGCAG', 3, 0),
+('Alu I', 'AGCT', 2,'TCGA', 2, 0),
+('Alw44I', 'GTGCAC', 1,'CACGTG', 5, 0),
+('Apa I', 'GGGCCC', 5,'CCCGGG', 1, 1),
+('BamH I', 'GGATCC', 1,'CCTAGG', 5, 1),
+('BauI', 'CACGAG', 1,'GTGCTC', 5, 0),
+('BclI', 'TGATCA', 1,'ACTAGT', 5, 0),
+('BcuI', 'ACTAGT', 5,'TGATCA', 1, 0);
 
-('BamH I', 'GGATCC', 1,'CCTAGG', 5),
-('BauI', 'CACGAG', 1,'GTGCTC', 5),
-('BclI', 'TGATCA', 1,'ACTAGT', 5),
-('BcuI', 'ACTAGT', 5,'TGATCA', 1);
 
 
 
@@ -820,6 +834,11 @@ INSERT INTO dropdownitem VALUES
 ('bGHpA', 'bGHpA', 'PolyA'),
 ('SV40pA', 'SV40pA', 'PolyA'),
 ('Other', 'Other', 'PolyA'),
+
+--0/1--
+--true /false
+(1, 'Yes', 'YN01'),
+(0, 'No', 'YN01');
 
 --true /false
 ('true', 'Yes', 'TF'),

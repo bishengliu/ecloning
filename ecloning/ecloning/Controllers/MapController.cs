@@ -31,9 +31,7 @@ namespace ecloning.Controllers
             ViewBag.Name = plasmid.name;
             ViewBag.Id = id;
             ViewBag.Sequence = plasmid.sequence;
-
-
-            
+            ViewBag.SeqLength = plasmid.seq_length;
 
 
             //display all features of the current plasmid
@@ -79,20 +77,29 @@ namespace ecloning.Controllers
         }
 
         // GET: Map/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? plasmid_id)
         {
-            if (id == null)
+            //only for plasmid sequence is provided
+            //allow edit only the "show feature"
+
+            //id is the plasmid id
+            if (plasmid_id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            plasmid_map plasmid_map = db.plasmid_map.Find(id);
-            if (plasmid_map == null)
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.plasmid_id = new SelectList(db.plasmids, "id", "name", plasmid_map.plasmid_id);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature, "id", "feature", plasmid_map.feature_id);
-            return View(plasmid_map);
+            ViewBag.Name = plasmid.name;
+            ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.PlasmidId = plasmid_id;
+
+            //get all the feature of the current plasmid
+            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id).OrderBy(i=>i.id);           
+            ViewBag.Count = plasmid_map.Count();
+            return View(plasmid_map.ToList());
         }
 
         // POST: Map/Edit/5
@@ -100,43 +107,83 @@ namespace ecloning.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,plasmid_id,show_feature,feature,feature_id,start,end,cut,label,clockwise,des")] plasmid_map plasmid_map)
+        public ActionResult Edit(int[] id, int[] show_feature, int plasmid_id)
         {
-            if (ModelState.IsValid)
+            for (int i=0; i<id.Count(); i++)
             {
-                db.Entry(plasmid_map).State = EntityState.Modified;
+                var plasmid_map = db.plasmid_map.Find(id[i]);
+                plasmid_map.show_feature = show_feature[i];
                 db.SaveChanges();
-                return RedirectToAction("Index");
             }
-            ViewBag.plasmid_id = new SelectList(db.plasmids, "id", "name", plasmid_map.plasmid_id);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature, "id", "feature", plasmid_map.feature_id);
-            return View(plasmid_map);
+            return RedirectToAction("Index", new { id = plasmid_id });
         }
 
-        // GET: Map/Delete/5
-        public ActionResult Delete(int? id)
+
+        public ActionResult Change(int? plasmid_id)
         {
-            if (id == null)
+            //only for plasmid sequence is NOT provided
+            //allow edit everyware except Feature and Label
+            //id is plasmid table id and plasmid id
+            if (plasmid_id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            plasmid_map plasmid_map = db.plasmid_map.Find(id);
-            if (plasmid_map == null)
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
             {
                 return HttpNotFound();
             }
-            return View(plasmid_map);
+            ViewBag.Name = plasmid.name;
+            ViewBag.Id = plasmid_id;
+            ViewBag.Sequence = plasmid.sequence;
+            ViewBag.SeqLength = plasmid.seq_length;
+
+
+            //display all features of the current plasmid
+            var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
+            return View(plasmid_map.ToList());
+        }
+
+
+        // GET: Map/Delete/5
+        public ActionResult Delete(int? plasmid_id)
+        {
+            //id is the plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Name = plasmid.name;
+            ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.PlasmidId = plasmid_id;
+            //get all the feature of the current plasmid
+            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id);
+            ViewBag.Count = plasmid_map.Count();
+            return View(plasmid_map.ToList());
         }
 
         // POST: Map/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int[] id, int plasmid_id)
         {
-            plasmid_map plasmid_map = db.plasmid_map.Find(id);
-            db.plasmid_map.Remove(plasmid_map);
+            if (id.Count() == 0)
+            {
+                TempData["msg"] = "Please select the features you want to remove!";
+                return View();
+            }
+            foreach(int i in id)
+            {
+                plasmid_map plasmid_map = db.plasmid_map.Find(i);
+                db.plasmid_map.Remove(plasmid_map);
+            }
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { plasmid_id = plasmid_id});
         }
 
         protected override void Dispose(bool disposing)

@@ -21,5 +21,6 @@ namespace ecloning.Models
         public string reverse_seq { get; set; }
         public int reverse_cut { get; set; }
         public Nullable<bool> methylation { get; set; }
+        public Nullable<bool> common { get; set; }
     }
 }

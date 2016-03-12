@@ -96,6 +96,17 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="common_feature">
+      <EntityTypeMapping TypeName="ecloningModel.common_feature">
+        <MappingFragment StoreEntitySet="common_feature">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="feature_id" ColumnName="feature_id" />
+          <ScalarProperty Name="label" ColumnName="label" />
+          <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="containers">
       <EntityTypeMapping TypeName="ecloningModel.container">
         <MappingFragment StoreEntitySet="container">
@@ -415,6 +426,7 @@
           <ScalarProperty Name="reverse_seq" ColumnName="reverse_seq" />
           <ScalarProperty Name="reverse_cut" ColumnName="reverse_cut" />
           <ScalarProperty Name="methylation" ColumnName="methylation" />
+          <ScalarProperty Name="common" ColumnName="common" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

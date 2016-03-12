@@ -1,8 +1,10 @@
+
 namespace ecloning.Models
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+
 
     public partial class person
     {
@@ -50,8 +52,6 @@ namespace ecloning.Models
         public virtual ICollection<protocol> protocols { get; set; }
     }
 }
-
-
 namespace ecloning.Models
 {
     using System;
