@@ -272,7 +272,7 @@
     $('#sequence').change(function () {
         var before = $('#sequence').val();
         //strip out non-alpha characters and convert to uppercase
-        var after = before.replace(/[^a-zA-Z 0-9]+|\s+$/g, '').toUpperCase();
+        var after = before.replace(/[^a-zA-Z 0-9]+|\s+$|[0-9]+/g, '').toUpperCase();
         $('#sequence').val(after);
 
         //calculate length and fill the length input

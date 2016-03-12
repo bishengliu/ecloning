@@ -112,7 +112,11 @@
     <Property Name="label" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="sequence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
     <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_common_feature_feature_id" FromRole="common_feature" ToRole="plasmid_feature" />
+    <NavigationProperty Name="group" Relationship="Self.fk_common_feature_group_id" FromRole="common_feature" ToRole="group" />
+    <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_ccommon_id" FromRole="common_feature" ToRole="plasmid_map_backup" />
+    <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="common_feature" ToRole="plasmid_map" />
   </EntityType>
   <EntityType Name="container">
     <Key>
@@ -151,6 +155,7 @@
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
+    <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
     <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
     <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
     <NavigationProperty Name="group_shared" Relationship="Self.fk_group_shared_group_id" FromRole="group" ToRole="group_shared" />
@@ -335,6 +340,7 @@
     <Property Name="seq_length" Type="Int32" />
     <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
     <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
+    <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_plasmid_id" FromRole="plasmid" ToRole="plasmid_map_backup" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />
   </EntityType>
   <EntityType Name="plasmid_feature">
@@ -345,6 +351,7 @@
     <Property Name="feature" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_feature_id" FromRole="plasmid_feature" ToRole="common_feature" />
+    <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_feature_id" FromRole="plasmid_feature" ToRole="plasmid_map_backup" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_feature" ToRole="plasmid_map" />
   </EntityType>
   <EntityType Name="plasmid_map">
@@ -359,11 +366,31 @@
     <Property Name="start" Type="Int32" Nullable="false" />
     <Property Name="end" Type="Int32" Nullable="false" />
     <Property Name="cut" Type="Int32" />
-    <Property Name="label" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="common_id" Type="Int32" Nullable="false" />
     <Property Name="clockwise" Type="Int32" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="common_feature" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="plasmid_map" ToRole="common_feature" />
     <NavigationProperty Name="plasmid" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid_map" ToRole="plasmid" />
     <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_map" ToRole="plasmid_feature" />
+  </EntityType>
+  <EntityType Name="plasmid_map_backup">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="plasmid_id" Type="Int32" Nullable="false" />
+    <Property Name="show_feature" Type="Int32" Nullable="false" />
+    <Property Name="feature" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="feature_id" Type="Int32" Nullable="false" />
+    <Property Name="start" Type="Int32" Nullable="false" />
+    <Property Name="end" Type="Int32" Nullable="false" />
+    <Property Name="cut" Type="Int32" />
+    <Property Name="common_id" Type="Int32" Nullable="false" />
+    <Property Name="clockwise" Type="Int32" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="common_feature" Relationship="Self.fk_plasmid_map_backup_ccommon_id" FromRole="plasmid_map_backup" ToRole="common_feature" />
+    <NavigationProperty Name="plasmid" Relationship="Self.fk_plasmid_map_backup_plasmid_id" FromRole="plasmid_map_backup" ToRole="plasmid" />
+    <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_plasmid_map_backup_feature_id" FromRole="plasmid_map_backup" ToRole="plasmid_feature" />
   </EntityType>
   <EntityType Name="primer">
     <Key>
@@ -582,6 +609,42 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_common_feature_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_feature">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_backup_ccommon_id">
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
+    <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="common_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map_backup">
+        <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_ccommon_id">
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
+    <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="common_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map">
+        <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_group_depart_id">
     <End Role="department" Type="Self.department" Multiplicity="1" />
     <End Role="group" Type="Self.group" Multiplicity="*" />
@@ -738,6 +801,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_plasmid_map_backup_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map_backup">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_plasmid_map_plasmid_id">
     <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
     <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
@@ -747,6 +822,18 @@
       </Principal>
       <Dependent Role="plasmid_map">
         <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_backup_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map_backup">
+        <PropertyRef Name="feature_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -819,6 +906,7 @@
     <EntitySet Name="plasmids" EntityType="Self.plasmid" />
     <EntitySet Name="plasmid_feature" EntityType="Self.plasmid_feature" />
     <EntitySet Name="plasmid_map" EntityType="Self.plasmid_map" />
+    <EntitySet Name="plasmid_map_backup" EntityType="Self.plasmid_map_backup" />
     <EntitySet Name="primers" EntityType="Self.primer" />
     <EntitySet Name="probes" EntityType="Self.probe" />
     <EntitySet Name="projects" EntityType="Self.project" />
@@ -860,6 +948,18 @@
     <AssociationSet Name="fk_common_feature_feature_id" Association="Self.fk_common_feature_feature_id">
       <End Role="plasmid_feature" EntitySet="plasmid_feature" />
       <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_feature_group_id" Association="Self.fk_common_feature_group_id">
+      <End Role="group" EntitySet="groups" />
+      <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_backup_ccommon_id" Association="Self.fk_plasmid_map_backup_ccommon_id">
+      <End Role="common_feature" EntitySet="common_feature" />
+      <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_ccommon_id" Association="Self.fk_plasmid_map_ccommon_id">
+      <End Role="common_feature" EntitySet="common_feature" />
+      <End Role="plasmid_map" EntitySet="plasmid_map" />
     </AssociationSet>
     <AssociationSet Name="fk_group_depart_id" Association="Self.fk_group_depart_id">
       <End Role="department" EntitySet="departments" />
@@ -913,9 +1013,17 @@
       <End Role="people" EntitySet="people" />
       <End Role="protocol" EntitySet="protocols" />
     </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_backup_plasmid_id" Association="Self.fk_plasmid_map_backup_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmids" />
+      <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
+    </AssociationSet>
     <AssociationSet Name="fk_plasmid_map_plasmid_id" Association="Self.fk_plasmid_map_plasmid_id">
       <End Role="plasmid" EntitySet="plasmids" />
       <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_backup_feature_id" Association="Self.fk_plasmid_map_backup_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
     </AssociationSet>
     <AssociationSet Name="fk_plasmid_map_feature_id" Association="Self.fk_plasmid_map_feature_id">
       <End Role="plasmid_feature" EntitySet="plasmid_feature" />

@@ -113,6 +113,7 @@
           <Property Name="label" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="sequence" Type="text" Nullable="false" />
           <Property Name="des" Type="text" />
+          <Property Name="group_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="container">
           <Key>
@@ -529,6 +530,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_common_feature_group_id">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="common_feature">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -902,6 +915,10 @@
             <End Role="plasmid_feature" EntitySet="plasmid_feature" />
             <End Role="common_feature" EntitySet="common_feature" />
           </AssociationSet>
+          <AssociationSet Name="fk_common_feature_group_id" Association="Self.fk_common_feature_group_id">
+            <End Role="group" EntitySet="group" />
+            <End Role="common_feature" EntitySet="common_feature" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -1120,7 +1137,9 @@
           <Property Name="label" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="sequence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_common_feature_feature_id" FromRole="common_feature" ToRole="plasmid_feature" />
+          <NavigationProperty Name="group" Relationship="Self.fk_common_feature_group_id" FromRole="common_feature" ToRole="group" />
           <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_ccommon_id" FromRole="common_feature" ToRole="plasmid_map_backup" />
           <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="common_feature" ToRole="plasmid_map" />
         </EntityType>
@@ -1161,6 +1180,7 @@
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
+          <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
           <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
           <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
           <NavigationProperty Name="group_shared" Relationship="Self.fk_group_shared_group_id" FromRole="group" ToRole="group_shared" />
@@ -1614,6 +1634,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_common_feature_group_id">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="common_feature">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_plasmid_map_backup_ccommon_id">
           <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
           <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
@@ -1942,6 +1974,10 @@
             <End Role="plasmid_feature" EntitySet="plasmid_feature" />
             <End Role="common_feature" EntitySet="common_feature" />
           </AssociationSet>
+          <AssociationSet Name="fk_common_feature_group_id" Association="Self.fk_common_feature_group_id">
+            <End Role="group" EntitySet="groups" />
+            <End Role="common_feature" EntitySet="common_feature" />
+          </AssociationSet>
           <AssociationSet Name="fk_plasmid_map_backup_ccommon_id" Association="Self.fk_plasmid_map_backup_ccommon_id">
             <End Role="common_feature" EntitySet="common_feature" />
             <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
@@ -2140,6 +2176,7 @@
                 <ScalarProperty Name="label" ColumnName="label" />
                 <ScalarProperty Name="sequence" ColumnName="sequence" />
                 <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

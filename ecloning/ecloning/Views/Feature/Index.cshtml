@@ -1,0 +1,106 @@
+﻿@model IEnumerable<ecloning.Models.common_feature>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+    var msg = (string)TempData["msg"];
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3 col-md-offset-1">
+        <h3 class="text-warning">Common Plasmid Features</h3>
+    </div>
+
+    <div class="col-sm-2 col-xs-4">
+        <h3>
+            <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Feature")">
+                <i class="glyphicon glyphicon-plus text-danger"></i>
+                <span>Feature</span>
+            </a>
+        </h3>
+    </div>
+
+    <div class="col-sm-2 col-xs-4">
+        <h3>
+            <a class="btn btn-sm btn-primary" href="@Url.Action("Edit", "Feature")">
+                <i class="glyphicon glyphicon-pencil text-danger"></i>
+                <span>Feature</span>
+            </a>
+        </h3>
+    </div>
+    <div class="col-sm-2 col-xs-4">
+        <h3>
+            <a class="btn btn-sm btn-primary" href="@Url.Action("Delete", "Feature")">
+                <i class="glyphicon glyphicon-trash text-danger"></i>
+                <span>Feature</span>
+            </a>
+        </h3>
+    </div>
+</div>
+
+<p class="text-danger text-center">@msg</p>
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        @if(Count == 0)
+        {
+            <br />
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <h4 class="text-info">No plasmid feature found.</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <tr>
+                        <th>
+                            Feature
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Sequence
+                        </th>
+                        <th>
+                            Remarks
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.label)
+                            </td>
+                            <td>
+                                @if (item.sequence.Count() >= 50)
+                                {
+                                    <span>@item.sequence.Substring(0, 50) ...<em class="text-danger">show the seq in modal</em></span>
+                                }
+                                else
+                                {
+                                    <span>@item.sequence</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.des)
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        }
+    </div>
+    <div class="col-sm-1 hidden-xs"></div>
+</div>
+    

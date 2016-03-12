@@ -104,6 +104,7 @@
           <ScalarProperty Name="label" ColumnName="label" />
           <ScalarProperty Name="sequence" ColumnName="sequence" />
           <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -339,7 +340,24 @@
           <ScalarProperty Name="start" ColumnName="start" />
           <ScalarProperty Name="end" ColumnName="end" />
           <ScalarProperty Name="cut" ColumnName="cut" />
-          <ScalarProperty Name="label" ColumnName="label" />
+          <ScalarProperty Name="common_id" ColumnName="common_id" />
+          <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="plasmid_map_backup">
+      <EntityTypeMapping TypeName="ecloningModel.plasmid_map_backup">
+        <MappingFragment StoreEntitySet="plasmid_map_backup">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+          <ScalarProperty Name="show_feature" ColumnName="show_feature" />
+          <ScalarProperty Name="feature" ColumnName="feature" />
+          <ScalarProperty Name="feature_id" ColumnName="feature_id" />
+          <ScalarProperty Name="start" ColumnName="start" />
+          <ScalarProperty Name="end" ColumnName="end" />
+          <ScalarProperty Name="cut" ColumnName="cut" />
+          <ScalarProperty Name="common_id" ColumnName="common_id" />
           <ScalarProperty Name="clockwise" ColumnName="clockwise" />
           <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>

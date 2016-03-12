@@ -16,7 +16,7 @@ namespace ecloning.Models
         public int id { get; set; }
         [Required(ErrorMessage = "Required")]
         public string name { get; set; }
-        [RegularExpression("^[ATGCatgc ]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
+        [RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
         public string sequence { get; set; }
         [Required(ErrorMessage = "Required")]
         public int seq_length { get; set; }

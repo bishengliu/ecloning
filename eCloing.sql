@@ -358,8 +358,10 @@ CREATE TABLE common_feature
 	label NVARCHAR(200) NOT NULL,
 	[sequence] text NOT NULL,
 	[des] TEXT,
+	group_id INT NOT NULL,
+	CONSTRAINT fk_common_feature_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT fk_common_feature_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id),
-	CONSTRAINT uq_common_feature_label UNIQUE (label)
+	CONSTRAINT uq_common_feature_label_group_id UNIQUE (label, group_id)
 );
 
 
