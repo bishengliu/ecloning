@@ -3,60 +3,86 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var JsonLabel = ViewBag.JsonLabel;
 }
 
-<h2>Edit</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>common_feature</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.id)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.feature_id, "feature_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("feature_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.feature_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.label, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.label, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.label, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.sequence, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.sequence, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.des, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.des, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+<div class="row">
+    <div class="col-md-offset-4 col-md-4 col-xs-12">
+        <h3 class="text-warning">Edit Feature</h3>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
+    <div class="col-sm-4 col-xs-12" style="position:relative;top:15px;">
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+    </div>
 </div>
+<span id="decodeIt" class="hidden"></span>
+
+<div class="container">
+    <hr class="dotted-line" />
+    <div>
+        @using (Html.BeginForm(Html.BeginForm(null, null, FormMethod.Post, new { id = "target" })))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.id)
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6" style="display: inline-block">
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.group_id, "Research Group", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("group_id", null, "-- Select --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.group_id, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.feature_id, "Features", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("feature_id", null, "-- Select --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.feature_id, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.label, "Feature Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.label, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.label, "", new { @class = "text-danger" })
+                                <p class="text-danger" style="font-size:85%;" id="labelValid"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.des, "Remarks", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(model => model.des, 10, 150, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6" style="display: inline-block">
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(model => model.sequence, 18, 150, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-offset-8 col-md-6 col-xs-offset-4">
+                            <input type="submit" id="submit" value="Add Feature" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+
+

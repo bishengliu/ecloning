@@ -192,3 +192,17 @@ textarea {
 	  background: #187ed5;
 	  font-weight: bold;
 	}
+
+    .dataTables_filter{
+        float:right;
+    }
+    .pagination{
+        float:right;
+    }
+    .dataTables_info{
+        display:none;
+    }
+
+.table.dataTable thead .sorting { background: url('/sorter/bg.gif') no-repeat center right; }
+.table.dataTable thead .sorting_asc { background: url('/sorter/asc.gif') no-repeat center right; }
+.table.dataTable thead .sorting_desc { background: url('/sorter/desc.gif') no-repeat center right; }

@@ -81,7 +81,7 @@ namespace ecloning.Controllers
                     Value = i.Key.ToString()
                 });
             }
-            ViewBag.group_id = listItems;
+            ViewBag.group_id = new SelectList(listItems, "Value", "Text", common_feature.group_id);
             //pass json of label in current group
             var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
@@ -100,6 +100,7 @@ namespace ecloning.Controllers
         [Authorize]
         public ActionResult Edit(int? id)
         {
+            //id is the table id of common features
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -109,7 +110,28 @@ namespace ecloning.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.feature_id = new SelectList(db.plasmid_feature, "id", "feature", common_feature.feature_id);
+
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+
+            //prepare selectList
+            List<SelectListItem> listItems = new List<SelectListItem>();
+            foreach (var i in groupInfo.groupIdName)
+            {
+                listItems.Add(new SelectListItem
+                {
+                    Text = i.Value,
+                    Value = i.Key.ToString()
+                });
+            }
+            ViewBag.group_id = new SelectList(listItems, "Value", "Text", common_feature.group_id);
+            //pass json of label in current group
+            var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
+            ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
+
             return View(common_feature);
         }
 
@@ -121,13 +143,34 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,feature_id,label,sequence,group_id,des")] common_feature common_feature)
         {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+
+            //prepare selectList
+            List<SelectListItem> listItems = new List<SelectListItem>();
+            foreach (var i in groupInfo.groupIdName)
+            {
+                listItems.Add(new SelectListItem
+                {
+                    Text = i.Value,
+                    Value = i.Key.ToString()
+                });
+            }
+            ViewBag.group_id = new SelectList(listItems, "Value", "Text", common_feature.group_id);
+            //pass json of label in current group
+            var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
+            ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
+
+
             if (ModelState.IsValid)
             {
                 db.Entry(common_feature).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.feature_id = new SelectList(db.plasmid_feature, "id", "feature", common_feature.feature_id);
             return View(common_feature);
         }
 

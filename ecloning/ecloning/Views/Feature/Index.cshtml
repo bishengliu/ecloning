@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-3 col-md-offset-1">
-        <h3 class="text-warning">Common Plasmid Features</h3>
+        <h3 class="text-warning">Plasmid Features</h3>
     </div>
 
     <div class="col-sm-2 col-xs-4">
@@ -38,70 +38,74 @@
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table">
-                    <tr>
-                        <th>
-                            Feature
-                        </th>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Sequence
-                        </th>
-                        <th>
-                            Group
-                        </th>
-                        <th>
-                            Remarks
-                        </th>
-                        <th></th>
-                    </tr>
 
-                    @foreach (var item in Model)
-                    {
+                <table id="featureTable" class="table">
+                    <thead>
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.label)
-                            </td>
-                            <td>
-                                @if (item.sequence.Count() >= 50)
-                                {
-                                    
-                                    var GenerateModel = new ecloning.Models.ModalSeq(item.sequence, item.group_id, item.label, 125);
-                                    <span>@Html.Raw(GenerateModel.ModalRawHTML())</span>
-                                }
-                                else
-                                {
-                                    <span>@item.sequence</span>
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.group.name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.des)
-                            </td>
-                            <td>
-                                <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
-                                    <i class="glyphicon glyphicon-pencil text-danger"></i>
-                                    <span>Feature</span>
-                                </a> 
-                                <span>&nbsp;</span>
-                                <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
-                                    <i class="glyphicon glyphicon-trash text-danger"></i>
-                                    <span>Feature</span>
-                                </a>
-                            </td>
+                            <th>
+                                Feature
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th class="no-sort">
+                                Sequence
+                            </th>
+                            <th >
+                                Group
+                            </th>
+                            <th class="no-sort">
+                                Remarks
+                            </th>
+                            <th class="no-sort"></th>
                         </tr>
-                    }
+
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.label)
+                                </td>
+                                <td>
+                                    @if (item.sequence.Count() >= 50)
+                                    {
+
+                                        var GenerateModel = new ecloning.Models.ModalSeq(item.sequence, item.group_id, item.label, 125);
+                                        <span>@Html.Raw(GenerateModel.ModalRawHTML())</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@item.sequence</span>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.group.name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.des)
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
+                                        <i class="glyphicon glyphicon-pencil text-danger"></i>
+                                        <span>Feature</span>
+                                    </a>
+                                    <span>&nbsp;</span>
+                                    <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
+                                        <i class="glyphicon glyphicon-trash text-danger"></i>
+                                        <span>Feature</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
 
                 </table>
-            </div>
+
         }
     </div>
     <div class="col-sm-1 hidden-xs"></div>
@@ -110,14 +114,12 @@
 @Scripts.Render("~/bundles/jquery")
 
 <script type="text/javascript">
-
-    $(window).load(function () {
-        // executes when complete page is fully loaded, including all frames, objects and images
-        $('table').paging({
-            limit: 25,
-            rowDisplayStyle: 'block',
-            activePage: 0,
-            rows: []
-        });       
+    $(document).ready(function () {
+        $('#featureTable').DataTable({
+            responsive: true,
+            columnDefs: [
+                { targets: 'no-sort', orderable: false }
+            ]
+        });
     });
 </script>
