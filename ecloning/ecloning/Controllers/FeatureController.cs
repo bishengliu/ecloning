@@ -17,6 +17,7 @@ namespace ecloning.Controllers
         private ecloningEntities db = new ecloningEntities();
 
         // GET: Feature
+        [Authorize]
         public ActionResult Index()
         {
             //get userId
@@ -31,6 +32,7 @@ namespace ecloning.Controllers
 
 
         // GET: Feature/Create
+        [Authorize]
         public ActionResult Create()
         {
             //get userId
@@ -60,6 +62,7 @@ namespace ecloning.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,feature_id,label,sequence,group_id,des")] common_feature common_feature)
         {
@@ -94,6 +97,7 @@ namespace ecloning.Controllers
         }
 
         // GET: Feature/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -113,6 +117,7 @@ namespace ecloning.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,feature_id,label,sequence,group_id,des")] common_feature common_feature)
         {
@@ -127,6 +132,7 @@ namespace ecloning.Controllers
         }
 
         // GET: Feature/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -143,6 +149,7 @@ namespace ecloning.Controllers
 
         // POST: Feature/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {

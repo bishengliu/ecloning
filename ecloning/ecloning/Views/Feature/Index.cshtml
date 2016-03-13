@@ -16,24 +16,7 @@
         <h3>
             <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Feature")">
                 <i class="glyphicon glyphicon-plus text-danger"></i>
-                <span>Feature</span>
-            </a>
-        </h3>
-    </div>
-
-    <div class="col-sm-2 col-xs-4">
-        <h3>
-            <a class="btn btn-sm btn-primary" href="@Url.Action("Edit", "Feature")">
-                <i class="glyphicon glyphicon-pencil text-danger"></i>
-                <span>Feature</span>
-            </a>
-        </h3>
-    </div>
-    <div class="col-sm-2 col-xs-4">
-        <h3>
-            <a class="btn btn-sm btn-primary" href="@Url.Action("Delete", "Feature")">
-                <i class="glyphicon glyphicon-trash text-danger"></i>
-                <span>Feature</span>
+                <span>Add Feature</span>
             </a>
         </h3>
     </div>
@@ -68,8 +51,12 @@
                             Sequence
                         </th>
                         <th>
+                            Group
+                        </th>
+                        <th>
                             Remarks
                         </th>
+                        <th></th>
                     </tr>
 
                     @foreach (var item in Model)
@@ -84,7 +71,9 @@
                             <td>
                                 @if (item.sequence.Count() >= 50)
                                 {
-                                    <span>@item.sequence.Substring(0, 50) ...<em class="text-danger">show the seq in modal</em></span>
+                                    
+                                    var GenerateModel = new ecloning.Models.ModalSeq(item.sequence, item.group_id, item.label, 125);
+                                    <span>@Html.Raw(GenerateModel.ModalRawHTML())</span>
                                 }
                                 else
                                 {
@@ -92,7 +81,21 @@
                                 }
                             </td>
                             <td>
+                                @Html.DisplayFor(modelItem => item.group.name)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.des)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
+                                    <i class="glyphicon glyphicon-pencil text-danger"></i>
+                                    <span>Feature</span>
+                                </a> 
+                                <span>&nbsp;</span>
+                                <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
+                                    <i class="glyphicon glyphicon-trash text-danger"></i>
+                                    <span>Feature</span>
+                                </a>
                             </td>
                         </tr>
                     }
@@ -104,3 +107,17 @@
     <div class="col-sm-1 hidden-xs"></div>
 </div>
     
+@Scripts.Render("~/bundles/jquery")
+
+<script type="text/javascript">
+
+    $(window).load(function () {
+        // executes when complete page is fully loaded, including all frames, objects and images
+        $('table').paging({
+            limit: 25,
+            rowDisplayStyle: 'block',
+            activePage: 0,
+            rows: []
+        });       
+    });
+</script>

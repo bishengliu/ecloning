@@ -19,6 +19,7 @@ namespace ecloning.Controllers
         private ecloningEntities db = new ecloningEntities();
 
         // GET: Plasmid
+        [Authorize]
         public ActionResult Index()
         {
             //get current login email
@@ -351,6 +352,7 @@ namespace ecloning.Controllers
             return View();
         }
 
+        [Authorize]
         // GET: Plasmid/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -472,6 +474,7 @@ namespace ecloning.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {

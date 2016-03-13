@@ -338,6 +338,7 @@
     <Compile Include="Models\minus80.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ModalSeq.cs" />
     <Compile Include="Models\nuclease.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
