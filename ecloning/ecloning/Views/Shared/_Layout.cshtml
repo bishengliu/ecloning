@@ -45,19 +45,22 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="@Url.Action("Index", "Home")">
-                            <span class="text-text-info">Home</span>
+                            <i class="fa fa-home"></i>
+                            <span class="">Home</span>
                         </a>
                     </li>
                     @if (User.Identity.IsAuthenticated)
                     {
                        <li>
                            <a href="@Url.Action("Index", "Plasmid")">
-                               <span class="text-text-info">Plasmids</span>
+                               <i class="fa fa-genderless fa-lg"></i>
+                               <span class="">Plasmids</span>
                            </a>
                        </li>
                         <li>
                             <a href="@Url.Action("Index", "Feature")">
-                                <span class="text-text-info">Features</span>
+                                <i class="fa fa-circle-o-notch fa-rotate-270"></i>
+                                <span class="">Features</span>
                             </a>
                         </li>
                     }
