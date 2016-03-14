@@ -206,3 +206,44 @@ textarea {
 .table.dataTable thead .sorting { background: url('/sorter/bg.gif') no-repeat center right; }
 .table.dataTable thead .sorting_asc { background: url('/sorter/asc.gif') no-repeat center right; }
 .table.dataTable thead .sorting_desc { background: url('/sorter/desc.gif') no-repeat center right; }
+
+
+#please-wait
+{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+    #please-wait .modal
+    {
+        z-index: 1999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        background-color: black;
+        margin-left: 0;
+    }
+
+    #please-wait .spinner
+    {
+        z-index: 2000;
+        padding-top: 20px;
+        padding-left: 20px;
+        background: #E5E5E5 url("loading.gif") no-repeat 15px center;
+        width: 120px;
+        height: 40px;
+        border: 2px solid #666;
+        font-weight: bold;
+        text-align: center;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        top: 35%;
+        display: block;
+    }

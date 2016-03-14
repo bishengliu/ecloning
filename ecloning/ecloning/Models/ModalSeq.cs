@@ -46,7 +46,7 @@ namespace ecloning.Models
             string html = "<span>";
             html += "<a data-toggle=\"modal\" data-target=" + refId + ">";
             //html += "<i class=\"glyphicon glyphicon-eye-open text-warning\"></i>";
-            html += "<span>" + aText + "</span>";
+            html += "<span style=\"font-family: courier !important;\">" + aText + "</span>";
             html += "</a><br/>";
 
             html += "<div id=\"" + Id + "\" class=\"modal fade\" role=\"dialog\">";

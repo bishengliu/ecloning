@@ -223,7 +223,7 @@
                                             
                                             <span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>
                                             <br />
-                                            <a href="@Url.Action("Index", "Map", new { id = item.id })">
+                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag="dispaly" })">
                                                 <i class="fa fa-bullseye text-info"></i>
                                                 @*<span class="fa-stack">
                                                     <i class="fa fa-circle-thin fa-stack-1x text-danger"></i>

@@ -8,6 +8,7 @@
     string Sequence = (string)ViewBag.Sequence;
     int seqCount = (int)ViewBag.SeqLength;
     var features = ViewBag.Features;
+    var Finished = (string)ViewBag.Finished;
 }
 
 <div class="row">
@@ -18,6 +19,7 @@
 <span id="decodeIt" class="hidden"></span>
 <span id="sequence" class="hidden">@seqCount</span>
 <span id="name" class="hidden">@Name</span>
+<span id="finished" class="hidden">@Finished</span>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-5 col-md-offset-1">        
         <div id="giraffe-map"></div>
@@ -25,20 +27,30 @@
     <div class="col-xs-12 col-sm-12 col-md-6">
         <div class="col-md-12 hidden-sm hidden-xs"><br/><br/></div>
         <div class="row">
-            <div class="col-sm-3 col-sm-offset-1 col-xs-4">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3">
                 <a class="btn btn-link" href="@Url.Action("Create", "Map", new { plasmid_id = plasmidId })">
                     <i class="glyphicon glyphicon-plus text-danger"></i>
                     <span>Features</span>
                 </a>
             </div>
+            @if (Sequence != null)
+            {
+                <div class="col-sm-3 col-xs-3">
+                    <a class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="autogenerate" })">
+                        <i class="fa fa-spinner text-danger"></i>
+                        <span>AutoGenerate</span>
+                    </a>
+                </div>
+            }
+
             @if (Model.Count() > 0)
             {
                 if (Sequence != null)
                 {
                     //allow only to change whether to show or not
-                    <div class="col-sm-3 col-xs-4">
+                    <div class="col-sm-3 col-xs-3">
                         <a class="btn btn-link" href="@Url.Action("Change", "Map", new { plasmid_id = plasmidId })">
-                            <i class="glyphicon glyphicon-pencil text-danger"></i>
+                            <i class="fa fa-pencil-square-o text-danger"></i>
                             <span>Features</span>
                         </a>
                     </div>
@@ -46,15 +58,15 @@
                 else
                 {
                     //allow to change everything except label and feature name
-                    <div class="col-sm-3 col-xs-4">
+                    <div class="col-sm-3 col-xs-3">
                         <a class="btn btn-link" href="@Url.Action("Change", "Map", new { plasmid_id = plasmidId })">
-                            <i class="glyphicon glyphicon-pencil text-danger"></i>
+                            <i class="fa fa-pencil-square-o text-danger"></i>
                             <span>Features</span>
                         </a>
                     </div>
                 }
 
-                <div class="col-sm-3 col-xs-4">
+                <div class="col-sm-3 col-xs-3">
                     <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
                         <i class="glyphicon glyphicon-trash text-danger"></i>
                         <span>Features</span>
@@ -63,6 +75,12 @@
             }
            
         </div>
+
+        <div id="please-wait" class="hidden">
+            <div class="modal"></div>
+            <div class="spinner fa fa-spinner fa-pulse">Loading...</div>
+        </div>
+
         @if (Model.Count() == 0)
         {
             <div>
@@ -180,4 +198,15 @@
     {
         //alert(e);
     }
+</script>
+<script>
+    var status = $("#finished").textContent;
+
+    if (status == "Finished")
+    {
+        $("#please-wait").removeClass();
+    }
+
+
+
 </script>

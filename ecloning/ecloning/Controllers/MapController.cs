@@ -16,7 +16,7 @@ namespace ecloning.Controllers
         private ecloningEntities db = new ecloningEntities();
         [Authorize]
         // GET: Map
-        public ActionResult Index(int? id)
+        public ActionResult Index(int? id, string tag)
         {
             //id is plasmid table id and plasmid id
             if (id == null)
@@ -28,23 +28,27 @@ namespace ecloning.Controllers
             {
                 return HttpNotFound();
             }
+
             ViewBag.Name = plasmid.name;
             ViewBag.Id = id;
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.Finished = "NotFinished";
 
+
+            if (tag == "autogenerate")
+            {
+                //auto generate features
+                ViewBag.Finished = "Finished";
+            }
 
             //display all features of the current plasmid
             var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p=>p.plasmid_id==id);
-
 
             //pass json
 
             var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature.label, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
-
-
-
             return View(plasmid_map.ToList());
         }
 
