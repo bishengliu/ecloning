@@ -86,3 +86,76 @@
 
 
 
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#feature_id").chosen();
+        $("#group_id").chosen();
+    });
+</script>
+
+<script>
+    //remove all non letter in the seqeuce input
+    $('#sequence').change(function () {
+        var before = $('#sequence').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z 0-9]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#sequence').val(after);
+    });
+</script>
+
+<script>
+
+    //get label data
+    var JsonLabel = ("@JsonLabel");
+    document.getElementById("decodeIt").innerHTML = JsonLabel;
+    JsonLabel = document.getElementById("decodeIt").textContent;
+    try {
+        Labels = JSON.parse(JsonLabel);
+        //check the exsitence of the label in a group id
+        $('#label').change(function () {
+            $("#target").unbind('submit');
+            //get the label
+            label = $("#label").val();
+            if (!label.trim())
+            {
+                //get group id
+                groupIdString = $("#group_id").val();
+                groupId = parseInt(groupIdString);
+                if (groupId != null) {
+                    //check whether label is unique
+                    $.each(Labels, function (index) {
+                        if (Labels[index]["label"] === label && Labels[index]["group"] === groupId) {
+                            //stop submitting the form
+                            $("#target").submit(function (event) {
+                                $("#labelValid").text('"Feature Name" already exists!');
+                                event.preventDefault();
+                            });
+                        }
+                    });
+                }
+                else {
+                    //check whether label is unique
+                    $.each(Labels, function (index) {
+                        if (Labels[index]["label"] === label) {
+                            //stop submitting the form
+                            $("#target").submit(function (event) {
+                                $("#labelValid").text('"Feature Name" already exists!');
+                                event.preventDefault();
+                            });
+                        }
+                    });
+                }
+            }
+
+        });
+
+    }
+    catch (e) {
+        //alert(e);
+
+    }
+</script>

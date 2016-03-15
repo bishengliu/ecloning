@@ -16,20 +16,21 @@ namespace ecloning.Models
         }
 
         //for all features that are not restriction cut
-        public static IEnumerable<int> NotRestriction(this string fullSeq, string subSeq)
+        public static List<int> NotRestriction(string fullSeq, string subSeq)
         {
             //full seq can be forward and reverse
+            List<int> indexes = new List<int>();
             for (int index = 0; ; index += subSeq.Length)
             {
                 index = fullSeq.IndexOf(subSeq, index);
                 if (index == -1)
-                    break;
-                yield return index;
+                    return indexes;
+                indexes.Add(index);
             }
         }
 
         //for all restriciton cut for both forward and reverse
-        public static IDictionary<int, bool> Restriction(this string fullSeq, string subSeq)
+        public static IDictionary<int, bool> Restriction(string fullSeq, string subSeq)
         {
             //full seq can be forward and reverse
 
@@ -42,6 +43,7 @@ namespace ecloning.Models
                 {
                     //check possible cut blockage: CpG methylation, Dam and Dcm
                     //need to understand how blockage happens
+                    //need to check both forward and reverse sequecen for cut blockage
                     blockage = true;
                     dict.Add(index, blockage);
                 }
@@ -52,6 +54,9 @@ namespace ecloning.Models
             }
             return dict;
         }
+
+        //find ORF
+
 
     }
 }

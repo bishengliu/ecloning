@@ -223,17 +223,12 @@
                                             
                                             <span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>
                                             <br />
-                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag="dispaly" })">
+                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
                                                 <i class="fa fa-bullseye text-info"></i>
-                                                @*<span class="fa-stack">
-                                                    <i class="fa fa-circle-thin fa-stack-1x text-danger"></i>
-                                                    <i class="fa fa-circle-o-notch fa-stack-1x text-info"></i>
-                                                </span>*@
                                                 <span>Plasmid Map</span>
                                             </a>
                                         </td>
                                         <td class="col-sm-2">
-
                                             <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
                                                 <i class="fa fa-pencil-square-o text-info"></i>
                                                 <span>Edit</span>
@@ -374,7 +369,7 @@
                                                                     <span class="text-info"><strong>Linked File: </strong></span>
                                                                     <span>
                                                                         <a href="@Url.Action("Download", "Plasmid", new { fileName=item.img_fn })">
-                                                                            <span style="color:black">@item.img_fn</span><i class="glyphicon glyphicon-arrow-down" style="font-size:80%; color:black;"></i>
+                                                                            <span style="color:black">@item.img_fn</span><i class="fa fa-download" style="font-size:80%; color:black;"></i>
                                                                         </a>
                                                                     </span><span>&nbsp;&nbsp;</span>
                                                                 }
@@ -412,8 +407,8 @@
                                                                         <!-- Trigger the modal with a button -->
                                                                         @*<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open text-warning"></i>&nbsp;Full Sequence</button>*@
                                                                         <a data-toggle="modal" data-target=@refId>
-                                                                            <i class="glyphicon glyphicon-eye-open text-warning"></i>
-                                                                            <span>Full Sequence</span>
+                                                                            <i class="fa fa-align-justify text-info"></i>
+                                                                            <span>Plasmid Sequence</span>
                                                                         </a>
                                                                         <br />
                                                                         
@@ -470,8 +465,12 @@
                                                                         </div>
                                                                     </span>
                                                                 }
-                                                                <span class="glyphicon glyphicon-resize-horizontal text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>
-
+                                                                <span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>
+                                                                <br />
+                                                                <a href="@Url.Action("Index", "Map", new { id = item.id, tag="groupDispaly" })">
+                                                                    <i class="fa fa-bullseye text-info"></i>
+                                                                    <span>Plasmid Map</span>
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                     }

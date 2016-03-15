@@ -18,8 +18,38 @@ namespace ecloning.Models
             Sequence = seq;
 
             //remove exsited features to backup table
+            var currentPlasmidMap = db.plasmid_map.Where(p => p.plasmid_id == PlasmidId);
+            if (currentPlasmidMap.Count() > 0)
+            {
+                //remove all the previous backuped features
+                var previousBackup = db.plasmid_map_backup.Where(p => p.plasmid_id == PlasmidId);
+                if (previousBackup.Count() > 0)
+                {
+                    foreach (var b in previousBackup.ToList())
+                    {
+                        db.plasmid_map_backup.Remove(b);
+                    }
+                }
 
-            //copy existed features into backup table
+                //backup current features
+                foreach (var c in currentPlasmidMap.ToList())
+                {
+                    var b  = new plasmid_map_backup();
+                    b.plasmid_id = PlasmidId;
+                    b.show_feature = c.show_feature;
+                    b.feature = c.feature;
+                    b.feature_id = c.feature_id;
+                    b.start = c.start;
+                    b.end = c.end;
+                    b.cut = c.cut;
+                    b.common_id = c.common_id;
+                    b.clockwise = c.clockwise;
+                    b.des = c.des;
+                    db.plasmid_map_backup.Add(b);
+                    db.plasmid_map.Remove(c);
+                }
+            }
+            
 
             //put all features in list except ORF
             var features = db.common_feature.Where(f => f.plasmid_feature.feature != "orf");
@@ -29,18 +59,60 @@ namespace ecloning.Models
             }
             else
             {
-
                 //find common features
+                //except restriction cut and ORF
                 foreach(var item in features.ToList())
                 {
                     //find all the indexes of features in both forward and reserver seq
+                    //feature sequence
+                    var subSeq = item.sequence;
+
                     //forward
+                    List<int> indexes1 = new List<int>();
+                    indexes1 = FindSeq.NotRestriction(Sequence, subSeq);
+                    if (indexes1.Count() > 0)
+                    {
+                        //add to plasmd_feature
+                        foreach(int index in indexes1)
+                        {
+                            var feature = new plasmid_map();
+                            feature.plasmid_id = PlasmidId;
+                            feature.show_feature = 1;
+                            feature.feature = item.label;
+                            feature.feature_id = item.feature_id;
+                            feature.start = index;
+                            feature.end = index + subSeq.Length;
+                            feature.common_id = item.id;
+                            feature.clockwise = 1;
+                            db.plasmid_map.Add(feature);
+                        }
+                        result = true;
+                    }
+
 
                     //reverse
-
-                    //if indexes founded
-                    result = true;
-                //add table
+                    //find both reverse sequence
+                    var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
+                    List<int> indexes2 = new List<int>();
+                    indexes2 = FindSeq.NotRestriction(Sequence, reversesubSeq);
+                    if (indexes2.Count() > 0)
+                    {
+                        //add to plasmd_feature
+                        foreach (int index in indexes2)
+                        {
+                            var feature = new plasmid_map();
+                            feature.plasmid_id = PlasmidId;
+                            feature.show_feature = 1;
+                            feature.feature = item.label;
+                            feature.feature_id = item.feature_id;
+                            feature.start = index;
+                            feature.end = index + subSeq.Length;
+                            feature.common_id = item.id;
+                            feature.clockwise = 1;
+                            db.plasmid_map.Add(feature);
+                        }
+                        result = true;
+                    }
                 }
 
             }
@@ -57,7 +129,7 @@ namespace ecloning.Models
 
 
                 //if indexes founded
-                result = true;
+                //result = true;
                 //add table
                 //don't add cut blockage
             }

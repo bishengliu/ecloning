@@ -267,6 +267,7 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AzureBlob.cs" />
+    <Compile Include="Models\BackupMap.cs" />
     <Compile Include="Models\clone_group.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -378,6 +379,7 @@
     <Compile Include="Models\protocol.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RestoreMap.cs" />
     <Compile Include="Models\restriction.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -757,7 +759,6 @@
     <Content Include="Views\Plasmid\Search.cshtml" />
     <Content Include="Views\Plasmid\SharePlasmid.cshtml" />
     <Content Include="Views\Shared\_Layout_Empty.cshtml" />
-    <Content Include="Views\Map\Create.cshtml" />
     <Content Include="Views\Map\Delete.cshtml" />
     <Content Include="Views\Map\Details.cshtml" />
     <Content Include="Views\Map\Edit.cshtml" />
@@ -768,6 +769,7 @@
     <Content Include="Views\Feature\Delete.cshtml" />
     <Content Include="Views\Feature\Edit.cshtml" />
     <Content Include="Views\Feature\Index.cshtml" />
+    <Content Include="Views\Map\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

@@ -33,20 +33,36 @@ namespace ecloning.Controllers
             ViewBag.Id = id;
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
-            ViewBag.Finished = "NotFinished";
 
-
+            //autogenerate
             if (tag == "autogenerate")
             {
                 //auto generate features
-                ViewBag.Finished = "Finished";
+                var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+            }
+
+            //backup
+            if (tag == "backup")
+            {
+                //backup plasmid map
+                var Backup = new BackupMap(plasmid.id);
+            }
+
+            //restore
+            if (tag == "restore")
+            {
+                //restore plasmid map
+                var Restore = new RestoreMap(plasmid.id);
             }
 
             //display all features of the current plasmid
             var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p=>p.plasmid_id==id);
 
+            //find all the backup features in backup tablwe
+            var backup = db.plasmid_map_backup.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == id);
+            ViewBag.BackupCount = backup.Count();
+            ViewBag.Tag = tag;
             //pass json
-
             var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature.label, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             return View(plasmid_map.ToList());
@@ -54,10 +70,24 @@ namespace ecloning.Controllers
 
         [Authorize]
         // GET: Map/Create
-        public ActionResult Create()
+        public ActionResult Create(int? plasmid_id)
         {
-            ViewBag.plasmid_id = new SelectList(db.plasmids, "id", "name");
-            ViewBag.feature_id = new SelectList(db.plasmid_feature, "id", "feature");
+            //id is the plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Name = plasmid.name;
+            ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.PlasmidId = plasmid_id;
+
+
+            
             return View();
         }
 
