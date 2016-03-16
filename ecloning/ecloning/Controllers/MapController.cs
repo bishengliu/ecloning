@@ -70,6 +70,7 @@ namespace ecloning.Controllers
 
         [Authorize]
         // GET: Map/Create
+        //for no seq
         public ActionResult Create(int? plasmid_id)
         {
             //id is the plasmid id
@@ -85,9 +86,16 @@ namespace ecloning.Controllers
             ViewBag.Name = plasmid.name;
             ViewBag.SeqLength = plasmid.seq_length;
             ViewBag.PlasmidId = plasmid_id;
+            ViewBag.TableLength = 1;
 
+            ViewData["[0].feature_id"] = new SelectList(db.plasmid_feature.OrderBy(g => g.id), "id", "des");
+            ViewData["[0].show_feature"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", 1);
+            ViewData["[0].clockwise"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", 1);
 
-            
+            //find all plasmid
+            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
+            ViewBag.JsonFeatures = JsonConvert.SerializeObject(common_features.ToList());
+
             return View();
         }
 
@@ -97,18 +105,49 @@ namespace ecloning.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,plasmid_id,show_feature,feature,feature_id,start,end,cut,common_id,clockwise,des")] plasmid_map plasmid_map)
+        public ActionResult Create(int plasmid_id, [Bind(Include = "show_feature,feature_id,start,end,cut,common_id,clockwise")] IList<FeatureViewModel> features)
         {
+
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Name = plasmid.name;
+            ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.PlasmidId = plasmid_id;
+            ViewBag.TableLength = features.Count();
+            for(int i=0; i< features.Count(); i++)
+            {
+                ViewData["[" + i + "].feature_id"] = new SelectList(db.plasmid_feature.OrderBy(g => g.id), "id", "des", features[i].feature_id);
+                ViewData["[" + i + "].show_feature"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", features[i].show_feature);
+                ViewData["[" + i + "].clockwise"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", features[i].clockwise);
+            }
+            //find all plasmid
+            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
+            ViewBag.JsonFeatures = JsonConvert.SerializeObject(common_features.ToList());
+
             if (ModelState.IsValid)
             {
-                db.plasmid_map.Add(plasmid_map);
+                foreach(var item in features)
+                {
+                    var map = new plasmid_map();
+                    map.plasmid_id = plasmid_id;
+                    map.show_feature = item.show_feature;
+                    map.feature_id = item.feature_id;
+                    map.start = item.start;
+                    map.end = item.end;
+                    map.cut = item.cut;
+                    map.common_id = item.common_id;
+                    map.clockwise = item.clockwise;
+                    map.feature = "N.A.";
+                    db.plasmid_map.Add(map); 
+                }
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id = plasmid_id, tag= "personDispaly" });
             }
 
-            ViewBag.plasmid_id = new SelectList(db.plasmids, "id", "name", plasmid_map.plasmid_id);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature, "id", "feature", plasmid_map.feature_id);
-            return View(plasmid_map);
+            return View(features);
         }
 
         // GET: Map/Edit/5

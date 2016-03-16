@@ -302,6 +302,7 @@
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\eCloningSettings.cs" />
+    <Compile Include="Models\FeatureViewModel.cs" />
     <Compile Include="Models\FileTransfer.cs" />
     <Compile Include="Models\FindSeq.cs" />
     <Compile Include="Models\group.cs">

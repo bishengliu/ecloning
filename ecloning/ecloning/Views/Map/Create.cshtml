@@ -1,101 +1,157 @@
-﻿@model ecloning.Models.plasmid_map
+﻿@model IList<ecloning.Models.FeatureViewModel>
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int PlasmidId = (int)ViewBag.PlasmidId;
+    var JsonFeatures = ViewBag.JsonFeatures;
+    int SeqLength = (int)ViewBag.SeqLength;
+    int TableLength = ViewBag.TableLength;
 }
 
-<h2>Create</h2>
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="form-group required">
-            @Html.LabelFor(model => model.feature_id, "feature_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("feature_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.feature_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group required">
-            @Html.LabelFor(model => model.common_id, "common_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("common_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.common_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group required">
-            @Html.LabelFor(model => model.start, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.start, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.start, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group required">
-            @Html.LabelFor(model => model.end, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.end, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.end, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.cut, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.cut, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.cut, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.clockwise, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.clockwise, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.clockwise, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.show_feature, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.show_feature, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.show_feature, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.plasmid_id, "plasmid_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("plasmid_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.feature, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.feature, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.feature, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-3">
+        <h3 class="text-warning">Add features for @ViewBag.Name</h3>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
+    <div class="col-sm-offset-0 col-sm-2 col-xs-6" style="position:relative;top:14px;">
+        <br/>
+        <p class="text-right text-info"><em>Not found?</em> </p>
+    </div>
+    <div class="col-sm-offset-0 col-sm-2 col-xs-6" >
+        <br/>
+        @Html.ActionLink("New Feature", "NewFeature", null, new { @class = "btn btn-danger" })
+    </div>
+    <div class="col-sm-offset-0 col-sm-2 col-xs-6" style="float:right;">
+        <br/>
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+    </div>
 </div>
+<hr class="dotted-line" />
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="table-responsive">
+                    <table class="table table-condensed" id="dateTable">
+                        <thead>
+                            <tr>
+                                <th class="required col-xs-12 col-sm-2">Features</th>
+                                <th class="required col-xs-12 col-sm-5">Name</th>
+                                <th class="required col-xs-12 col-sm-1">Start Position</th>
+                                <th class="required col-xs-12 col-sm-1">End Position</th>
+                                <th class="col-xs-12 col-sm-1">Cut Position</th>
+                                <th class="col-xs-12 col-sm-1">Clockwise</th>
+                                <th class="col-xs-12 col-sm-1">Show Feature</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < TableLength; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DropDownListFor(model => model[i].feature_id, null, "--  Select  --", htmlAttributes: new { @class = "form-control features" })
+                                    </td>
+                                    <td>
+                                        @Html.EditorFor(model => model[i].common_id, new { htmlAttributes = new { @class = "form-control Common_Id" } })
+                                    </td>
+                                    <td>
+                                        @Html.EditorFor(model => model[i].start, new { htmlAttributes = new { @class = "form-control" } })
+                                    </td>
+                                    <td>
+                                        @Html.EditorFor(model => model[i].end, new { htmlAttributes = new { @class = "form-control" } })
+                                    </td>
+                                    <td>
+                                        @Html.EditorFor(model => model[i].cut, new { htmlAttributes = new { @class = "form-control" } })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model[i].clockwise, null, htmlAttributes: new { @class = "form-control" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model[i].show_feature, null, htmlAttributes: new { @class = "form-control" })
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                    <input class="btn btn-warning btn-sm" value="+ Feature" onclick="addRow('dateTable')" type="button">
+                    <input class="btn btn-warning btn-sm" value="- Feature" onclick="deleteRow('dateTable')" type="button">
+                </div>
+                <div class="form-group hidden">
+                    <div class="col-md-10">
+                        <input type="text" name="plasmid_id" value=@PlasmidId />
+                    </div>
+                </div>
+
+                <br/>
+                <div class="form-group">
+                    <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                        <input type="submit" value="Add Features" class="btn btn-block btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    var JsonData = ("@JsonFeatures");
+    document.getElementById("decodeIt").innerHTML = JsonData;
+    JsonData = document.getElementById("decodeIt").innerText;
+
+    try {
+        data = JSON.parse(JsonData);
+    } catch (e)
+    {
+    }
+
+    $(document).ready(function () {
+            $(".Common_Id").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type feature name to search',
+                tokenLimit: 1,
+                propertyToSearch: "label",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.label + " </b><span style='color: gray'>" + item.feature + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.label + "</b></p></li>" },
+            });
+
+            $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+    });
+</script>
+
+<script>
+    function addRow(tableID){
+        var table=document.getElementById(tableID);
+        var rowCount=table.rows.length;
+        var row=table.insertRow(rowCount);
+        var colCount=table.rows[0].cells.length;
+
+        for(var i=0;i<colCount;i++){
+            var newcell=row.insertCell(i);
+            newcell.innerHTML = table.rows[1].cells[i].innerHTML;
+        }
+    };
+
+    function deleteRow(tableID){
+        try{
+            var table=document.getElementById(tableID);
+            var rowCount=table.rows.length;
+            if(rowCount<=2){
+                alert("Cannot remove all features!");}
+            else
+            {
+                table.deleteRow(rowCount-1);
+            }
+        }
+        catch(e){alert(e);}
+    };
+</script>
