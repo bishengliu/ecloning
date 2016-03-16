@@ -127,7 +127,7 @@
 <br/>
 @if (Count > -2)
 {
-    <div class="row">
+     <div class="row">
         <div class="col-sm-11 col-sm-offset-1 text-center">
             <h3 class="text-warning">Plasmids Found</h3>
         </div>
@@ -160,6 +160,7 @@
                 <div class="row">
                     <div class="col-sm-1 hidden-xs"></div>
                     <div class="col-sm-10">
+                        <hr class="dotted-line" />
                         <div class="table-responsive">
                             <table class="table table-hover table-condensed">
                                 @foreach (var item in Model)
@@ -224,7 +225,7 @@
                                                 <span class="text-info"><strong>Linked File: </strong></span>
                                                 <span>
                                                     <a href="@Url.Action("Download", "Plasmid", new { fileName=item.img_fn })">
-                                                        <span style="color:black">@item.img_fn</span><i class="glyphicon glyphicon-arrow-down" style="font-size:80%; color:black;"></i>
+                                                        <span style="color:black">@item.img_fn</span><i class="fa fa-download" style="font-size:80%; color:black;"></i>
                                                     </a>
                                                 </span><span>&nbsp;&nbsp;</span>
                                             }
@@ -247,7 +248,7 @@
                                             <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
                                         </td>
                                         <td class="col-sm-4">
-                                                                                        @if (item.sequence != null)
+                                         @if (item.sequence != null)
                                             {
                                                 //count sequence
                                                 int countSeq = item.sequence.Length;
@@ -262,8 +263,8 @@
                                                 <span>
                                                     <!-- Trigger the modal with a button -->
                                                     <a data-toggle="modal" data-target=@refId>
-                                                        <i class="glyphicon glyphicon-eye-open text-warning"></i>
-                                                        <span>Full Sequence</span>
+                                                        <i class="fa fa-align-justify text-info"></i>
+                                                        <span>Plasmid Sequence</span>
                                                     </a>
                                                     <br />
                                                     <!-- Modal -->
@@ -319,8 +320,23 @@
                                                     </div>
                                                 </span>
                                             }
-                                            <span class="glyphicon glyphicon-resize-horizontal text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length)</span>
+                                            <span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length)</span>
                                             <br />
+                                            @if (sharedPlasmidId.Count > 0 &&  sharedPlasmidId.Contains(item.id))
+                                            {
+                                                <a href="@Url.Action("Index", "Map", new { id = item.id, tag="groupDispaly" })">
+                                                    <i class="fa fa-bullseye text-info"></i>
+                                                    <span>Plasmid Map</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
+                                                    <i class="fa fa-bullseye text-info"></i>
+                                                    <span>Plasmid Map</span>
+                                                </a>
+                                            }
+
                                         </td>
                                         <td class="col-sm-2">
                                             @if (sharedPlasmidId.Count >0 && sharedPlasmidId.Contains(item.id))
