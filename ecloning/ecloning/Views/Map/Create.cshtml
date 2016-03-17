@@ -41,8 +41,7 @@
                     <table class="table table-condensed" id="dateTable">
                         <thead>
                             <tr>
-                                <th class="required col-xs-12 col-sm-2">Features</th>
-                                <th class="required col-xs-12 col-sm-5">Name</th>
+                                <th class="required col-xs-12 col-sm-1">Name</th>
                                 <th class="required col-xs-12 col-sm-1">Start Position</th>
                                 <th class="required col-xs-12 col-sm-1">End Position</th>
                                 <th class="col-xs-12 col-sm-1">Cut Position</th>
@@ -55,10 +54,7 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DropDownListFor(model => model[i].feature_id, null, "--  Select  --", htmlAttributes: new { @class = "form-control features" })
-                                    </td>
-                                    <td>
-                                        @Html.EditorFor(model => model[i].common_id, new { htmlAttributes = new { @class = "form-control Common_Id" } })
+                                        @Html.DropDownListFor(model => model[i].common_id, null, htmlAttributes: new { @class = "form-control" })
                                     </td>
                                     <td>
                                         @Html.EditorFor(model => model[i].start, new { htmlAttributes = new { @class = "form-control" } })
@@ -79,9 +75,7 @@
                             }
 
                         </tbody>
-                    </table>
-                    <input class="btn btn-warning btn-sm" value="+ Feature" onclick="addRow('dateTable')" type="button">
-                    <input class="btn btn-warning btn-sm" value="- Feature" onclick="deleteRow('dateTable')" type="button">
+                    </table>                   
                 </div>
                 <div class="form-group hidden">
                     <div class="col-md-10">
@@ -103,55 +97,3 @@
 
 
 @Scripts.Render("~/bundles/jquery")
-<script>
-    var JsonData = ("@JsonFeatures");
-    document.getElementById("decodeIt").innerHTML = JsonData;
-    JsonData = document.getElementById("decodeIt").innerText;
-
-    try {
-        data = JSON.parse(JsonData);
-    } catch (e)
-    {
-    }
-
-    $(document).ready(function () {
-            $(".Common_Id").tokenInput(data, {
-                theme: 'facebook',
-                hintText: 'Type feature name to search',
-                tokenLimit: 1,
-                propertyToSearch: "label",
-                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.label + " </b><span style='color: gray'>" + item.feature + "</span></p></li>" },
-                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.label + "</b></p></li>" },
-            });
-
-            $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
-    });
-</script>
-
-<script>
-    function addRow(tableID){
-        var table=document.getElementById(tableID);
-        var rowCount=table.rows.length;
-        var row=table.insertRow(rowCount);
-        var colCount=table.rows[0].cells.length;
-
-        for(var i=0;i<colCount;i++){
-            var newcell=row.insertCell(i);
-            newcell.innerHTML = table.rows[1].cells[i].innerHTML;
-        }
-    };
-
-    function deleteRow(tableID){
-        try{
-            var table=document.getElementById(tableID);
-            var rowCount=table.rows.length;
-            if(rowCount<=2){
-                alert("Cannot remove all features!");}
-            else
-            {
-                table.deleteRow(rowCount-1);
-            }
-        }
-        catch(e){alert(e);}
-    };
-</script>

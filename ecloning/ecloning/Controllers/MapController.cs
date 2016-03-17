@@ -68,6 +68,64 @@ namespace ecloning.Controllers
             return View(plasmid_map.ToList());
         }
 
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult ChooseFeature(int? plasmid_id)
+        {
+            //id is the plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Name = plasmid.name;
+            ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.PlasmidId = plasmid_id;
+            //find all plasmid
+            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
+            ViewBag.JsonFeatures = JsonConvert.SerializeObject(common_features.ToList());
+            ViewBag.msg = "";
+            return View();
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ChooseFeature(int? plasmid_id, string feature)
+        {
+            //id is the plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Name = plasmid.name;
+            ViewBag.SeqLength = plasmid.seq_length;
+            ViewBag.PlasmidId = plasmid_id;
+            //find all plasmid
+            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
+            ViewBag.JsonFeatures = JsonConvert.SerializeObject(common_features.ToList());
+
+            if (string.IsNullOrWhiteSpace(feature))
+            {
+                ViewBag.msg = "At least one feature is required!";
+                return View();
+            }
+            TempData["feature"] = feature;
+            return RedirectToAction("Create", new { plasmid_id = plasmid_id });
+        }
+
+
+
         [Authorize]
         // GET: Map/Create
         //for no seq
@@ -86,11 +144,29 @@ namespace ecloning.Controllers
             ViewBag.Name = plasmid.name;
             ViewBag.SeqLength = plasmid.seq_length;
             ViewBag.PlasmidId = plasmid_id;
-            ViewBag.TableLength = 1;
 
-            ViewData["[0].feature_id"] = new SelectList(db.plasmid_feature.OrderBy(g => g.id), "id", "des");
-            ViewData["[0].show_feature"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", 1);
-            ViewData["[0].clockwise"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", 1);
+            if(TempData["feature"] == null)
+            {
+                TempData["error"] = "Something went woring, please try again!";
+                return RedirectToAction("ChooseFeature", new { id = plasmid_id });
+            }
+            //prepare common_id
+            List<int> CommonId = new List<int>();
+            var featureId = (string)TempData["feature"];
+            string[] idArray = featureId.Split(',');
+            foreach(var i in idArray)
+            {
+                CommonId.Add(Int32.Parse(i.ToString()));
+            }
+            ViewBag.TableLength = CommonId.Count();
+
+            for (int i = 0; i < CommonId.Count(); i++)
+            {
+                var defaultValue = CommonId[i];
+                ViewData["[" + i + "].common_id"] = new SelectList(db.common_feature.Where(f => f.id == defaultValue), "id", "label", defaultValue);
+                ViewData["[" + i + "].show_feature"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", 1);
+                ViewData["[" + i + "].clockwise"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", 1);
+            }
 
             //find all plasmid
             var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
@@ -105,7 +181,7 @@ namespace ecloning.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(int plasmid_id, [Bind(Include = "show_feature,feature_id,start,end,cut,common_id,clockwise")] IList<FeatureViewModel> features)
+        public ActionResult Create(int plasmid_id, [Bind(Include = "show_feature,start,end,cut,common_id,clockwise")] IList<FeatureViewModel> features)
         {
 
             plasmid plasmid = db.plasmids.Find(plasmid_id);
@@ -119,7 +195,8 @@ namespace ecloning.Controllers
             ViewBag.TableLength = features.Count();
             for(int i=0; i< features.Count(); i++)
             {
-                ViewData["[" + i + "].feature_id"] = new SelectList(db.plasmid_feature.OrderBy(g => g.id), "id", "des", features[i].feature_id);
+                var defaultValue = features[i].common_id;
+                ViewData["[" + i + "].common_id"] = new SelectList(db.common_feature.Where(f => f.id == defaultValue), "id", "label", defaultValue);
                 ViewData["[" + i + "].show_feature"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", features[i].show_feature);
                 ViewData["[" + i + "].clockwise"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", features[i].clockwise);
             }
@@ -129,21 +206,36 @@ namespace ecloning.Controllers
 
             if (ModelState.IsValid)
             {
+                int tag = 0;
                 foreach(var item in features)
                 {
-                    var map = new plasmid_map();
-                    map.plasmid_id = plasmid_id;
-                    map.show_feature = item.show_feature;
-                    map.feature_id = item.feature_id;
-                    map.start = item.start;
-                    map.end = item.end;
-                    map.cut = item.cut;
-                    map.common_id = item.common_id;
-                    map.clockwise = item.clockwise;
-                    map.feature = "N.A.";
-                    db.plasmid_map.Add(map); 
+
+                    //find the feature_id
+                    var featureCommon = db.common_feature.Find(item.common_id);
+                    if(featureCommon != null)
+                    {
+                        var map = new plasmid_map();
+                        map.plasmid_id = plasmid_id;
+                        map.show_feature = item.show_feature;
+                        map.feature_id = featureCommon.feature_id;
+                        map.start = item.start;
+                        map.end = item.end;
+                        map.cut = item.cut;
+                        map.common_id = item.common_id;
+                        map.clockwise = item.clockwise;
+                        map.feature = "N.A.";
+                        db.plasmid_map.Add(map);
+                        tag += 1; 
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
-                db.SaveChanges();
+                if(tag > 0)
+                {
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index", new { id = plasmid_id, tag= "personDispaly" });
             }
 
