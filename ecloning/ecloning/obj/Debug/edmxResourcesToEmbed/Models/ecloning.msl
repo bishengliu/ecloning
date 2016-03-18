@@ -343,6 +343,7 @@
           <ScalarProperty Name="common_id" ColumnName="common_id" />
           <ScalarProperty Name="clockwise" ColumnName="clockwise" />
           <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="locked" ColumnName="locked" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

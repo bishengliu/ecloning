@@ -17,16 +17,16 @@
     <div class="col-xs-12">
         <h3 class="text-warning text-center">
             Generate Plasmid <em>@Name</em> Map(@seqCount bp)&nbsp;
-            @if (Model.Count() > 0)
+            @if (Model.Count() > 0 && Model.FirstOrDefault().locked == 1)
             {
-                <a class="btn btn-md btn-link" href="@Url.Action("LockMap", "Map", new { id = plasmidId, tag="personDispaly" })">
-                    <i class="fa fa-unlock fa-2x pull-left text-danger"></i>
+                <a class="btn btn-md btn-link" href="@Url.Action("unLock", "Map", new { plasmid_id = plasmidId })">
+                    <i class="fa fa-lock fa-2x pull-left text-danger"></i>
                 </a>
             }
-            @if (Model.Count() > 0)
+            else
             {
-                <a class="btn btn-md btn-link" href="@Url.Action("unLockMap", "Map", new { id = plasmidId, tag="personDispaly" })">
-                    <i class="fa fa-lock fa-2x pull-left text-danger"></i>
+                <a class="btn btn-md btn-link" href="@Url.Action("Lock", "Map", new { plasmid_id = plasmidId})">
+                    <i class="fa fa-unlock fa-2x pull-left text-danger"></i>
                 </a>
             }
         </h3>
@@ -45,183 +45,187 @@
         <div class="col-md-12 hidden-sm hidden-xs"><br/></div>
         @if (Tag != "groupDispaly")
         {
-            if (Sequence != null)
+            if (Model.Count() > 0 && Model.FirstOrDefault().locked != 1)
             {
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                        <a id="autogenerate" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="autogenerate" })">
-                            <i class="fa fa-spinner text-danger"></i>
-                            <span>Auto</span>
-                        </a>
-                    </div>
-                    @if (BackupCount > 0)
-                    {
+                if (Sequence != null)
+                {
+                    <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a id="restore" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
-                                <i class="fa fa-undo text-danger"></i>
-                                <span>Restore</span>
+                            <a id="autogenerate" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="autogenerate" })">
+                                <i class="fa fa-spinner text-danger"></i>
+                                <span>Auto</span>
                             </a>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
-                                <i class="fa fa-undo text-muted"></i>
-                                <span class="text-muted">Restore</span>
-                            </a>
-                        </div>
-                    }
+                        @if (BackupCount > 0)
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a id="restore" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
+                                    <i class="fa fa-undo text-danger"></i>
+                                    <span>Restore</span>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
+                                    <i class="fa fa-undo text-muted"></i>
+                                    <span class="text-muted">Restore</span>
+                                </a>
+                            </div>
+                        }
 
-                    @if (Model.Count() > 0)
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a id="backup" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
-                                <i class="fa fa-copy text-danger"></i>
-                                <span>Backup</span>
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
-                                <i class="fa fa-copy text-muted"></i>
-                                <span class="text-muted">Backup</span>
-                            </a>
-                        </div>
-                    }
-                </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                        <a class="btn btn-link" href="@Url.Action("AddFeature", "Map", new { plasmid_id = plasmidId, tag="withseq" })">
-                            <i class="glyphicon glyphicon-plus text-danger"></i>
-                            <span class="">Add</span>
-                        </a>
+                        @if (Model.Count() > 0)
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a id="backup" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
+                                    <i class="fa fa-copy text-danger"></i>
+                                    <span>Backup</span>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
+                                    <i class="fa fa-copy text-muted"></i>
+                                    <span class="text-muted">Backup</span>
+                                </a>
+                            </div>
+                        }
                     </div>
-                    @if (Model.Count() > 0)
-                    {
-                        //allow only to change whether to show or not
+                    <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link" href="@Url.Action("Edit", "Map", new { plasmid_id = plasmidId })">
-                                <i class="fa fa-pencil-square-o text-danger"></i>
-                                <span>Edit</span>
+                            <a class="btn btn-link" href="@Url.Action("AddFeature", "Map", new { plasmid_id = plasmidId, tag="withseq" })">
+                                <i class="glyphicon glyphicon-plus text-danger"></i>
+                                <span class="">Add</span>
                             </a>
                         </div>
+                        @if (Model.Count() > 0)
+                        {
+                            //allow only to change whether to show or not
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link" href="@Url.Action("Edit", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="fa fa-pencil-square-o text-danger"></i>
+                                    <span>Edit</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="glyphicon glyphicon-trash text-danger"></i>
+                                    <span>Remove</span>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Edit", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="fa fa-pencil-square-o text-muted"></i>
+                                    <span class="text-muted">Edit</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="glyphicon glyphicon-trash text-muted"></i>
+                                    <span class="text-muted">Remove</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
-                                <i class="glyphicon glyphicon-trash text-danger"></i>
-                                <span>Remove</span>
+                            <a id="autogenerate" class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="autogenerate" })">
+                                <i class="fa fa-spinner text-muted"></i>
+                                <span class="text-muted">Auto</span>
                             </a>
                         </div>
-                    }
-                    else
-                    {
+                        @if (BackupCount > 0)
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a id="restore" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
+                                    <i class="fa fa-undo text-danger"></i>
+                                    <span>Restore</span>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
+                                    <i class="fa fa-undo text-muted"></i>
+                                    <span class="text-muted">Restore</span>
+                                </a>
+                            </div>
+                        }
+
+                        @if (Model.Count() > 0)
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a id="backup" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
+                                    <i class="fa fa-copy text-danger"></i>
+                                    <span>Backup</span>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
+                                    <i class="fa fa-copy text-muted"></i>
+                                    <span class="text-muted">Backup</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Edit", "Map", new { plasmid_id = plasmidId })">
-                                <i class="fa fa-pencil-square-o text-muted"></i>
-                                <span class="text-muted">Edit</span>
+                            <a class="btn btn-link" href="@Url.Action("ChooseFeature", "Map", new { plasmid_id = plasmidId, tag="noseq" })">
+                                <i class="glyphicon glyphicon-plus text-danger"></i>
+                                <span>Add</span>
                             </a>
                         </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
-                                <i class="glyphicon glyphicon-trash text-muted"></i>
-                                <span class="text-muted">Remove</span>
-                            </a>
-                        </div>
-                    }
-                </div>
+
+                        @if (Model.Count() > 0)
+                        {
+                            //allow to change everything except label and feature name
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link" href="@Url.Action("Change", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="fa fa-pencil-square-o text-danger"></i>
+                                    <span>Edit</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="glyphicon glyphicon-trash text-danger"></i>
+                                    <span>Remove</span>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            //allow to change everything except label and feature name
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Change", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="fa fa-pencil-square-o text-muted"></i>
+                                    <span class="text-muted">Edit</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                                <a class="btn btn-link disabled" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
+                                    <i class="glyphicon glyphicon-trash text-muted"></i>
+                                    <span class="text-muted">Remove</span>
+                                </a>
+                            </div>
+                        }
+
+                    </div>
+                }
             }
-            else
-            {
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                        <a id="autogenerate" class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="autogenerate" })">
-                            <i class="fa fa-spinner text-muted"></i>
-                            <span class="text-muted">Auto</span>
-                        </a>
-                    </div>
-                    @if (BackupCount > 0)
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a id="restore" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
-                                <i class="fa fa-undo text-danger"></i>
-                                <span>Restore</span>
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="restore" })">
-                                <i class="fa fa-undo text-muted"></i>
-                                <span class="text-muted">Restore</span>
-                            </a>
-                        </div>
-                    }
 
-                    @if (Model.Count() > 0)
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a id="backup" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
-                                <i class="fa fa-copy text-danger"></i>
-                                <span>Backup</span>
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="backup" })">
-                                <i class="fa fa-copy text-muted"></i>
-                                <span class="text-muted">Backup</span>
-                            </a>
-                        </div>
-                    }
-                </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                        <a class="btn btn-link" href="@Url.Action("ChooseFeature", "Map", new { plasmid_id = plasmidId, tag="noseq" })">
-                            <i class="glyphicon glyphicon-plus text-danger"></i>
-                            <span>Add</span>
-                        </a>
-                    </div>
-
-                    @if (Model.Count() > 0)
-                    {
-                        //allow to change everything except label and feature name
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link" href="@Url.Action("Change", "Map", new { plasmid_id = plasmidId })">
-                                <i class="fa fa-pencil-square-o text-danger"></i>
-                                <span>Edit</span>
-                            </a>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
-                                <i class="glyphicon glyphicon-trash text-danger"></i>
-                                <span>Remove</span>
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        //allow to change everything except label and feature name
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Change", "Map", new { plasmid_id = plasmidId })">
-                                <i class="fa fa-pencil-square-o text-muted"></i>
-                                <span class="text-muted">Edit</span>
-                            </a>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-                            <a class="btn btn-link disabled" href="@Url.Action("Delete", "Map", new { plasmid_id = plasmidId })">
-                                <i class="glyphicon glyphicon-trash text-muted"></i>
-                                <span class="text-muted">Remove</span>
-                            </a>
-                        </div>
-                    }
-
-                </div>
-            }
         }
 
         @if (Model.Count() == 0)
@@ -309,8 +313,6 @@
         
     </div>
 </div>
-
-
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")

@@ -227,6 +227,61 @@ namespace ecloning.Controllers
             return View(common_feature);
         }
 
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Lock(int? plasmid_id)
+        {
+            //id is plasmid table id and plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            //find all features in plasmid_map
+            var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
+            if (plasmid_map.Count() > 0)
+            {
+                foreach(var item in plasmid_map.ToList())
+                {
+                    item.locked = 1;
+                }
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index", "Map", new { id = plasmid_id, tag = "personDispaly" });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult unLock(int? plasmid_id)
+        {
+            //id is plasmid table id and plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            //find all features in plasmid_map
+            var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
+            if (plasmid_map.Count() > 0)
+            {
+                foreach (var item in plasmid_map.ToList())
+                {
+                    item.locked = 0;
+                }
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index", "Map", new { id = plasmid_id, tag = "personDispaly" });
+        }
+
         [Authorize]
         // GET: Map/Create
         //for no seq

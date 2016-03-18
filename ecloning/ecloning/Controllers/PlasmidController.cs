@@ -583,12 +583,22 @@ namespace ecloning.Controllers
 
                 if(plasmid.sequence != null)
                 {
-                    //backup plasmid map
-                    var Backup = new BackupMap(plasmid.id);
-                    //auto generate features
-                    var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
-                }
-                
+                    //if not locked
+                    int locked = 0;
+                    //find all feature
+                    var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid.id);
+                    if(plasmid_map.Count()>0 && plasmid_map.FirstOrDefault().locked == 1)
+                    {
+                        locked = 1;
+                    }
+                    if(locked != 1)
+                    {
+                        //backup plasmid map
+                        var Backup = new BackupMap(plasmid.id);
+                        //auto generate features
+                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                    }   
+                }                
 
                 //check whether user upload a file
                 var timeStamp = DateTime.Now.Millisecond.ToString();

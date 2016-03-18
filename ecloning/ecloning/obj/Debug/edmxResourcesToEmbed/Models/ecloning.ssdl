@@ -327,6 +327,7 @@
     <Property Name="common_id" Type="int" Nullable="false" />
     <Property Name="clockwise" Type="int" Nullable="false" />
     <Property Name="des" Type="text" />
+    <Property Name="locked" Type="int" />
   </EntityType>
   <EntityType Name="plasmid_map_backup">
     <Key>

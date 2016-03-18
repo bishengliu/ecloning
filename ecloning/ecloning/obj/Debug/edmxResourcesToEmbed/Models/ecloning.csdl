@@ -369,6 +369,7 @@
     <Property Name="common_id" Type="Int32" Nullable="false" />
     <Property Name="clockwise" Type="Int32" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="locked" Type="Int32" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="plasmid_map" ToRole="common_feature" />
     <NavigationProperty Name="plasmid" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid_map" ToRole="plasmid" />
     <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_map" ToRole="plasmid_feature" />
