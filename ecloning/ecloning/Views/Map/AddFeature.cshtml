@@ -1,0 +1,159 @@
+﻿@model ecloning.Models.common_feature
+@{
+    ViewBag.Title = "AddFeature";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var JsonLabel = ViewBag.JsonLabel;
+    var PlasmidId = (int)ViewBag.PlasmidId;
+    var Tag = (string)ViewBag.Tag;
+
+}
+
+<div class="row">
+    <div class="col-md-offset-4 col-md-4 col-xs-12">
+        <h3 class="text-warning">Add Feature</h3>
+    </div>
+    <div class="col-sm-4 col-xs-12" style="position:relative;top:15px;">
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<div class="container">
+    <hr class="dotted-line" />
+    <div class="row">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "target" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-lg-6 col-md-6" style="display: inline-block">
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.group_id, "Research Group", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("group_id", null, "-- Select --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.group_id, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.feature_id, "Features", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("feature_id", null, "-- Select --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.feature_id, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.label, "Feature Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.label, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.label, "", new { @class = "text-danger" })
+                                <p class="text-danger" style="font-size:85%;" id="labelValid"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.des, "Remarks", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(model => model.des, 10, 150, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6" style="display: inline-block">
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(model => model.sequence, 18, 150, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-offset-8 col-md-6 col-xs-offset-4">
+                            <input type="text" name="plasmid_id" value=@PlasmidId class="hidden"/>
+                            <input type="text" name="tag" value=@Tag class="hidden" />
+                            <input type="submit" id="submit" value="Add Feature" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#feature_id").chosen();
+        $("#group_id").chosen();
+    });
+</script>
+
+<script>
+    //remove all non letter in the seqeuce input
+    $('#sequence').change(function () {
+        var before = $('#sequence').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z 0-9]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#sequence').val(after);
+    });
+</script>
+
+<script>
+
+    //get label data
+    var JsonLabel = ("@JsonLabel");
+    document.getElementById("decodeIt").innerHTML = JsonLabel;
+    JsonLabel = document.getElementById("decodeIt").textContent;
+    try {
+        Labels = JSON.parse(JsonLabel);
+        //check the exsitence of the label in a group id
+        $('#label').change(function () {
+            $("#target").unbind('submit');
+            //get the label
+            label = $("#label").val();
+            if (!label.trim())
+            {
+                //get group id
+                groupIdString = $("#group_id").val();
+                groupId = parseInt(groupIdString);
+                if (groupId != null) {
+                    //check whether label is unique
+                    $.each(Labels, function (index) {
+                        if (Labels[index]["label"] === label && Labels[index]["group"] === groupId) {
+                            //stop submitting the form
+                            $("#target").submit(function (event) {
+                                $("#labelValid").text('"Feature Name" already exists!');
+                                event.preventDefault();
+                            });
+                        }
+                    });
+                }
+                else {
+                    //check whether label is unique
+                    $.each(Labels, function (index) {
+                        if (Labels[index]["label"] === label) {
+                            //stop submitting the form
+                            $("#target").submit(function (event) {
+                                $("#labelValid").text('"Feature Name" already exists!');
+                                event.preventDefault();
+                            });
+                        }
+                    });
+                }
+            }
+
+        });
+
+    }
+    catch (e) {
+        //alert(e);
+
+    }
+</script>
+

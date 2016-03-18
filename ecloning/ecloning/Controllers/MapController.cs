@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using ecloning.Models;
 using Newtonsoft.Json;
+using Microsoft.AspNet.Identity;
 
 namespace ecloning.Controllers
 {
@@ -124,7 +125,107 @@ namespace ecloning.Controllers
             return RedirectToAction("Create", new { plasmid_id = plasmid_id });
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult AddFeature(int? plasmid_id, string tag)
+        {
+            //id is the plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
 
+            ViewBag.PlasmidId = plasmid_id;
+            ViewBag.Tag = tag;
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des");
+
+            //prepare selectList
+            List<SelectListItem> listItems = new List<SelectListItem>();
+            foreach (var i in groupInfo.groupIdName)
+            {
+                listItems.Add(new SelectListItem
+                {
+                    Text = i.Value,
+                    Value = i.Key.ToString()
+                });
+            }
+            ViewBag.group_id = listItems;
+            //pass json of label in current group
+            var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
+            ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult AddFeature(int? plasmid_id, string tag, [Bind(Include = "id,feature_id,label,sequence,group_id,des")] common_feature common_feature)
+        {
+            //id is the plasmid id
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.PlasmidId = plasmid_id;
+            ViewBag.Tag = tag;
+
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+            //prepare selectList
+            List<SelectListItem> listItems = new List<SelectListItem>();
+            foreach (var i in groupInfo.groupIdName)
+            {
+                listItems.Add(new SelectListItem
+                {
+                    Text = i.Value,
+                    Value = i.Key.ToString()
+                });
+            }
+            ViewBag.group_id = new SelectList(listItems, "Value", "Text", common_feature.group_id);
+            //pass json of label in current group
+            var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
+            ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
+
+            if (ModelState.IsValid)
+            {
+                db.common_feature.Add(common_feature);
+                db.SaveChanges();
+                if(tag == "noseq")
+                {
+                    return RedirectToAction("ChooseFeature", "Map", new { plasmid_id = plasmid_id});
+                }
+                else
+                {
+                    if (plasmid.sequence != null)
+                    {
+                        //backup plasmid map
+                        var Backup = new BackupMap(plasmid.id);
+                        //auto generate features
+                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                    }
+                    return RedirectToAction("Index", "Map", new { id = plasmid_id, tag = "personDispaly" });
+                }
+            }
+
+            return View(common_feature);
+        }
 
         [Authorize]
         // GET: Map/Create
@@ -154,7 +255,7 @@ namespace ecloning.Controllers
             List<int> CommonId = new List<int>();
             var featureId = (string)TempData["feature"];
             string[] idArray = featureId.Split(',');
-            foreach(var i in idArray)
+            foreach(var i in idArray.Distinct())
             {
                 CommonId.Add(Int32.Parse(i.ToString()));
             }
@@ -169,7 +270,7 @@ namespace ecloning.Controllers
             }
 
             //find all plasmid
-            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
+            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.feature_id });
             ViewBag.JsonFeatures = JsonConvert.SerializeObject(common_features.ToList());
 
             return View();
@@ -201,35 +302,49 @@ namespace ecloning.Controllers
                 ViewData["[" + i + "].clockwise"] = new SelectList(db.dropdownitems.Where(c => c.category == "YN01").OrderBy(g => g.text), "value", "text", features[i].clockwise);
             }
             //find all plasmid
-            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.plasmid_feature.des });
+            var common_features = db.common_feature.OrderBy(n => n.label).Select(p => new { id = p.id, label = p.label, feature = p.feature_id });
             ViewBag.JsonFeatures = JsonConvert.SerializeObject(common_features.ToList());
 
             if (ModelState.IsValid)
             {
+                //find the exisiting plasmid map 
+                var currentMap = db.plasmid_map;
+                List<int> CommonId = new List<int>();
+                if(currentMap.Count() > 0)
+                {
+                    CommonId = currentMap.Select(c => c.common_id).ToList();
+                }
                 int tag = 0;
                 foreach(var item in features)
                 {
-
-                    //find the feature_id
-                    var featureCommon = db.common_feature.Find(item.common_id);
-                    if(featureCommon != null)
+                    //check whether already in the plasmid_map
+                    if (CommonId.Contains(item.common_id))
                     {
-                        var map = new plasmid_map();
-                        map.plasmid_id = plasmid_id;
-                        map.show_feature = item.show_feature;
-                        map.feature_id = featureCommon.feature_id;
-                        map.start = item.start;
-                        map.end = item.end;
-                        map.cut = item.cut;
-                        map.common_id = item.common_id;
-                        map.clockwise = item.clockwise;
-                        map.feature = "N.A.";
-                        db.plasmid_map.Add(map);
-                        tag += 1; 
+                        continue;
                     }
                     else
                     {
-                        continue;
+                        //find the feature_id
+                        var featureCommon = db.common_feature.Find(item.common_id);
+                        if(featureCommon != null)
+                        {
+                            var map = new plasmid_map();
+                            map.plasmid_id = plasmid_id;
+                            map.show_feature = item.show_feature;
+                            map.feature_id = featureCommon.feature_id;
+                            map.start = item.start;
+                            map.end = item.end;
+                            map.cut = item.cut;
+                            map.common_id = item.common_id;
+                            map.clockwise = item.clockwise;
+                            map.feature = "N.A.";
+                            db.plasmid_map.Add(map);
+                            tag += 1; 
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
                 if(tag > 0)
@@ -238,7 +353,7 @@ namespace ecloning.Controllers
                 }
                 return RedirectToAction("Index", new { id = plasmid_id, tag= "personDispaly" });
             }
-
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             return View(features);
         }
 
@@ -397,7 +512,7 @@ namespace ecloning.Controllers
                 db.plasmid_map.Remove(plasmid_map);
             }
             db.SaveChanges();
-            return RedirectToAction("Index", new { plasmid_id = plasmid_id});
+            return RedirectToAction("Index", new { id = plasmid_id, tag = "personDispaly" });
         }
 
         protected override void Dispose(bool disposing)

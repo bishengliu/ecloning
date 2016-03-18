@@ -245,6 +245,12 @@ namespace ecloning.Controllers
                 var timeStamp = DateTime.Now.Millisecond.ToString();
                 string fileName = null;
 
+                if (plasmid.sequence != null)
+                {
+                    //auto generate features
+                    var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                }
+
                 //upload img file
                 HttpPostedFileBase file = null;
                 file = Request.Files["img_fn"];
@@ -575,6 +581,14 @@ namespace ecloning.Controllers
                 Plasmid.insert_species = plasmid.insert_species;
                 Plasmid.img_fn = plasmid.img_fn;
 
+                if(plasmid.sequence != null)
+                {
+                    //backup plasmid map
+                    var Backup = new BackupMap(plasmid.id);
+                    //auto generate features
+                    var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                }
+                
 
                 //check whether user upload a file
                 var timeStamp = DateTime.Now.Millisecond.ToString();
@@ -852,6 +866,24 @@ namespace ecloning.Controllers
         {
             plasmid plasmid = db.plasmids.Find(id);
             db.plasmids.Remove(plasmid);
+            //delete plasmid_map
+            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == id);
+            if (plasmid_map.Count() > 0)
+            {
+                foreach(var i in plasmid_map.ToList())
+                {
+                    db.plasmid_map.Remove(i);
+                }
+            }
+            //delete plasmid_map_backup
+            var plasmid_map_backup = db.plasmid_map_backup.Where(p => p.plasmid_id == id);
+            if (plasmid_map_backup.Count() > 0)
+            {
+                foreach (var i in plasmid_map_backup.ToList())
+                {
+                    db.plasmid_map_backup.Remove(i);
+                }
+            }
             db.SaveChanges();
             //remove any uploaded file
             if(plasmid.img_fn != null)

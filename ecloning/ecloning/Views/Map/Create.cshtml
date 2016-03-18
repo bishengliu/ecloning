@@ -28,6 +28,8 @@
 </div>
 <hr class="dotted-line" />
 <span id="decodeIt" class="hidden"></span>
+<input id="seqcount" name="seqcount" value=@SeqLength class="hidden" />
+<input id="tablelength" name="tablelength" value=@TableLength class="hidden" />
 <div class="row">
     <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
@@ -42,10 +44,10 @@
                         <thead>
                             <tr>
                                 <th class="required col-xs-12 col-sm-1">Name</th>
-                                <th class="required col-xs-12 col-sm-1">Start Position</th>
-                                <th class="required col-xs-12 col-sm-1">End Position</th>
-                                <th class="col-xs-12 col-sm-1">Cut Position</th>
+                                <th class="required col-xs-12 col-sm-1">5' Position</th>
+                                <th class="required col-xs-12 col-sm-1">3' Position</th>
                                 <th class="col-xs-12 col-sm-1">Clockwise</th>
+                                <th class="col-xs-12 col-sm-1">Cut Position (5'-3')</th>                                
                                 <th class="col-xs-12 col-sm-1">Show Feature</th>
                             </tr>
                         </thead>
@@ -54,19 +56,22 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DropDownListFor(model => model[i].common_id, null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.DropDownListFor(model => model[i].common_id, null, htmlAttributes: new { @class = "form-control", id= "common"+ i })
                                     </td>
                                     <td>
-                                        @Html.EditorFor(model => model[i].start, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.EditorFor(model => model[i].start, new { htmlAttributes = new { @class = "form-control", id = "start" + i } })
+                                        @Html.ValidationMessageFor(model => model[i].start, "", new { @class = "text-danger" })
                                     </td>
                                     <td>
-                                        @Html.EditorFor(model => model[i].end, new { htmlAttributes = new { @class = "form-control" } })
-                                    </td>
-                                    <td>
-                                        @Html.EditorFor(model => model[i].cut, new { htmlAttributes = new { @class = "form-control" } })
-                                    </td>
+                                        @Html.EditorFor(model => model[i].end, new { htmlAttributes = new { @class = "form-control", id = "end" + i } })
+                                        @Html.ValidationMessageFor(model => model[i].end, "", new { @class = "text-danger" })
+                                    </td>                                    
                                     <td>
                                         @Html.DropDownListFor(model => model[i].clockwise, null, htmlAttributes: new { @class = "form-control" })
+                                    </td>
+                                    <td>
+                                        @Html.EditorFor(model => model[i].cut, new { htmlAttributes = new { @class = "form-control", id = "cut" + i } })
+                                        @Html.ValidationMessageFor(model => model[i].cut, "", new { @class = "text-danger" })
                                     </td>
                                     <td>
                                         @Html.DropDownListFor(model => model[i].show_feature, null, htmlAttributes: new { @class = "form-control" })
@@ -97,3 +102,86 @@
 
 
 @Scripts.Render("~/bundles/jquery")
+<script>
+    //get feature json data
+    var JsonFeatures = ("@JsonFeatures");
+    document.getElementById("decodeIt").innerHTML = JsonFeatures;
+    JsonFeatures = document.getElementById("decodeIt").textContent;
+    //get seqcount
+    var seqCount = $("#seqcount").val();
+    seqCount = parseInt(seqCount);
+    //get table length
+    var tableLength = $("#tablelength").val();
+    tableLength = parseInt(tableLength);
+    
+
+    try {
+        JsonFeatures = JSON.parse(JsonFeatures);
+        //disable cut position if featureid is not cut
+        $(document).ready(function () {
+            for (i = 0; i < tableLength; i++) {
+                var commonId = parseInt($(("#common" + i) + " option").val());
+                var feature = $(JsonFeatures).filter(
+                    function (i, n) { return n.id === commonId;
+                });
+                var featureId = feature[0].feature;
+                if (featureId !== 4) {
+                    $("#cut" + i).prop('readonly', true);
+                }
+            }
+        });
+    }
+    catch (e) {
+
+    }
+
+    $(document).ready(function () {
+        //check postion
+        for (i = 0; i < tableLength; i++) {
+            $("#start" + i).change(function () {
+                var startPos = parseInt($(this).val());
+                if (startPos > seqCount || startPos <= 0) {
+                    alert("5' Position is invalid!")
+                    $(this).val(null);
+                }
+            });
+
+            $("#end" + i).change(function () {
+                var endtPos = parseInt($(this).val());
+                if (endtPos > seqCount || endtPos <= 0) {
+                    alert("3' Position is invalid!")
+                    $(this).val(null);
+                }
+            });
+            $("#cut" + i).change(function () {
+                var cutPos = parseInt($(this).val());
+                if (cutPos > seqCount || cutPos <= 0) {
+                    alert("cut Position is invalid!")
+                    $(this).val(null);
+                }
+            });
+        }
+        $('form').submit(function (e) {
+            var tag = false;
+            for (i = 0; i < tableLength; i++) {
+                var startPos = parseInt($("#start" + i).val());
+                var endtPos = parseInt($("#end" + i).val());
+
+                if (startPos !== null && endtPos !== null && (startPos > endtPos)) {
+                    e.preventDefault();
+                    tag = true;
+                }   
+            };
+            if (tag == false) {
+                $('form').unbind('submit').submit();
+            }
+            else
+            {
+                alert("5' Position must < 3' Position!")
+            };
+        });
+
+
+});
+
+</script>

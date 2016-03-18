@@ -772,6 +772,7 @@
     <Content Include="Views\Feature\Index.cshtml" />
     <Content Include="Views\Map\Create.cshtml" />
     <Content Include="Views\Map\ChooseFeature.cshtml" />
+    <Content Include="Views\Map\AddFeature.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

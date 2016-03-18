@@ -18,7 +18,7 @@ namespace ecloning.Models
         public int start { get; set; }
         [Required(ErrorMessage = "Required")]
         public int end { get; set; }        
-        public int cut { get; set; }
+        public int? cut { get; set; }
         [Required(ErrorMessage = "Required")]
         public int clockwise { get; set; }
         [Required(ErrorMessage = "Required")]
