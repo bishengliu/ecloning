@@ -379,6 +379,7 @@ CREATE TABLE plasmid_map
 	cut INT, --enzyme cut only clude unique and 2 cuts
 	common_id INT NOT NULL, --ref to common_feature id;
 	clockwise INT NOT NULL, -- 1 or 0
+	locked INT, -- 1 or 0
 	[des] TEXT,
 	CONSTRAINT fk_plasmid_map_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
 	CONSTRAINT fk_plasmid_map_ccommon_id FOREIGN KEY (common_id) REFERENCES common_feature(id),

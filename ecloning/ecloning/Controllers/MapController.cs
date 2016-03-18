@@ -187,7 +187,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10 || f.id != 4), "id", "des", common_feature.feature_id);
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();
             foreach (var i in groupInfo.groupIdName)

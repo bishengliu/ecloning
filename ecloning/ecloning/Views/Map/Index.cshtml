@@ -13,9 +13,25 @@
 }
 
 <div class="row">
+
     <div class="col-xs-12">
-        <h3 class="text-warning text-center">Generare Plasmid <em>@Name</em> Map(@seqCount bp)</h3>
+        <h3 class="text-warning text-center">
+            Generate Plasmid <em>@Name</em> Map(@seqCount bp)&nbsp;
+            @if (Model.Count() > 0)
+            {
+                <a class="btn btn-md btn-link" href="@Url.Action("LockMap", "Map", new { id = plasmidId, tag="personDispaly" })">
+                    <i class="fa fa-unlock fa-2x pull-left text-danger"></i>
+                </a>
+            }
+            @if (Model.Count() > 0)
+            {
+                <a class="btn btn-md btn-link" href="@Url.Action("unLockMap", "Map", new { id = plasmidId, tag="personDispaly" })">
+                    <i class="fa fa-lock fa-2x pull-left text-danger"></i>
+                </a>
+            }
+        </h3>
     </div>
+
 </div>
 <span id="decodeIt" class="hidden"></span>
 <span id="sequence" class="hidden">@seqCount</span>
@@ -25,7 +41,8 @@
         <div id="giraffe-map"></div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6">
-        <div class="col-md-12 hidden-sm hidden-xs"><br/><br/></div>
+        <br />
+        <div class="col-md-12 hidden-sm hidden-xs"><br/></div>
         @if (Tag != "groupDispaly")
         {
             if (Sequence != null)
