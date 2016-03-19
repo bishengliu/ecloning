@@ -136,9 +136,25 @@ namespace ecloning.Models
             }
             //========================================================================
             //check ORF
-            //
+            var orf = new List<ORFObject>();
+            var orfFinder = new ORFFinder(0, 0, 0, 0, 30, Sequence);
+            orf = orfFinder.FindPlasmidORF();
+            if (orf.Count() > 0)
+            {
+                //save to plasmid_map table
+                foreach(var orfItem in orf)
+                {
+                    var feature = new plasmid_map();
+                    feature.plasmid_id = PlasmidId;
+                    feature.show_feature = 1;
 
 
+
+
+                    db.plasmid_map.Add(feature);
+                }
+                result = true;
+            }
 
 
             if(result == true)

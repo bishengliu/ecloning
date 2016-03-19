@@ -31,47 +31,95 @@ namespace ecloning.Models
         //minSzie = 30
         public int minSzie { get; set; }
 
+        //sequence of plasmid
+        public string sequence { get; set; }
+
         //constructor
-        public ORFFinder(int startCodon, int stopCodon, int frame, int direction, int minSzie)
+        public ORFFinder(int startCodon, int stopCodon, int frame, int direction, int minSzie, string sequence)
         {
             this.startCodon = startCodon;
             this.stopCodon = stopCodon;
             this.frame = frame;
             this.direction = direction;
             this.minSzie = minSzie;
+            this.sequence = sequence;
         }
-
         
         
-        public List<ORFObject> FindPlasmidORF(int frame, string sequence)
+        public List<ORFObject> FindPlasmidORF()
         {
 
-            //dealing for now only forward seq
+            
             var ORF = new List<ORFObject>();
             var ORF_FW = new List<ORFObject>();
             var ORF_RE = new List<ORFObject>();
-            if (frame != 0)
+            if (direction == 0)
             {
-                ORF_FW = FindORF(frame, sequence, startCodon, stopCodon, minSzie);
+                //both direction
+                //dealing for now only forward seq
+                if (frame != 0)
+                {
+                    ORF_FW = FindORF(frame, sequence, startCodon, stopCodon, minSzie);
+                }
+                else
+                {
+                    var orf1= FindORF(1, sequence, startCodon, stopCodon, minSzie);
+                    var orf2 = FindORF(2, sequence, startCodon, stopCodon, minSzie);
+                    var orf3 = FindORF(3, sequence, startCodon, stopCodon, minSzie);
+                    ORF_FW = orf1.Concat(orf2).Concat(orf3).ToList();
+                }
+                //deal with reverse
+                if (frame != 0)
+                {
+                    ORF_RE = FindReverseORF(frame, sequence, startCodon, stopCodon, minSzie);
+                }
+                else
+                {
+                    var orf1 = FindReverseORF(1, sequence, startCodon, stopCodon, minSzie);
+                    var orf2 = FindReverseORF(2, sequence, startCodon, stopCodon, minSzie);
+                    var orf3 = FindReverseORF(3, sequence, startCodon, stopCodon, minSzie);
+                    ORF_RE = orf1.Concat(orf2).Concat(orf3).ToList();
+                }
+
+            }
+            else if (direction == 1)
+            {
+                //forward only
+                if (frame != 0)
+                {
+                    ORF_FW = FindORF(frame, sequence, startCodon, stopCodon, minSzie);
+                }
+                else
+                {
+                    var orf1 = FindORF(1, sequence, startCodon, stopCodon, minSzie);
+                    var orf2 = FindORF(2, sequence, startCodon, stopCodon, minSzie);
+                    var orf3 = FindORF(3, sequence, startCodon, stopCodon, minSzie);
+                    ORF_FW = orf1.Concat(orf2).Concat(orf3).ToList();
+                }
             }
             else
             {
-                var orf1= FindORF(1, sequence, startCodon, stopCodon, minSzie);
-                var orf2 = FindORF(2, sequence, startCodon, stopCodon, minSzie);
-                var orf3 = FindORF(3, sequence, startCodon, stopCodon, minSzie);
-                ORF_FW = orf1.Concat(orf2).Concat(orf3).ToList();
+                //reverse only
+                if (frame != 0)
+                {
+                    ORF_RE = FindReverseORF(frame, sequence, startCodon, stopCodon, minSzie);
+                }
+                else
+                {
+                    var orf1 = FindReverseORF(1, sequence, startCodon, stopCodon, minSzie);
+                    var orf2 = FindReverseORF(2, sequence, startCodon, stopCodon, minSzie);
+                    var orf3 = FindReverseORF(3, sequence, startCodon, stopCodon, minSzie);
+                    ORF_RE = orf1.Concat(orf2).Concat(orf3).ToList();
+                }
             }
-            //deal with reverse
-
-
-
-
+            
             ORF = ORF_FW.Concat(ORF_RE).ToList();
             return ORF;
         }
 
 
-
+        //forward methods
+        //return List<Tuple<int, int>>(promotpr, terminator)
         public static List<Tuple<int, int>> PromotorTerminatorPair(string sequence)
         {
             ecloningEntities db = new ecloningEntities();
@@ -83,7 +131,6 @@ namespace ecloning.Models
             {
                 foreach (var item in promotors.ToList())
                 {
-                    //find all the indexes of features in both forward and reserver seq
                     //feature sequence
                     var subSeq = item.sequence;
                     indexesPromotor = FindSeq.NotRestriction(sequence, subSeq);
@@ -103,7 +150,6 @@ namespace ecloning.Models
             {
                 foreach (var item in terminators.ToList())
                 {
-                    //find all the indexes of features in both forward and reserver seq
                     //feature sequence
                     var subSeq = item.sequence;
                     indexesTerminator = FindSeq.NotRestriction(sequence, subSeq);
@@ -117,7 +163,8 @@ namespace ecloning.Models
 
 
             List<Tuple<int, int>> ProTerPair = new List<Tuple<int, int>>();
-            if (resultPromotor == true && resultTerminator)
+            var tempTerminator = 0; //for keeping the last terminator
+            if (resultPromotor == true && resultTerminator ==true)
             {
                 //zip promotor and terminator
                 foreach (var promotor in indexesPromotor)
@@ -126,11 +173,16 @@ namespace ecloning.Models
                     {
                         break;
                     }
+                    if(promotor < tempTerminator)
+                    {
+                        continue;
+                    }
                     foreach (var terminator in indexesTerminator)
                     {
                         if (promotor < terminator)
                         {
                             ProTerPair.Add(new Tuple<int, int>(promotor, terminator));
+                            tempTerminator = terminator;
                             indexesTerminator.RemoveRange(0, indexesTerminator.IndexOf(terminator));
                         }
                     }
@@ -213,6 +265,8 @@ namespace ecloning.Models
             List<Tuple<int, int>> StartStopPair = new List<Tuple<int, int>>();
             List<Tuple<int, int>> StartStopPair1 = new List<Tuple<int, int>>();
             List<Tuple<int, int>> StartStopPair2 = new List<Tuple<int, int>>();
+            startPos.Sort();
+            stopPos.Sort();
             foreach (int stopItem in stopPos)
             {
                 foreach (int startItem in startPos)
@@ -258,7 +312,7 @@ namespace ecloning.Models
             return FinalPair;
         }
 
-
+        //return ORF
         public static List<ORFObject> FindORF(int frame, string sequence, int startCodon, int stopCodon, int minSzie)
         {
             var ORF = new List<ORFObject>();
@@ -295,7 +349,272 @@ namespace ecloning.Models
             }
             return ORF;
         }
-        
 
+
+        //reverse methods
+        //return List<Tuple<int, int>>(terminatorIndex, promotprIndex)
+        public static List<Tuple<int, int>> PTReversePair(string sequence)
+        {
+            ecloningEntities db = new ecloningEntities();
+            //find all promotor from common_features
+            var promotors = db.common_feature.Where(f => f.plasmid_feature.feature != "promotor");
+            bool resultPromotor = false;
+            List<int> indexesPromotor = new List<int>();
+            if (promotors.Count() > 0)
+            {
+                foreach (var item in promotors.ToList())
+                {
+                    //feature sequence
+                    var subSeq = FindSeq.ReverseSeq(item.sequence);
+                    indexesPromotor = FindSeq.NotRestriction(sequence, subSeq);
+                    if (indexesPromotor.Count() > 0)
+                    {
+                        resultPromotor = true;
+                        indexesPromotor.Sort();
+                    }
+                }
+            }
+
+            //find all polyA
+            var terminators = db.common_feature.Where(f => f.plasmid_feature.feature != "terminator");
+            bool resultTerminator = false;
+            List<int> indexesTerminator = new List<int>();
+            if (terminators.Count() > 0)
+            {
+                foreach (var item in terminators.ToList())
+                {
+
+                    //feature sequence
+                    var subSeq =FindSeq.ReverseSeq(item.sequence);
+                    indexesTerminator = FindSeq.NotRestriction(sequence, subSeq);
+                    if (indexesTerminator.Count() > 0)
+                    {
+                        resultTerminator = true;
+                        indexesTerminator.Sort();
+                    }
+                }
+            }
+
+            List<Tuple<int, int>> ProTerPair = new List<Tuple<int, int>>();
+            var tempPromotor = 0;
+            if (resultPromotor == true && resultTerminator ==true)
+            {
+                //zip promotor and terminator
+                foreach (var terminator in indexesTerminator)
+                {
+                    if (indexesPromotor.Count() == 0)
+                    {
+                        break;
+                    }
+                    if(terminator < tempPromotor)
+                    {
+                        continue;
+                    }
+                    foreach (var promotor in indexesPromotor)
+                    {
+                        if (terminator < promotor)
+                        {
+                            ProTerPair.Add(new Tuple<int, int>(terminator, promotor));
+                            tempPromotor = promotor;
+                            indexesPromotor.RemoveRange(0, indexesPromotor.IndexOf(promotor));
+                        }
+                    }
+                }
+            }
+
+
+            return ProTerPair;
+        }
+
+
+        //return List<Tuple<int, int>>(stopCodonIndex, startCodonIndex)
+        public static List<Tuple<int, int>> SSReversePair(int frame, string sequence, int startCodon, int stopCodon, int minSzie)
+        {
+
+            //frame can only be 1, 2 and 3
+            //prepare tempSeq according to reading frame
+            string strFront = sequence.Substring((sequence.Length -(frame - 1)), sequence.Length);
+            string tempSeq = strFront + sequence.Remove((sequence.Length - (frame - 1)), sequence.Length);
+
+            //prepare empty list
+            List<int> startPos = new List<int>();
+            List<int> stopPos = new List<int>();
+            //start codes
+            //string[] start = new string[] { "ATG", "GTG", "TTG", "CTG" };
+            //string[] stop = new string[] { "TAA", "TAG", "TGA" };
+            if (startCodon == 0)
+            {
+                //ATG revser to GTA
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, i + 2) == "GTA")
+                    {
+                        int index = 0;
+                        if (i>= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length -1 - i;
+                        }
+                        startPos.Add(index);
+                    }
+                }
+
+            }
+
+            if (startCodon == 1)
+            {
+                // "GTG", "TTG", "CTG" revser is GTG GTT and GTC
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, i + 2) == "GTG" || tempSeq.Substring(i, i + 2) == "GTT" || tempSeq.Substring(i, i + 2) == "GTC")
+                    {
+                        int index = 0;
+                        if (i >= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length - 1 - i;
+                        }
+                        startPos.Add(index);
+                    }
+                }
+            }
+            if (startCodon == 2)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, i + 2) == "GTA" || tempSeq.Substring(i, i + 2) == "GTG" || tempSeq.Substring(i, i + 2) == "GTT" || tempSeq.Substring(i, i + 2) == "GTC")
+                    {
+                        int index = 0;
+                        if (i >= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length - 1 - i;
+                        }
+                        startPos.Add(index);
+                    }
+                }
+            }
+
+            //stop codes
+            if (stopCodon == 0)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, i + 2) == "AAT" || tempSeq.Substring(i, i + 2) == "GAT" || tempSeq.Substring(i, i + 2) == "AGT")
+                    {
+                        int index = 0;
+                        if (i >= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length - 1 - i;
+                        }
+                        stopPos.Add(index);
+                    }
+                }
+            }
+
+            //zip start and stop
+            //suppose all startcode will start and all stopcode stops absolutely
+            List<Tuple<int, int>> StartStopPair = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> StartStopPair1 = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> StartStopPair2 = new List<Tuple<int, int>>();
+            stopPos.Sort();
+            startPos.Sort();
+            foreach (int stopItem in stopPos)
+            {
+                foreach (int startItem in startPos)
+                {
+                    if (startItem >= (stopItem + minSzie))
+                    {
+                        StartStopPair1.Add(new Tuple<int, int>(stopItem, startItem));
+                    }
+                }
+            }
+            foreach (int startItem in startPos)
+            {
+                foreach (int stopItem in stopPos)
+                {
+                    if (stopItem <= (startItem - minSzie))
+                    {
+                        StartStopPair2.Add(new Tuple<int, int>(stopItem, startItem));
+                    }
+                }
+            }
+            StartStopPair = StartStopPair1.Concat(StartStopPair2).ToList();
+            return StartStopPair;
+        }
+
+        //return List<Tuple<int, int>>(stopCodonIndex, startCodonIndex)
+        public static List<Tuple<int, int>> FinalReversePair(List<Tuple<int, int>> pTReversePair, List<Tuple<int, int>> sSReversePair)
+        {
+            List<Tuple<int, int>> finalReversePair = new List<Tuple<int, int>>();
+            if (pTReversePair.Count() > 0 && sSReversePair.Count() > 0)
+            {
+                //find all start and end pair that line in the promotor and terminator pair
+                foreach (var itemPT in pTReversePair)
+                {
+                    foreach (var itemSS in sSReversePair)
+                    {
+                        if ((itemPT.Item1 < itemSS.Item1) && (itemPT.Item2 > itemSS.Item2))
+                        {
+                            finalReversePair.Add(itemSS);
+                        }
+                    }
+                }
+            }
+            return finalReversePair;
+        }
+
+        //return ReverseORF
+        public static List<ORFObject> FindReverseORF(int frame, string sequence, int startCodon, int stopCodon, int minSzie)
+        {
+            var ReverseORF = new List<ORFObject>();
+            //frame can only be 1, 2 and 3
+            List<Tuple<int, int>> sSReversePair = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> pTReversePair = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> finalReversePair = new List<Tuple<int, int>>();
+            //find start and end pair
+            sSReversePair = SSReversePair(frame, sequence, startCodon, stopCodon, minSzie);
+
+            if (sSReversePair.Count() > 0)
+            {
+                //find promotor and terminator pairs
+                pTReversePair = PTReversePair(sequence);
+            }
+
+            //find all start and end pair that line in the promotor and terminator pair
+            if (pTReversePair.Count() > 0)
+            {
+                finalReversePair = FinalPair(pTReversePair, sSReversePair);
+            }
+
+            if (finalReversePair.Count() > 0)
+            {
+                foreach (var o in finalReversePair)
+                {
+                    var orf = new ORFObject();
+                    orf.Name = "ORF Frame " + frame.ToString();
+                    orf.start = o.Item1;
+                    orf.end = o.Item2;
+                    orf.clockwise = 0;
+                    ReverseORF.Add(orf);
+                }
+            }
+            return ReverseORF;
+        }
     }
 }
