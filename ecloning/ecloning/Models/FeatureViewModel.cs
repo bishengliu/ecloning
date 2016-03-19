@@ -10,7 +10,7 @@ namespace ecloning.Models
     {
         //[Required(ErrorMessage = "Required")]
         //public int feature_id { get; set; }
-        [Required(ErrorMessage = "Required")]
+        //[Required(ErrorMessage = "Required")]
         public int common_id { get; set; }
         //[Required(ErrorMessage = "Required")]
         //public int plasmid_id { get; set; }

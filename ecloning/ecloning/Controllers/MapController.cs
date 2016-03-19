@@ -64,7 +64,7 @@ namespace ecloning.Controllers
             ViewBag.BackupCount = backup.Count();
             ViewBag.Tag = tag;
             //pass json
-            var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature.label, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
+            var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             return View(plasmid_map.ToList());
         }
@@ -363,7 +363,7 @@ namespace ecloning.Controllers
             if (ModelState.IsValid)
             {
                 //find the exisiting plasmid map 
-                var currentMap = db.plasmid_map;
+                var currentMap = db.plasmid_map.Where(p=>p.plasmid_id == plasmid_id);
                 List<int> CommonId = new List<int>();
                 if(currentMap.Count() > 0)
                 {

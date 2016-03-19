@@ -135,29 +135,32 @@ namespace ecloning.Models
                 //don't add cut blockage
             }
             //========================================================================
-            //check ORF
+            ////check ORF
             var orf = new List<ORFObject>();
             var orfFinder = new ORFFinder(0, 0, 0, 0, 30, Sequence);
+
             orf = orfFinder.FindPlasmidORF();
             if (orf.Count() > 0)
             {
                 //save to plasmid_map table
-                foreach(var orfItem in orf)
+                foreach (var orfItem in orf)
                 {
                     var feature = new plasmid_map();
                     feature.plasmid_id = PlasmidId;
                     feature.show_feature = 1;
-
-
-
-
+                    feature.feature = orfItem.Name;
+                    feature.feature_id = 10;
+                    feature.start = orfItem.start;
+                    feature.end = orfItem.end;
+                    feature.clockwise = orfItem.clockwise;
+                    feature.common_id = null;
                     db.plasmid_map.Add(feature);
                 }
                 result = true;
             }
 
 
-            if(result == true)
+            if (result == true)
             {
                 db.SaveChanges();
             }
