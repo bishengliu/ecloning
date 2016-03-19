@@ -51,14 +51,16 @@ namespace ecloning.Models
             }
             
 
-            //put all features in list except ORF
-            var features = db.common_feature.Where(f => f.plasmid_feature.feature != "orf");
+            //put all features in list except ORF/ restriction cut
+            var features = db.common_feature.Where(f => f.plasmid_feature.feature != "orf" || f.plasmid_feature.feature != "enzyme");
             if(features.Count() == 0)
             {
                 result = false;
             }
             else
             {
+
+                //=======================================================
                 //find common features
                 //except restriction cut and ORF
                 foreach(var item in features.ToList())
@@ -90,8 +92,7 @@ namespace ecloning.Models
                     }
 
 
-                    //reverse
-                    //find both reverse sequence
+                    //reverse                    
                     var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
                     List<int> indexes2 = new List<int>();
                     indexes2 = FindSeq.NotRestriction(Sequence, reversesubSeq);
@@ -117,7 +118,7 @@ namespace ecloning.Models
 
             }
 
-
+            //=====================================================================
             //check restriciton cut
             var restrictions = db.restrictions;
             if (restrictions.Count() > 0)
@@ -133,6 +134,12 @@ namespace ecloning.Models
                 //add table
                 //don't add cut blockage
             }
+            //========================================================================
+            //check ORF
+            //
+
+
+
 
             if(result == true)
             {

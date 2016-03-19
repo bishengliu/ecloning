@@ -348,6 +348,8 @@
     <Compile Include="Models\oligo.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ORFFinder.cs" />
+    <Compile Include="Models\ORFObject.cs" />
     <Compile Include="Models\people_license.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

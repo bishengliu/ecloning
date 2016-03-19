@@ -17,18 +17,22 @@
     <div class="col-xs-12">
         <h3 class="text-warning text-center">
             Generate Plasmid <em>@Name</em> Map(@seqCount bp)&nbsp;
-            @if (Model.Count() > 0 && Model.FirstOrDefault().locked == 1)
+            @if (Tag != "groupDispaly")
             {
-                <a class="btn btn-md btn-link" href="@Url.Action("unLock", "Map", new { plasmid_id = plasmidId })">
-                    <i class="fa fa-lock fa-2x pull-left text-danger"></i>
-                </a>
+                if (Model.Count() > 0 && Model.FirstOrDefault().locked == 1)
+                {
+                    <a class="btn btn-md btn-link" href="@Url.Action("unLock", "Map", new { plasmid_id = plasmidId })">
+                        <i class="fa fa-lock fa-2x pull-left text-danger"></i>
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-md btn-link" href="@Url.Action("Lock", "Map", new { plasmid_id = plasmidId})">
+                        <i class="fa fa-unlock fa-2x pull-left text-danger"></i>
+                    </a>
+                }
             }
-            else
-            {
-                <a class="btn btn-md btn-link" href="@Url.Action("Lock", "Map", new { plasmid_id = plasmidId})">
-                    <i class="fa fa-unlock fa-2x pull-left text-danger"></i>
-                </a>
-            }
+
         </h3>
     </div>
 
@@ -232,7 +236,7 @@
         {
             <div>
                 <hr/>
-                <p class="text-info text-center">No feature found click above to add features</p>
+                <p class="text-info text-center">No feature found!</p>
             </div>
         }
         else
