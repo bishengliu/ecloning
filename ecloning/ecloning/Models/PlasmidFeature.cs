@@ -94,8 +94,11 @@ namespace ecloning.Models
 
                     //reverse                    
                     var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
+
+                    //get completment DNA, but not reverse
+                    var cSequence = FindSeq.cDNA(Sequence);
                     List<int> indexes2 = new List<int>();
-                    indexes2 = FindSeq.NotRestriction(Sequence, reversesubSeq);
+                    indexes2 = FindSeq.NotRestriction(cSequence, reversesubSeq);
                     if (indexes2.Count() > 0)
                     {
                         //add to plasmd_feature
@@ -109,7 +112,7 @@ namespace ecloning.Models
                             feature.start = index;
                             feature.end = index + subSeq.Length;
                             feature.common_id = item.id;
-                            feature.clockwise = 1;
+                            feature.clockwise = 0;
                             db.plasmid_map.Add(feature);
                         }
                         result = true;
@@ -139,7 +142,7 @@ namespace ecloning.Models
             ////check ORF
 
             var orf = new List<ORFObject>();
-            var orfFinder = new ORFFinder(0, 0, 1, 1, 300, Sequence);
+            var orfFinder = new ORFFinder(0, 0, 1, 0, 300, Sequence);
             //ORFFinder(int startCodon, int stopCodon, int frame, int direction, int minSzie, string sequence)
             orf = orfFinder.FindPlasmidORF();
             if (orf.Count() > 0)

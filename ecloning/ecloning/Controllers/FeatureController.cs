@@ -39,7 +39,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f=>f.id !=10), "id", "des");
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f=>f.id < 9), "id", "des"); //remove orf and exac features
 
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();
@@ -70,7 +70,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id < 9), "id", "des", common_feature.feature_id);
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();
             foreach (var i in groupInfo.groupIdName)
@@ -85,7 +85,16 @@ namespace ecloning.Controllers
             //pass json of label in current group
             var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
-            
+
+
+            ////feature sequence must be unieque
+            //var checkSeq = db.common_feature.Where(s => s.sequence == common_feature.sequence);
+            //if (checkSeq.Count() > 0)
+            //{
+            //    TempData["msg"] = "Error: feature with the same sequence already exists!";
+            //    return View(common_feature);
+            //}
+
             if (ModelState.IsValid)
             {
                 db.common_feature.Add(common_feature);
@@ -115,7 +124,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id  < 9), "id", "des", common_feature.feature_id);
 
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();
@@ -147,7 +156,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10), "id", "des", common_feature.feature_id);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id < 9), "id", "des", common_feature.feature_id);
 
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();
@@ -164,6 +173,12 @@ namespace ecloning.Controllers
             var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
 
+            //var checkSeq = db.common_feature.Where(f=>f.id != common_feature.id && f.sequence == common_feature.sequence);
+            //if (checkSeq.Count() > 0)
+            //{
+            //    TempData["msg"] = "Error: feature with the same sequence already exists!";
+            //    return View(common_feature);
+            //}
 
             if (ModelState.IsValid)
             {
@@ -198,6 +213,24 @@ namespace ecloning.Controllers
         {
             common_feature common_feature = db.common_feature.Find(id);
             db.common_feature.Remove(common_feature);
+            //detele all the reffered features in plasmid_map and plamsid_map backup tables
+            var backups = db.plasmid_map_backup.Where(i => i.common_id == id);
+            if (backups.Count() > 0)
+            {
+                foreach (var b in backups)
+                {
+                    db.plasmid_map_backup.Remove(b);
+                }
+            }
+            //find plasmid_map
+            var maps = db.plasmid_map.Where(i => i.common_id == id);
+            if (maps.Count() > 0)
+            {
+                foreach (var m in maps)
+                {
+                    db.plasmid_map.Remove(m);
+                }
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
         }

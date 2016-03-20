@@ -57,14 +57,14 @@ namespace ecloning.Controllers
             }
 
             //display all features of the current plasmid
-            var plasmid_map = db.plasmid_map.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p=>p.plasmid_id==id);
+            var plasmid_map = db.plasmid_map.OrderBy(s=>s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p=>p.plasmid_id==id);
 
             //find all the backup features in backup tablwe
             var backup = db.plasmid_map_backup.Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == id);
             ViewBag.BackupCount = backup.Count();
             ViewBag.Tag = tag;
             //pass json
-            var features = plasmid_map.Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
+            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             return View(plasmid_map.ToList());
         }

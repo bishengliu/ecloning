@@ -22,7 +22,7 @@
         @using (Html.BeginForm(Html.BeginForm(null, null, FormMethod.Post, new { id = "target" })))
         {
             @Html.AntiForgeryToken()
-
+            <p class="text-danger">@TempData["msg"]</p>
             <div class="form-horizontal">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 @Html.HiddenFor(model => model.id)
@@ -74,7 +74,7 @@
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-offset-8 col-md-6 col-xs-offset-4">
-                            <input type="submit" id="submit" value="Add Feature" class="btn btn-primary" />
+                            <input type="submit" id="submit" value="Update Feature" class="btn btn-primary" />
                         </div>
                     </div>
                 </div>

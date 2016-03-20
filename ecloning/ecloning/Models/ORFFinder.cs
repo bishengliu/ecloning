@@ -45,11 +45,9 @@ namespace ecloning.Models
             this.sequence = sequence;
         }
         
-        
+        //method to find ORFs
         public List<ORFObject> FindPlasmidORF()
         {
-
-            
             var ORF = new List<ORFObject>();
             var ORF_FW = new List<ORFObject>();
             var ORF_RE = new List<ORFObject>();
@@ -59,10 +57,12 @@ namespace ecloning.Models
                 //dealing for now only forward seq
                 if (frame != 0)
                 {
+                    //frame 1, 2 or 3
                     ORF_FW = FindORF(frame, sequence, startCodon, stopCodon, minSzie);
                 }
                 else
                 {
+                    //frame 1, 2 and 3
                     var orf1= FindORF(1, sequence, startCodon, stopCodon, minSzie);
                     var orf2 = FindORF(2, sequence, startCodon, stopCodon, minSzie);
                     var orf3 = FindORF(3, sequence, startCodon, stopCodon, minSzie);
@@ -117,8 +117,8 @@ namespace ecloning.Models
             return ORF;
         }
 
-
         //forward methods
+        //find the promotor and terminator pairs in a plasmid
         //return List<Tuple<int, int>>(promotpr, terminator)
         public static List<Tuple<int, int>> PromotorTerminatorPair(string sequence)
         {
@@ -197,6 +197,9 @@ namespace ecloning.Models
             return ProTerPair;
         }
 
+        //find start codon and stop codon in firward sequence
+        //An ORF is a continuous stretch of codons that do not contain a stop codon (usually UAA, UAG or UGA)
+        //use stop codon to determine how many ORF
         public static List<Tuple<int, int>> StartStopPair(int frame, string sequence, int startCodon, int stopCodon, int minSzie)
         {
 
@@ -348,7 +351,8 @@ namespace ecloning.Models
             return StartStopPair;
         }
 
-
+        //restrict the start codon and stop codon pair in the promotor/terminator pairs
+        //so that the start/stop codon, or ORF found is determined by user common_features, whcih are likely to be GOI in a plasmid.
         public static List<Tuple<int, int>> FinalPair(List<Tuple<int, int>> proTerPair, List<Tuple<int, int>> startStopPair)
         {
             List<Tuple<int, int>> FinalPair = new List<Tuple<int, int>>();
@@ -370,6 +374,7 @@ namespace ecloning.Models
         }
 
         //return ORF
+        //dump the start/stop codon into ORF project, so that it could be connected with table common_features
         public static List<ORFObject> FindORF(int frame, string sequence, int startCodon, int stopCodon, int minSzie)
         {
             var ORF = new List<ORFObject>();
@@ -397,7 +402,7 @@ namespace ecloning.Models
                 foreach (var o in finalPair)
                 {
                     var orf = new ORFObject();
-                    orf.Name = "ORF Frame " + frame.ToString();
+                    orf.Name = "ORF frame " + frame.ToString();
                     orf.start = o.Item1;
                     orf.end = o.Item2;
                     orf.clockwise = 1;
@@ -408,11 +413,14 @@ namespace ecloning.Models
         }
 
 
+
+
         //reverse methods
         //return List<Tuple<int, int>>(terminatorIndex, promotprIndex)
         public static List<Tuple<int, int>> PTReversePair(string sequence)
         {
             ecloningEntities db = new ecloningEntities();
+            var cSequence = FindSeq.cDNA(sequence);
             //find all promotor from common_features
             var promotors = db.common_feature.Where(f => f.plasmid_feature.id == 2);
             bool resultPromotor = false;
@@ -424,7 +432,7 @@ namespace ecloning.Models
                 {
                     //feature sequence
                     var subSeq = FindSeq.ReverseSeq(item.sequence);
-                    indexesPromotor = FindSeq.NotRestriction(sequence, subSeq);
+                    indexesPromotor = FindSeq.NotRestriction(cSequence, subSeq);
                     if (indexesPromotor.Count() > 0)
                     {
                         PromotorIndexes = PromotorIndexes.Concat(indexesPromotor).ToList();
@@ -445,7 +453,7 @@ namespace ecloning.Models
 
                     //feature sequence
                     var subSeq =FindSeq.ReverseSeq(item.sequence);
-                    indexesTerminator = FindSeq.NotRestriction(sequence, subSeq);
+                    indexesTerminator = FindSeq.NotRestriction(cSequence, subSeq);
                     if (indexesTerminator.Count() > 0)
                     {
                         TerminatorIndexes = TerminatorIndexes.Concat(indexesTerminator).ToList();
@@ -490,7 +498,6 @@ namespace ecloning.Models
             return ProTerPair;
         }
 
-
         //return List<Tuple<int, int>>(stopCodonIndex, startCodonIndex)
         public static List<Tuple<int, int>> SSReversePair(int frame, string sequence, int startCodon, int stopCodon, int minSzie)
         {
@@ -502,7 +509,7 @@ namespace ecloning.Models
             if (frame == 1)
             {
                 strFront = null;
-                tempSeq = sequence;
+                tempSeq = FindSeq.cDNA(sequence);
             }
             else
             {
@@ -749,7 +756,7 @@ namespace ecloning.Models
                 foreach (var o in finalReversePair)
                 {
                     var orf = new ORFObject();
-                    orf.Name = "ORF Frame " + frame.ToString();
+                    orf.Name = "ORF frame " + frame.ToString();
                     orf.start = o.Item1;
                     orf.end = o.Item2;
                     orf.clockwise = 0;

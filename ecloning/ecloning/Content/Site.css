@@ -152,6 +152,7 @@ textarea {
 
 .giraffe-seq-textarea {
     /*border: 1px solid #e0e0e0;*/
+    border: none !important;
     width: 95%;
     height: auto;
     font-family: courier !important;

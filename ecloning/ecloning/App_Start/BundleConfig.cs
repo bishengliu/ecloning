@@ -40,6 +40,15 @@ namespace ecloning
                       "~/Scripts/giraffe/raphael-min.js",
                       "~/Scripts/giraffe/scale.raphael.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/giraffe2").Include(
+          "~/Scripts/giraffe/analyze-2.0.js",
+          "~/Scripts/giraffe/analyze_page-2.0.js",
+          "~/Scripts/giraffe/bio-2.0.js",
+          "~/Scripts/giraffe/draw-2.0.js",
+          "~/Scripts/giraffe/raphael-min-2.0.js",
+          "~/Scripts/giraffe/jquery.ba-replacetext.mim-2.0.js",
+          "~/Scripts/giraffe/scale.raphael-2.0.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/nvd3").Include(
                       "~/Scripts/nv.d3.min.js"));
 
@@ -55,6 +64,7 @@ namespace ecloning
                       "~/Content/bootstrap.vertical-tabs.min.css",
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
+                      "~/Content/analyze-2.0.css",
                       "~/Content/site.css"));
 
         }

@@ -396,6 +396,8 @@
     <Compile Include="ViewModels\Register.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\analyze-2.0.css" />
+    <Content Include="Content\analyze.css" />
     <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap-datepicker.standalone.css" />
@@ -604,10 +606,18 @@
     <Content Include="Scripts\datatable\jquery.dataTables.js" />
     <Content Include="Scripts\datatable\jquery.dataTables.min.js" />
     <Content Include="Scripts\datatable\jquery.js" />
+    <Content Include="Scripts\giraffe\analyze-2.0.js" />
     <Content Include="Scripts\giraffe\analyze.js" />
+    <Content Include="Scripts\giraffe\analyze_page-2.0.js" />
+    <Content Include="Scripts\giraffe\bio-2.0.js" />
     <Content Include="Scripts\giraffe\bio.js" />
+    <Content Include="Scripts\giraffe\custom-2.0.js" />
+    <Content Include="Scripts\giraffe\draw-2.0.js" />
     <Content Include="Scripts\giraffe\draw.js" />
+    <Content Include="Scripts\giraffe\jquery.ba-replacetext.mim-2.0.js" />
+    <Content Include="Scripts\giraffe\raphael-min-2.0.js" />
     <Content Include="Scripts\giraffe\raphael-min.js" />
+    <Content Include="Scripts\giraffe\scale.raphael-2.0.js" />
     <Content Include="Scripts\giraffe\scale.raphael.js" />
     <Content Include="Scripts\inputs-ext\address\address.js" />
     <Content Include="Scripts\inputs-ext\typeaheadjs\lib\typeahead.js" />
