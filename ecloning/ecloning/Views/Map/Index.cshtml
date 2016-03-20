@@ -275,7 +275,14 @@
                                     @Html.DisplayFor(modelItem => item.plasmid_feature.des)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.common_feature.label)
+                                    @if (item.common_id != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.common_feature.label)
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => item.feature)
+                                    }                                    
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.start)
@@ -370,7 +377,7 @@
     $(window).load(function () {
         // executes when complete page is fully loaded, including all frames, objects and images
         $('table').paging({
-            limit: 10,
+            limit: 15,
             rowDisplayStyle: 'block',
             activePage: 0,
             rows: []

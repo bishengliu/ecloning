@@ -329,7 +329,7 @@
           <Property Name="start" Type="int" Nullable="false" />
           <Property Name="end" Type="int" Nullable="false" />
           <Property Name="cut" Type="int" />
-          <Property Name="common_id" Type="int" Nullable="false" />
+          <Property Name="common_id" Type="int" />
           <Property Name="clockwise" Type="int" Nullable="false" />
           <Property Name="des" Type="text" />
           <Property Name="locked" Type="int" />
@@ -346,7 +346,7 @@
           <Property Name="start" Type="int" Nullable="false" />
           <Property Name="end" Type="int" Nullable="false" />
           <Property Name="cut" Type="int" />
-          <Property Name="common_id" Type="int" Nullable="false" />
+          <Property Name="common_id" Type="int" />
           <Property Name="clockwise" Type="int" Nullable="false" />
           <Property Name="des" Type="text" />
         </EntityType>
@@ -696,7 +696,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_plasmid_map_backup_ccommon_id">
-          <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
+          <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
           <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="common_feature">
@@ -732,7 +732,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_plasmid_map_ccommon_id">
-          <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
+          <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
           <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="common_feature">
@@ -1392,7 +1392,7 @@
           <Property Name="start" Type="Int32" Nullable="false" />
           <Property Name="end" Type="Int32" Nullable="false" />
           <Property Name="cut" Type="Int32" />
-          <Property Name="common_id" Type="Int32" Nullable="false" />
+          <Property Name="common_id" Type="Int32" />
           <Property Name="clockwise" Type="Int32" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="locked" Type="Int32" />
@@ -1412,7 +1412,7 @@
           <Property Name="start" Type="Int32" Nullable="false" />
           <Property Name="end" Type="Int32" Nullable="false" />
           <Property Name="cut" Type="Int32" />
-          <Property Name="common_id" Type="Int32" Nullable="false" />
+          <Property Name="common_id" Type="Int32" />
           <Property Name="clockwise" Type="Int32" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="common_feature" Relationship="Self.fk_plasmid_map_backup_ccommon_id" FromRole="plasmid_map_backup" ToRole="common_feature" />
@@ -1649,7 +1649,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_plasmid_map_backup_ccommon_id">
-          <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
+          <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
           <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="common_feature">
@@ -1661,7 +1661,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_plasmid_map_ccommon_id">
-          <End Role="common_feature" Type="Self.common_feature" Multiplicity="1" />
+          <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
           <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="common_feature">

@@ -22,7 +22,7 @@ namespace ecloning.Models
         public int start { get; set; }
         public int end { get; set; }
         public Nullable<int> cut { get; set; }
-        public int common_id { get; set; }
+        public Nullable<int> common_id { get; set; }
         public int clockwise { get; set; }
         public string des { get; set; }
     

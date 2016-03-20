@@ -124,8 +124,9 @@ namespace ecloning.Models
         {
             ecloningEntities db = new ecloningEntities();
             //find all promotor from common_features
-            var promotors = db.common_feature.Where(f => f.plasmid_feature.feature != "promotor");
+            var promotors = db.common_feature.Where(f => f.plasmid_feature.id == 2);
             bool resultPromotor = false;
+            List<int> PromotorIndexes = new List<int>(); //keep all the indexes
             List<int> indexesPromotor = new List<int>();
             if (promotors.Count() > 0)
             {
@@ -136,15 +137,16 @@ namespace ecloning.Models
                     indexesPromotor = FindSeq.NotRestriction(sequence, subSeq);
                     if (indexesPromotor.Count() > 0)
                     {
-                        resultPromotor = true;
-                        indexesPromotor.Sort();
+                        PromotorIndexes = PromotorIndexes.Concat(indexesPromotor).ToList();
+                        resultPromotor = true;                        
                     }
                 }
             }
 
             //find all polyA
-            var terminators = db.common_feature.Where(f => f.plasmid_feature.feature != "terminator");
+            var terminators = db.common_feature.Where(f => f.plasmid_feature.id == 8);
             bool resultTerminator = false;
+            List<int> TerminatorIndexes = new List<int>(); //keep all the indexes
             List<int> indexesTerminator = new List<int>();
             if (terminators.Count() > 0)
             {
@@ -155,21 +157,21 @@ namespace ecloning.Models
                     indexesTerminator = FindSeq.NotRestriction(sequence, subSeq);
                     if (indexesTerminator.Count() > 0)
                     {
-                        resultTerminator = true;
-                        indexesTerminator.Sort();
+                        TerminatorIndexes = TerminatorIndexes.Concat(indexesTerminator).ToList();
+                        resultTerminator = true;                        
                     }
                 }
             }
-
-
+            PromotorIndexes.Sort();
+            TerminatorIndexes.Sort();
             List<Tuple<int, int>> ProTerPair = new List<Tuple<int, int>>();
             var tempTerminator = 0; //for keeping the last terminator
-            if (resultPromotor == true && resultTerminator ==true)
+            if (resultPromotor == true && resultTerminator ==true && PromotorIndexes.Count()>0 && TerminatorIndexes.Count()>0)
             {
                 //zip promotor and terminator
-                foreach (var promotor in indexesPromotor)
+                foreach (var promotor in PromotorIndexes)
                 {
-                    if (indexesTerminator.Count() == 0)
+                    if (TerminatorIndexes.Count() == 0)
                     {
                         break;
                     }
@@ -177,19 +179,21 @@ namespace ecloning.Models
                     {
                         continue;
                     }
-                    foreach (var terminator in indexesTerminator)
+                    foreach (var terminator in TerminatorIndexes)
                     {
                         if (promotor < terminator)
                         {
                             ProTerPair.Add(new Tuple<int, int>(promotor, terminator));
                             tempTerminator = terminator;
-                            indexesTerminator.RemoveRange(0, indexesTerminator.IndexOf(terminator));
+                            TerminatorIndexes.Remove(terminator);
+                            if (TerminatorIndexes.Count() == 0)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
             }
-
-
             return ProTerPair;
         }
 
@@ -198,8 +202,19 @@ namespace ecloning.Models
 
             //frame can only be 1, 2 and 3
             //prepare tempSeq according to reading frame
-            string strFront = sequence.Substring(0, (frame - 1));
-            string tempSeq = sequence.Remove(0, (frame - 1)) + strFront;
+            string strFront = null;
+            string tempSeq = null;
+            if(frame == 1)
+            {
+                strFront = null;
+                tempSeq = sequence;
+            }
+            else
+            {
+                strFront = sequence.Substring(0, (frame - 1));
+                tempSeq = sequence.Remove(0, (frame - 1)) + strFront;
+            }
+            
 
             //prepare empty list
             List<int> startPos = new List<int>();
@@ -212,7 +227,7 @@ namespace ecloning.Models
                 //ATG
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "ATG")
+                    if (tempSeq.Substring(i, 3) == "ATG")
                     {
                         var index = i + (frame - 1);
                         startPos.Add(index);
@@ -225,7 +240,7 @@ namespace ecloning.Models
                 // "GTG", "TTG", "CTG"
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "GTG" || tempSeq.Substring(i, i + 2) == "TTG" || tempSeq.Substring(i, i + 2) == "CTG")
+                    if (tempSeq.Substring(i, 3) == "GTG" || tempSeq.Substring(i, 3) == "TTG" || tempSeq.Substring(i, 3) == "CTG")
                     {
                         var index = i + (frame - 1);
                         startPos.Add(index);
@@ -237,7 +252,7 @@ namespace ecloning.Models
                 //all
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "ATG" || tempSeq.Substring(i, i + 2) == "GTG" || tempSeq.Substring(i, i + 2) == "TTG" || tempSeq.Substring(i, i + 2) == "CTG")
+                    if (tempSeq.Substring(i, 3) == "ATG" || tempSeq.Substring(i, 3) == "GTG" || tempSeq.Substring(i, 3) == "TTG" || tempSeq.Substring(i, 3) == "CTG")
                     {
                         var index = i + (frame - 1);
                         startPos.Add(index);
@@ -251,43 +266,85 @@ namespace ecloning.Models
                 //all
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "TAA" || tempSeq.Substring(i, i + 2) == "TAG" || tempSeq.Substring(i, i + 2) == "TGA")
+                    if (tempSeq.Substring(i, 3) == "TAA" || tempSeq.Substring(i, 3) == "TAG" || tempSeq.Substring(i, 3) == "TGA")
                     {
                         var index = i + (frame - 1);
                         stopPos.Add(index);
                     }
                 }
             }
-
-
+            if (stopCodon == 1)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, 3) == "TAA")
+                    {
+                        var index = i + (frame - 1);
+                        stopPos.Add(index);
+                    }
+                }
+            }
+            if (stopCodon == 2)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, 3) == "TAG")
+                    {
+                        var index = i + (frame - 1);
+                        stopPos.Add(index);
+                    }
+                }
+            }
+            if (stopCodon == 3)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, 3) == "TGA")
+                    {
+                        var index = i + (frame - 1);
+                        stopPos.Add(index);
+                    }
+                }
+            }
             //zip start and stop
             //suppose all startcode will start and all stopcode stops absolutely
             List<Tuple<int, int>> StartStopPair = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> StartStopPair1 = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> StartStopPair2 = new List<Tuple<int, int>>();
             startPos.Sort();
             stopPos.Sort();
-            foreach (int stopItem in stopPos)
+            if(startPos.Count()>0 && stopPos.Count() > 0)
             {
-                foreach (int startItem in startPos)
-                {
-                    if (startItem <= (stopItem - minSzie))
-                    {
-                        StartStopPair1.Add(new Tuple<int, int>(startItem, stopItem));
-                    }
-                }
-            }
-            foreach (int startItem in startPos)
-            {
+
+
+                var tempStart = -1;
                 foreach (int stopItem in stopPos)
                 {
-                    if (stopItem >= (stopItem + minSzie))
+                    foreach (int startItem in startPos)
                     {
-                        StartStopPair2.Add(new Tuple<int, int>(startItem, stopItem));
+                        if(startItem < tempStart)
+                        {
+                            continue;
+                        }
+
+                        if (startItem <= (stopItem - minSzie))
+                        {
+                            StartStopPair.Add(new Tuple<int, int>(startItem, stopItem));
+                            tempStart = stopItem;
+                            break;
+                        }
+                        else
+                        {
+                            tempStart = stopItem > startItem? stopItem: startItem;
+                            break;
+                        }
                     }
                 }
+
+
             }
-            StartStopPair = StartStopPair1.Concat(StartStopPair2).ToList();
+
             return StartStopPair;
         }
 
@@ -357,8 +414,9 @@ namespace ecloning.Models
         {
             ecloningEntities db = new ecloningEntities();
             //find all promotor from common_features
-            var promotors = db.common_feature.Where(f => f.plasmid_feature.feature != "promotor");
+            var promotors = db.common_feature.Where(f => f.plasmid_feature.id == 2);
             bool resultPromotor = false;
+            List<int> PromotorIndexes = new List<int>(); //keep all the indexes
             List<int> indexesPromotor = new List<int>();
             if (promotors.Count() > 0)
             {
@@ -369,15 +427,16 @@ namespace ecloning.Models
                     indexesPromotor = FindSeq.NotRestriction(sequence, subSeq);
                     if (indexesPromotor.Count() > 0)
                     {
+                        PromotorIndexes = PromotorIndexes.Concat(indexesPromotor).ToList();
                         resultPromotor = true;
-                        indexesPromotor.Sort();
                     }
                 }
             }
 
             //find all polyA
-            var terminators = db.common_feature.Where(f => f.plasmid_feature.feature != "terminator");
+            var terminators = db.common_feature.Where(f => f.plasmid_feature.id == 8);
             bool resultTerminator = false;
+            List<int> TerminatorIndexes = new List<int>(); //keep all the indexes
             List<int> indexesTerminator = new List<int>();
             if (terminators.Count() > 0)
             {
@@ -389,20 +448,21 @@ namespace ecloning.Models
                     indexesTerminator = FindSeq.NotRestriction(sequence, subSeq);
                     if (indexesTerminator.Count() > 0)
                     {
+                        TerminatorIndexes = TerminatorIndexes.Concat(indexesTerminator).ToList();
                         resultTerminator = true;
-                        indexesTerminator.Sort();
                     }
                 }
             }
-
+            PromotorIndexes.Sort();
+            TerminatorIndexes.Sort();
             List<Tuple<int, int>> ProTerPair = new List<Tuple<int, int>>();
             var tempPromotor = 0;
-            if (resultPromotor == true && resultTerminator ==true)
+            if (resultPromotor == true && resultTerminator ==true && PromotorIndexes.Count() > 0 && TerminatorIndexes.Count() > 0)
             {
                 //zip promotor and terminator
-                foreach (var terminator in indexesTerminator)
+                foreach (var terminator in TerminatorIndexes)
                 {
-                    if (indexesPromotor.Count() == 0)
+                    if (PromotorIndexes.Count() == 0)
                     {
                         break;
                     }
@@ -410,13 +470,17 @@ namespace ecloning.Models
                     {
                         continue;
                     }
-                    foreach (var promotor in indexesPromotor)
+                    foreach (var promotor in PromotorIndexes)
                     {
                         if (terminator < promotor)
                         {
                             ProTerPair.Add(new Tuple<int, int>(terminator, promotor));
                             tempPromotor = promotor;
-                            indexesPromotor.RemoveRange(0, indexesPromotor.IndexOf(promotor));
+                            indexesPromotor.Remove(promotor);
+                            if (PromotorIndexes.Count() == 0)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -433,8 +497,18 @@ namespace ecloning.Models
 
             //frame can only be 1, 2 and 3
             //prepare tempSeq according to reading frame
-            string strFront = sequence.Substring((sequence.Length -(frame - 1)), sequence.Length);
-            string tempSeq = strFront + sequence.Remove((sequence.Length - (frame - 1)), sequence.Length);
+            string strFront = null;
+            string tempSeq = null;
+            if (frame == 1)
+            {
+                strFront = null;
+                tempSeq = sequence;
+            }
+            else
+            {
+                strFront = sequence.Substring(((sequence.Length-1) - (frame - 1)), (frame - 1));
+                tempSeq = strFront + sequence.Remove(((sequence.Length - 1) - (frame - 1)), (frame - 1));
+            }
 
             //prepare empty list
             List<int> startPos = new List<int>();
@@ -447,7 +521,7 @@ namespace ecloning.Models
                 //ATG revser to GTA
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "GTA")
+                    if (tempSeq.Substring(i, 3) == "GTA")
                     {
                         int index = 0;
                         if (i>= 2)
@@ -469,7 +543,7 @@ namespace ecloning.Models
                 // "GTG", "TTG", "CTG" revser is GTG GTT and GTC
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "GTG" || tempSeq.Substring(i, i + 2) == "GTT" || tempSeq.Substring(i, i + 2) == "GTC")
+                    if (tempSeq.Substring(i, 3) == "GTG" || tempSeq.Substring(i, 3) == "GTT" || tempSeq.Substring(i, 3) == "GTC")
                     {
                         int index = 0;
                         if (i >= 2)
@@ -489,7 +563,7 @@ namespace ecloning.Models
                 //all
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "GTA" || tempSeq.Substring(i, i + 2) == "GTG" || tempSeq.Substring(i, i + 2) == "GTT" || tempSeq.Substring(i, i + 2) == "GTC")
+                    if (tempSeq.Substring(i, 3) == "GTA" || tempSeq.Substring(i, 3) == "GTG" || tempSeq.Substring(i, 3) == "GTT" || tempSeq.Substring(i, 3) == "GTC")
                     {
                         int index = 0;
                         if (i >= 2)
@@ -511,7 +585,7 @@ namespace ecloning.Models
                 //all
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
-                    if (tempSeq.Substring(i, i + 2) == "AAT" || tempSeq.Substring(i, i + 2) == "GAT" || tempSeq.Substring(i, i + 2) == "AGT")
+                    if (tempSeq.Substring(i, 3) == "AAT" || tempSeq.Substring(i, 3) == "GAT" || tempSeq.Substring(i, 3) == "AGT")
                     {
                         int index = 0;
                         if (i >= 2)
@@ -526,34 +600,102 @@ namespace ecloning.Models
                     }
                 }
             }
-
+            if (stopCodon == 1)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, 3) == "AAT")
+                    {
+                        int index = 0;
+                        if (i >= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length - 1 - i;
+                        }
+                        stopPos.Add(index);
+                    }
+                }
+            }
+            if (stopCodon == 2)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, 3) == "GAT")
+                    {
+                        int index = 0;
+                        if (i >= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length - 1 - i;
+                        }
+                        stopPos.Add(index);
+                    }
+                }
+            }
+            if (stopCodon == 3)
+            {
+                //all
+                for (var i = 0; i < (tempSeq.Length - 2); i += 3)
+                {
+                    if (tempSeq.Substring(i, 3) == "AGT")
+                    {
+                        int index = 0;
+                        if (i >= 2)
+                        {
+                            index = i - ((frame - 1));
+                        }
+                        else
+                        {
+                            index = tempSeq.Length - 1 - i;
+                        }
+                        stopPos.Add(index);
+                    }
+                }
+            }
             //zip start and stop
             //suppose all startcode will start and all stopcode stops absolutely
             List<Tuple<int, int>> StartStopPair = new List<Tuple<int, int>>();
             List<Tuple<int, int>> StartStopPair1 = new List<Tuple<int, int>>();
             List<Tuple<int, int>> StartStopPair2 = new List<Tuple<int, int>>();
+
+            //decending the list
             stopPos.Sort();
+            var stopPosDesc = stopPos.OrderByDescending(i => i).ToList();
             startPos.Sort();
-            foreach (int stopItem in stopPos)
+            var startPosDesc = startPos.OrderByDescending(i => i).ToList();
+
+
+            var tempStart = -1;
+            foreach (int stopItem in stopPosDesc)
             {
-                foreach (int startItem in startPos)
+                foreach (int startItem in startPosDesc)
                 {
+                    if(startItem > tempStart)
+                    {
+                        continue;
+                    }
                     if (startItem >= (stopItem + minSzie))
                     {
                         StartStopPair1.Add(new Tuple<int, int>(stopItem, startItem));
+                        tempStart = stopItem;
+                        break;
                     }
-                }
-            }
-            foreach (int startItem in startPos)
-            {
-                foreach (int stopItem in stopPos)
-                {
-                    if (stopItem <= (startItem - minSzie))
+                    else
                     {
-                        StartStopPair2.Add(new Tuple<int, int>(stopItem, startItem));
+                        tempStart = stopItem > startItem ? stopItem : startItem;
+                        break;
                     }
                 }
             }
+
             StartStopPair = StartStopPair1.Concat(StartStopPair2).ToList();
             return StartStopPair;
         }

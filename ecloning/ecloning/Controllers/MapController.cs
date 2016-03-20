@@ -364,10 +364,10 @@ namespace ecloning.Controllers
             {
                 //find the exisiting plasmid map 
                 var currentMap = db.plasmid_map.Where(p=>p.plasmid_id == plasmid_id);
-                List<int> CommonId = new List<int>();
+                List<int?> CommonId = new List<int?>();
                 if(currentMap.Count() > 0)
                 {
-                    CommonId = currentMap.Select(c => c.common_id).ToList();
+                    CommonId = currentMap.Where(c => c.common_id != null).Select(c => c.common_id).ToList();
                 }
                 int tag = 0;
                 foreach(var item in features)

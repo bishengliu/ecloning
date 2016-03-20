@@ -52,6 +52,7 @@ namespace ecloning.Models
         public virtual ICollection<protocol> protocols { get; set; }
     }
 }
+
 namespace ecloning.Models
 {
     using System;
@@ -69,8 +70,8 @@ namespace ecloning.Models
         }
     
         public int id { get; set; }
-        public string name { get; set; }
         [Required(ErrorMessage = "Required")]
+        public string name { get; set; }
         public string sequence { get; set; }
         [Required(ErrorMessage = "Required")]
         public string expression_system { get; set; }
@@ -106,6 +107,8 @@ namespace ecloning.Models
     }
 }
 
+
+
 namespace ecloning.Models
 {
     using System;
@@ -127,7 +130,7 @@ namespace ecloning.Models
         [Required(ErrorMessage = "Required")]
         public string label { get; set; }
         [Required(ErrorMessage = "Required")]
-		[RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
+        [RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
         public string sequence { get; set; }
         public string des { get; set; }
         [Required(ErrorMessage = "Required")]
@@ -141,3 +144,4 @@ namespace ecloning.Models
         public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }
 }
+

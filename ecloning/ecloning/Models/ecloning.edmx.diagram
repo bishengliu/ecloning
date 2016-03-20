@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8d32780ba4bd4bd99e3ada5d68d2e7fa" Name="Diagram1">
+      <Diagram DiagramId="270bc1b2a58f4084b78f00aee8278d5f" Name="Diagram1">
         <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="9" PointY="10.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
