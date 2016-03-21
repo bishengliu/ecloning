@@ -45,8 +45,7 @@ textarea {
 }
 .navbar {min-height:28px !important;}
 
-.navbar-default{
-    /*background-color: #4D9474;*/
+/*.navbar-default{
     background-color:#454545;
     border-color: #454545;
     border-radius:0;
@@ -57,10 +56,24 @@ textarea {
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
+  color:mediumaquamarine;
+}*/
+
+.navbar-inverse{
+    /*background-color: #4D9474;*/
+    background-color:#454545;
+    border-color: #454545;
+    border-radius:0;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: white;
+}
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
   /*color: #ffbbbc;*/
   color:mediumaquamarine;
 }
-
 
 .navbar{
     margin-bottom: 0 !important;

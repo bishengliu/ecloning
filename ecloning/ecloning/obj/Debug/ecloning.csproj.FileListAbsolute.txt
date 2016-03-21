@@ -149,3 +149,8 @@
 \\Mac\Home\ecloning\ecloning\ecloning\bin\ru\System.Spatial.resources.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\zh-Hans\System.Spatial.resources.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\zh-Hant\System.Spatial.resources.dll
+\\Mac\Home\ecloning\ecloning\ecloning\bin\dotless.Core.dll
+\\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.dll
+\\Mac\Home\ecloning\ecloning\ecloning\bin\dotless.Core.pdb
+\\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.pdb
+\\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.xml

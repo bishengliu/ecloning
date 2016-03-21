@@ -8,6 +8,8 @@
     <title>@ViewBag.Title - eCloning</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/less")
+    @Styles.Render("~/Content/biotools")
 
 </head>
 <body>
@@ -76,18 +78,16 @@
             </div>
         </div>
     </div>
+    @RenderBody()
 
-    <div class="container-fluid body-content">
-        @RenderBody()
-        <div class="footer navbar-fixed-bottom">
-            <footer>
-                <p class="text-center" style="margin: 0px 0px 0px 0px;">&copy; @DateTime.Now.Year - eCloning. All Rights Reserved</p>
-            </footer>
-        </div>
+    <div class="footer navbar-fixed-bottom">
+        <footer>
+            <p class="text-center" style="margin: 0px 0px 0px 0px;">&copy; @DateTime.Now.Year - eCloning. All Rights Reserved</p>
+        </footer>
     </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @*@Scripts.Render("~/bundles/editable")*@
+    @Scripts.Render("~/bundles/biotools")
     @RenderSection("scripts", required: false)
     <script src="~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="~/Scripts/datatable/jquery.dataTables.min.js"></script>

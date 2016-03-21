@@ -41,16 +41,34 @@ namespace ecloning
                       "~/Scripts/giraffe/scale.raphael.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/giraffe2").Include(
-          "~/Scripts/giraffe/analyze-2.0.js",
-          "~/Scripts/giraffe/analyze_page-2.0.js",
-          "~/Scripts/giraffe/bio-2.0.js",
-          "~/Scripts/giraffe/draw-2.0.js",
-          "~/Scripts/giraffe/raphael-min-2.0.js",
-          "~/Scripts/giraffe/jquery.ba-replacetext.mim-2.0.js",
-          "~/Scripts/giraffe/scale.raphael-2.0.js"));
+                        "~/Scripts/giraffe/analyze-2.0.js",
+                        "~/Scripts/giraffe/analyze_page-2.0.js",
+                        "~/Scripts/giraffe/bio-2.0.js",
+                        "~/Scripts/giraffe/draw-2.0.js",
+                        "~/Scripts/giraffe/raphael-min-2.0.js",
+                        "~/Scripts/giraffe/jquery.ba-replacetext.mim-2.0.js",
+                        "~/Scripts/giraffe/scale.raphael-2.0.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/nvd3").Include(
                       "~/Scripts/nv.d3.min.js"));
+
+
+            //less bundle
+            bundles.Add(new LessBundle("~/Content/less").Include(
+                "~/Content/less/*.less"));
+
+
+            bundles.Add(new StyleBundle("~/Content/biotools").Include(
+                    "~/Content/biotools/metisMenu.min.css",
+                    "~/Content/biotools/timeline.css",
+                    "~/Content/biotools/morris.css",
+                    "~/Content/sb-admin-2.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/biotools").Include(
+                        "~/Scripts/biotools/morris.min.js",
+                        "~/Scripts/biotools/raphael-min.js",
+                        "~/Scripts/biotools/sb-admin-2.js",
+                      "~/Scripts/biotools/metisMenu.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
