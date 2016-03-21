@@ -142,7 +142,7 @@ namespace ecloning.Models
             ////check ORF
 
             var orf = new List<ORFObject>();
-            var orfFinder = new ORFFinder(0, 0, 1, 0, 300, Sequence);
+            var orfFinder = new ORFFinder(0, 0, 0, 0, 300, Sequence);
             //ORFFinder(int startCodon, int stopCodon, int frame, int direction, int minSzie, string sequence)
             orf = orfFinder.FindPlasmidORF();
             if (orf.Count() > 0)

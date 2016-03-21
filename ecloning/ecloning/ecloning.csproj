@@ -253,6 +253,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="Controllers\MiscellaneousController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Global.asax.cs">
@@ -757,8 +758,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -808,6 +807,7 @@
     <Content Include="Views\Shared\_BioTools.cshtml" />
     <Content Include="Views\BioTools\Index.cshtml" />
     <Content Include="Views\Shared\_BioToolsLayout.cshtml" />
+    <Content Include="Views\Miscellaneous\FormatSeq.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />
