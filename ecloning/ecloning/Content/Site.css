@@ -24,8 +24,8 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-/*input,
+ /*Set width on the form input elements since they're 100% wide by default 
+input,
 select,
 textarea {
     max-width: 280px;
@@ -220,3 +220,13 @@ textarea {
 .table.dataTable thead .sorting { background: url('/sorter/bg.gif') no-repeat center right; }
 .table.dataTable thead .sorting_asc { background: url('/sorter/asc.gif') no-repeat center right; }
 .table.dataTable thead .sorting_desc { background: url('/sorter/desc.gif') no-repeat center right; }
+
+
+
+/*remove brand padding*/
+.navbar .container-fluid, .navbar-collapse {
+    padding-left:0;
+}
+.navbar-collapse.in {
+    padding-left:30px;
+}

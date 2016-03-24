@@ -407,40 +407,146 @@ CREATE TABLE plasmid_map_backup
 	CONSTRAINT fk_plasmid_map_backup_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id)
 );
 
+
+--prevent the enzyme table to be changed by normal users
 --restriction
-CREATE TABLE restriction
+CREATE TABLE restri_enzyme
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(100) NOT NULL,
 	forward_seq NVARCHAR(20) NOT NULL, --5' to 3'
-	forward_cut INT NOT NULL, --cut after the num
-	reverse_seq NVARCHAR(20) NOT NULL, --3' to 5' 
-	reverse_cut INT NOT NULL, --cut after num
+	forward_cut INT NOT NULL, --cut after the num, first letter starts with 1, --5' to 3'
+	reverse_cut INT NOT NULL, --cut after num, first letter starts with 1, --3' to 5' 
+	staractitivity BIT,
+	inactivation INT, -- inactivation 20min at 65C (is 1), 80C  (is 2) or NO (0) 
+	dam BIT,
+	dcm BIT,
+	cpg BIT,
 	methylation BIT,
-	common BIT,
+	--common BIT,
 	CONSTRAINT uq_restriction_name UNIQUE (name)
 );
---K: G or T
---M: A or C
---R: A or G
---Y: C or T
---N: radom, placeholder
+
+--dam: 5'-GmATC-3' and 3'-CTmAG-5'
+--dcm: 5'-CmCAGG-3' and 3'-GGTmCC-5' //and // 5'-CmCTGG-3' and 3'-GGAmCC-5'
+
+CREATE TABLE seq_code
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(10) NOT NULL,
+	necleotide NVARCHAR(10) NOT NULL,	
+);
 
 
-INSERT INTO restriction (name,forward_seq,forward_cut,reverse_seq,reverse_cut,common) VALUES
-('AanI', 'TTATAA', 3,'AATATT', 3, 0),
-('AatII', 'GACGTC', 5,'CTGCAG', 1, 0),
-('Acc65I', 'GGTACC', 1,'CCATGG', 5, 0),
-('AdeI', 'CACNNNGTG', 6,'GTGNNNCAC', 3, 0),
-('AjiI', 'CACGTC', 3,'GTGCAG', 3, 0),
-('Alu I', 'AGCT', 2,'TCGA', 2, 0),
-('Alw44I', 'GTGCAC', 1,'CACGTG', 5, 0),
-('Apa I', 'GGGCCC', 5,'CCCGGG', 1, 1),
-('BamH I', 'GGATCC', 1,'CCTAGG', 5, 1),
-('BauI', 'CACGAG', 1,'GTGCTC', 5, 0),
-('BclI', 'TGATCA', 1,'ACTAGT', 5, 0),
-('BcuI', 'ACTAGT', 5,'TGATCA', 1, 0);
+--insert data
+INSERT INTO seq_code (name, necleotide) 
+VALUES
+('R', 'G'),
+('R', 'A'),
+('K', 'G'),
+('K', 'T'),
+('B', 'C'),
+('B', 'G'),
+('B', 'T'),
+('Y', 'C'),
+('Y', 'T'),
+('S', 'C'),
+('S', 'G'),
+('D', 'A'),
+('D', 'G'),
+('D', 'T'),
+('W', 'A'),
+('W', 'T'),
+('H', 'A'),
+('H', 'C'),
+('H', 'T'),
+('N', 'A'),
+('N', 'T'),
+('N', 'G'),
+('N', 'C'),
+('M', 'A'),
+('N', 'C'),
+('V', 'A'),
+('V', 'C'),
+('V', 'G');
 
+
+--common used non ATGC letters
+--R = G or A
+--K= G or T
+-- B = C, G or T
+--Y = C or T
+--S == C or G
+--D = A, G or T
+--W = A or T
+--H = A, C or T
+--N = G, A T or C
+--M = A or C
+--V = A, C or G
+
+CREATE TABLE company
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	shortName NVARCHAR(100) NOT NULL,
+	fullName NVARCHAR(500) NOT NULL,
+	composition NVARCHAR(100) NOT NULL,
+	[des] TEXT
+);
+
+CREATE TABLE buffer
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(100) NOT NULL,
+	[des] TEXT
+);
+
+CREATE TABLE activity_restriction --activity of restriction enzyme
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	enzyme_id INT NOT NULL,
+	company_id INT NOT NULL,
+	buffer_id INT NOT NULL,
+	activity INT NOT NULL, --in 100%
+	CONSTRAINT fk_activity_restriction_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES restri_enzyme(id),
+	CONSTRAINT fk_activity_restriction_company_id FOREIGN KEY (company_id) REFERENCES company(id),
+	CONSTRAINT fk_activity_restriction_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
+);
+
+
+CREATE TABLE modifying_enzyme
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(250) NOT NULL,
+	[des] TEXT
+);
+
+--INSERT DATA
+INSERT INTO modifying_enzyme (name) VALUE
+('DNA Polymerase I, E.coli'),
+('Klenow Fragement'),
+('Klenow Fragement, exo-'),
+('T4 DNA Polymerase'),
+('T7 DNA Polymerase'),
+('Exonuclease I, E.coli'),
+('Exonuclease III'),
+('T4 DNA Ligase'),
+('Bacterial Alkaline Phosphatase'),
+('Shrimp Alkaline Phosphatase'),
+('Calf Intestine Alkaline Phosphatase'),
+('T4 Polynucleitide Kinase');
+
+
+CREATE TABLE activity_modifying --activity of modifying enzyme
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	enzyme_id INT NOT NULL,
+	company_id INT NOT NULL,
+	buffer_id INT NOT NULL,
+	activity INT NOT NULL, --in 100%
+	CONSTRAINT fk_activity_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
+	CONSTRAINT fk_activity_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
+	CONSTRAINT fk_activity_modifying_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
+);
 
 
 
@@ -523,9 +629,6 @@ CREATE TABLE group_shared
 	CONSTRAINT fk_group_shared_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT uq_group_id_resource_id_category UNIQUE (group_id, resource_id, category)
 );
-
-
-
 
 
 CREATE TABLE nuclease

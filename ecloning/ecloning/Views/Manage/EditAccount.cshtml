@@ -6,12 +6,16 @@
     int Count = (int)ViewBag.Count;
 }
 
-
-<h3 class="col-sm-offset-4">Account Details</h3>
+<h3 class="col-sm-offset-4 text-primary">Account Details</h3>
 
 @if (Count == 0)
 {
-    <p class="text-primary">Your account details is currently unavailable</p>
+    <div class="row">
+        <br />
+        <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+            <p class="text-primary text-center">Your account details is currently unavailable</p>
+        </div>
+    </div>
 }
 else
 {
@@ -34,44 +38,32 @@ else
 
     }
 
-    if (groups.Count() > 0)
-    {
-        <br />
-        <div class="row">
-            <div class="col-sm-offset-4">
-                <p><strong>You are belong to the following research group(s):</strong></p>
-
-                <div class="row">
-                    @foreach (var g in groups)
-                    {
-                        <div class="col-sm-12">
-                            <span class="text-info"><strong>Group: </strong></span><span>@g.name</span><br />
-                            <span class="text-info"><strong>Department: </strong></span><span>@g.department.name</span>
-                        </div><br />
-                    }
-
-                </div>
-            </div>
-
-        </div>
-
-    }
-
     <br />
     <div class="row">
-        <div class="col-sm-offset-4">
-
-            <div class="row">
-                <div class="col-sm-12">
+       @if (groups.Count() > 0)
+       {
+           <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+               <p><strong>You are belong to the following research group(s):</strong></p>
+           </div>
+           foreach (var g in groups)
+           {
+              <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+                        <span class="text-info"><strong>Group: </strong></span><span>@g.name</span><br />
+                        <span class="text-info"><strong>Department: </strong></span><span>@g.department.name</span>
+                    </div><br />
+           }
+            
+           <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-11">
                     @using (Html.BeginForm())
                     {
                         @Html.AntiForgeryToken()
                         <p>
+                            <br />
                             <strong>Your personal information</strong>
                             <span>
-                                &nbsp;<a class="btn btn-info btn-xs" href=@Url.Action("ViewAccount", "Manage")>
+                                &nbsp;<a class="btn btn-danger btn-xs" href=@Url.Action("ViewAccount", "Manage")>
                                     <i class="text-info"></i>
-                                    <span class="text-info">Cancel</span>
+                                    <span>Cancel</span>
                                 </a>
                             </span>
                         </p>
@@ -80,40 +72,37 @@ else
                             @Html.HiddenFor(model => model.id)
 
                             <div class="form-group required">
-                                @Html.LabelFor(model => model.first_name,"First Name", htmlAttributes: new { @class = "control-label col-bg-2" })
-                                <div class="col-bg-2">
+                                @Html.LabelFor(model => model.first_name,"First Name", htmlAttributes: new { @class = "control-label text-info pull-left" })
+                                <div class="col-sm-4">
                                     @Html.EditorFor(model => model.first_name, new { htmlAttributes = new { @class = "form-control" } })
                                     @Html.ValidationMessageFor(model => model.first_name, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <div class="form-group required">
-                                @Html.LabelFor(model => model.last_name, "Last Name", htmlAttributes: new { @class = "control-label col-bg-2" })
-                                <div class="col-bg-2">
+                                @Html.LabelFor(model => model.last_name, "Last Name", htmlAttributes: new { @class = "control-label text-info pull-left" })
+                                <div class="col-sm-4">
                                     @Html.EditorFor(model => model.last_name, new { htmlAttributes = new { @class = "form-control" } })
                                     @Html.ValidationMessageFor(model => model.last_name, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
-
-
                             <div class="form-group">
-                                <div class="col-bg-offset-1 col-bg-1">
-                                    <input type="submit" value="Save" class="btn btn-block btn-primary" />
+                                <div class="col-sm-4">
+                                    <input type="submit" value="Update" class="btn btn-block btn-primary" />
                                 </div>
                             </div>
                         </div>
                     }
                     @if (Model.func != null)
                     {
+                        <br/>
                         <span class="text-info"><strong>Function: </strong></span><span>@Model.func</span><br />
                     }
-                    <span class="text-info"><strong>Email: </strong></span><span>@Model.email</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
+                        <br />
+                        <span class="text-info"><strong>Email: </strong></span><span>@Model.email</span>
+                    </div>
+       }
+     </div>
 }
 
 

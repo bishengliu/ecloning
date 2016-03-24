@@ -52,11 +52,9 @@ namespace ecloning
             bundles.Add(new ScriptBundle("~/bundles/nvd3").Include(
                       "~/Scripts/nv.d3.min.js"));
 
-
             //less bundle
             bundles.Add(new LessBundle("~/Content/less").Include(
                 "~/Content/less/*.less"));
-
 
             bundles.Add(new StyleBundle("~/Content/biotools").Include(
                     "~/Content/biotools/metisMenu.min.css",
@@ -73,16 +71,13 @@ namespace ecloning
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/bootstrap-datepicker.css",
-                      //"~/css/font-awesome.min.css",
                       "~/Content/nv.d3.css",
                       "~/Content/token-input.css",
                       "~/Content/token-input-facebook.css",
                       "~/Content/token-input-mac.css",
                       "~/Content/chosen.css",
-                      "~/Content/bootstrap.vertical-tabs.min.css",
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
-                      "~/Content/analyze-2.0.css",
                       "~/Content/site.css"));
 
         }

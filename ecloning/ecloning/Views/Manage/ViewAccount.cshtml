@@ -6,11 +6,16 @@
     int Count = (int)ViewBag.Count;
 }
 
-<h3 class="col-sm-offset-4">Account Details</h3>
+<h3 class="col-sm-offset-4 text-primary">Account Details</h3>
 
 @if (Count == 0)
 {
-    <p class="text-primary">Your account details is currently unavailable</p>
+    <div class="row">
+        <br />
+        <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+            <p class="text-primary text-center">Your account details is currently unavailable</p>
+        </div>
+    </div>
 }
 else
 {
@@ -32,56 +37,41 @@ else
         groups = db.groups.Where(g => groupId.Contains(g.id));
 
     }
-
-    if (groups.Count() > 0)
-    {
-        <br />
-        <div class="row">
-            <div class="col-sm-offset-4">
-                <p><strong>You are belong to the following research group(s):</strong></p>
-                
-                <div class="row">
-                    @foreach (var g in groups)
-                    {
-                        <div class="col-sm-12">
-                            <span class="text-info"><strong>Group: </strong></span><span>@g.name</span><br />
-                            <span class="text-info"><strong>Department: </strong></span><span>@g.department.name</span>
-                        </div>
-                        <br/>
-                    }
-
-                </div>
-            </div>
-
-        </div>
-        
-    }
-
-    <br/>
+    <br />
     <div class="row">
-        <div class="col-sm-offset-4">
-            <p><strong>Your personal information</strong>
-                <span>
-                    &nbsp;<a class="btn btn-info btn-xs" href=@Url.Action("EditAccount", "Manage")>
-                        <i class="glyphicon glyphicon-pencil text-info"></i>
-                        <span class="text-info">Edit</span>
-                    </a>
-                </span>
-            </p>
-            <div class="row">
-                <div class="col-sm-12">
-                    <span class="text-info"><strong>First Name: </strong></span><span>@Model.first_name</span><br />
-                    <span class="text-info"><strong>Last Name: </strong></span><span>@Model.last_name</span><br />
-                    @if (Model.func != null)
-                    {
-                        <span class="text-info"><strong>Function: </strong></span><span>@Model.func</span><br />
-                    }
-                    <span class="text-info"><strong>Email: </strong></span><span>@Model.email</span>
-                </div>
+        @if (groups.Count() > 0)
+        {
+            <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+                <p><strong>You are belong to the following research group(s):</strong></p>
             </div>
-        </div>
+            foreach (var g in groups)
+            {
+            <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+                <span class="text-info"><strong>Group: </strong></span><span>@g.name</span><br />
+                <span class="text-info"><strong>Department: </strong></span><span>@g.department.name</span>
+            </div><br />
+            }
+            <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-11">
+                <p>
+                    <br />
+                    <strong>Your personal information</strong>
+                    <span>
+                        &nbsp;<a class="btn btn-info btn-xs" href=@Url.Action("EditAccount", "Manage")>
+                            <i class="glyphicon glyphicon-pencil text-info"></i>
+                            <span class="text-info">Edit</span>
+                        </a>
+                    </span>
+                </p>
+                <span class="text-info"><strong>First Name: </strong></span><span>@Model.first_name</span><br />
+                <span class="text-info"><strong>Last Name: </strong></span><span>@Model.last_name</span><br />
+                @if (Model.func != null)
+                {
+                    <span class="text-info"><strong>Function: </strong></span><span>@Model.func</span><br />
+                }
+                <span class="text-info"><strong>Email: </strong></span><span>@Model.email</span>
+            </div>
+        }
     </div>
-
 }
 
 

@@ -7,6 +7,7 @@ namespace ecloning.Models
     {
         [Required]
         [Display(Name = "Email")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
     }
 
@@ -43,6 +44,7 @@ namespace ecloning.Models
     {
         [Required]
         [Display(Name = "Email")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
     }
 
@@ -50,7 +52,7 @@ namespace ecloning.Models
     {
         [Required]
         [Display(Name = "Email")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
         [Required]
@@ -85,7 +87,7 @@ namespace ecloning.Models
         public string code { get; set; }
 
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
@@ -104,7 +106,7 @@ namespace ecloning.Models
     public class ResetPasswordViewModel
     {
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
@@ -125,7 +127,7 @@ namespace ecloning.Models
     public class ForgotPasswordViewModel
     {
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         [Display(Name = "Email")]
         public string Email { get; set; }
     }

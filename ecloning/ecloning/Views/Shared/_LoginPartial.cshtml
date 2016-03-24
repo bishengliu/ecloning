@@ -11,11 +11,11 @@
         name = person.FirstOrDefault().first_name + " " + person.FirstOrDefault().last_name;
     }
 
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
     {
      @Html.AntiForgeryToken()
 
-     <ul class="nav navbar-nav navbar-right">
+     <ul class="nav navbar-nav navbar-left">
         <li class="dropdown">
         @if (name != null)
         {
@@ -38,7 +38,7 @@
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-left">
         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li> 
         <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
