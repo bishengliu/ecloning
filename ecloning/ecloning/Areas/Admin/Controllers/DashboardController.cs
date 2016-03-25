@@ -9,6 +9,7 @@ namespace ecloning.Areas.Admin.Controllers
     public class DashboardController : RootController
     {
         // GET: Admin/Dashboard
+        [Authorize]
         public ActionResult Index()
         {
             return View();

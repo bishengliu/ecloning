@@ -41,6 +41,10 @@ namespace ecloning.Models
                 {
                     cSeq.Append("G");
                 }
+                if(c.ToString() == "N")
+                {
+                    cSeq.Append("N");
+                }
             }
 
             return cSeq.ToString();

@@ -234,3 +234,14 @@ textarea {
 .table > tbody > tr > th {
      vertical-align: middle;
 }
+
+
+.verticalLine {
+    border-left: 2px dotted red;
+}
+.horizontalLine {
+    border-bottom: 2px dotted red;
+}
+.seqFont {
+    font-family: courier !important;
+}

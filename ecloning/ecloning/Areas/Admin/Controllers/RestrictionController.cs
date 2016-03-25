@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ecloning.Models;
+using ecloning.Areas.Admin.Models;
+using System.Text;
 
 namespace ecloning.Areas.Admin.Controllers
 {
@@ -15,29 +17,22 @@ namespace ecloning.Areas.Admin.Controllers
         private ecloningEntities db = new ecloningEntities();
 
         // GET: Admin/Restriction
+        [Authorize]
         public ActionResult Index()
         {
-            return View(db.restri_enzyme.ToList());
-        }
-
-        // GET: Admin/Restriction/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            restri_enzyme restri_enzyme = db.restri_enzyme.Find(id);
-            if (restri_enzyme == null)
-            {
-                return HttpNotFound();
-            }
-            return View(restri_enzyme);
+            return View(db.restri_enzyme.OrderBy(n=>n.name).ToList());
         }
 
         // GET: Admin/Restriction/Create
+        [Authorize]
         public ActionResult Create()
         {
+            //prepare dropdown list
+            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
             return View();
         }
 
@@ -45,20 +40,109 @@ namespace ecloning.Areas.Admin.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,forward_seq,forward_cut,reverse_cut,staractitivity,inactivation,dam,dcm,cpg,methylation")] restri_enzyme restri_enzyme)
+        public ActionResult Create([Bind(Include = "id,name,forward_seq,forward_cut,reverse_cut,staractitivity,inactivation,dam,dcm,cpg")] Restriction restriction)
         {
+            //prepare dropdown list
+            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.staractitivity);
+            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dam);
+            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dcm);
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.cpg);
+            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", restriction.inactivation);
+
+            //non zero validation
+            if(restriction.forward_cut == 0 || restriction.reverse_cut == 0)
+            {
+                TempData["error"] = "Cut postion cann't be zero!";
+                return View(restriction);
+            }
+
             if (ModelState.IsValid)
             {
+                //check the cut
+                string seq = restriction.forward_seq;
+                if (restriction.forward_cut >= 1 && restriction.forward_cut > restriction.forward_seq.Length)
+                {
+                    //put N
+                    var Ns = new StringBuilder();
+                    for (int i= 1; i <= (restriction.forward_cut - restriction.forward_seq.Length); i++)
+                    {
+                        Ns.Append("N");
+                    }
+                    seq = seq + Ns;
+
+                    //CHECK THE REVERSE CUT
+                    if(restriction.reverse_cut >=1 && restriction.reverse_cut > seq.Length)
+                    {
+                        var N2 = new StringBuilder();
+                        for (int i = 1; i <= (restriction.reverse_cut - seq.Length); i++)
+                        {
+                            N2.Append("N");
+                        }
+                        seq = seq + N2;
+                    }
+                    if (restriction.reverse_cut < 0)
+                    {
+                        var N3 = new StringBuilder();
+                        for (int i = -1; i >= restriction.reverse_cut; i--)
+                        {
+                            N3.Append("N");
+                        }
+                        seq =  N3 + seq ;
+                    }
+                }
+                if (restriction.forward_cut < 0)
+                {
+                    //put N
+                    var Ns = new StringBuilder();
+                    for (int i = -1; i >= (restriction.forward_cut); i--)
+                    {
+                        Ns.Append("N");
+                    }
+                    seq =  Ns + seq;
+                    //CHECK THE REVERSE CUT
+                    if(restriction.reverse_cut >=1 && restriction.reverse_cut > restriction.forward_seq.Length)
+                    {
+                        var N2 = new StringBuilder();
+                        for (int i = 1; i <= (restriction.reverse_cut - restriction.forward_seq.Length); i++)
+                        {
+                            N2.Append("N");
+                        }
+                        seq = seq + N2;
+                    }
+                    if(restriction.reverse_cut < 0 && restriction.reverse_cut < restriction.forward_cut)
+                    {
+                        var N3 = new StringBuilder();
+                        for (int i = 1; i <= (Math.Abs(restriction.reverse_cut) - Math.Abs(restriction.forward_cut)); i++)
+                        {
+                            N3.Append("N");
+                        }
+                        seq = N3 + seq;
+                    }
+                }
+
+                //add to restri_enzyme
+                var restri_enzyme = new restri_enzyme();
+                restri_enzyme.name = restriction.name;
+                restri_enzyme.forward_seq = seq;
+                restri_enzyme.forward_cut = restriction.forward_cut;
+                restri_enzyme.reverse_cut = restriction.reverse_cut;
+                restri_enzyme.staractitivity = restriction.staractitivity;
+                restri_enzyme.dam = restriction.dam;
+                restri_enzyme.dcm = restriction.dcm;
+                restri_enzyme.cpg = restriction.cpg;
+                restri_enzyme.inactivation = restriction.inactivation;
                 db.restri_enzyme.Add(restri_enzyme);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(restri_enzyme);
+            return View(restriction);
         }
 
         // GET: Admin/Restriction/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -77,6 +161,7 @@ namespace ecloning.Areas.Admin.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,name,forward_seq,forward_cut,reverse_cut,staractitivity,inactivation,dam,dcm,cpg,methylation")] restri_enzyme restri_enzyme)
         {
@@ -90,6 +175,7 @@ namespace ecloning.Areas.Admin.Controllers
         }
 
         // GET: Admin/Restriction/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -105,6 +191,7 @@ namespace ecloning.Areas.Admin.Controllers
         }
 
         // POST: Admin/Restriction/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

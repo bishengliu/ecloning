@@ -250,6 +250,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
     <Compile Include="Areas\Admin\Controllers\RootController.cs" />
+    <Compile Include="Areas\Admin\Models\Restriction.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BioToolsController.cs" />
     <Compile Include="Controllers\FeatureController.cs" />
@@ -634,7 +635,6 @@
     <Content Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\Restriction\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\Index.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
@@ -841,7 +841,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />
-    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\Root\" />
     <Folder Include="Views\Root\" />
   </ItemGroup>
