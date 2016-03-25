@@ -415,14 +415,15 @@ CREATE TABLE restri_enzyme
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(100) NOT NULL,
 	forward_seq NVARCHAR(20) NOT NULL, --5' to 3'
-	forward_cut INT NOT NULL, --cut after the num, first letter starts with 1, --5' to 3'
-	reverse_cut INT NOT NULL, --cut after num, first letter starts with 1, --3' to 5' 
+	forward_cut INT NOT NULL, --cut after the num, first letter starts with 1, --5' to 3' ---- for keep most left cut position
+	reverse_cut INT NOT NULL, --cut after num, first letter starts with 1, --3' to 5' ---- for keep most left cut position
 	staractitivity BIT,
 	inactivation INT, -- inactivation 20min at 65C (is 1), 80C  (is 2) or NO (0) 
 	dam BIT,
 	dcm BIT,
 	cpg BIT,
-	methylation BIT,
+	forward_cut2 INT, -- for keep most right cut position
+	reverse_cut2 INT, -- for keep most right cut position
 	--common BIT,
 	CONSTRAINT uq_restriction_name UNIQUE (name)
 );
