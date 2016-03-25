@@ -975,7 +975,7 @@ INSERT INTO dropdownitem VALUES
 --star activity
 ('0', 'No', 'StarActivity'),
 ('1', '65 degree, 20 min', 'StarActivity'),
-('2', '85 degree, 20 min', 'StarActivity');
+('2', '80 degree, 20 min', 'StarActivity');
 
 
 

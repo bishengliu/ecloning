@@ -68,7 +68,14 @@
                                             <strong class="text-warning">@Html.DisplayFor(modelItem => item.name)</strong>
                                         </td>
                                         <td class="text-center">
-                                            @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
+                                            @if (item.forward_cut2 != null)
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
+                                            }
                                         </td>
                                         <td class="text-center">
                                             @if (item.staractitivity == true)
@@ -177,7 +184,14 @@
                                             @Html.DisplayFor(modelItem => item.name)
                                         </td>
                                         <td class="text-center">
-                                            @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
+                                            @if (item.forward_cut2 != null)
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
+                                            }                                        
                                         </td>
                                         <td class="text-center">
                                             @if (item.staractitivity == true)

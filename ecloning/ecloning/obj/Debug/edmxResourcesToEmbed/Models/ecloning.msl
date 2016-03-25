@@ -499,7 +499,8 @@
           <ScalarProperty Name="dam" ColumnName="dam" />
           <ScalarProperty Name="dcm" ColumnName="dcm" />
           <ScalarProperty Name="cpg" ColumnName="cpg" />
-          <ScalarProperty Name="methylation" ColumnName="methylation" />
+          <ScalarProperty Name="forward_cut2" ColumnName="forward_cut2" />
+          <ScalarProperty Name="reverse_cut2" ColumnName="reverse_cut2" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -79,38 +79,71 @@ namespace ecloning.Areas.Admin.Controllers
             return View(restriction);
         }
 
-        // GET: Admin/Restriction/Edit/5
+
         [Authorize]
-        public ActionResult Edit(int? id)
+        public ActionResult mCreate()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            restri_enzyme restri_enzyme = db.restri_enzyme.Find(id);
-            if (restri_enzyme == null)
-            {
-                return HttpNotFound();
-            }
-            return View(restri_enzyme);
+            //prepare dropdown list
+            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
+            return View();
         }
 
-        // POST: Admin/Restriction/Edit/5
+        // POST: Admin/Restriction/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,forward_seq,forward_cut,reverse_cut,staractitivity,inactivation,dam,dcm,cpg,methylation")] restri_enzyme restri_enzyme)
+        public ActionResult mCreate([Bind(Include = "id,name,forward_seq,forward_cut,reverse_cut,forward_cut2,reverse_cut2,staractitivity,inactivation,dam,dcm,cpg")] Restriction restriction)
         {
+            //prepare dropdown list
+            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.staractitivity);
+            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dam);
+            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dcm);
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.cpg);
+            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", restriction.inactivation);
+
+            if (restriction.forward_cut2 == null || restriction.reverse_cut2 == null)
+            {
+                TempData["error"] = "Cut postions for the most right cut are required!";
+                return View(restriction);
+            }
+            //non zero validation
+            if (restriction.forward_cut == 0 || restriction.reverse_cut == 0 || restriction.forward_cut2 == 0 || restriction.reverse_cut2 == 0)
+            {
+                TempData["error"] = "Cut postion cann't be zero!";
+                return View(restriction);
+            }
+
             if (ModelState.IsValid)
             {
-                db.Entry(restri_enzyme).State = EntityState.Modified;
+                //add to restri_enzyme
+                var restri_enzyme = new restri_enzyme();
+                restri_enzyme.name = restriction.name;
+                restri_enzyme.forward_seq = restriction.forward_seq;
+                restri_enzyme.forward_cut = restriction.forward_cut;
+                restri_enzyme.reverse_cut = restriction.reverse_cut;
+                restri_enzyme.forward_cut2 = restriction.forward_cut2;
+                restri_enzyme.reverse_cut2 = restriction.reverse_cut2;
+                restri_enzyme.staractitivity = restriction.staractitivity;
+                restri_enzyme.dam = restriction.dam;
+                restri_enzyme.dcm = restriction.dcm;
+                restri_enzyme.cpg = restriction.cpg;
+                restri_enzyme.inactivation = restriction.inactivation;
+                db.restri_enzyme.Add(restri_enzyme);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(restri_enzyme);
+
+            return View(restriction);
         }
+
+
+
 
         // GET: Admin/Restriction/Delete/5
         [Authorize]

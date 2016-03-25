@@ -59,7 +59,7 @@ namespace ecloning.Models
             else if(inactivation == 2)
             {
                 //850C
-                symbol = "<button type=\"button\" class=\"btn btn-success btn-circle disabled\">85&deg;C</button>";
+                symbol = "<button type=\"button\" class=\"btn btn-success btn-circle disabled\">80&deg;C</button>";
             }
             else
             {
@@ -67,8 +67,6 @@ namespace ecloning.Models
             }
             return symbol;
         }
-
-
 
 
         //process forward seq with one cut

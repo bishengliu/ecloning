@@ -477,7 +477,8 @@
           <Property Name="dam" Type="bit" />
           <Property Name="dcm" Type="bit" />
           <Property Name="cpg" Type="bit" />
-          <Property Name="methylation" Type="bit" />
+          <Property Name="forward_cut2" Type="int" />
+          <Property Name="reverse_cut2" Type="int" />
         </EntityType>
         <EntityType Name="seq_code">
           <Key>
@@ -1724,7 +1725,8 @@
           <Property Name="dam" Type="Boolean" />
           <Property Name="dcm" Type="Boolean" />
           <Property Name="cpg" Type="Boolean" />
-          <Property Name="methylation" Type="Boolean" />
+          <Property Name="forward_cut2" Type="Int32" />
+          <Property Name="reverse_cut2" Type="Int32" />
           <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="restri_enzyme" ToRole="activity_restriction" />
         </EntityType>
         <EntityType Name="seq_code">
@@ -2903,7 +2905,8 @@
                 <ScalarProperty Name="dam" ColumnName="dam" />
                 <ScalarProperty Name="dcm" ColumnName="dcm" />
                 <ScalarProperty Name="cpg" ColumnName="cpg" />
-                <ScalarProperty Name="methylation" ColumnName="methylation" />
+                <ScalarProperty Name="forward_cut2" ColumnName="forward_cut2" />
+                <ScalarProperty Name="reverse_cut2" ColumnName="reverse_cut2" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

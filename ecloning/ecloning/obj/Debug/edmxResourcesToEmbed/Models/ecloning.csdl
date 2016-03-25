@@ -539,7 +539,8 @@
     <Property Name="dam" Type="Boolean" />
     <Property Name="dcm" Type="Boolean" />
     <Property Name="cpg" Type="Boolean" />
-    <Property Name="methylation" Type="Boolean" />
+    <Property Name="forward_cut2" Type="Int32" />
+    <Property Name="reverse_cut2" Type="Int32" />
     <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="restri_enzyme" ToRole="activity_restriction" />
   </EntityType>
   <EntityType Name="seq_code">

@@ -30,7 +30,8 @@ namespace ecloning.Models
         public Nullable<bool> dam { get; set; }
         public Nullable<bool> dcm { get; set; }
         public Nullable<bool> cpg { get; set; }
-        public Nullable<bool> methylation { get; set; }
+        public Nullable<int> forward_cut2 { get; set; }
+        public Nullable<int> reverse_cut2 { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_restriction> activity_restriction { get; set; }

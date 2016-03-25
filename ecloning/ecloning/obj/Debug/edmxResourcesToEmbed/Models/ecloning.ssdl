@@ -472,7 +472,8 @@
     <Property Name="dam" Type="bit" />
     <Property Name="dcm" Type="bit" />
     <Property Name="cpg" Type="bit" />
-    <Property Name="methylation" Type="bit" />
+    <Property Name="forward_cut2" Type="int" />
+    <Property Name="reverse_cut2" Type="int" />
   </EntityType>
   <EntityType Name="seq_code">
     <Key>
