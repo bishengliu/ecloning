@@ -60,72 +60,10 @@ namespace ecloning.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                //check the cut
-                string seq = restriction.forward_seq;
-                if (restriction.forward_cut >= 1 && restriction.forward_cut > restriction.forward_seq.Length)
-                {
-                    //put N
-                    var Ns = new StringBuilder();
-                    for (int i= 1; i <= (restriction.forward_cut - restriction.forward_seq.Length); i++)
-                    {
-                        Ns.Append("N");
-                    }
-                    seq = seq + Ns;
-
-                    //CHECK THE REVERSE CUT
-                    if(restriction.reverse_cut >=1 && restriction.reverse_cut > seq.Length)
-                    {
-                        var N2 = new StringBuilder();
-                        for (int i = 1; i <= (restriction.reverse_cut - seq.Length); i++)
-                        {
-                            N2.Append("N");
-                        }
-                        seq = seq + N2;
-                    }
-                    if (restriction.reverse_cut < 0)
-                    {
-                        var N3 = new StringBuilder();
-                        for (int i = -1; i >= restriction.reverse_cut; i--)
-                        {
-                            N3.Append("N");
-                        }
-                        seq =  N3 + seq ;
-                    }
-                }
-                if (restriction.forward_cut < 0)
-                {
-                    //put N
-                    var Ns = new StringBuilder();
-                    for (int i = -1; i >= (restriction.forward_cut); i--)
-                    {
-                        Ns.Append("N");
-                    }
-                    seq =  Ns + seq;
-                    //CHECK THE REVERSE CUT
-                    if(restriction.reverse_cut >=1 && restriction.reverse_cut > restriction.forward_seq.Length)
-                    {
-                        var N2 = new StringBuilder();
-                        for (int i = 1; i <= (restriction.reverse_cut - restriction.forward_seq.Length); i++)
-                        {
-                            N2.Append("N");
-                        }
-                        seq = seq + N2;
-                    }
-                    if(restriction.reverse_cut < 0 && restriction.reverse_cut < restriction.forward_cut)
-                    {
-                        var N3 = new StringBuilder();
-                        for (int i = 1; i <= (Math.Abs(restriction.reverse_cut) - Math.Abs(restriction.forward_cut)); i++)
-                        {
-                            N3.Append("N");
-                        }
-                        seq = N3 + seq;
-                    }
-                }
-
                 //add to restri_enzyme
                 var restri_enzyme = new restri_enzyme();
                 restri_enzyme.name = restriction.name;
-                restri_enzyme.forward_seq = seq;
+                restri_enzyme.forward_seq = restriction.forward_seq;
                 restri_enzyme.forward_cut = restriction.forward_cut;
                 restri_enzyme.reverse_cut = restriction.reverse_cut;
                 restri_enzyme.staractitivity = restriction.staractitivity;

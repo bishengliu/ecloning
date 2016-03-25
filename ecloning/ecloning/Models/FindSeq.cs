@@ -29,21 +29,26 @@ namespace ecloning.Models
                 {
                     cSeq.Append("T");
                 }
-                if (c.ToString() == "T")
+                else if (c.ToString() == "T")
                 {
                     cSeq.Append("A");
                 }
-                if (c.ToString() == "G")
+                else if (c.ToString() == "G")
                 {
                     cSeq.Append("C");
                 }
-                if (c.ToString() == "C")
+                else if (c.ToString() == "C")
                 {
                     cSeq.Append("G");
                 }
-                if(c.ToString() == "N")
+                else if(c.ToString() == "N")
                 {
                     cSeq.Append("N");
+                }
+                else
+                {
+                    //donot change, it is a letter code
+                    cSeq.Append(c);
                 }
             }
 
