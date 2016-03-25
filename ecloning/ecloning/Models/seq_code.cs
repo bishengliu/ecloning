@@ -12,15 +12,10 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class restriction
+    public partial class seq_code
     {
         public int id { get; set; }
         public string name { get; set; }
-        public string forward_seq { get; set; }
-        public int forward_cut { get; set; }
-        public string reverse_seq { get; set; }
-        public int reverse_cut { get; set; }
-        public Nullable<bool> methylation { get; set; }
-        public Nullable<bool> common { get; set; }
+        public string necleotide { get; set; }
     }
 }

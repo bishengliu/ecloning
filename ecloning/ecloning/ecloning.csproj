@@ -247,6 +247,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RootController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BioToolsController.cs" />
     <Compile Include="Controllers\FeatureController.cs" />
@@ -260,6 +263,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\activity_modifying.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\activity_restriction.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppAdmin.cs" />
     <Compile Include="Models\app_license.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
@@ -278,10 +287,16 @@
     </Compile>
     <Compile Include="Models\AzureBlob.cs" />
     <Compile Include="Models\BackupMap.cs" />
+    <Compile Include="Models\buffer.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\clone_group.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\common_feature.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\company.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\container.cs">
@@ -352,6 +367,9 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ModalSeq.cs" />
+    <Compile Include="Models\modifying_enzyme.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\nuclease.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -393,7 +411,11 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RestoreMap.cs" />
-    <Compile Include="Models\restriction.cs">
+    <Compile Include="Models\RestrictionEnzyme.cs" />
+    <Compile Include="Models\restri_enzyme.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\seq_code.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\storage.cs">
@@ -597,6 +619,9 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\less\mixins.less" />
+    <Content Include="Content\less\sb-admin-2.less" />
+    <Content Include="Content\less\variables.less" />
     <EntityDeploy Include="Models\ecloning.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
@@ -604,9 +629,14 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
-    <Content Include="Content\less\mixins.less" />
-    <Content Include="Content\less\sb-admin-2.less" />
-    <Content Include="Content\less\variables.less" />
+    <Content Include="Areas\Admin\Views\Shared\_BioToolsLayout.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_BioTools.cshtml" />
+    <Content Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\Index.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -811,9 +841,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />
-    <Folder Include="Areas\Admin\Controllers\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
+    <Folder Include="Areas\Admin\Views\Root\" />
     <Folder Include="Views\Root\" />
   </ItemGroup>
   <ItemGroup>

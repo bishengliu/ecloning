@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ecloning.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : RootController
     {
         public ActionResult Index()
         {

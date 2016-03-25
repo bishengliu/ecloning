@@ -521,7 +521,7 @@ CREATE TABLE modifying_enzyme
 );
 
 --INSERT DATA
-INSERT INTO modifying_enzyme (name) VALUE
+INSERT INTO modifying_enzyme (name) VALUES
 ('DNA Polymerase I, E.coli'),
 ('Klenow Fragement'),
 ('Klenow Fragement, exo-'),

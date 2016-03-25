@@ -12,7 +12,7 @@ using Microsoft.AspNet.Identity;
 
 namespace ecloning.Controllers
 {
-    public class MapController : Controller
+    public class MapController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
         [Authorize]

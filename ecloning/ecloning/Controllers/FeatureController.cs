@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace ecloning.Controllers
 {
-    public class FeatureController : Controller
+    public class FeatureController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 

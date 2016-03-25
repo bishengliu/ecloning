@@ -10,6 +10,32 @@
     <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
     <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
   </EntityType>
+  <EntityType Name="activity_modifying">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="enzyme_id" Type="Int32" Nullable="false" />
+    <Property Name="company_id" Type="Int32" Nullable="false" />
+    <Property Name="buffer_id" Type="Int32" Nullable="false" />
+    <Property Name="activity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="buffer" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="activity_modifying" ToRole="buffer" />
+    <NavigationProperty Name="company" Relationship="Self.fk_activity_modifying_company_id" FromRole="activity_modifying" ToRole="company" />
+    <NavigationProperty Name="modifying_enzyme" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="activity_modifying" ToRole="modifying_enzyme" />
+  </EntityType>
+  <EntityType Name="activity_restriction">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="enzyme_id" Type="Int32" Nullable="false" />
+    <Property Name="company_id" Type="Int32" Nullable="false" />
+    <Property Name="buffer_id" Type="Int32" Nullable="false" />
+    <Property Name="activity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="buffer" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="activity_restriction" ToRole="buffer" />
+    <NavigationProperty Name="company" Relationship="Self.fk_activity_restriction_company_id" FromRole="activity_restriction" ToRole="company" />
+    <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="activity_restriction" ToRole="restri_enzyme" />
+  </EntityType>
   <EntityType Name="app_license">
     <Key>
       <PropertyRef Name="id" />
@@ -78,6 +104,16 @@
     <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
     <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
   </EntityType>
+  <EntityType Name="buffer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="buffer" ToRole="activity_modifying" />
+    <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="buffer" ToRole="activity_restriction" />
+  </EntityType>
   <EntityType Name="clone_group">
     <Key>
       <PropertyRef Name="id" />
@@ -117,6 +153,18 @@
     <NavigationProperty Name="group" Relationship="Self.fk_common_feature_group_id" FromRole="common_feature" ToRole="group" />
     <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_ccommon_id" FromRole="common_feature" ToRole="plasmid_map_backup" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="common_feature" ToRole="plasmid_map" />
+  </EntityType>
+  <EntityType Name="company">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="shortName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="fullName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="composition" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_company_id" FromRole="company" ToRole="activity_modifying" />
+    <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_company_id" FromRole="company" ToRole="activity_restriction" />
   </EntityType>
   <EntityType Name="container">
     <Key>
@@ -252,6 +300,15 @@
     <Property Name="box_num" Type="Int32" Nullable="false" />
     <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="modifying_enzyme">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="modifying_enzyme" ToRole="activity_modifying" />
   </EntityType>
   <EntityType Name="nuclease">
     <Key>
@@ -468,7 +525,7 @@
     <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="person" Relationship="Self.fk_protocol_people_id" FromRole="protocol" ToRole="people" />
   </EntityType>
-  <EntityType Name="restriction">
+  <EntityType Name="restri_enzyme">
     <Key>
       <PropertyRef Name="id" />
     </Key>
@@ -476,10 +533,22 @@
     <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="forward_seq" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="forward_cut" Type="Int32" Nullable="false" />
-    <Property Name="reverse_seq" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="reverse_cut" Type="Int32" Nullable="false" />
+    <Property Name="staractitivity" Type="Boolean" />
+    <Property Name="inactivation" Type="Int32" />
+    <Property Name="dam" Type="Boolean" />
+    <Property Name="dcm" Type="Boolean" />
+    <Property Name="cpg" Type="Boolean" />
     <Property Name="methylation" Type="Boolean" />
-    <Property Name="common" Type="Boolean" />
+    <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="restri_enzyme" ToRole="activity_restriction" />
+  </EntityType>
+  <EntityType Name="seq_code">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="necleotide" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
   </EntityType>
   <EntityType Name="storage">
     <Key>
@@ -498,6 +567,78 @@
     <Property Name="dt" Type="DateTime" Precision="3" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
+  <Association Name="fk_activity_modifying_buffer_id">
+    <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
+    <End Role="activity_modifying" Type="Self.activity_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="buffer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_modifying">
+        <PropertyRef Name="buffer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_modifying_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="activity_modifying" Type="Self.activity_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_modifying">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_modifying_enzyme_id">
+    <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
+    <End Role="activity_modifying" Type="Self.activity_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="modifying_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_modifying">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_restriction_buffer_id">
+    <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
+    <End Role="activity_restriction" Type="Self.activity_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="buffer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_restriction">
+        <PropertyRef Name="buffer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_restriction_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="activity_restriction" Type="Self.activity_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_restriction">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_restriction_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="activity_restriction" Type="Self.activity_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_restriction">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_app_license_depart_id">
     <End Role="department" Type="Self.department" Multiplicity="1" />
     <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
@@ -880,13 +1021,17 @@
   </Association>
   <EntityContainer Name="ecloningEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+    <EntitySet Name="activity_modifying" EntityType="Self.activity_modifying" />
+    <EntitySet Name="activity_restriction" EntityType="Self.activity_restriction" />
     <EntitySet Name="app_license" EntityType="Self.app_license" />
     <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
     <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
     <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+    <EntitySet Name="buffers" EntityType="Self.buffer" />
     <EntitySet Name="clone_group" EntityType="Self.clone_group" />
     <EntitySet Name="common_feature" EntityType="Self.common_feature" />
+    <EntitySet Name="companies" EntityType="Self.company" />
     <EntitySet Name="containers" EntityType="Self.container" />
     <EntitySet Name="departments" EntityType="Self.department" />
     <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
@@ -900,6 +1045,7 @@
     <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" />
     <EntitySet Name="minus20" EntityType="Self.minus20" />
     <EntitySet Name="minus80" EntityType="Self.minus80" />
+    <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" />
     <EntitySet Name="nucleases" EntityType="Self.nuclease" />
     <EntitySet Name="oligoes" EntityType="Self.oligo" />
     <EntitySet Name="people" EntityType="Self.person" />
@@ -912,8 +1058,33 @@
     <EntitySet Name="probes" EntityType="Self.probe" />
     <EntitySet Name="projects" EntityType="Self.project" />
     <EntitySet Name="protocols" EntityType="Self.protocol" />
-    <EntitySet Name="restrictions" EntityType="Self.restriction" />
+    <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" />
+    <EntitySet Name="seq_code" EntityType="Self.seq_code" />
     <EntitySet Name="storages" EntityType="Self.storage" />
+    <AssociationSet Name="fk_activity_modifying_buffer_id" Association="Self.fk_activity_modifying_buffer_id">
+      <End Role="buffer" EntitySet="buffers" />
+      <End Role="activity_modifying" EntitySet="activity_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_modifying_company_id" Association="Self.fk_activity_modifying_company_id">
+      <End Role="company" EntitySet="companies" />
+      <End Role="activity_modifying" EntitySet="activity_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_modifying_enzyme_id" Association="Self.fk_activity_modifying_enzyme_id">
+      <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
+      <End Role="activity_modifying" EntitySet="activity_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_restriction_buffer_id" Association="Self.fk_activity_restriction_buffer_id">
+      <End Role="buffer" EntitySet="buffers" />
+      <End Role="activity_restriction" EntitySet="activity_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_restriction_company_id" Association="Self.fk_activity_restriction_company_id">
+      <End Role="company" EntitySet="companies" />
+      <End Role="activity_restriction" EntitySet="activity_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_restriction_enzyme_id" Association="Self.fk_activity_restriction_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="activity_restriction" EntitySet="activity_restriction" />
+    </AssociationSet>
     <AssociationSet Name="fk_app_license_depart_id" Association="Self.fk_app_license_depart_id">
       <End Role="department" EntitySet="departments" />
       <End Role="app_license" EntitySet="app_license" />

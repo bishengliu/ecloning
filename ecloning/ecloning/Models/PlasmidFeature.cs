@@ -123,7 +123,7 @@ namespace ecloning.Models
 
             //=====================================================================
             //check restriciton cut
-            var restrictions = db.restrictions;
+            var restrictions = db.restri_enzyme;
             if (restrictions.Count() > 0)
             {
                 //find all the indexes of features in both forward and reserver seq

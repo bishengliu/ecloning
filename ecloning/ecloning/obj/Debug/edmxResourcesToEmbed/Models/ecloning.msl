@@ -11,6 +11,28 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="activity_modifying">
+      <EntityTypeMapping TypeName="ecloningModel.activity_modifying">
+        <MappingFragment StoreEntitySet="activity_modifying">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
+          <ScalarProperty Name="activity" ColumnName="activity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="activity_restriction">
+      <EntityTypeMapping TypeName="ecloningModel.activity_restriction">
+        <MappingFragment StoreEntitySet="activity_restriction">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
+          <ScalarProperty Name="activity" ColumnName="activity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="app_license">
       <EntityTypeMapping TypeName="ecloningModel.app_license">
         <MappingFragment StoreEntitySet="app_license">
@@ -74,6 +96,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="buffers">
+      <EntityTypeMapping TypeName="ecloningModel.buffer">
+        <MappingFragment StoreEntitySet="buffer">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="clone_group">
       <EntityTypeMapping TypeName="ecloningModel.clone_group">
         <MappingFragment StoreEntitySet="clone_group">
@@ -105,6 +136,17 @@
           <ScalarProperty Name="sequence" ColumnName="sequence" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="group_id" ColumnName="group_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="companies">
+      <EntityTypeMapping TypeName="ecloningModel.company">
+        <MappingFragment StoreEntitySet="company">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="shortName" ColumnName="shortName" />
+          <ScalarProperty Name="fullName" ColumnName="fullName" />
+          <ScalarProperty Name="composition" ColumnName="composition" />
+          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -239,6 +281,15 @@
           <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
           <ScalarProperty Name="box_num" ColumnName="box_num" />
           <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="modifying_enzyme">
+      <EntityTypeMapping TypeName="ecloningModel.modifying_enzyme">
+        <MappingFragment StoreEntitySet="modifying_enzyme">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -435,17 +486,29 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="restrictions">
-      <EntityTypeMapping TypeName="ecloningModel.restriction">
-        <MappingFragment StoreEntitySet="restriction">
+    <EntitySetMapping Name="restri_enzyme">
+      <EntityTypeMapping TypeName="ecloningModel.restri_enzyme">
+        <MappingFragment StoreEntitySet="restri_enzyme">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="forward_seq" ColumnName="forward_seq" />
           <ScalarProperty Name="forward_cut" ColumnName="forward_cut" />
-          <ScalarProperty Name="reverse_seq" ColumnName="reverse_seq" />
           <ScalarProperty Name="reverse_cut" ColumnName="reverse_cut" />
+          <ScalarProperty Name="staractitivity" ColumnName="staractitivity" />
+          <ScalarProperty Name="inactivation" ColumnName="inactivation" />
+          <ScalarProperty Name="dam" ColumnName="dam" />
+          <ScalarProperty Name="dcm" ColumnName="dcm" />
+          <ScalarProperty Name="cpg" ColumnName="cpg" />
           <ScalarProperty Name="methylation" ColumnName="methylation" />
-          <ScalarProperty Name="common" ColumnName="common" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="seq_code">
+      <EntityTypeMapping TypeName="ecloningModel.seq_code">
+        <MappingFragment StoreEntitySet="seq_code">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="necleotide" ColumnName="necleotide" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

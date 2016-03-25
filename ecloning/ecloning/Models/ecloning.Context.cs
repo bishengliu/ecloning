@@ -26,13 +26,17 @@ namespace ecloning.Models
         }
     
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
+        public virtual DbSet<activity_modifying> activity_modifying { get; set; }
+        public virtual DbSet<activity_restriction> activity_restriction { get; set; }
         public virtual DbSet<app_license> app_license { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<buffer> buffers { get; set; }
         public virtual DbSet<clone_group> clone_group { get; set; }
         public virtual DbSet<common_feature> common_feature { get; set; }
+        public virtual DbSet<company> companies { get; set; }
         public virtual DbSet<container> containers { get; set; }
         public virtual DbSet<department> departments { get; set; }
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }
@@ -46,6 +50,7 @@ namespace ecloning.Models
         public virtual DbSet<minus180_liquid_nitrogen> minus180_liquid_nitrogen { get; set; }
         public virtual DbSet<minus20> minus20 { get; set; }
         public virtual DbSet<minus80> minus80 { get; set; }
+        public virtual DbSet<modifying_enzyme> modifying_enzyme { get; set; }
         public virtual DbSet<nuclease> nucleases { get; set; }
         public virtual DbSet<oligo> oligoes { get; set; }
         public virtual DbSet<person> people { get; set; }
@@ -58,7 +63,8 @@ namespace ecloning.Models
         public virtual DbSet<probe> probes { get; set; }
         public virtual DbSet<project> projects { get; set; }
         public virtual DbSet<protocol> protocols { get; set; }
-        public virtual DbSet<restriction> restrictions { get; set; }
+        public virtual DbSet<restri_enzyme> restri_enzyme { get; set; }
+        public virtual DbSet<seq_code> seq_code { get; set; }
         public virtual DbSet<storage> storages { get; set; }
     }
 }

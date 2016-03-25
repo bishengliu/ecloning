@@ -4,11 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ecloning.Controllers
+namespace ecloning.Areas.Admin.Controllers
 {
-    public class BioToolsController : RootController
+    public class DashboardController : RootController
     {
-        // GET: BioTools
+        // GET: Admin/Dashboard
         public ActionResult Index()
         {
             return View();

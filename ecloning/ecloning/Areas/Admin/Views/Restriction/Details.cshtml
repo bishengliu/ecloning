@@ -1,0 +1,99 @@
+﻿@model ecloning.Models.restri_enzyme
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>restri_enzyme</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.forward_seq)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.forward_seq)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.forward_cut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.forward_cut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reverse_cut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reverse_cut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.staractitivity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.staractitivity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.inactivation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.inactivation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dcm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dcm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cpg)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cpg)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.methylation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.methylation)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

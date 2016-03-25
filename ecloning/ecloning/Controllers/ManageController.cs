@@ -12,7 +12,7 @@ using System.Data.Entity;
 namespace ecloning.Controllers
 {
     [Authorize]
-    public class ManageController : Controller
+    public class ManageController : RootController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
