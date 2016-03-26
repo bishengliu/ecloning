@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
-    int halfCount = (int)(Model.Count() / 2);
+    //int halfCount = (int)(Model.Count() / 2);
 }
 
 @Html.Partial("_BioTools")
@@ -20,8 +20,9 @@
             </a>         
         </div>
     </div>
+    <br/>
     <div class="row">
-        <div class="col-md-12 col-lg-6">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                 </div>
@@ -59,7 +60,7 @@
                                     </th>
                                 </tr>
 
-                                @foreach (var item in Model.Take(halfCount))
+                                @foreach (var item in Model)
                             {
                                 string symbol = "<span></span>";
                                 var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
@@ -68,9 +69,9 @@
                                             <strong class="text-warning">@Html.DisplayFor(modelItem => item.name)</strong>
                                         </td>
                                         <td class="text-center">
-                                            @if (item.forward_cut2 != null)
+                                            @if (item.forward_cut2 != null && item.reverse_cut2 != null)
                                             {
-
+                                                @Html.Raw(enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2))
                                             }
                                             else
                                             {
@@ -137,7 +138,7 @@
             </div>
         </div>
 
-        <div class="col-md-12 col-lg-6">
+        @*<div class="col-md-12 col-lg-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                 </div>
@@ -176,7 +177,7 @@
                                 </tr>
 
                                 @foreach (var item in Model.Skip(halfCount))
-                            {
+                                {
                                 string symbol = "<span></span>";
                                 var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
                                     <tr>
@@ -184,9 +185,9 @@
                                             @Html.DisplayFor(modelItem => item.name)
                                         </td>
                                         <td class="text-center">
-                                            @if (item.forward_cut2 != null)
+                                            @if (item.forward_cut2 != null && item.reverse_cut2 != null)
                                             {
-
+                                                @Html.Raw(enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2))
                                             }
                                             else
                                             {
@@ -251,7 +252,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
     </div>
 </div>
 
