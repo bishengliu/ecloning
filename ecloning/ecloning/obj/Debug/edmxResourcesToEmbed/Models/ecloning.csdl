@@ -111,6 +111,7 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="composition" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="buffer" ToRole="activity_modifying" />
     <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="buffer" ToRole="activity_restriction" />
   </EntityType>
@@ -171,7 +172,6 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="shortName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="fullName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="composition" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_company_id" FromRole="company" ToRole="activity_modifying" />
     <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_company_id" FromRole="company" ToRole="activity_restriction" />

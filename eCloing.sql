@@ -518,9 +518,11 @@ CREATE TABLE company
 CREATE TABLE buffer
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	company_id INT NOT NULL,
 	name NVARCHAR(100) NOT NULL,
 	composition NVARCHAR(100) NOT NULL,
-	[des] TEXT
+	[des] TEXT,
+	CONSTRAINT fk_buffer_company_id FOREIGN KEY (company_id) REFERENCES company(id)
 );
 
 CREATE TABLE activity_restriction --activity of restriction enzyme

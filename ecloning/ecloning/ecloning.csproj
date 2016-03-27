@@ -247,6 +247,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\MEnzymeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
@@ -641,6 +642,10 @@
     <Content Include="Areas\Admin\Views\Restriction\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\mCreate.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\preDelete.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Index.cshtml" />
     <EntityDeploy Include="Models\ecloning.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
@@ -648,10 +653,10 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\MEnzyme\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\MEnzyme\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\MEnzyme\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MEnzyme\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Company\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Company\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Company\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Company\Index.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

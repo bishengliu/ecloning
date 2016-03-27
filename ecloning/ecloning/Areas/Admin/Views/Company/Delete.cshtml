@@ -1,4 +1,4 @@
-﻿@model ecloning.Models.modifying_enzyme
+﻿@model ecloning.Models.company
 
 @{
     ViewBag.Title = "Delete";
@@ -9,23 +9,22 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-sm-10">
-            <h3 class="text-primary"><span class="fa fa-trash-o"></span> Delete Modifying Enzyme</h3>
+            <h3 class="text-primary"><span class="fa fa-trash-o"></span> Delete Company</h3>
         </div>
         <div class="col-sm-2">
             <br class="hidden-xs" />
-            <a class="btn btn-default pull-right" href="@Url.Action("Index", "MEnzyme")">
+            <a class="btn btn-default pull-right" href="@Url.Action("Index", "Company")">
                 <i class="fa fa-chevron-circle-left text-info"></i>
                 <span class="">Cancel</span>
             </a>
         </div>
     </div>
-
     <div class="row">
         <hr />
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-lg-offset-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Are you sure you want to delete this enzyme?
+                    Are you sure you want to delete this company?
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -34,29 +33,29 @@
                                 <thead>
                                     <tr>
                                         <th class="col-sm-2">
-                                            Category
+                                            Name Abbrevivation
                                         </th>
                                         <th class="col-sm-2">
-                                            Enzymes
+                                            Full Name
                                         </th>
                                         <th class="col-sm-8">
-                                            Application
+                                            Description
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <span class="text-primary">@Html.DisplayFor(modelItem => Model.category)</span>
+                                            <span class="text-primary">@Html.DisplayFor(modelItem => Model.shortName)</span>
                                         </td>
                                         <td>
-                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => Model.name)</strong></span>
+                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => Model.fullName)</strong></span>
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => Model.application)
+                                            @Html.DisplayFor(modelItem => Model.des)
                                         </td>
                                     </tr>
-                                </tbody>                                  
+                                </tbody>
                             </table>
                         </div>
                         <div class="pull-right">
@@ -64,7 +63,7 @@
                             {
                                 @Html.AntiForgeryToken()
                                 <div class="form-actions no-color">
-                                    <input type="submit" value="Delete Enzyme" class="btn btn-danger" />
+                                    <input type="submit" value="Delete Company" class="btn btn-danger" />
                                 </div>
                             }
                         </div>

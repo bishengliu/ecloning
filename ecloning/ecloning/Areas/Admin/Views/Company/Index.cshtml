@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ecloning.Models.modifying_enzyme>
+﻿@model IEnumerable<ecloning.Models.company>
 
 @{
     ViewBag.Title = "Index";
@@ -6,17 +6,16 @@
 }
 
 @Html.Partial("_BioTools")
-
 <div id="page-wrapper">
     <div class="row">
         <div class="col-sm-9">
-            <h3 class="text-primary">Modifying Enzymes</h3>
+            <h3 class="text-primary">Companies</h3>
         </div>
         <div class="col-sm-3">
             <br class="hidden-xs" />
-            <a class="btn btn-default pull-right" href="@Url.Action("Create", "MEnzyme")">
+            <a class="btn btn-default pull-right" href="@Url.Action("Create", "Company")">
                 <i class="fa fa-plus text-info"></i>
-                <span class="">New Enzyme</span>
+                <span class="">New Company</span>
             </a>
         </div>
     </div>
@@ -33,13 +32,13 @@
                                 <thead>
                                     <tr>
                                         <th class="col-sm-2">
-                                            Category
+                                            Name Abbrevivation
                                         </th>
                                         <th class="col-sm-2">
-                                            Enzymes
+                                            Full Name
                                         </th>
                                         <th class="col-sm-7">
-                                            Application
+                                            Description
                                         </th>
                                         <th class="col-sm-1"></th>
                                     </tr>
@@ -48,24 +47,24 @@
                                 {
                                     <tr>
                                         <td>
-                                            <span class="text-primary">@Html.DisplayFor(modelItem => item.category)</span>
+                                            <span class="text-primary">@Html.DisplayFor(modelItem => item.shortName)</span>
                                         </td>
                                         <td>
-                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => item.name)</strong></span>
+                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => item.fullName)</strong></span>
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.application)
+                                            @Html.DisplayFor(modelItem => item.des)
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Edit", "MEnzyme", new { id = item.id })">
+                                            <a href="@Url.Action("Edit", "Company", new { id = item.id })">
                                                 <i class="fa fa-pencil-square-o text-danger"></i>
                                                 <span class="">Edit</span>
                                             </a>
-                                            <br/>
-                                            <a href="@Url.Action("Delete", "MEnzyme", new { id = item.id })">
+                                            <br />
+                                            <a href="@Url.Action("Delete", "Company", new { id = item.id })">
                                                 <i class="fa fa-trash-o text-danger"></i>
                                                 <span class="">Delete</span>
-                                            </a>                                            
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -77,9 +76,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-    

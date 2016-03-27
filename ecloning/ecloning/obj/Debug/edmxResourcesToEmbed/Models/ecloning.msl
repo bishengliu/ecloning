@@ -102,6 +102,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="composition" ColumnName="composition" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -154,7 +155,6 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="shortName" ColumnName="shortName" />
           <ScalarProperty Name="fullName" ColumnName="fullName" />
-          <ScalarProperty Name="composition" ColumnName="composition" />
           <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
