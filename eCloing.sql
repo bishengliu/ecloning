@@ -513,6 +513,16 @@ CREATE TABLE activity_restriction --activity of restriction enzyme
 	CONSTRAINT fk_activity_restriction_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
 );
 
+--add table t store commonly used restriction enzymes and also used to auto generate plasmid map
+CREATE TABLE common_restriction
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	enzyme_id INT NOT NULL,
+	group_id INT NOT NULL,
+	CONSTRAINT fk_common_restriction_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES restri_enzyme(id),
+	CONSTRAINT fk_common_restriction_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
+	CONSTRAINT uq_common_restriction_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
+);
 
 CREATE TABLE modifying_enzyme
 (

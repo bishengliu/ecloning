@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ecloning.Models;
 using ecloning.Areas.Admin.Models;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace ecloning.Areas.Admin.Controllers
 {
@@ -28,10 +29,10 @@ namespace ecloning.Areas.Admin.Controllers
         public ActionResult Create()
         {
             //prepare dropdown list
-            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
-            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
-            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
-            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
+            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
+            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
             return View();
         }
@@ -50,6 +51,13 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dcm);
             ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.cpg);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", restriction.inactivation);
+            //check the name
+            var enzymes = db.restri_enzyme.Where(n => n.name == restriction.name);
+            if (enzymes.Count() > 0)
+            {
+                TempData["error"] = "Enzyme \""+restriction.name+"\" already exists!";
+                return View(restriction);
+            }
 
             //non zero validation
             if(restriction.forward_cut == 0 || restriction.reverse_cut == 0)
@@ -84,10 +92,10 @@ namespace ecloning.Areas.Admin.Controllers
         public ActionResult mCreate()
         {
             //prepare dropdown list
-            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
-            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
-            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
-            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text");
+            ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
+            ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
+            ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
             return View();
         }
@@ -106,7 +114,24 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dcm);
             ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.cpg);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", restriction.inactivation);
-
+            //check the name
+            var enzymes = db.restri_enzyme.Where(n => n.name == restriction.name);
+            if (enzymes.Count() > 0)
+            {
+                TempData["error"] = "Enzyme \"" + restriction.name + "\" already exists!";
+                return View(restriction);
+            }
+            //the most left cut must be smaller than the most right
+            if (restriction.forward_cut > restriction.forward_cut2 || restriction.forward_cut > restriction.reverse_cut2)
+            {
+                TempData["error"] = "The forward cut position of the most left cut must be smaller than the cut positions of the most right cut!";
+                return View(restriction);
+            }
+            if (restriction.reverse_cut > restriction.forward_cut2 || restriction.forward_cut > restriction.reverse_cut2)
+            {
+                TempData["error"] = "The complementary cut position of the most left cut must be smaller than the cut positions of the most right cut!";
+                return View(restriction);
+            }
             if (restriction.forward_cut2 == null || restriction.reverse_cut2 == null)
             {
                 TempData["error"] = "Cut postions for the most right cut are required!";
@@ -142,22 +167,47 @@ namespace ecloning.Areas.Admin.Controllers
             return View(restriction);
         }
 
+        [Authorize]
+        public ActionResult preDelete()
+        {
+            //get all enzymes
+            var enzymes = db.restri_enzyme.OrderBy(n => n.name).Select(e => new { id = e.id, name = e.name });
+            ViewBag.Enzymes = JsonConvert.SerializeObject(enzymes.ToList());
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        public ActionResult preDelete(string enzyme)
+        {
+            //get all enzymes
+            var enzymes = db.restri_enzyme.OrderBy(n => n.name).Select(e => new { id = e.id, name = e.name });
+            ViewBag.Enzymes = JsonConvert.SerializeObject(enzymes.ToList());
+            if (string.IsNullOrWhiteSpace(enzyme))
+            {
+                ViewBag.msg = "At least one enzyme is required!";
+                return View();
+            }
 
-
+            return RedirectToAction("Delete", new { enzyme = enzyme });
+        }
 
         // GET: Admin/Restriction/Delete/5
         [Authorize]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(string enzyme)
         {
-            if (id == null)
+            if (string.IsNullOrWhiteSpace(enzyme))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            restri_enzyme restri_enzyme = db.restri_enzyme.Find(id);
-            if (restri_enzyme == null)
+            //generate enzyme id list
+            List<int> enzymeId = new List<int>();
+            string[] idArray = enzyme.Split(',');
+            foreach (var i in idArray.Distinct())
             {
-                return HttpNotFound();
+                enzymeId.Add(Int32.Parse(i.ToString()));
             }
+            var restri_enzyme = db.restri_enzyme.Where(i=>enzymeId.Contains(i.id)).ToList();
+            ViewBag.EnzymeId = enzymeId;
             return View(restri_enzyme);
         }
 
@@ -165,10 +215,15 @@ namespace ecloning.Areas.Admin.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int[] id)
         {
-            restri_enzyme restri_enzyme = db.restri_enzyme.Find(id);
-            db.restri_enzyme.Remove(restri_enzyme);
+            foreach(int i in id)
+            {
+                restri_enzyme restri_enzyme = db.restri_enzyme.Find(i);
+                db.restri_enzyme.Remove(restri_enzyme);
+            }
+
+            // need to deal with the remove plasmid map
             db.SaveChanges();
             return RedirectToAction("Index");
         }
