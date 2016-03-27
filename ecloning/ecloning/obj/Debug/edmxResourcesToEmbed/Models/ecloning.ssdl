@@ -105,8 +105,9 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="des" Type="text" />
-    <Property Name="composition" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="show_activity" Type="bit" />
   </EntityType>
   <EntityType Name="clone_group">
     <Key>

@@ -22,6 +22,39 @@ namespace ecloning.Areas.Admin.Controllers
             return View(buffers.ToList());
         }
 
+        [Authorize]
+        public ActionResult ShowActivity(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            buffer buffer = db.buffers.Find(id);
+            if (buffer == null)
+            {
+                return HttpNotFound();
+            }
+            buffer.show_activity = true;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public ActionResult HideActivity(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            buffer buffer = db.buffers.Find(id);
+            if (buffer == null)
+            {
+                return HttpNotFound();
+            }
+            buffer.show_activity = false;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         // GET: Admin/Buffer/Create
         [Authorize]
         public ActionResult Create()

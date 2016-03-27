@@ -104,6 +104,7 @@
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="composition" ColumnName="composition" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="show_activity" ColumnName="show_activity" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

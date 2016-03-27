@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    var db = new ecloning.Models.ecloningEntities();
 }
 
 @Html.Partial("_BioTools")
@@ -37,10 +38,10 @@
                                         <th class="col-sm-2">
                                             Buffer
                                         </th>
-                                        <th class="col-sm-7">
+                                        <th class="col-sm-6">
                                             Composition
                                         </th>
-                                        <th class="col-sm-1"></th>
+                                        <th class="col-sm-2"></th>
                                     </tr>
                                 </thead>
                                 @foreach (var item in Model)
@@ -56,11 +57,45 @@
                                             @Html.DisplayFor(modelItem => item.composition)
                                         </td>
                                         <td>
+                                            @if (item.show_activity != true)
+                                            {
+                                                //check whether there is activities for restriction enzyme available
+                                                bool hasActivity = false;
+                                                var activity = db.activity_restriction.Where(a => a.buffer_id == item.id && a.company_id == item.company_id);
+                                                if (activity.Count() > 0)
+                                                {
+                                                    hasActivity = true;
+                                                }
+
+                                                if (hasActivity)
+                                                {
+                                                    <a href="@Url.Action("ShowActivity", "Buffer", new { id = item.id })">
+                                                        <i class="fa fa-toggle-off text-danger"></i>
+                                                        <span class="">Restriction Enzyme Activity</span>
+                                                    </a>
+                                                    <br />
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-toggle-off text-muted"></i>
+                                                    <span class="text-muted">Restriction Enzyme Activity</span>
+                                                    <br />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("HideActivity", "Buffer", new { id = item.id })">
+                                                    <i class="fa fa-toggle-on text-danger"></i>
+                                                    <span class="">Restriction Enzyme Activity</span>
+                                                </a>
+                                                <br />
+                                            }
+                                            
                                             <a href="@Url.Action("Edit", "Buffer", new { id = item.id })">
                                                 <i class="fa fa-pencil-square-o text-danger"></i>
                                                 <span class="">Edit</span>
                                             </a>
-                                            <br />
+                                            
                                             <a href="@Url.Action("Delete", "Buffer", new { id = item.id })">
                                                 <i class="fa fa-trash-o text-danger"></i>
                                                 <span class="">Delete</span>

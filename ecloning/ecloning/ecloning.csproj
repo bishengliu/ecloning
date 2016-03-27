@@ -651,6 +651,10 @@
     <Content Include="Areas\Admin\Views\Company\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Company\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Company\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Buffer\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Buffer\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Buffer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Buffer\Index.cshtml" />
     <EntityDeploy Include="Models\ecloning.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
@@ -658,10 +662,6 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\Buffer\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Buffer\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\Buffer\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Buffer\Index.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
