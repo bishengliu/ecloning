@@ -18,6 +18,7 @@ namespace ecloning.Models
         public restri_enzyme()
         {
             this.activity_restriction = new HashSet<activity_restriction>();
+            this.common_restriction = new HashSet<common_restriction>();
         }
     
         public int id { get; set; }
@@ -35,5 +36,7 @@ namespace ecloning.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_restriction> activity_restriction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<common_restriction> common_restriction { get; set; }
     }
 }

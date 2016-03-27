@@ -154,6 +154,16 @@
     <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_ccommon_id" FromRole="common_feature" ToRole="plasmid_map_backup" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="common_feature" ToRole="plasmid_map" />
   </EntityType>
+  <EntityType Name="common_restriction">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="enzyme_id" Type="Int32" Nullable="false" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_common_restriction_enzyme_id" FromRole="common_restriction" ToRole="restri_enzyme" />
+    <NavigationProperty Name="group" Relationship="Self.fk_common_restriction_group_id" FromRole="common_restriction" ToRole="group" />
+  </EntityType>
   <EntityType Name="company">
     <Key>
       <PropertyRef Name="id" />
@@ -204,6 +214,7 @@
     <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
+    <NavigationProperty Name="common_restriction" Relationship="Self.fk_common_restriction_group_id" FromRole="group" ToRole="common_restriction" />
     <NavigationProperty Name="department" Relationship="Self.fk_group_depart_id" FromRole="group" ToRole="department" />
     <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_group_id" FromRole="group" ToRole="group_people" />
     <NavigationProperty Name="group_shared" Relationship="Self.fk_group_shared_group_id" FromRole="group" ToRole="group_shared" />
@@ -249,6 +260,14 @@
     <Property Name="ladder_id" Type="Int32" Nullable="false" />
     <Property Name="size" Type="Int32" Nullable="false" />
     <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
+  </EntityType>
+  <EntityType Name="letter_code">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="necleotide" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
   </EntityType>
   <EntityType Name="license">
     <Key>
@@ -542,6 +561,7 @@
     <Property Name="forward_cut2" Type="Int32" />
     <Property Name="reverse_cut2" Type="Int32" />
     <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="restri_enzyme" ToRole="activity_restriction" />
+    <NavigationProperty Name="common_restriction" Relationship="Self.fk_common_restriction_enzyme_id" FromRole="restri_enzyme" ToRole="common_restriction" />
   </EntityType>
   <EntityType Name="seq_code">
     <Key>
@@ -785,6 +805,30 @@
       </Principal>
       <Dependent Role="plasmid_map">
         <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_restriction_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_restriction_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="group_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1032,6 +1076,7 @@
     <EntitySet Name="buffers" EntityType="Self.buffer" />
     <EntitySet Name="clone_group" EntityType="Self.clone_group" />
     <EntitySet Name="common_feature" EntityType="Self.common_feature" />
+    <EntitySet Name="common_restriction" EntityType="Self.common_restriction" />
     <EntitySet Name="companies" EntityType="Self.company" />
     <EntitySet Name="containers" EntityType="Self.container" />
     <EntitySet Name="departments" EntityType="Self.department" />
@@ -1041,6 +1086,7 @@
     <EntitySet Name="group_shared" EntityType="Self.group_shared" />
     <EntitySet Name="ladders" EntityType="Self.ladder" />
     <EntitySet Name="ladder_size" EntityType="Self.ladder_size" />
+    <EntitySet Name="letter_code" EntityType="Self.letter_code" />
     <EntitySet Name="licenses" EntityType="Self.license" />
     <EntitySet Name="main_step" EntityType="Self.main_step" />
     <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" />
@@ -1133,6 +1179,14 @@
     <AssociationSet Name="fk_plasmid_map_ccommon_id" Association="Self.fk_plasmid_map_ccommon_id">
       <End Role="common_feature" EntitySet="common_feature" />
       <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_enzyme_id" Association="Self.fk_common_restriction_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_group_id" Association="Self.fk_common_restriction_group_id">
+      <End Role="group" EntitySet="groups" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
     </AssociationSet>
     <AssociationSet Name="fk_group_depart_id" Association="Self.fk_group_depart_id">
       <End Role="department" EntitySet="departments" />

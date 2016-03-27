@@ -139,6 +139,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="common_restriction">
+      <EntityTypeMapping TypeName="ecloningModel.common_restriction">
+        <MappingFragment StoreEntitySet="common_restriction">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="companies">
       <EntityTypeMapping TypeName="ecloningModel.company">
         <MappingFragment StoreEntitySet="company">
@@ -227,6 +236,15 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
           <ScalarProperty Name="size" ColumnName="size" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="letter_code">
+      <EntityTypeMapping TypeName="ecloningModel.letter_code">
+        <MappingFragment StoreEntitySet="letter_code">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="necleotide" ColumnName="necleotide" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

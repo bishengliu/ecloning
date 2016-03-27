@@ -36,6 +36,7 @@ namespace ecloning.Models
         public virtual DbSet<buffer> buffers { get; set; }
         public virtual DbSet<clone_group> clone_group { get; set; }
         public virtual DbSet<common_feature> common_feature { get; set; }
+        public virtual DbSet<common_restriction> common_restriction { get; set; }
         public virtual DbSet<company> companies { get; set; }
         public virtual DbSet<container> containers { get; set; }
         public virtual DbSet<department> departments { get; set; }
@@ -45,6 +46,7 @@ namespace ecloning.Models
         public virtual DbSet<group_shared> group_shared { get; set; }
         public virtual DbSet<ladder> ladders { get; set; }
         public virtual DbSet<ladder_size> ladder_size { get; set; }
+        public virtual DbSet<letter_code> letter_code { get; set; }
         public virtual DbSet<license> licenses { get; set; }
         public virtual DbSet<main_step> main_step { get; set; }
         public virtual DbSet<minus180_liquid_nitrogen> minus180_liquid_nitrogen { get; set; }

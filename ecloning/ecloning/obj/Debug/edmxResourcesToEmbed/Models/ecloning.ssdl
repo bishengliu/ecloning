@@ -138,6 +138,14 @@
     <Property Name="des" Type="text" />
     <Property Name="group_id" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="common_restriction">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="company">
     <Key>
       <PropertyRef Name="id" />
@@ -219,6 +227,14 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ladder_id" Type="int" Nullable="false" />
     <Property Name="size" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="letter_code">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="necleotide" Type="nvarchar" MaxLength="20" Nullable="false" />
   </EntityType>
   <EntityType Name="license">
     <Key>
@@ -668,6 +684,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_common_restriction_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_restriction_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
     <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -989,6 +1029,7 @@
     <EntitySet Name="buffer" EntityType="Self.buffer" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="clone_group" EntityType="Self.clone_group" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_feature" EntityType="Self.common_feature" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
@@ -998,6 +1039,7 @@
     <EntitySet Name="group_shared" EntityType="Self.group_shared" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ladder" EntityType="Self.ladder" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ladder_size" EntityType="Self.ladder_size" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="letter_code" EntityType="Self.letter_code" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="main_step" EntityType="Self.main_step" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" Schema="dbo" store:Type="Tables" />
@@ -1074,6 +1116,14 @@
     <AssociationSet Name="fk_common_feature_group_id" Association="Self.fk_common_feature_group_id">
       <End Role="group" EntitySet="group" />
       <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_enzyme_id" Association="Self.fk_common_restriction_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_group_id" Association="Self.fk_common_restriction_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
     </AssociationSet>
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />

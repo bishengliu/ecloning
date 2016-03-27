@@ -34,6 +34,10 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
+
+            //prepare lette code
+            var codes = db.letter_code.OrderBy(c => c.name);
+            ViewBag.Codes = codes;
             return View();
         }
 
@@ -51,6 +55,10 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dcm);
             ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.cpg);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", restriction.inactivation);
+            //prepare lette code
+            var codes = db.letter_code.OrderBy(c => c.name);
+            ViewBag.Codes = codes;
+
             //check the name
             var enzymes = db.restri_enzyme.Where(n => n.name == restriction.name);
             if (enzymes.Count() > 0)
@@ -97,6 +105,10 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
+
+            //prepare lette code
+            var codes = db.letter_code.OrderBy(c => c.name);
+            ViewBag.Codes = codes;
             return View();
         }
 
@@ -114,6 +126,10 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.dcm);
             ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", restriction.cpg);
             ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", restriction.inactivation);
+            //prepare lette code
+            var codes = db.letter_code.OrderBy(c => c.name);
+            ViewBag.Codes = codes;
+
             //check the name
             var enzymes = db.restri_enzyme.Where(n => n.name == restriction.name);
             if (enzymes.Count() > 0)

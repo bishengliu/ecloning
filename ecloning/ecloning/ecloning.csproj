@@ -297,6 +297,9 @@
     <Compile Include="Models\common_feature.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\common_restriction.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\company.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -348,6 +351,9 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ladder_size.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\letter_code.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\license.cs">
@@ -632,6 +638,8 @@
     <Content Include="Areas\Admin\Views\Restriction\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Restriction\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\mCreate.cshtml" />
+    <Content Include="Areas\Admin\Views\Restriction\preDelete.cshtml" />
     <EntityDeploy Include="Models\ecloning.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
@@ -639,8 +647,6 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\Restriction\mCreate.cshtml" />
-    <Content Include="Areas\Admin\Views\Restriction\preDelete.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
