@@ -546,14 +546,17 @@ CREATE TABLE common_restriction
 	CONSTRAINT uq_common_restriction_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
 );
 
+ 
 CREATE TABLE modifying_enzyme
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(250) NOT NULL,
-	[des] TEXT
+	category NVARCHAR(250) NOT NULL, -- low level categoty
+	[application] TEXT
 );
 
 --INSERT DATA
+/*
 INSERT INTO modifying_enzyme (name) VALUES
 ('DNA Polymerase I, E.coli'),
 ('Klenow Fragement'),
@@ -567,7 +570,7 @@ INSERT INTO modifying_enzyme (name) VALUES
 ('Shrimp Alkaline Phosphatase'),
 ('Calf Intestine Alkaline Phosphatase'),
 ('T4 Polynucleitide Kinase');
-
+*/
 
 CREATE TABLE activity_modifying --activity of modifying enzyme
 (
@@ -580,7 +583,6 @@ CREATE TABLE activity_modifying --activity of modifying enzyme
 	CONSTRAINT fk_activity_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_activity_modifying_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
 );
-
 
 
 --pcr primers
