@@ -561,22 +561,6 @@ CREATE TABLE modifying_enzyme
 	[application] TEXT
 );
 
---INSERT DATA
-/*
-INSERT INTO modifying_enzyme (name) VALUES
-('DNA Polymerase I, E.coli'),
-('Klenow Fragement'),
-('Klenow Fragement, exo-'),
-('T4 DNA Polymerase'),
-('T7 DNA Polymerase'),
-('Exonuclease I, E.coli'),
-('Exonuclease III'),
-('T4 DNA Ligase'),
-('Bacterial Alkaline Phosphatase'),
-('Shrimp Alkaline Phosphatase'),
-('Calf Intestine Alkaline Phosphatase'),
-('T4 Polynucleitide Kinase');
-*/
 
 CREATE TABLE activity_modifying --activity of modifying enzyme
 (
@@ -588,6 +572,41 @@ CREATE TABLE activity_modifying --activity of modifying enzyme
 	CONSTRAINT fk_activity_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
 	CONSTRAINT fk_activity_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_activity_modifying_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
+);
+
+
+
+--add table t store commonly used modifying enzymes and also used to auto generate plasmid map
+CREATE TABLE common_modifying
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	enzyme_id INT NOT NULL,
+	group_id INT NOT NULL,
+	CONSTRAINT fk_common_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
+	CONSTRAINT fk_common_modifying_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
+	CONSTRAINT uq_common_modifying_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
+);
+
+-- link restriciton enzyme to company
+CREATE TABLE restriction_company
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	enzyme_id INT NOT NULL,
+	company_id INT NOT NULL,
+	CONSTRAINT fk_restriction_company_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES restri_enzyme(id),
+	CONSTRAINT fk_restriction_company_company_id FOREIGN KEY (company_id) REFERENCES company(id),
+	CONSTRAINT uq_restriction_company_enzyme_id_company_id UNIQUE (enzyme_id,company_id)
+);
+
+--link modifying enzyme to company_id
+CREATE TABLE modifying_company
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	enzyme_id INT NOT NULL,
+	company_id INT NOT NULL,
+	CONSTRAINT fk_modifying_company_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
+	CONSTRAINT fk_modifying_company_company_id FOREIGN KEY (company_id) REFERENCES company(id),
+	CONSTRAINT uq_modifying_company_enzyme_id_company_id UNIQUE (enzyme_id,company_id)
 );
 
 
