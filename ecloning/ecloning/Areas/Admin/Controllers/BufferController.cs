@@ -55,6 +55,39 @@ namespace ecloning.Areas.Admin.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+        [Authorize]
+        public ActionResult ShowActivity2(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            buffer buffer = db.buffers.Find(id);
+            if (buffer == null)
+            {
+                return HttpNotFound();
+            }
+            buffer.show_activity2 = true;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public ActionResult HideActivity2(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            buffer buffer = db.buffers.Find(id);
+            if (buffer == null)
+            {
+                return HttpNotFound();
+            }
+            buffer.show_activity2 = false;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         // GET: Admin/Buffer/Create
         [Authorize]
         public ActionResult Create()

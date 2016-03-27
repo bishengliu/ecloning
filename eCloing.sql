@@ -523,7 +523,8 @@ CREATE TABLE buffer
 	company_id INT NOT NULL,
 	name NVARCHAR(100) NOT NULL,
 	composition NVARCHAR(500) NOT NULL,
-	show_activity BIT,
+	show_activity BIT, -- show activity for restriction activity
+	show_activity2 BIT, -- show activity for restriction activity
 	[des] TEXT,
 	CONSTRAINT fk_buffer_company_id FOREIGN KEY (company_id) REFERENCES company(id)
 );

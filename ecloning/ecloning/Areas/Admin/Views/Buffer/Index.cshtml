@@ -57,6 +57,41 @@
                                             @Html.DisplayFor(modelItem => item.composition)
                                         </td>
                                         <td>
+
+                                            @if (item.show_activity2 != true)
+                                            {
+                                                //check whether there is activities for restriction enzyme available
+                                                bool hasActivity = false;
+                                                var activity = db.activity_modifying.Where(a => a.buffer_id == item.id && a.company_id == item.company_id);
+                                                if (activity.Count() > 0)
+                                                {
+                                                    hasActivity = true;
+                                                }
+
+                                                if (hasActivity)
+                                                {
+                                                    <a href="@Url.Action("ShowActivity2", "Buffer", new { id = item.id })">
+                                                        <i class="fa fa-toggle-off text-danger"></i>
+                                                        <span class="">Modifying Enzyme Activity</span>
+                                                    </a>
+                                                    <br />
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-toggle-off text-muted"></i>
+                                                    <span class="text-muted">Modifying Enzyme Activity</span>
+                                                    <br />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("HideActivity2", "Buffer", new { id = item.id })">
+                                                    <i class="fa fa-toggle-on text-danger"></i>
+                                                    <span class="">Modifying Enzyme Activity</span>
+                                                </a>
+                                                <br />
+                                            }
+
                                             @if (item.show_activity != true)
                                             {
                                                 //check whether there is activities for restriction enzyme available
@@ -90,7 +125,7 @@
                                                 </a>
                                                 <br />
                                             }
-                                            
+
                                             <a href="@Url.Action("Edit", "Buffer", new { id = item.id })">
                                                 <i class="fa fa-pencil-square-o text-danger"></i>
                                                 <span class="">Edit</span>

@@ -224,7 +224,8 @@ namespace ecloning.Models
         public string composition { get; set; }
         [Required(ErrorMessage = "Required")]
         public int company_id { get; set; }
-		public Nullable<bool> show_activity { get; set; }
+        public Nullable<bool> show_activity { get; set; }
+        public Nullable<bool> show_activity2 { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_modifying> activity_modifying { get; set; }
@@ -233,4 +234,5 @@ namespace ecloning.Models
         public virtual company company { get; set; }
     }
 }
+
 

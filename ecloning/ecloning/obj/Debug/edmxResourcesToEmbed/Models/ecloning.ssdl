@@ -108,6 +108,7 @@
     <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
     <Property Name="show_activity" Type="bit" />
+    <Property Name="show_activity2" Type="bit" />
   </EntityType>
   <EntityType Name="clone_group">
     <Key>

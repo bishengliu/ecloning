@@ -105,6 +105,7 @@
           <ScalarProperty Name="composition" ColumnName="composition" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
           <ScalarProperty Name="show_activity" ColumnName="show_activity" />
+          <ScalarProperty Name="show_activity2" ColumnName="show_activity2" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
