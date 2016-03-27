@@ -472,6 +472,28 @@ VALUES
 ('V', 'G');
 
 
+CREATE TABLE letter_code
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(10) NOT NULL,
+	necleotide NVARCHAR(20) NOT NULL,	
+);
+
+--insert data
+INSERT INTO letter_code (name, necleotide) 
+VALUES
+('R', 'G, A'),
+('K', 'G, T'),
+('B', 'C, G, T'),
+('Y', 'C, T'),
+('S', 'C, G'),
+('D', 'A, G, T'),
+('W', 'A, T'),
+('H', 'A, C, T'),
+('N', 'A, T, G, C'),
+('M', 'A, C'),
+('V', 'A, C, G');
+
 --common used non ATGC letters
 --R = G or A
 --K= G or T
