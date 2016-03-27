@@ -248,6 +248,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MEnzymeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
     <Compile Include="Areas\Admin\Controllers\RootController.cs" />
     <Compile Include="Areas\Admin\Models\Restriction.cs" />
@@ -647,6 +648,10 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\MEnzyme\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\MEnzyme\Index.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

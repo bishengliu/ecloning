@@ -1009,10 +1009,29 @@ INSERT INTO dropdownitem VALUES
 --star activity
 ('0', 'No', 'StarActivity'),
 ('1', '65 degree, 20 min', 'StarActivity'),
-('2', '80 degree, 20 min', 'StarActivity');
+('2', '80 degree, 20 min', 'StarActivity'),
+
+-- modifying enzyme category
+
+('DNA Ligase', 'DNA Ligase', 'MEnzyme'),
+('RNA Ligase', 'RNA Ligase', 'MEnzyme'),
+('DNA Polymerase', 'DNA Polymerase', 'MEnzyme'),
+('RNA Polymerase', 'RNA Polymerase', 'MEnzyme'),
+('RNase Inhibitor', 'RNase Inhibitor', 'MEnzyme'),
+('Phosphatase', 'Phosphatase', 'MEnzyme'),
+('Kinase', 'Kinase', 'MEnzyme'),
+('Ribonuclease (RNase)', 'Ribonuclease (RNase)', 'MEnzyme'),
+('Deoxyribonuclease (DNase)', 'Deoxyribonuclease (DNase)', 'MEnzyme'),
+('Other', 'Other', 'MEnzyme'),
+('DNA Labeling', 'DNA Labeling', 'MEnzyme'),
+('ssDNA Binding Proteins', 'ssDNA Binding Proteins', 'MEnzyme'),
+('Nuclease', 'Nuclease', 'MEnzyme'),
+('Methyltransferase', 'Methyltransferase', 'MEnzyme'),
+('DNA Repair Protein', 'DNA Repair Protein', 'MEnzyme')
 
 
 
+;
 
 
 

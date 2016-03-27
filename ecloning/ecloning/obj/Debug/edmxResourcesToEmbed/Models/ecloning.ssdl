@@ -292,7 +292,8 @@
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="nvarchar" MaxLength="250" Nullable="false" />
-    <Property Name="des" Type="text" />
+    <Property Name="category" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="application" Type="text" />
   </EntityType>
   <EntityType Name="nuclease">
     <Key>

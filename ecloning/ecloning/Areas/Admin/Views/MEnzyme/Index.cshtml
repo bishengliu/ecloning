@@ -1,0 +1,85 @@
+﻿@model IEnumerable<ecloning.Models.modifying_enzyme>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+}
+
+@Html.Partial("_BioTools")
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-9">
+            <h3 class="text-primary">Modifying Enzymes</h3>
+        </div>
+        <div class="col-sm-3">
+            <br class="hidden-xs" />
+            <a class="btn btn-default pull-right" href="@Url.Action("Create", "MEnzyme")">
+                <i class="fa fa-plus text-info"></i>
+                <span class="">New Enzyme</span>
+            </a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sm-2">
+                                            Category
+                                        </th>
+                                        <th class="col-sm-2">
+                                            Enzymes
+                                        </th>
+                                        <th class="col-sm-7">
+                                            Application
+                                        </th>
+                                        <th class="col-sm-1"></th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="text-primary">@Html.DisplayFor(modelItem => item.category)</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => item.name)</strong></span>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.application)
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Edit", "MEnzyme", new { id = item.id })">
+                                                <i class="fa fa-pencil-square-o text-danger"></i>
+                                                <span class="">Edit</span>
+                                            </a>
+                                            <br/>
+                                            <a href="@Url.Action("Delete", "MEnzyme", new { id = item.id })">
+                                                <i class="fa fa-trash-o text-danger"></i>
+                                                <span class="">Delete</span>
+                                            </a>                                            
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    

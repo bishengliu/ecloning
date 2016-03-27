@@ -22,7 +22,8 @@ namespace ecloning.Models
     
         public int id { get; set; }
         public string name { get; set; }
-        public string des { get; set; }
+        public string category { get; set; }
+        public string application { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_modifying> activity_modifying { get; set; }

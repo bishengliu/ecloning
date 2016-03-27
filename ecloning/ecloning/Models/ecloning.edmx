@@ -297,7 +297,8 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="250" Nullable="false" />
-          <Property Name="des" Type="text" />
+          <Property Name="category" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="application" Type="text" />
         </EntityType>
         <EntityType Name="nuclease">
           <Key>
@@ -1562,7 +1563,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="category" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="application" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="modifying_enzyme" ToRole="activity_modifying" />
         </EntityType>
         <EntityType Name="nuclease">
@@ -2818,7 +2820,8 @@
               <MappingFragment StoreEntitySet="modifying_enzyme">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="application" ColumnName="application" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

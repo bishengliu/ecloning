@@ -107,8 +107,6 @@ namespace ecloning.Models
     }
 }
 
-
-
 namespace ecloning.Models
 {
     using System;

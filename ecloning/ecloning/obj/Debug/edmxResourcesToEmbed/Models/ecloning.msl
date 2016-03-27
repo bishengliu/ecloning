@@ -308,7 +308,8 @@
         <MappingFragment StoreEntitySet="modifying_enzyme">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="category" ColumnName="category" />
+          <ScalarProperty Name="application" ColumnName="application" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
