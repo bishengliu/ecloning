@@ -10,17 +10,19 @@ using ecloning.Models;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class MEnzymeController : Controller
+    public class MEnzymeController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 
         // GET: Admin/MEnzyme
+        [Authorize]
         public ActionResult Index()
         {
             return View(db.modifying_enzyme.ToList());
         }
 
         // GET: Admin/MEnzyme/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.category = new SelectList(db.dropdownitems.Where(c => c.category == "MEnzyme").OrderBy(g => g.text), "text", "value");
@@ -30,6 +32,7 @@ namespace ecloning.Areas.Admin.Controllers
         // POST: Admin/MEnzyme/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,category,application")] modifying_enzyme modifying_enzyme)
@@ -64,6 +67,7 @@ namespace ecloning.Areas.Admin.Controllers
         // POST: Admin/MEnzyme/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,name,category,application")] modifying_enzyme modifying_enzyme)
@@ -79,6 +83,7 @@ namespace ecloning.Areas.Admin.Controllers
         }
 
         // GET: Admin/MEnzyme/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -94,6 +99,7 @@ namespace ecloning.Areas.Admin.Controllers
         }
 
         // POST: Admin/MEnzyme/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

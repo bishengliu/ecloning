@@ -111,6 +111,7 @@
           <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="des" Type="text" />
           <Property Name="composition" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="company_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="clone_group">
           <Key>
@@ -618,6 +619,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_buffer_company_id">
+          <End Role="company" Type="Self.company" Multiplicity="1" />
+          <End Role="buffer" Type="Self.buffer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="company">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="buffer">
+              <PropertyRef Name="company_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_clone_group_oligo_id">
           <End Role="oligo" Type="Self.oligo" Multiplicity="0..1" />
           <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
@@ -1099,6 +1112,10 @@
             <End Role="group" EntitySet="group" />
             <End Role="app_license" EntitySet="app_license" />
           </AssociationSet>
+          <AssociationSet Name="fk_buffer_company_id" Association="Self.fk_buffer_company_id">
+            <End Role="company" EntitySet="company" />
+            <End Role="buffer" EntitySet="buffer" />
+          </AssociationSet>
           <AssociationSet Name="fk_clone_group_oligo_id" Association="Self.fk_clone_group_oligo_id">
             <End Role="oligo" EntitySet="oligo" />
             <End Role="clone_group" EntitySet="clone_group" />
@@ -1349,8 +1366,10 @@
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="composition" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="company_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="buffer" ToRole="activity_modifying" />
           <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="buffer" ToRole="activity_restriction" />
+          <NavigationProperty Name="company" Relationship="Self.fk_buffer_company_id" FromRole="buffer" ToRole="company" />
         </EntityType>
         <EntityType Name="clone_group">
           <Key>
@@ -1412,6 +1431,7 @@
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_company_id" FromRole="company" ToRole="activity_modifying" />
           <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_company_id" FromRole="company" ToRole="activity_restriction" />
+          <NavigationProperty Name="buffers" Relationship="Self.fk_buffer_company_id" FromRole="company" ToRole="buffer" />
         </EntityType>
         <EntityType Name="container">
           <Key>
@@ -1950,6 +1970,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_buffer_company_id">
+          <End Role="company" Type="Self.company" Multiplicity="1" />
+          <End Role="buffer" Type="Self.buffer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="company">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="buffer">
+              <PropertyRef Name="company_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_clone_group_oligo_id">
           <End Role="oligo" Type="Self.oligo" Multiplicity="0..1" />
           <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
@@ -2386,6 +2418,10 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
           </AssociationSet>
+          <AssociationSet Name="fk_buffer_company_id" Association="Self.fk_buffer_company_id">
+            <End Role="company" EntitySet="companies" />
+            <End Role="buffer" EntitySet="buffers" />
+          </AssociationSet>
           <AssociationSet Name="fk_clone_group_oligo_id" Association="Self.fk_clone_group_oligo_id">
             <End Role="oligo" EntitySet="oligoes" />
             <End Role="clone_group" EntitySet="clone_group" />
@@ -2615,6 +2651,7 @@
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="composition" ColumnName="composition" />
+                <ScalarProperty Name="company_id" ColumnName="company_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

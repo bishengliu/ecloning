@@ -182,6 +182,7 @@ namespace ecloning.Models
         {
             this.activity_modifying = new HashSet<activity_modifying>();
             this.activity_restriction = new HashSet<activity_restriction>();
+            this.buffers = new HashSet<buffer>();
         }
     
         public int id { get; set; }
@@ -195,6 +196,8 @@ namespace ecloning.Models
         public virtual ICollection<activity_modifying> activity_modifying { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_restriction> activity_restriction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<buffer> buffers { get; set; }
     }
 }
 
@@ -219,11 +222,14 @@ namespace ecloning.Models
         public string des { get; set; }
         [Required(ErrorMessage = "Required")]
         public string composition { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int company_id { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_modifying> activity_modifying { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_restriction> activity_restriction { get; set; }
+        public virtual company company { get; set; }
     }
 }
 

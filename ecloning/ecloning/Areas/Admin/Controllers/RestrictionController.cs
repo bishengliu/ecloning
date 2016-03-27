@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class RestrictionController : Controller
+    public class RestrictionController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 

@@ -10,43 +10,46 @@ using ecloning.Models;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class CompanyController : RootController
+    public class BufferController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 
-        // GET: Admin/Company
+        // GET: Admin/Buffer
         [Authorize]
         public ActionResult Index()
         {
-            return View(db.companies.ToList());
+            var buffers = db.buffers.Include(b => b.company);
+            return View(buffers.ToList());
         }
 
-        // GET: Admin/Company/Create
+        // GET: Admin/Buffer/Create
         [Authorize]
         public ActionResult Create()
-        {
+        {            
+            ViewBag.company_id = new SelectList(db.companies.OrderBy(n=>n.shortName), "id", "shortName");
             return View();
         }
 
-        // POST: Admin/Company/Create
+        // POST: Admin/Buffer/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,shortName,fullName,des")] company company)
+        public ActionResult Create([Bind(Include = "id,name,des,composition,company_id")] buffer buffer)
         {
             if (ModelState.IsValid)
             {
-                db.companies.Add(company);
+                db.buffers.Add(buffer);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(company);
+            ViewBag.company_id = new SelectList(db.companies.OrderBy(n => n.shortName), "id", "shortName", buffer.company_id);
+            return View(buffer);
         }
 
-        // GET: Admin/Company/Edit/5
+        // GET: Admin/Buffer/Edit/5
         [Authorize]
         public ActionResult Edit(int? id)
         {
@@ -54,32 +57,34 @@ namespace ecloning.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            company company = db.companies.Find(id);
-            if (company == null)
+            buffer buffer = db.buffers.Find(id);
+            if (buffer == null)
             {
                 return HttpNotFound();
             }
-            return View(company);
+            ViewBag.company_id = new SelectList(db.companies.OrderBy(n => n.shortName), "id", "shortName", buffer.company_id);
+            return View(buffer);
         }
 
-        // POST: Admin/Company/Edit/5
+        // POST: Admin/Buffer/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,shortName,fullName,des")] company company)
+        public ActionResult Edit([Bind(Include = "id,name,des,composition,company_id")] buffer buffer)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(company).State = EntityState.Modified;
+                db.Entry(buffer).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(company);
+            ViewBag.company_id = new SelectList(db.companies.OrderBy(n => n.shortName), "id", "shortName", buffer.company_id);
+            return View(buffer);
         }
 
-        // GET: Admin/Company/Delete/5
+        // GET: Admin/Buffer/Delete/5
         [Authorize]
         public ActionResult Delete(int? id)
         {
@@ -87,22 +92,22 @@ namespace ecloning.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            company company = db.companies.Find(id);
-            if (company == null)
+            buffer buffer = db.buffers.Find(id);
+            if (buffer == null)
             {
                 return HttpNotFound();
             }
-            return View(company);
+            return View(buffer);
         }
 
-        // POST: Admin/Company/Delete/5
+        // POST: Admin/Buffer/Delete/5
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            company company = db.companies.Find(id);
-            db.companies.Remove(company);
+            buffer buffer = db.buffers.Find(id);
+            db.buffers.Remove(buffer);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

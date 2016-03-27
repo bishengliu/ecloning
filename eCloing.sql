@@ -507,6 +507,8 @@ VALUES
 --M = A or C
 --V = A, C or G
 
+--need to add protein letter code
+
 CREATE TABLE company
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -520,7 +522,8 @@ CREATE TABLE buffer
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	company_id INT NOT NULL,
 	name NVARCHAR(100) NOT NULL,
-	composition NVARCHAR(100) NOT NULL,
+	composition NVARCHAR(500) NOT NULL,
+	show_activity BIT,
 	[des] TEXT,
 	CONSTRAINT fk_buffer_company_id FOREIGN KEY (company_id) REFERENCES company(id)
 );

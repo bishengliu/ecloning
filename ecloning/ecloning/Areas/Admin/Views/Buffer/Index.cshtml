@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ecloning.Models.company>
+﻿@model IEnumerable<ecloning.Models.buffer>
 
 @{
     ViewBag.Title = "Index";
@@ -9,18 +9,18 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-sm-9">
-            <h3 class="text-primary"><span><i class="fa fa-building-o">&nbsp;</i></span>Companies</h3>
+            <h3 class="text-primary"><span><i class="fa fa-flask">&nbsp;</i></span>Buffers</h3>
         </div>
         <div class="col-sm-3">
             <br class="hidden-xs" />
-            <a class="btn btn-default pull-right" href="@Url.Action("Create", "Company")">
+            <a class="btn btn-default pull-right" href="@Url.Action("Create", "Buffer")">
                 <i class="fa fa-plus text-info"></i>
-                <span class="">New Company</span>
+                <span class="">New Buffer</span>
             </a>
         </div>
     </div>
     <div class="row">
-        <hr/>
+        <hr />
         <div class="col-md-12 col-lg-10 col-lg-offset-1">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -32,13 +32,13 @@
                                 <thead>
                                     <tr>
                                         <th class="col-sm-2">
-                                            Name Abbrevivation
+                                            Company
                                         </th>
                                         <th class="col-sm-2">
-                                            Full Name
+                                            Buffer
                                         </th>
                                         <th class="col-sm-7">
-                                            Description
+                                            Composition
                                         </th>
                                         <th class="col-sm-1"></th>
                                     </tr>
@@ -47,21 +47,21 @@
                                 {
                                     <tr>
                                         <td>
-                                            <span class="text-primary">@Html.DisplayFor(modelItem => item.shortName)</span>
+                                            <span class="text-primary">@Html.DisplayFor(modelItem => item.company.shortName)</span>
                                         </td>
                                         <td>
-                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => item.fullName)</strong></span>
+                                            <span class="text-warning"><strong>@Html.DisplayFor(modelItem => item.name)</strong></span>
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.des)
+                                            @Html.DisplayFor(modelItem => item.composition)
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Edit", "Company", new { id = item.id })">
+                                            <a href="@Url.Action("Edit", "Buffer", new { id = item.id })">
                                                 <i class="fa fa-pencil-square-o text-danger"></i>
                                                 <span class="">Edit</span>
                                             </a>
                                             <br />
-                                            <a href="@Url.Action("Delete", "Company", new { id = item.id })">
+                                            <a href="@Url.Action("Delete", "Buffer", new { id = item.id })">
                                                 <i class="fa fa-trash-o text-danger"></i>
                                                 <span class="">Delete</span>
                                             </a>
