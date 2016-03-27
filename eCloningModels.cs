@@ -155,6 +155,8 @@ namespace ecloning.Models
         public modifying_enzyme()
         {
             this.activity_modifying = new HashSet<activity_modifying>();
+            this.common_modifying = new HashSet<common_modifying>();
+            this.modifying_company = new HashSet<modifying_company>();
         }
     
         public int id { get; set; }
@@ -166,6 +168,10 @@ namespace ecloning.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_modifying> activity_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<common_modifying> common_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<modifying_company> modifying_company { get; set; }
     }
 }
 
@@ -183,6 +189,8 @@ namespace ecloning.Models
             this.activity_modifying = new HashSet<activity_modifying>();
             this.activity_restriction = new HashSet<activity_restriction>();
             this.buffers = new HashSet<buffer>();
+            this.modifying_company = new HashSet<modifying_company>();
+            this.restriction_company = new HashSet<restriction_company>();
         }
     
         public int id { get; set; }
@@ -198,8 +206,13 @@ namespace ecloning.Models
         public virtual ICollection<activity_restriction> activity_restriction { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<buffer> buffers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<modifying_company> modifying_company { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<restriction_company> restriction_company { get; set; }
     }
 }
+
 
 namespace ecloning.Models
 {

@@ -300,6 +300,9 @@
     <Compile Include="Models\common_feature.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\common_modifying.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\common_restriction.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -377,6 +380,9 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ModalSeq.cs" />
+    <Compile Include="Models\modifying_company.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\modifying_enzyme.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -422,6 +428,9 @@
     </Compile>
     <Compile Include="Models\RestoreMap.cs" />
     <Compile Include="Models\RestrictionEnzyme.cs" />
+    <Compile Include="Models\restriction_company.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\restri_enzyme.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

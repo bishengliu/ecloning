@@ -143,6 +143,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="common_modifying">
+      <EntityTypeMapping TypeName="ecloningModel.common_modifying">
+        <MappingFragment StoreEntitySet="common_modifying">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="common_restriction">
       <EntityTypeMapping TypeName="ecloningModel.common_restriction">
         <MappingFragment StoreEntitySet="common_restriction">
@@ -303,6 +312,15 @@
           <ScalarProperty Name="box_num" ColumnName="box_num" />
           <ScalarProperty Name="location" ColumnName="location" />
           <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="modifying_company">
+      <EntityTypeMapping TypeName="ecloningModel.modifying_company">
+        <MappingFragment StoreEntitySet="modifying_company">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -523,6 +541,15 @@
           <ScalarProperty Name="cpg" ColumnName="cpg" />
           <ScalarProperty Name="forward_cut2" ColumnName="forward_cut2" />
           <ScalarProperty Name="reverse_cut2" ColumnName="reverse_cut2" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="restriction_company">
+      <EntityTypeMapping TypeName="ecloningModel.restriction_company">
+        <MappingFragment StoreEntitySet="restriction_company">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

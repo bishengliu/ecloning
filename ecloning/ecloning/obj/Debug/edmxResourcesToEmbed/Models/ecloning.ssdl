@@ -142,6 +142,14 @@
     <Property Name="des" Type="text" />
     <Property Name="group_id" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="common_modifying">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="common_restriction">
     <Key>
       <PropertyRef Name="id" />
@@ -288,6 +296,14 @@
     <Property Name="box_num" Type="int" Nullable="false" />
     <Property Name="location" Type="nvarchar" MaxLength="100" />
     <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="modifying_company">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="modifying_enzyme">
     <Key>
@@ -495,6 +511,14 @@
     <Property Name="forward_cut2" Type="int" />
     <Property Name="reverse_cut2" Type="int" />
   </EntityType>
+  <EntityType Name="restriction_company">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="seq_code">
     <Key>
       <PropertyRef Name="id" />
@@ -700,6 +724,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_common_modifying_enzyme_id">
+    <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
+    <End Role="common_modifying" Type="Self.common_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="modifying_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_modifying">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_modifying_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_modifying" Type="Self.common_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_modifying">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_common_restriction_enzyme_id">
     <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
     <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
@@ -825,6 +873,30 @@
       </Principal>
       <Dependent Role="group_shared">
         <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_modifying_company_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="modifying_company">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_modifying_company_enzyme_id">
+    <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
+    <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="modifying_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="modifying_company">
+        <PropertyRef Name="enzyme_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1032,6 +1104,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_restriction_company_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="restriction_company" Type="Self.restriction_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="restriction_company">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_restriction_company_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="restriction_company" Type="Self.restriction_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="restriction_company">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="ecloningModelStoreContainer">
     <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="activity_modifying" EntityType="Self.activity_modifying" Schema="dbo" store:Type="Tables" />
@@ -1045,6 +1141,7 @@
     <EntitySet Name="buffer" EntityType="Self.buffer" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="clone_group" EntityType="Self.clone_group" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_feature" EntityType="Self.common_feature" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="common_modifying" EntityType="Self.common_modifying" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
@@ -1061,6 +1158,7 @@
     <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="minus20" EntityType="Self.minus20" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="minus80" EntityType="Self.minus80" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="modifying_company" EntityType="Self.modifying_company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="nuclease" EntityType="Self.nuclease" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="oligo" EntityType="Self.oligo" Schema="dbo" store:Type="Tables" />
@@ -1075,6 +1173,7 @@
     <EntitySet Name="project" EntityType="Self.project" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="protocol" EntityType="Self.protocol" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="restriction_company" EntityType="Self.restriction_company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="seq_code" EntityType="Self.seq_code" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="storage" EntityType="Self.storage" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="fk_activity_modifying_buffer_id" Association="Self.fk_activity_modifying_buffer_id">
@@ -1137,6 +1236,14 @@
       <End Role="group" EntitySet="group" />
       <End Role="common_feature" EntitySet="common_feature" />
     </AssociationSet>
+    <AssociationSet Name="fk_common_modifying_enzyme_id" Association="Self.fk_common_modifying_enzyme_id">
+      <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
+      <End Role="common_modifying" EntitySet="common_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_modifying_group_id" Association="Self.fk_common_modifying_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="common_modifying" EntitySet="common_modifying" />
+    </AssociationSet>
     <AssociationSet Name="fk_common_restriction_enzyme_id" Association="Self.fk_common_restriction_enzyme_id">
       <End Role="restri_enzyme" EntitySet="restri_enzyme" />
       <End Role="common_restriction" EntitySet="common_restriction" />
@@ -1176,6 +1283,14 @@
     <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
       <End Role="group" EntitySet="group" />
       <End Role="group_shared" EntitySet="group_shared" />
+    </AssociationSet>
+    <AssociationSet Name="fk_modifying_company_company_id" Association="Self.fk_modifying_company_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="modifying_company" EntitySet="modifying_company" />
+    </AssociationSet>
+    <AssociationSet Name="fk_modifying_company_enzyme_id" Association="Self.fk_modifying_company_enzyme_id">
+      <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
+      <End Role="modifying_company" EntitySet="modifying_company" />
     </AssociationSet>
     <AssociationSet Name="fk_oligo_people_id" Association="Self.fk_oligo_people_id">
       <End Role="people" EntitySet="people" />
@@ -1244,6 +1359,14 @@
     <AssociationSet Name="fk_protocol_people_id" Association="Self.fk_protocol_people_id">
       <End Role="people" EntitySet="people" />
       <End Role="protocol" EntitySet="protocol" />
+    </AssociationSet>
+    <AssociationSet Name="fk_restriction_company_company_id" Association="Self.fk_restriction_company_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="restriction_company" EntitySet="restriction_company" />
+    </AssociationSet>
+    <AssociationSet Name="fk_restriction_company_enzyme_id" Association="Self.fk_restriction_company_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="restriction_company" EntitySet="restriction_company" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

@@ -19,6 +19,7 @@ namespace ecloning.Models
         {
             this.activity_restriction = new HashSet<activity_restriction>();
             this.common_restriction = new HashSet<common_restriction>();
+            this.restriction_company = new HashSet<restriction_company>();
         }
     
         public int id { get; set; }
@@ -38,5 +39,7 @@ namespace ecloning.Models
         public virtual ICollection<activity_restriction> activity_restriction { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<common_restriction> common_restriction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<restriction_company> restriction_company { get; set; }
     }
 }
