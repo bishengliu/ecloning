@@ -535,7 +535,8 @@ CREATE TABLE activity_restriction --activity of restriction enzyme
 	enzyme_id INT NOT NULL,
 	company_id INT NOT NULL,
 	buffer_id INT NOT NULL,
-	activity INT NOT NULL, --in 100%
+	temprature INT NOT NULL,  -- temp in 0C
+	activity INT NOT NULL, --activity: 0 is <10%, 1 is 10%, 2 is 10-25%, 3 is 25%,  4 is 25%-50%, 5 is 50%, 6 is 50-75%,  7 is 75%, 8 is 75-100%, 9 is 100%
 	CONSTRAINT fk_activity_restriction_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES restri_enzyme(id),
 	CONSTRAINT fk_activity_restriction_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_activity_restriction_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
@@ -568,7 +569,8 @@ CREATE TABLE activity_modifying --activity of modifying enzyme
 	enzyme_id INT NOT NULL,
 	company_id INT NOT NULL,
 	buffer_id INT NOT NULL,
-	activity INT NOT NULL, --in 100%
+	temprature INT NOT NULL,  -- temp in 0C
+	activity INT NOT NULL, --activity: 0 is <10%, 1 is 10%, 2 is 10-25%, 3 is 25%,  4 is 25%-50%, 5 is 50%, 6 is 50-75%,  7 is 75%, 8 is 75-100%, 9 is 100%
 	CONSTRAINT fk_activity_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
 	CONSTRAINT fk_activity_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_activity_modifying_buffer_id FOREIGN KEY (buffer_id) REFERENCES buffer(id)
@@ -1033,8 +1035,8 @@ INSERT INTO dropdownitem VALUES
 
 --star activity
 ('0', 'No', 'StarActivity'),
-('1', '65 degree, 20 min', 'StarActivity'),
-('2', '80 degree, 20 min', 'StarActivity'),
+('1', '65°C, 20 min', 'StarActivity'),
+('2', '80°C, 20 min', 'StarActivity'),
 
 -- modifying enzyme category
 
@@ -1052,7 +1054,20 @@ INSERT INTO dropdownitem VALUES
 ('ssDNA Binding Proteins', 'ssDNA Binding Proteins', 'MEnzyme'),
 ('Nuclease', 'Nuclease', 'MEnzyme'),
 ('Methyltransferase', 'Methyltransferase', 'MEnzyme'),
-('DNA Repair Protein', 'DNA Repair Protein', 'MEnzyme')
+('DNA Repair Protein', 'DNA Repair Protein', 'MEnzyme'),
+
+-- buffer activity
+('0', '< 10%', 'BufferActivity'),
+('1', '10%', 'BufferActivity'),
+('2', '< 10 - 25%', 'BufferActivity'),
+('3', '25%', 'BufferActivity'),
+('4', '25 - 50%', 'BufferActivity'),
+('5', '50%', 'BufferActivity'),
+('6', '50 - 75%', 'BufferActivity'),
+('7', '75%', 'BufferActivity'),
+('8', '75 - 100%', 'BufferActivity'),
+('9', '100%', 'BufferActivity')
+
 
 
 

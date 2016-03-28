@@ -427,6 +427,7 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RestoreMap.cs" />
+    <Compile Include="Models\RestrictionActivity.cs" />
     <Compile Include="Models\RestrictionEnzyme.cs" />
     <Compile Include="Models\restriction_company.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
