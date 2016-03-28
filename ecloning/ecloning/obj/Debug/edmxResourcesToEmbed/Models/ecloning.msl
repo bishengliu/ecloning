@@ -19,6 +19,7 @@
           <ScalarProperty Name="company_id" ColumnName="company_id" />
           <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
           <ScalarProperty Name="activity" ColumnName="activity" />
+          <ScalarProperty Name="temprature" ColumnName="temprature" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -30,6 +31,7 @@
           <ScalarProperty Name="company_id" ColumnName="company_id" />
           <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
           <ScalarProperty Name="activity" ColumnName="activity" />
+          <ScalarProperty Name="temprature" ColumnName="temprature" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

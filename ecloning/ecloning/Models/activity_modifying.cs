@@ -19,6 +19,7 @@ namespace ecloning.Models
         public int company_id { get; set; }
         public int buffer_id { get; set; }
         public int activity { get; set; }
+        public int temprature { get; set; }
     
         public virtual buffer buffer { get; set; }
         public virtual company company { get; set; }

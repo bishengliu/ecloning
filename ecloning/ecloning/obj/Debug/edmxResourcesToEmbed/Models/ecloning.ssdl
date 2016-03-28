@@ -19,6 +19,7 @@
     <Property Name="company_id" Type="int" Nullable="false" />
     <Property Name="buffer_id" Type="int" Nullable="false" />
     <Property Name="activity" Type="int" Nullable="false" />
+    <Property Name="temprature" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="activity_restriction">
     <Key>
@@ -29,6 +30,7 @@
     <Property Name="company_id" Type="int" Nullable="false" />
     <Property Name="buffer_id" Type="int" Nullable="false" />
     <Property Name="activity" Type="int" Nullable="false" />
+    <Property Name="temprature" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="app_license">
     <Key>

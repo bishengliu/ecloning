@@ -19,6 +19,7 @@
     <Property Name="company_id" Type="Int32" Nullable="false" />
     <Property Name="buffer_id" Type="Int32" Nullable="false" />
     <Property Name="activity" Type="Int32" Nullable="false" />
+    <Property Name="temprature" Type="Int32" Nullable="false" />
     <NavigationProperty Name="buffer" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="activity_modifying" ToRole="buffer" />
     <NavigationProperty Name="company" Relationship="Self.fk_activity_modifying_company_id" FromRole="activity_modifying" ToRole="company" />
     <NavigationProperty Name="modifying_enzyme" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="activity_modifying" ToRole="modifying_enzyme" />
@@ -32,6 +33,7 @@
     <Property Name="company_id" Type="Int32" Nullable="false" />
     <Property Name="buffer_id" Type="Int32" Nullable="false" />
     <Property Name="activity" Type="Int32" Nullable="false" />
+    <Property Name="temprature" Type="Int32" Nullable="false" />
     <NavigationProperty Name="buffer" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="activity_restriction" ToRole="buffer" />
     <NavigationProperty Name="company" Relationship="Self.fk_activity_restriction_company_id" FromRole="activity_restriction" ToRole="company" />
     <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="activity_restriction" ToRole="restri_enzyme" />

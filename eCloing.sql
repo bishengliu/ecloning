@@ -589,6 +589,8 @@ CREATE TABLE common_modifying
 	CONSTRAINT uq_common_modifying_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
 );
 
+
+-- this table will not be used
 -- link restriciton enzyme to company
 CREATE TABLE restriction_company
 (
@@ -600,6 +602,7 @@ CREATE TABLE restriction_company
 	CONSTRAINT uq_restriction_company_enzyme_id_company_id UNIQUE (enzyme_id,company_id)
 );
 
+-- this table will not be used
 --link modifying enzyme to company_id
 CREATE TABLE modifying_company
 (

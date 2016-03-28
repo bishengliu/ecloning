@@ -21,7 +21,15 @@
                             <a href="@Url.Action("Index", "Buffer")"><i class="fa fa-flask fa-fw"></i> Enzyme Buffer</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Index", "Activity")"><i class="fa fa-star-half-empty fa-fw"></i> Enzyme Activity</a>
+                            <a href="#"><i class="fa fa-star-half-empty fa-fw"></i> Enzyme Activity<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li>
+                                    <a href="@Url.Action("Index", "RActivity")"><i class="fa fa-scissors fa-fw"></i> Restriction Enzymes</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MActivity")"><i class="fa fa-exchange fa-fw"></i> Modifying Enzymes</a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->
