@@ -45,7 +45,7 @@
                     if (bufferCount == 0)
                     {
                         <div class="list-group">
-                            <a class="list-group-item disabled" href="@Url.Action("Create", "RActivity")">
+                            <a class="list-group-item disabled" href="@Url.Action("EnzymeList", "RActivity", new { company_id = c.id})">
                                 <h4 class="list-group-item-heading">
                                     <i class="fa fa-building-o text-info"></i>
                                     <span class="text-primary"><strong>@c.shortName</strong></span>
@@ -58,7 +58,7 @@
                     else
                     {
                         <div class="list-group">
-                            <a class="list-group-item" href="@Url.Action("Create", "RActivity")">
+                            <a class="list-group-item" href="@Url.Action("EnzymeList", "RActivity", new { company_id = c.id})">
                                 <h4 class="list-group-item-heading">
                                     <i class="fa fa-building-o text-info"></i>
                                     <span class="text-primary"><strong>@c.shortName</strong></span>

@@ -674,6 +674,8 @@
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Views\RActivity\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\RActivity\EnzymeList.cshtml" />
+    <Content Include="Areas\Admin\Views\RActivity\AddEnzyme.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

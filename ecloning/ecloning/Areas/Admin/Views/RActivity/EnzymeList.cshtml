@@ -1,0 +1,221 @@
+﻿@model IEnumerable<ecloning.Models.restri_enzyme>
+@{
+    ViewBag.Title = "EnzymeList";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    int Count = (int)ViewBag.Count;
+    int CompanyId = (int)ViewBag.CompanyId;
+    string Company = (string)ViewBag.Company;
+}
+
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-9">
+            <h3 class="text-primary"><span><i class="fa fa-scissors">&nbsp;</i></span>Restriction Enzymes from @Company</h3>
+        </div>
+        <div class="col-sm-3">
+            <br class="hidden-xs" />
+            <a class="btn btn-default pull-right" href="@Url.Action("AddEnzyme", "RActivity", new { company_id = CompanyId})">
+                <i class="fa fa-plus text-info"></i>
+                <span class="">Add Enzyme</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
+                            <div class="btn-toolbar">
+                                <div class="btn-group btn-group-sm" id="alphabet">
+                                    <button class="btn btn-default">All</button>
+                                    <button class="btn btn-default">A</button>
+                                    <button class="btn btn-default">B</button>
+                                    <button class="btn btn-default">C</button>
+                                    <button class="btn btn-default">D</button>
+                                    <button class="btn btn-default">E</button>
+                                    <button class="btn btn-default">F</button>
+                                    <button class="btn btn-default">G</button>
+                                    <button class="btn btn-default">H</button>
+                                    <button class="btn btn-default">I</button>
+                                    <button class="btn btn-default">J</button>
+                                    <button class="btn btn-default">K</button>
+                                    <button class="btn btn-default">L</button>
+                                    <button class="btn btn-default">M</button>
+                                    <button class="btn btn-default">N</button>
+                                    <button class="btn btn-default">O</button>
+                                    <button class="btn btn-default">P</button>
+                                    <button class="btn btn-default">Q</button>
+                                    <button class="btn btn-default">R</button>
+                                    <button class="btn btn-default">S</button>
+                                    <button class="btn btn-default">T</button>
+                                    <button class="btn btn-default">U</button>
+                                    <button class="btn btn-default">V</button>
+                                    <button class="btn btn-default">W</button>
+                                    <button class="btn btn-default">X</button>
+                                    <button class="btn btn-default">Y</button>
+                                    <button class="btn btn-default">Z</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <hr />
+                        
+                        <hr/>
+                        <div class="table-responsive">
+                            <table class="table table-condensed" id="enzyme-table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="text-center col-sm-1 no-sort">
+                                            Enzyme
+                                        </th>
+                                        <th rowspan="2" class="text-center col-sm-8 no-sort">
+                                            Prototype
+                                        </th>
+
+                                        <th colspan="5" class="text-center col-sm-2 no-sort">
+                                            Properties
+                                        </th>
+                                        <th colspan="2" class="text-center col-sm-1 no-sort">
+                                            
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center no-sort">
+                                            <span class="fa fa-star text-primary"></span>
+                                        </th>
+                                        <th class="text-center no-sort">
+                                            <span class="glyphicon glyphicon-fire text-primary"></span>
+                                        </th>
+                                        <th class="text-center no-sort">
+                                            <span class="text-primary">Dam</span>
+                                        </th>
+                                        <th class="text-center no-sort">
+                                            <span class="text-primary">Dcm</span>
+                                        </th>
+                                        <th class="text-center no-sort">
+                                            <span class="text-primary">CpG</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                    @foreach (var item in Model)
+                                    {
+                                        string symbol = "<span></span>";
+                                        var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
+                                        <tr>
+                                            <td class="text-center">
+                                                <strong class="text-warning">@Html.DisplayFor(modelItem => item.name)</strong>
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.forward_cut2 != null && item.reverse_cut2 != null)
+                                                {
+                                                    @Html.Raw(enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.staractitivity == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.staractitivity))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.inactivation != null)
+                                                {
+                                                    @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivation))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(enzymeSybol.InactivationSymbol(0))
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.dam == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.dcm == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.cpg == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="vert-align">
+                                                <a href="@Url.Action("Delete", "RActivity", new { enzyme_id = item.id, company_id = CompanyId })">
+                                                    <i class="fa fa-trash-o fa-2x text-danger "></i>
+                                                    <span class=""></span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(function () {
+        var _alphabets = $('#alphabet > button');
+        var _contentRows = $('#enzyme-table tbody tr');
+
+        _alphabets.click(function () {
+            var _letter = $(this),
+                _text = $(this).text().toLowerCase(),
+                _count = 0;
+
+            _alphabets.removeClass("active");
+            _letter.addClass("active");
+
+            _contentRows.hide();
+            _contentRows.each(function (i) {
+                var _cellText = $(this).children('td').eq(0).text().toLowerCase().replace(/\s+/g, '');
+                if (_text === 'all') {
+                    _count += 1;
+                    $(this).fadeIn(400);
+                } else {
+                    if (RegExp('^' + _text).test(_cellText)) {
+                        _count += 1;
+                        $(this).fadeIn(400);
+                    }
+                }
+            });
+        });
+    });
+</script>

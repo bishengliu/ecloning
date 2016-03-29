@@ -245,3 +245,13 @@ textarea {
 .seqFont {
     font-family: courier !important;
 }
+
+.table tbody>tr>td.vert-align
+{
+    vertical-align: middle;
+}
+
+.center {
+     margin-left: auto;
+     margin-right: auto;
+}
