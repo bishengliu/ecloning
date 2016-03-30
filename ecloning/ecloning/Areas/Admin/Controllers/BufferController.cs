@@ -106,6 +106,8 @@ namespace ecloning.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                buffer.show_activity = true;
+                buffer.show_activity2 = true;
                 db.buffers.Add(buffer);
 
                 //create empty activity in activity_restriction table
