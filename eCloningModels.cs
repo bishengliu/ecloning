@@ -1,3 +1,151 @@
+namespace ecloning.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    public partial class buffer
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public buffer()
+        {
+            this.activity_modifying = new HashSet<activity_modifying>();
+            this.activity_restriction = new HashSet<activity_restriction>();
+        }
+    
+        public int id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string name { get; set; }
+        public string des { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string composition { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int company_id { get; set; }
+        public Nullable<bool> show_activity { get; set; }
+        public Nullable<bool> show_activity2 { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<activity_modifying> activity_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<activity_restriction> activity_restriction { get; set; }
+        public virtual company company { get; set; }
+    }
+}
+
+namespace ecloning.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    public partial class company
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public company()
+        {
+            this.activity_modifying = new HashSet<activity_modifying>();
+            this.activity_restriction = new HashSet<activity_restriction>();
+            this.buffers = new HashSet<buffer>();
+            this.common_modifying = new HashSet<common_modifying>();
+            this.common_restriction = new HashSet<common_restriction>();
+            this.modifying_company = new HashSet<modifying_company>();
+            this.restriction_company = new HashSet<restriction_company>();
+        }
+    
+        public int id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string shortName { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string fullName { get; set; }
+        public string des { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<activity_modifying> activity_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<activity_restriction> activity_restriction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<buffer> buffers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<common_modifying> common_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<common_restriction> common_restriction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<modifying_company> modifying_company { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<restriction_company> restriction_company { get; set; }
+    }
+}
+
+
+namespace ecloning.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    public partial class common_feature
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public common_feature()
+        {
+            this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
+            this.plasmid_map = new HashSet<plasmid_map>();
+        }
+    
+        public int id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int feature_id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string label { get; set; }
+        [Required(ErrorMessage = "Required")]
+        [RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
+        public string sequence { get; set; }
+        public string des { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int group_id { get; set; }
+    
+        public virtual plasmid_feature plasmid_feature { get; set; }
+        public virtual group group { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<plasmid_map> plasmid_map { get; set; }
+    }
+}
+
+
+namespace ecloning.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    public partial class modifying_enzyme
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public modifying_enzyme()
+        {
+            this.activity_modifying = new HashSet<activity_modifying>();
+            this.common_modifying = new HashSet<common_modifying>();
+            this.modifying_company = new HashSet<modifying_company>();
+        }
+    
+        public int id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string name { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public string category { get; set; }
+        public string application { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<activity_modifying> activity_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<common_modifying> common_modifying { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<modifying_company> modifying_company { get; set; }
+    }
+}
+
 
 namespace ecloning.Models
 {
@@ -53,6 +201,7 @@ namespace ecloning.Models
     }
 }
 
+
 namespace ecloning.Models
 {
     using System;
@@ -107,145 +256,5 @@ namespace ecloning.Models
     }
 }
 
-namespace ecloning.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class common_feature
-    {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public common_feature()
-        {
-            this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
-            this.plasmid_map = new HashSet<plasmid_map>();
-        }
-    
-        public int id { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public int feature_id { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string label { get; set; }
-        [Required(ErrorMessage = "Required")]
-        [RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
-        public string sequence { get; set; }
-        public string des { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public int group_id { get; set; }
-    
-        public virtual plasmid_feature plasmid_feature { get; set; }
-        public virtual group group { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<plasmid_map> plasmid_map { get; set; }
-    }
-}
-
-namespace ecloning.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class modifying_enzyme
-    {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public modifying_enzyme()
-        {
-            this.activity_modifying = new HashSet<activity_modifying>();
-            this.common_modifying = new HashSet<common_modifying>();
-            this.modifying_company = new HashSet<modifying_company>();
-        }
-    
-        public int id { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string name { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string category { get; set; }
-        public string application { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<activity_modifying> activity_modifying { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<common_modifying> common_modifying { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<modifying_company> modifying_company { get; set; }
-    }
-}
-
-namespace ecloning.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class company
-    {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public company()
-        {
-            this.activity_modifying = new HashSet<activity_modifying>();
-            this.activity_restriction = new HashSet<activity_restriction>();
-            this.buffers = new HashSet<buffer>();
-            this.modifying_company = new HashSet<modifying_company>();
-            this.restriction_company = new HashSet<restriction_company>();
-        }
-    
-        public int id { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string shortName { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string fullName { get; set; }
-        public string des { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<activity_modifying> activity_modifying { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<activity_restriction> activity_restriction { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<buffer> buffers { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<modifying_company> modifying_company { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<restriction_company> restriction_company { get; set; }
-    }
-}
-
-
-namespace ecloning.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class buffer
-    {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public buffer()
-        {
-            this.activity_modifying = new HashSet<activity_modifying>();
-            this.activity_restriction = new HashSet<activity_restriction>();
-        }
-    
-        public int id { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string name { get; set; }
-        public string des { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string composition { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public int company_id { get; set; }
-        public Nullable<bool> show_activity { get; set; }
-        public Nullable<bool> show_activity2 { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<activity_modifying> activity_modifying { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<activity_restriction> activity_restriction { get; set; }
-        public virtual company company { get; set; }
-    }
-}
 
 

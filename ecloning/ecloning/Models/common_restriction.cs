@@ -17,7 +17,9 @@ namespace ecloning.Models
         public int id { get; set; }
         public int enzyme_id { get; set; }
         public int group_id { get; set; }
+        public int company_id { get; set; }
     
+        public virtual company company { get; set; }
         public virtual restri_enzyme restri_enzyme { get; set; }
         public virtual group group { get; set; }
     }

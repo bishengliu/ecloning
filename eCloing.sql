@@ -547,8 +547,10 @@ CREATE TABLE common_restriction
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	enzyme_id INT NOT NULL,
+	company_id INT NOT NULL,
 	group_id INT NOT NULL,
 	CONSTRAINT fk_common_restriction_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES restri_enzyme(id),
+	CONSTRAINT fk_common_restriction_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_common_restriction_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT uq_common_restriction_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
 );
@@ -583,14 +585,16 @@ CREATE TABLE common_modifying
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	enzyme_id INT NOT NULL,
+	company_id INT NOT NULL
 	group_id INT NOT NULL,
 	CONSTRAINT fk_common_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
+	CONSTRAINT fk_common_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_common_modifying_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT uq_common_modifying_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
 );
 
 
--- this table will not be used
+
 -- link restriciton enzyme to company
 CREATE TABLE restriction_company
 (
@@ -602,7 +606,7 @@ CREATE TABLE restriction_company
 	CONSTRAINT uq_restriction_company_enzyme_id_company_id UNIQUE (enzyme_id,company_id)
 );
 
--- this table will not be used
+
 --link modifying enzyme to company_id
 CREATE TABLE modifying_company
 (

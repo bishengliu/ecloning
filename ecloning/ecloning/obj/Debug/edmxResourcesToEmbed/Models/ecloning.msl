@@ -151,6 +151,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
           <ScalarProperty Name="group_id" ColumnName="group_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -160,6 +161,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
           <ScalarProperty Name="group_id" ColumnName="group_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
