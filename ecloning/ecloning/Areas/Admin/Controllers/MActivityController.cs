@@ -8,10 +8,11 @@ using System.Web.Mvc;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class MActivityController : Controller
+    public class MActivityController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
         // GET: Admin/MActivity
+        [Authorize]
         public ActionResult Index()
         {
             return View();

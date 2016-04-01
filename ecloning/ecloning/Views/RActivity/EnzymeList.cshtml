@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ecloning.Models.RestrictionActivity>
 @{
     ViewBag.Title = "EnzymeList";
-    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     int Count = (int)ViewBag.Count; //if ni enzyme display message
     int CompanyId = (int)ViewBag.CompanyId;
     string Company = (string)ViewBag.Company;
@@ -47,39 +47,31 @@
     }
 }
 
-@Html.Partial("_BioTools")
-<div id="page-wrapper">
-    <div class="row">
-        <div class="col-sm-9">
-            <h3 class="text-primary"><span><i class="fa fa-scissors">&nbsp;</i></span>Restriction Enzymes from @Company</h3>
-        </div>
-        <div class="col-sm-3">
-            <br class="hidden-xs" />
-            <a class="btn btn-default pull-right" href="@Url.Action("AddEnzyme", "RActivity", new { company_id = CompanyId})">
-                <i class="fa fa-plus text-info"></i>
-                <span class="">Add Enzyme</span>
-            </a>
-        </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+        <h3 class="text-primary"><span><i class="fa fa-scissors">&nbsp;</i></span>Restriction Enzymes from @Company</h3>
     </div>
-    <div class="row">
-        <hr />
-        <div class="col-md-12 col-lg-10 col-lg-offset-1">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <span id="bufferId" class="hidden">@bufferIdString</span>
-                    <span id="enzymeId" class="hidden">@enzymeIdString</span>
-                    @if(Count == 0)
-                    {
-                        <div class="row">
-                            <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
-                                <p class="text-warning">No enzyme found for this company, you can start to add enzyme by clicking "Add Enzyme" button above.</p>
-                            </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <span id="bufferId" class="hidden">@bufferIdString</span>
+                <span id="enzymeId" class="hidden">@enzymeIdString</span>
+                @if (Count == 0)
+                {
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
+                            <p class="text-warning">No enzyme found for this company, you can start to add enzyme by clicking "Add Enzyme" button above.</p>
                         </div>
-                    }
-                    else
-                    {
+                    </div>
+                }
+                else
+                {
                     <div class="row">
                         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
                             <div class="btn-toolbar">
@@ -116,45 +108,42 @@
                         </div>
                     </div>
                     <div class="row">
-                        <br />                       
+                        <br />
                         <div class="table-responsive">
-                            @if(BufferCount == 0)
+                            @if (BufferCount == 0)
                             {
                                 <table class="table table-condensed tableTopLine" id="enzyme-table">
-                                <thead>
-                                    <tr>
-                                        <th rowspan="2" class="text-center col-sm-1 no-sort">
-                                            Enzyme
-                                        </th>
-                                        <th rowspan="2" class="text-center col-sm-8 no-sort">
-                                            Prototype
-                                        </th>
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" class="text-center col-sm-1 no-sort">
+                                                Enzyme
+                                            </th>
+                                            <th rowspan="2" class="text-center col-sm-8 no-sort">
+                                                Prototype
+                                            </th>
 
-                                        <th colspan="5" class="text-center col-sm-2 no-sort">
-                                            Properties
-                                        </th>
-                                        <th colspan="2" class="text-center col-sm-1 no-sort">
-                                            
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-center no-sort">
-                                            <span class="fa fa-star text-primary"></span>
-                                        </th>
-                                        <th class="text-center no-sort">
-                                            <span class="glyphicon glyphicon-fire text-primary"></span>
-                                        </th>
-                                        <th class="text-center no-sort">
-                                            <span class="text-primary">Dam</span>
-                                        </th>
-                                        <th class="text-center no-sort">
-                                            <span class="text-primary">Dcm</span>
-                                        </th>
-                                        <th class="text-center no-sort">
-                                            <span class="text-primary">CpG</span>
-                                        </th>
-                                    </tr>
-                                </thead>
+                                            <th colspan="5" class="text-center col-sm-2 no-sort">
+                                                Properties
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center no-sort">
+                                                <span class="fa fa-star text-primary"></span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="glyphicon glyphicon-fire text-primary"></span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">Dam</span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">Dcm</span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">CpG</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
                                     @foreach (var item in Model)
                                     {
                                         string symbol = "<span></span>";
@@ -225,15 +214,9 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="vert-align">
-                                                <a href="@Url.Action("Delete", "RActivity", new { enzyme_id = item.enzyme_id, company_id = CompanyId })">
-                                                    <i class="fa fa-trash-o fa-2x text-danger "></i>
-                                                    <span class=""></span>
-                                                </a>
-                                            </td>
                                         </tr>
                                     }
-                            </table>
+                                </table>
                             }
                             else
                             {
@@ -251,9 +234,6 @@
                                             </th>
                                             <th colspan="5" class="text-center col-sm-2 no-sort">
                                                 Properties
-                                            </th>
-                                            <th colspan="2" class="text-center col-sm-1 no-sort">
-
                                             </th>
                                         </tr>
                                         <tr>
@@ -305,17 +285,17 @@
                                                 {
                                                     @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
                                                 }
-                                            </td>                                            
+                                            </td>
                                             @foreach (var i in bufferId)
                                             {
                                                 var convertActivity = new ecloning.Models.EnzymeActivity();
 
                                                 id = id + i.ToString();
-                                                //find pk                                                
+                                                //find pk
                                                 var activity = db.activity_restriction.Where(a => a.company_id == item.company_id && a.enzyme_id == item.enzyme_id && a.buffer_id == i).First();
                                                 int pk = activity.id;
                                                 <td class="text-center">
-                                                    <a href="#" id=@id data-type="select" data-pk=@pk data-url="@Url.Action("EnzymeList", "RActivity", new { company_id = item.company_id})" data-title="Select Enzyme Activity" data-clear=false>@Html.Raw(convertActivity.Convert(dict[count].First().Value))</a>
+                                                    <span class="text-warning">@Html.Raw(convertActivity.Convert(dict[count].First().Value))</span>
                                                 </td>
                                                 count++;
                                                 id = item.enzyme_id.ToString() + "-";
@@ -370,25 +350,20 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="vert-align">
-                                                <a href="@Url.Action("Delete", "RActivity", new { enzyme_id = item.enzyme_id, company_id = CompanyId })">
-                                                    <i class="fa fa-trash-o fa-2x text-danger "></i>
-                                                    <span class=""></span>
-                                                </a>
-                                            </td>
                                         </tr>
                                     }
                                 </table>
                             }
                         </div>
                     </div>
-                    }
-                </div>
+                }
             </div>
         </div>
     </div>
-
+    <div class="col-sm-1 hidden-xs"></div>
 </div>
+
+
 
 @Scripts.Render("~/bundles/jquery")
 <script>
@@ -419,44 +394,4 @@
             });
         });
     });
-</script>
-
-<script>
-    bufferIdstring = document.getElementById("bufferId").textContent;
-    enzymeIdString = document.getElementById("enzymeId").textContent;
-    try {
-
-        //Id list
-        bufferIdArray = bufferIdstring.split(',').map(Number);
-        enzymeIdArray = enzymeIdString.split(',').map(Number);
-
-        $(document).ready(function () {
-
-            for (var e = 0; e < enzymeIdArray.length; e++) {
-                var id = enzymeIdArray[e] + "-";
-                for (var b = 0; b < bufferIdArray.length; b++) {
-                    id = id + bufferIdArray[b];
-                    $('#' + id).editable({
-                        source: [
-                              { value: 0, text: '<10%' },
-                              { value: 1, text: '10%' },
-                              { value: 2, text: '10-25%' },
-                              { value: 3, text: '25%' },
-                              { value: 4, text: '25-50%' },
-                              { value: 5, text: '50%' },
-                              { value: 6, text: '50-75%' },
-                              { value: 7, text: '75%' },
-                              { value: 8, text: '75-100%' },
-                              { value: 9, text: '100%' }
-                        ]
-                    });
-                    id = enzymeIdArray[e] + "-";
-                }
-            }
-        });
-    }
-    catch (e)
-    {
-        consol.log(e);
-    }
 </script>

@@ -260,10 +260,12 @@
     <Compile Include="Controllers\BioToolsController.cs" />
     <Compile Include="Controllers\FeatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MActivityController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\MiscellaneousController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
+    <Compile Include="Controllers\RActivityController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -883,6 +885,10 @@
     <Content Include="Views\BioTools\Index.cshtml" />
     <Content Include="Views\Shared\_BioToolsLayout.cshtml" />
     <Content Include="Views\Miscellaneous\FormatSeq.cshtml" />
+    <Content Include="Views\RActivity\Index.cshtml" />
+    <Content Include="Views\RActivity\EnzymeList.cshtml" />
+    <Content Include="Views\MActivity\Index.cshtml" />
+    <Content Include="Views\MActivity\EnzymeList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

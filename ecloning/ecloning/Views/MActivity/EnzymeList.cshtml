@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ecloning.Models.ModifyingActivity>
 @{
     ViewBag.Title = "EnzymeList";
-    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
     int Count = (int)ViewBag.Count; //if ni enzyme display message
     int CompanyId = (int)ViewBag.CompanyId;
@@ -27,99 +27,92 @@
     }
 
 
-        //prepare enzymeId and bufferid to jquery
-        System.Text.StringBuilder enzymeIdString = new System.Text.StringBuilder();
-        if(EnzymeId.Count() > 0)
+    //prepare enzymeId and bufferid to jquery
+    System.Text.StringBuilder enzymeIdString = new System.Text.StringBuilder();
+    if (EnzymeId.Count() > 0)
+    {
+        for (int i = 0; i < (EnzymeId.Count() - 1); i++)
         {
-            for (int i = 0; i < (EnzymeId.Count() - 1); i++)
-            {
-                enzymeIdString.Append(EnzymeId[i].ToString()).Append(",");
-            }
-            enzymeIdString.Append(EnzymeId.Last().ToString());
+            enzymeIdString.Append(EnzymeId[i].ToString()).Append(",");
         }
-
-        System.Text.StringBuilder bufferIdString = new System.Text.StringBuilder();
-        if (bufferId.Count() > 0)
-        {
-            for (int i = 0; i < (bufferId.Count() - 1); i++)
-            {
-                bufferIdString.Append(bufferId[i].ToString()).Append(",");
-            }
-            bufferIdString.Append(bufferId.Last().ToString());
-        }
-
+        enzymeIdString.Append(EnzymeId.Last().ToString());
     }
+
+    System.Text.StringBuilder bufferIdString = new System.Text.StringBuilder();
+    if (bufferId.Count() > 0)
+    {
+        for (int i = 0; i < (bufferId.Count() - 1); i++)
+        {
+            bufferIdString.Append(bufferId[i].ToString()).Append(",");
+        }
+        bufferIdString.Append(bufferId.Last().ToString());
+    }
+
 }
-@Html.Partial("_BioTools")
-<div id="page-wrapper">
-    <div class="row">
-        <div class="col-sm-9">
-            <h3 class="text-primary"><span><i class="fa fa-exchange">&nbsp;</i></span>Modifying Enzymes from @Company</h3>
-        </div>
-        <div class="col-sm-3">
-            <br class="hidden-xs" />
-            <a class="btn btn-default pull-right" href="@Url.Action("AddEnzyme", "MActivity", new { company_id = CompanyId})">
-                <i class="fa fa-plus text-info"></i>
-                <span class="">Add Enzyme</span>
-            </a>
-        </div>
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+        <h3 class="text-primary"><span><i class="fa fa-exchange">&nbsp;</i></span>Modifying Enzymes from @Company</h3>
     </div>
-    <div class="row">
-        <hr />
-        <div class="col-md-12 col-lg-10 col-lg-offset-1">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <span id="bufferId" class="hidden">@bufferIdString</span>
-                    <span id="enzymeId" class="hidden">@enzymeIdString</span>
-                    @if (Count == 0)
-                    {
-                        <div class="row">
-                            <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
-                                <p class="text-warning">No enzyme found for this company, you can start to add enzyme by clicking "Add Enzyme" button above.</p>
-                            </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <span id="bufferId" class="hidden">@bufferIdString</span>
+                <span id="enzymeId" class="hidden">@enzymeIdString</span>
+                @if (Count == 0)
+                {
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
+                            <p class="text-warning">No enzyme found for this company, you can start to add enzyme by clicking "Add Enzyme" button above.</p>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="row">
-                            <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
-                                <div class="btn-toolbar">
-                                    <div class="btn-group btn-group-sm" id="alphabet">
-                                        <button class="btn btn-default">All</button>
-                                        <button class="btn btn-default">A</button>
-                                        <button class="btn btn-default">B</button>
-                                        <button class="btn btn-default">C</button>
-                                        <button class="btn btn-default">D</button>
-                                        <button class="btn btn-default">E</button>
-                                        <button class="btn btn-default">F</button>
-                                        <button class="btn btn-default">G</button>
-                                        <button class="btn btn-default">H</button>
-                                        <button class="btn btn-default">I</button>
-                                        <button class="btn btn-default">J</button>
-                                        <button class="btn btn-default">K</button>
-                                        <button class="btn btn-default">L</button>
-                                        <button class="btn btn-default">M</button>
-                                        <button class="btn btn-default">N</button>
-                                        <button class="btn btn-default">O</button>
-                                        <button class="btn btn-default">P</button>
-                                        <button class="btn btn-default">Q</button>
-                                        <button class="btn btn-default">R</button>
-                                        <button class="btn btn-default">S</button>
-                                        <button class="btn btn-default">T</button>
-                                        <button class="btn btn-default">U</button>
-                                        <button class="btn btn-default">V</button>
-                                        <button class="btn btn-default">W</button>
-                                        <button class="btn btn-default">X</button>
-                                        <button class="btn btn-default">Y</button>
-                                        <button class="btn btn-default">Z</button>
-                                    </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
+                            <div class="btn-toolbar">
+                                <div class="btn-group btn-group-sm" id="alphabet">
+                                    <button class="btn btn-default">All</button>
+                                    <button class="btn btn-default">A</button>
+                                    <button class="btn btn-default">B</button>
+                                    <button class="btn btn-default">C</button>
+                                    <button class="btn btn-default">D</button>
+                                    <button class="btn btn-default">E</button>
+                                    <button class="btn btn-default">F</button>
+                                    <button class="btn btn-default">G</button>
+                                    <button class="btn btn-default">H</button>
+                                    <button class="btn btn-default">I</button>
+                                    <button class="btn btn-default">J</button>
+                                    <button class="btn btn-default">K</button>
+                                    <button class="btn btn-default">L</button>
+                                    <button class="btn btn-default">M</button>
+                                    <button class="btn btn-default">N</button>
+                                    <button class="btn btn-default">O</button>
+                                    <button class="btn btn-default">P</button>
+                                    <button class="btn btn-default">Q</button>
+                                    <button class="btn btn-default">R</button>
+                                    <button class="btn btn-default">S</button>
+                                    <button class="btn btn-default">T</button>
+                                    <button class="btn btn-default">U</button>
+                                    <button class="btn btn-default">V</button>
+                                    <button class="btn btn-default">W</button>
+                                    <button class="btn btn-default">X</button>
+                                    <button class="btn btn-default">Y</button>
+                                    <button class="btn btn-default">Z</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
                         <div class="row">
-                            <br />
+                            <br/>
                             <div class="table-responsive">
                                 @if (BufferCount == 0)
                                 {
@@ -137,7 +130,7 @@
                                                 </th>
                                                 <th class="col-sm-1"></th>
                                             </tr>
-   
+
                                         </thead>
                                         @foreach (var item in Model)
                                         {
@@ -192,7 +185,7 @@
                                             </tr>
                                         </thead>
                                         @foreach (var item in Model)
-                                        {                                            
+                                        {
                                             //find enzyme info
                                             var enzyme = db.modifying_enzyme.Find(item.enzyme_id);
                                             var dict = item.Activity;
@@ -206,7 +199,7 @@
                                                 </td>
                                                 <td>
                                                     <span class="text-warning"><strong>@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
-                                                </td>                                               
+                                                </td>
                                                 @foreach (var i in bufferId)
                                                 {
                                                     var convertActivity = new ecloning.Models.EnzymeActivity();
@@ -233,13 +226,14 @@
                                 }
                             </div>
                         </div>
-                    }
-                </div>
+                }
             </div>
+
         </div>
     </div>
-
+    <div class="col-sm-1 hidden-xs"></div>
 </div>
+
 
 @Scripts.Render("~/bundles/jquery")
 <script>
@@ -271,44 +265,3 @@
         });
     });
 </script>
-
-<script>
-    bufferIdstring = document.getElementById("bufferId").textContent;
-    enzymeIdString = document.getElementById("enzymeId").textContent;
-    try {
-
-        //Id list
-        bufferIdArray = bufferIdstring.split(',').map(Number);
-        enzymeIdArray = enzymeIdString.split(',').map(Number);
-
-        $(document).ready(function () {
-
-            for (var e = 0; e < enzymeIdArray.length; e++) {
-                var id = enzymeIdArray[e] + "-";
-                for (var b = 0; b < bufferIdArray.length; b++) {
-                    id = id + bufferIdArray[b];
-                    $('#' + id).editable({
-                        source: [
-                              { value: 0, text: '<10%' },
-                              { value: 1, text: '10%' },
-                              { value: 2, text: '10-25%' },
-                              { value: 3, text: '25%' },
-                              { value: 4, text: '25-50%' },
-                              { value: 5, text: '50%' },
-                              { value: 6, text: '50-75%' },
-                              { value: 7, text: '75%' },
-                              { value: 8, text: '75-100%' },
-                              { value: 9, text: '100%' }
-                        ]
-                    });
-                    id = enzymeIdArray[e] + "-";
-                }
-            }
-        });
-    }
-    catch (e)
-    {
-        consol.log(e);
-    }
-</script>
-
