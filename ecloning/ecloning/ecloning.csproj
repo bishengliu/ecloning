@@ -250,6 +250,7 @@
     <Compile Include="Areas\Admin\Controllers\BufferController.cs" />
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MActivityController.cs" />
     <Compile Include="Areas\Admin\Controllers\MEnzymeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RActivityController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
@@ -382,6 +383,7 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ModalSeq.cs" />
+    <Compile Include="Models\ModifyingActivity.cs" />
     <Compile Include="Models\modifying_company.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -677,6 +679,9 @@
     <Content Include="Areas\Admin\Views\RActivity\Index.cshtml" />
     <Content Include="Areas\Admin\Views\RActivity\EnzymeList.cshtml" />
     <Content Include="Areas\Admin\Views\RActivity\AddEnzyme.cshtml" />
+    <Content Include="Areas\Admin\Views\MActivity\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\MActivity\EnzymeList.cshtml" />
+    <Content Include="Areas\Admin\Views\MActivity\AddEnzyme.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

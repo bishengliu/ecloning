@@ -112,10 +112,10 @@ namespace ecloning.Areas.Admin.Controllers
 
                 //create empty activity in activity_restriction table
                 //find all the enzyme of this company in activity_restriction
-                var activities = db.activity_restriction.Where(c => c.company_id == buffer.company_id);
-                if (activities.Count() > 0)
+                var Ractivities = db.activity_restriction.Where(c => c.company_id == buffer.company_id);
+                if (Ractivities.Count() > 0)
                 {
-                    var enzymeId = activities.Select(e => e.enzyme_id).ToList();
+                    var enzymeId = Ractivities.Select(e => e.enzyme_id).ToList();
                     foreach(int e in enzymeId)
                     {
                         var activity = new activity_restriction();
@@ -125,6 +125,24 @@ namespace ecloning.Areas.Admin.Controllers
                         activity.temprature = 37;
                         activity.activity = 0; 
                         db.activity_restriction.Add(activity);
+                    }
+                }
+
+                //create empty activity in activity_restriction table
+                //find all the enzyme of this company in activity_restriction
+                var Mactivities = db.activity_modifying.Where(c => c.company_id == buffer.company_id);
+                if (Mactivities.Count() > 0)
+                {
+                    var enzymeId = Mactivities.Select(e => e.enzyme_id).ToList();
+                    foreach (int e in enzymeId)
+                    {
+                        var activity = new activity_modifying();
+                        activity.enzyme_id = e;
+                        activity.company_id = buffer.company_id;
+                        activity.buffer_id = buffer.id;
+                        activity.temprature = 37;
+                        activity.activity = 0;
+                        db.activity_modifying.Add(activity);
                     }
                 }
                 db.SaveChanges();
@@ -196,12 +214,22 @@ namespace ecloning.Areas.Admin.Controllers
             db.buffers.Remove(buffer);
 
             //delete all the activity linked with this buffer           
-            var activities = db.activity_restriction.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
-            if (activities.Count() > 0)
+            var Ractivities = db.activity_restriction.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
+            if (Ractivities.Count() > 0)
             {
-                foreach(var a in activities.ToList())
+                foreach(var a in Ractivities.ToList())
                 {
                     db.activity_restriction.Remove(a);
+                }
+            }
+
+            //delete all the activity linked with this buffer           
+            var Mactivities = db.activity_modifying.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
+            if (Mactivities.Count() > 0)
+            {
+                foreach (var a in Mactivities.ToList())
+                {
+                    db.activity_modifying.Remove(a);
                 }
             }
             db.SaveChanges();

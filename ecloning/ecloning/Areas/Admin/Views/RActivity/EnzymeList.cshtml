@@ -27,18 +27,24 @@
 
     //prepare enzymeId and bufferid to jquery
     System.Text.StringBuilder enzymeIdString = new System.Text.StringBuilder();
-    for (int i =0; i< (EnzymeId.Count()-1); i++)
+    if (EnzymeId.Count() > 0)
     {
-        enzymeIdString.Append(EnzymeId[i].ToString()).Append(",");
+        for (int i = 0; i < (EnzymeId.Count() - 1); i++)
+        {
+            enzymeIdString.Append(EnzymeId[i].ToString()).Append(",");
+        }
+        enzymeIdString.Append(EnzymeId.Last().ToString());
     }
-    enzymeIdString.Append(EnzymeId.Last().ToString());
 
     System.Text.StringBuilder bufferIdString = new System.Text.StringBuilder();
-    for (int i = 0; i < (BufferCount - 1); i++)
+    if (bufferId.Count() > 0)
     {
-        bufferIdString.Append(bufferId[i].ToString()).Append(",");
+        for (int i = 0; i < (bufferId.Count() - 1); i++)
+        {
+            bufferIdString.Append(bufferId[i].ToString()).Append(",");
+        }
+        bufferIdString.Append(bufferId.Last().ToString());
     }
-    bufferIdString.Append(bufferId.Last().ToString());
 
 }
 

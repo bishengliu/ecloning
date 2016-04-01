@@ -8,17 +8,14 @@ using System.Web.Mvc;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class RActivityController : RootController
+    public class MActivityController : Controller
     {
         private ecloningEntities db = new ecloningEntities();
-        // GET: Admin/RActivity
-        [Authorize]
+        // GET: Admin/MActivity
         public ActionResult Index()
         {
-
             return View();
         }
-
         [Authorize]
         public ActionResult EnzymeList(int company_id)
         {
@@ -28,8 +25,8 @@ namespace ecloning.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //get company restriction enzyme list
-            var enzymes = db.restriction_company.Where(c => c.company_id == company_id);
+            //get company modifying enzyme list
+            var enzymes = db.modifying_company.Where(c => c.company_id == company_id);
             List<int> enzymeId = new List<int>();
             if (enzymes.Count() > 0)
             {
@@ -43,50 +40,45 @@ namespace ecloning.Areas.Admin.Controllers
             //var enzymeList = db.restri_enzyme.Where(i => enzymeId.Contains(i.id)).ToList();
 
             //load data to model RestrictionActivity
-            List<RestrictionActivity> RActivityList = new List<RestrictionActivity>();
+            List<ModifyingActivity> MActivityList = new List<ModifyingActivity>();
 
             //first get active buffer
-            var buffers = db.buffers.Where(b => b.company_id == company_id && b.show_activity != false).OrderBy(b=>b.name);
+            var buffers = db.buffers.Where(b => b.company_id == company_id && b.show_activity != false).OrderBy(b => b.name);
             ViewBag.BufferCount = buffers.Count(); //don't show buffer and activity
             if (enzymes.Count() > 0)
             {
-                foreach(var e in enzymeId)
+                foreach (var e in enzymeId)
                 {
                     //find the enzyme
-                    var enzyme = db.restri_enzyme.Find(e);
+                    var enzyme = db.modifying_enzyme.Find(e);
 
-                    var RActivity = new RestrictionActivity();
-                    RActivity.company_id = company_id;
-                    RActivity.enzyme_id = e;
-                    RActivity.starActivity = enzyme.staractitivity;
-                    RActivity.dam = enzyme.dam;
-                    RActivity.dcm = enzyme.dcm;
-                    RActivity.cpg = enzyme.cpg;
-                    RActivity.inactivity = enzyme.inactivation;
-
+                    var MActivity = new ModifyingActivity();
+                    MActivity.company_id = company_id;
+                    MActivity.enzyme_id = e;
+                    
                     List<Dictionary<int, int>> bufferDict = new List<Dictionary<int, int>>();
                     if (buffers.Count() > 0)
                     {
-                        foreach(var b in buffers.ToList())
+                        foreach (var b in buffers.ToList())
                         {
                             Dictionary<int, int> Activity = new Dictionary<int, int>();
                             //find activity
-                            var activity = db.activity_restriction.Where(a => a.company_id ==company_id && a.enzyme_id == e && a.buffer_id == b.id);
+                            var activity = db.activity_modifying.Where(a => a.company_id == company_id && a.enzyme_id == e && a.buffer_id == b.id);
                             if (activity.Count() > 0)
                             {
                                 Activity.Add(b.id, activity.FirstOrDefault().activity);
                                 bufferDict.Add(Activity);
-                                RActivity.temprature = activity.FirstOrDefault().temprature;
+                                MActivity.temprature = activity.FirstOrDefault().temprature;
                             }
                         }
-                        RActivity.Activity = bufferDict;
+                        MActivity.Activity = bufferDict;
                     }
 
-                    RActivityList.Add(RActivity);
+                    MActivityList.Add(MActivity);
                 }
             }
 
-            return View(RActivityList.ToList());
+            return View(MActivityList.ToList());
 
 
 
@@ -98,8 +90,8 @@ namespace ecloning.Areas.Admin.Controllers
         public ActionResult EnzymeList(int company_id, int pk, int value)
         {
             //find the activity
-            var activity = db.activity_restriction.Find(pk);
-            if( activity != null)
+            var activity = db.activity_modifying.Find(pk);
+            if (activity != null)
             {
                 activity.activity = value;
                 db.SaveChanges();
@@ -122,7 +114,7 @@ namespace ecloning.Areas.Admin.Controllers
             }
 
             //find the enzyme
-            var enzyme = db.restriction_company.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
+            var enzyme = db.modifying_company.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
             if (enzyme.Count() == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -130,15 +122,15 @@ namespace ecloning.Areas.Admin.Controllers
             else
             {
                 //remove that enzyme
-                db.restriction_company.Remove(enzyme.FirstOrDefault());
+                db.modifying_company.Remove(enzyme.FirstOrDefault());
 
                 //remove all the activity
-                var activities = db.activity_restriction.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
+                var activities = db.activity_modifying.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
                 if (activities.Count() > 0)
                 {
-                    foreach(var a in activities.ToList())
+                    foreach (var a in activities.ToList())
                     {
-                        db.activity_restriction.Remove(a);
+                        db.activity_modifying.Remove(a);
                     }
                 }
                 db.SaveChanges();
@@ -157,7 +149,7 @@ namespace ecloning.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //get company restriction enzyme list
-            var enzymes = db.restriction_company.Where(c => c.company_id == company_id);
+            var enzymes = db.modifying_company.Where(c => c.company_id == company_id);
             List<int> enzymeId = new List<int>();
             if (enzymes.Count() > 0)
             {
@@ -166,16 +158,14 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.CompanyId = company_id;
             ViewBag.Company = company.FirstOrDefault().shortName;
             //get the enzymes that are not in the company
-            var enzymeList = db.restri_enzyme.Where(i => !enzymeId.Contains(i.id)).ToList();
+            var enzymeList = db.modifying_enzyme.Where(i => !enzymeId.Contains(i.id)).ToList();
             return View(enzymeList);
         }
-
-
         [Authorize]
         public ActionResult AddToCompany(int? enzyme_id, int? company_id)
         {
             //get the comany
-            if(enzyme_id == null || company_id== null)
+            if (enzyme_id == null || company_id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -185,10 +175,10 @@ namespace ecloning.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //add to company list
-            var enzyme = new restriction_company();
+            var enzyme = new modifying_company();
             enzyme.company_id = (int)company_id;
             enzyme.enzyme_id = (int)enzyme_id;
-            db.restriction_company.Add(enzyme);
+            db.modifying_company.Add(enzyme);
 
 
             //create empty activity in activity_restriction table
@@ -196,22 +186,20 @@ namespace ecloning.Areas.Admin.Controllers
             var buffers = db.buffers.Where(c => c.company_id == company_id);
             if (buffers.Count() > 0)
             {
-                foreach(var b  in buffers)
+                foreach (var b in buffers)
                 {
-                    var activity = new activity_restriction();
+                    var activity = new activity_modifying();
                     activity.enzyme_id = (int)enzyme_id;
                     activity.company_id = (int)company_id;
                     activity.buffer_id = b.id;
                     activity.temprature = 37;
-                    activity.activity = 0; 
-                    db.activity_restriction.Add(activity);
+                    activity.activity = 0;
+                    db.activity_modifying.Add(activity);
                 }
             }
             db.SaveChanges();
 
             return RedirectToAction("AddEnzyme", new { company_id = company_id });
         }
-
-
     }
 }
