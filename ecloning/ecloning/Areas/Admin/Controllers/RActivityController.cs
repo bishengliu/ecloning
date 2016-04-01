@@ -93,6 +93,21 @@ namespace ecloning.Areas.Admin.Controllers
             //return View(enzymeList);
         }
 
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult EnzymeList(int company_id, int pk, int value)
+        {
+            //find the activity
+            var activity = db.activity_restriction.Find(pk);
+            if( activity != null)
+            {
+                activity.activity = value;
+                db.SaveChanges();
+            }
+            return RedirectToAction("EnzymeList", new { company_id = company_id });
+        }
+
         [Authorize]
         public ActionResult Delete(int? enzyme_id, int? company_id)
         {
@@ -198,13 +213,6 @@ namespace ecloning.Areas.Admin.Controllers
             return RedirectToAction("AddEnzyme", new { company_id = company_id });
         }
 
-        [Authorize]
-        [HttpPost]
-        public ActionResult UpdateActivity(int company_id, int pk, int value)
-        {
-
-            return RedirectToAction("EnzymeList", new { company_id = company_id });
-        }
 
     }
 }
