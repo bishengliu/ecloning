@@ -175,7 +175,7 @@
                                                     @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.starActivity == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.starActivity))
@@ -185,7 +185,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.inactivity != null)
                                                 {
                                                     @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivity))
@@ -195,7 +195,7 @@
                                                     @Html.Raw(enzymeSybol.InactivationSymbol(0))
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dam == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
@@ -205,7 +205,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dcm == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
@@ -215,7 +215,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.cpg == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))
@@ -295,6 +295,10 @@
                                         <tr>
                                             <td class="text-center">
                                                 <strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong>
+                                                <br/>
+                                                <br/>
+                                                <a>@item.temprature&deg;C</a>
+
                                             </td>
                                             <td class="text-center">
                                                 @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
@@ -315,7 +319,7 @@
                                                 var activity = db.activity_restriction.Where(a => a.company_id == item.company_id && a.enzyme_id == item.enzyme_id && a.buffer_id == i).First();
                                                 int pk = activity.id;
                                                 <td class="text-center">
-                                                    <a href="#" id=@id data-type="select" data-pk=@pk data-url="@Url.Action("EnzymeList", "RActivity", new { company_id = item.company_id})" data-title="Select Enzyme Activity" data-clear=false>@Html.Raw(convertActivity.Convert(dict[count].First().Value))</a>
+                                                    <a href="#" id=@id data-type="select" data-pk=@pk data-url="@Url.Action("EnzymeList", "RActivity", new { company_id = item.company_id, type="activity"})" data-title="Select Enzyme Activity" data-clear=false>@Html.Raw(convertActivity.Convert(dict[count].First().Value))</a>
                                                 </td>
                                                 count++;
                                                 id = item.enzyme_id.ToString() + "-";
@@ -330,7 +334,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.inactivity != null)
                                                 {
                                                     @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivity))
@@ -340,7 +344,7 @@
                                                     @Html.Raw(enzymeSybol.InactivationSymbol(0))
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dam == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
@@ -350,7 +354,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dcm == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
@@ -360,7 +364,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.cpg == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))

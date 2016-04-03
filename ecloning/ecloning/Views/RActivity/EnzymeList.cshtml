@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<ecloning.Models.RestrictionActivity>
+@using Microsoft.AspNet.Identity;
 @{
     ViewBag.Title = "EnzymeList";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int Count = (int)ViewBag.Count; //if ni enzyme display message
+    int Count = (int)ViewBag.Count; //if no enzyme display message
     int CompanyId = (int)ViewBag.CompanyId;
     string Company = (string)ViewBag.Company;
     int BufferCount = (int)ViewBag.BufferCount; //if no buffer found do list the activity for update
@@ -44,6 +45,22 @@
             bufferIdString.Append(bufferId[i].ToString()).Append(",");
         }
         bufferIdString.Append(bufferId.Last().ToString());
+    }
+
+
+    //get group info
+    //get current login email
+    var email = User.Identity.GetUserName();
+    int peopleId = 0;
+    var people = db.people.Where(e => e.email == email);
+    peopleId = people.FirstOrDefault().id;
+
+    //get the group id
+    List<int> groupId = new List<int>();
+    var group_people = db.group_people.Where(p => p.people_id == peopleId);
+    foreach (int i in group_people.Select(g => g.group_id).ToList())
+    {
+        groupId.Add(i);
     }
 }
 
@@ -150,9 +167,38 @@
                                         var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
                                         //find enzyme info
                                         var enzyme = db.restri_enzyme.Find(item.enzyme_id);
+
+                                        bool inFavorite = false;
+                                        foreach (var g in groupId)
+                                        {
+                                            var FavEnzyme = db.common_restriction.Where(f => f.enzyme_id == item.enzyme_id && f.company_id == item.company_id && f.group_id == g);
+                                            if (FavEnzyme.Count() > 0)
+                                            {
+                                                inFavorite = true;
+                                            }
+                                        }
                                         <tr>
                                             <td class="text-center">
-                                                <strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong>
+                                                @if (!inFavorite)
+                                                {
+                                                    <a href="@Url.Action("AddToFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark-o text-info"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                    </a>
+                                                    <br />
+                                                    <br/>
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("RemoveFromFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark text-danger"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                    </a>
+                                                    <br />
+                                                    <br />
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
                                             </td>
                                             <td class="text-center">
                                                 @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
@@ -164,7 +210,7 @@
                                                     @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.starActivity == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.starActivity))
@@ -174,7 +220,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.inactivity != null)
                                                 {
                                                     @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivity))
@@ -184,7 +230,7 @@
                                                     @Html.Raw(enzymeSybol.InactivationSymbol(0))
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dam == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
@@ -194,7 +240,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dcm == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
@@ -204,7 +250,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.cpg == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))
@@ -272,9 +318,38 @@
                                         //enzyme_id-buffer_id
                                         var id = item.enzyme_id.ToString() + "-";
                                         int count = 0;
+                                        //check whether the enzyme is in the favorite list
+                                        bool inFavorite = false;
+                                        foreach(var g in groupId)
+                                        {
+                                            var FavEnzyme = db.common_restriction.Where(f => f.enzyme_id == item.enzyme_id && f.company_id == item.company_id && f.group_id == g);
+                                            if (FavEnzyme.Count() > 0)
+                                            {
+                                                inFavorite = true;
+                                            }
+                                        }
                                         <tr>
                                             <td class="text-center">
-                                                <strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong>
+                                                @if (!inFavorite)
+                                                {
+                                                    <a href="@Url.Action("AddToFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark-o text-info"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>                                                        
+                                                    </a>
+                                                    <br />
+                                                    <br />
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("RemoveFromFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark text-danger"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>                                                        
+                                                    </a>
+                                                    <br />
+                                                    <br />
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
                                             </td>
                                             <td class="text-center">
                                                 @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
@@ -300,7 +375,7 @@
                                                 count++;
                                                 id = item.enzyme_id.ToString() + "-";
                                             }
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.starActivity == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.starActivity))
@@ -310,7 +385,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.inactivity != null)
                                                 {
                                                     @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivity))
@@ -320,7 +395,7 @@
                                                     @Html.Raw(enzymeSybol.InactivationSymbol(0))
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dam == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
@@ -330,7 +405,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.dcm == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
@@ -340,7 +415,7 @@
                                                     @Html.Raw(symbol)
                                                 }
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center vert-align">
                                                 @if (item.cpg == true)
                                                 {
                                                     @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))

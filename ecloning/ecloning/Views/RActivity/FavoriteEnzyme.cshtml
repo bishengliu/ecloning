@@ -1,0 +1,113 @@
+﻿@model IEnumerable<ecloning.Models.EnzymeByCompany>
+@{
+    ViewBag.Title = "FavoriteEnzyme";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+    var db = new ecloning.Models.ecloningEntities();
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-sm-offset-1 col-md-7 col-md-offset-1 col-lg-7 col-lg-offset-1">
+        <h3 class="text-primary"><span><i class="fa fa-flask">&nbsp;</i></span>Restriction Enzymes In My Group</h3>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <br class="hidden-xs" />
+        <div class="pull-right">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input id="searchEnzyme" type="text" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="clearText">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-xs-12 col-sm-10">
+
+        @if (Count == 0)
+        {
+            <br />
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <h4 class="text-danger">No enzyme found!</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <br/>
+                @foreach(var item in Model)
+                {
+                    //get company name
+                    var company = db.companies.Find(item.company_id);
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <h4><strong class="text-warning">@company.fullName (@item.enzymeId.Count())</strong></h4>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @foreach (var eItem in item.enzymeId)
+                                        {
+                                            //get enzyme name
+                                            var enzyme = db.restri_enzyme.Find(eItem);
+                                            var className = "enzymeItem " + enzyme.name; 
+                                            <div class=@className onclick="window.open('@Url.Action("EnzymeInfo", "RActivity", new { company_id = item.company_id, enzyme_id = eItem})','_blank')">
+                                                    <i class="fa fa-scissors text-danger"></i>
+                                                    <span class="text-primary">@enzyme.name</span>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div style="clear:both;"></div>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-sm-1 hidden-xs"></div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(function () {
+        $('#searchEnzyme').keypress(function () {
+            var _text = $(this).val().toLowerCase();
+            $('tbody tr td div').each(function () {
+                $(this).removeClass("hidden");
+                $(this).addClass("hidden");
+                var _aText = $(this).children('a').eq(0).text().toLowerCase().replace(/\s+/g, '');
+                if (RegExp('^' + _text).test(_aText)) {
+                    $(this).removeClass("hidden");
+                    $(this).fadeIn(400);
+                };
+            });
+        });
+
+        $('#clearText').click(function (e) {
+            e.preventDefault();
+            $('#searchEnzyme').val('');
+            $('tbody tr td div').each(function () {
+                $(this).removeClass("hidden");
+                $(this).fadeIn(400);
+            });
+        });
+    });
+</script>

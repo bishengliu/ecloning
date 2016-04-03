@@ -1,4 +1,5 @@
 ﻿using ecloning.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,50 @@ namespace ecloning.Controllers
 
 
             //return View(enzymeList);
+        }
+
+        //show the favorite enzymes for groups
+        [Authorize]
+        public ActionResult FavoriteEnzyme()
+        {
+            //get current login email
+            var email = User.Identity.GetUserName();
+            int peopleId = 0;
+            var people = db.people.Where(e => e.email == email);
+            peopleId = people.FirstOrDefault().id;
+
+            //get the group id
+            List<int> groupId = new List<int>();
+            var group_people = db.group_people.Where(p => p.people_id == peopleId);
+            foreach (int i in group_people.Select(g => g.group_id).ToList())
+            {
+                groupId.Add(i);
+            }
+            //get the list enzyme list by company
+            //get the favorite enzymes
+            List<EnzymeByCompany> enzymeByCompanies = new List<EnzymeByCompany>();
+
+                //get company id list
+                var companies = db.companies;
+                if (companies.Count() > 0)
+                {
+                    foreach (var c in companies)
+                    {
+                        EnzymeByCompany enzymeByCompany = new EnzymeByCompany();
+
+                        //get the enzyme id in common_restriction
+                        var enzymes = db.common_modifying.Where(e => e.company_id == c.id).Where(g => groupId.Contains(g.group_id));
+                        if (enzymes.Count() > 0)
+                        {
+                            enzymeByCompany.company_id = c.id;
+                            enzymeByCompany.enzymeId = enzymes.Select(e => e.enzyme_id).ToList();
+                            enzymeByCompanies.Add(enzymeByCompany);
+                        }
+                    }
+                }
+
+            ViewBag.Count = enzymeByCompanies.Count();
+            return View();
         }
     }
 }

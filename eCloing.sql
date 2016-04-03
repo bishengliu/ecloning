@@ -552,7 +552,7 @@ CREATE TABLE common_restriction
 	CONSTRAINT fk_common_restriction_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES restri_enzyme(id),
 	CONSTRAINT fk_common_restriction_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_common_restriction_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
-	CONSTRAINT uq_common_restriction_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
+	CONSTRAINT uq_common_restriction_enzyme_id_group_id_company_id UNIQUE (enzyme_id,group_id,company_id)
 );
 
  
@@ -590,7 +590,7 @@ CREATE TABLE common_modifying
 	CONSTRAINT fk_common_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
 	CONSTRAINT fk_common_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT fk_common_modifying_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
-	CONSTRAINT uq_common_modifying_enzyme_id_group_id UNIQUE (enzyme_id,group_id)
+	CONSTRAINT uq_common_modifying_enzyme_id_group_id_company_id UNIQUE (enzyme_id,group_id,company_id)
 );
 
 

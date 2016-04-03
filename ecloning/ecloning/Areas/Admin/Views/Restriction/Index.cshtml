@@ -82,7 +82,7 @@
                                                 @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
                                             }
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center vert-align">
                                             @if (item.staractitivity == true)
                                         {
                                                 @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.staractitivity))
@@ -92,7 +92,7 @@
                                                 @Html.Raw(symbol)
                                         }
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center vert-align">
                                             @if (item.inactivation != null)
                                         {
                                                 @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivation))
@@ -102,7 +102,7 @@
                                                 @Html.Raw(enzymeSybol.InactivationSymbol(0))
                                         }
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center vert-align">
                                             @if (item.dam == true)
                                         {
                                                 @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
@@ -112,7 +112,7 @@
                                                 @Html.Raw(symbol)
                                         }
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center vert-align">
                                             @if (item.dcm == true)
                                         {
                                                 @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
@@ -122,7 +122,7 @@
                                                 @Html.Raw(symbol)
                                         }
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center vert-align">
                                             @if (item.cpg == true)
                                         {
                                                 @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))

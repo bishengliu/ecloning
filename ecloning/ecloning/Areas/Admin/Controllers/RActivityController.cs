@@ -95,14 +95,21 @@ namespace ecloning.Areas.Admin.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult EnzymeList(int company_id, int pk, int value)
+        public ActionResult EnzymeList(string type, int company_id, int pk, int value)
         {
-            //find the activity
-            var activity = db.activity_restriction.Find(pk);
-            if( activity != null)
+            if (type == "activity")
             {
-                activity.activity = value;
-                db.SaveChanges();
+                //find the activity
+                var activity = db.activity_restriction.Find(pk);
+                if( activity != null)
+                {
+                    activity.activity = value;
+                    db.SaveChanges();
+                }
+            }
+            if (type == "temp")
+            {
+
             }
             return RedirectToAction("EnzymeList", new { company_id = company_id });
         }

@@ -342,6 +342,7 @@
     </Compile>
     <Compile Include="Models\eCloningSettings.cs" />
     <Compile Include="Models\EnzymeActivity.cs" />
+    <Compile Include="Models\EnzymeByCompany.cs" />
     <Compile Include="Models\FeatureViewModel.cs" />
     <Compile Include="Models\FileTransfer.cs" />
     <Compile Include="Models\FindSeq.cs" />
@@ -889,6 +890,8 @@
     <Content Include="Views\RActivity\EnzymeList.cshtml" />
     <Content Include="Views\MActivity\Index.cshtml" />
     <Content Include="Views\MActivity\EnzymeList.cshtml" />
+    <Content Include="Views\RActivity\FavoriteEnzyme.cshtml" />
+    <Content Include="Views\RActivity\EnzymeInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

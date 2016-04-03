@@ -125,10 +125,9 @@
                                                 <th class="col-sm-2">
                                                     Enzymes
                                                 </th>
-                                                <th class="col-sm-7">
+                                                <th class="col-sm-8">
                                                     Application
                                                 </th>
-                                                <th class="col-sm-1"></th>
                                             </tr>
 
                                         </thead>
@@ -146,12 +145,6 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => enzyme.application)
                                                 </td>
-                                                <td class="vert-align">
-                                                    <a href="@Url.Action("Delete", "MActivity", new { enzyme_id = item.enzyme_id, company_id = CompanyId })">
-                                                        <i class="fa fa-trash-o fa-2x text-danger "></i>
-                                                        <span class=""></span>
-                                                    </a>
-                                                </td>
                                             </tr>
                                         }
                                     </table>
@@ -161,18 +154,14 @@
                                     <table class="table table-condensed table-bordered tableTopLine" id="enzyme-table">
                                         <thead>
                                             <tr>
-                                                <th rowspan="2" class="text-center col-sm-1 no-sort">
+                                                <th rowspan="2" class="text-center col-sm-2 no-sort">
                                                     Category
                                                 </th>
-                                                <th rowspan="2" class="text-center col-sm-1 no-sort">
+                                                <th rowspan="2" class="text-center col-sm-2 no-sort">
                                                     Enzyme
                                                 </th>
-                                                <th colspan=@BufferCount class="text-center col-sm-4 no-sort">
+                                                <th colspan=@BufferCount class="text-center col-sm-8 no-sort">
                                                     Activities
-                                                </th>
-
-                                                <th colspan="2" class="text-center col-sm-1 no-sort">
-
                                                 </th>
                                             </tr>
                                             <tr>
@@ -198,28 +187,16 @@
                                                     <span class="text-primary">@Html.DisplayFor(modelItem => enzyme.category)</span>
                                                 </td>
                                                 <td>
-                                                    <span class="text-warning"><strong>@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                    <span class="text-warning"><strong>@Html.DisplayFor(modelItem => enzyme.name)</strong><span class="text-info">&nbsp;(<em>@item.temprature&deg;C</em>)</span></span>
                                                 </td>
                                                 @foreach (var i in bufferId)
                                                 {
                                                     var convertActivity = new ecloning.Models.EnzymeActivity();
-
-                                                    id = id + i.ToString();
-                                                    //find pk
-                                                    var activity = db.activity_modifying.Where(a => a.company_id == item.company_id && a.enzyme_id == item.enzyme_id && a.buffer_id == i).First();
-                                                    int pk = activity.id;
                                                     <td class="text-center">
-                                                        <a href="#" id=@id data-type="select" data-pk=@pk data-url="@Url.Action("EnzymeList", "MActivity", new { company_id = item.company_id})" data-title="Select Enzyme Activity" data-clear=false>@Html.Raw(convertActivity.Convert(dict[count].First().Value))</a>
+                                                        @Html.Raw(convertActivity.Convert(dict[count].First().Value))
                                                     </td>
                                                     count++;
-                                                    id = item.enzyme_id.ToString() + "-";
                                                 }
-                                                <td class="vert-align">
-                                                    <a href="@Url.Action("Delete", "MActivity", new { enzyme_id = item.enzyme_id, company_id = CompanyId })">
-                                                        <i class="fa fa-trash-o fa-2x text-danger "></i>
-                                                        <span class=""></span>
-                                                    </a>
-                                                </td>
                                             </tr>
                                         }
                                     </table>
