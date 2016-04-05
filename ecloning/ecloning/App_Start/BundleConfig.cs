@@ -69,8 +69,9 @@ namespace ecloning
                       "~/Scripts/biotools/metisMenu.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/bootstrap-datepicker.css",
+                      "~/Content/bootstrap.min.css",
+                      "~/Content/font-awesome/font-awesome.min.css",
+                      "~/Content/bootstrap-datepicker.min.css",
                       "~/Content/nv.d3.css",
                       "~/Content/token-input.css",
                       "~/Content/token-input-facebook.css",

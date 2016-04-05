@@ -77,7 +77,6 @@
 \\Mac\Home\ecloning\ecloning\ecloning\bin\Microsoft.Owin.Security.Google.xml
 \\Mac\Home\ecloning\ecloning\ecloning\bin\Microsoft.Owin.Security.Twitter.xml
 \\Mac\Home\ecloning\ecloning\ecloning\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-\\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache
 \\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.dll
 \\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.pdb
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\csc.exe.config

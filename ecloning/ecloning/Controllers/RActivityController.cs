@@ -17,9 +17,51 @@ namespace ecloning.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            return View();
+            //get current login email
+            var email = User.Identity.GetUserName();
+            int peopleId = 0;
+            var people = db.people.Where(e => e.email == email);
+            peopleId = people.FirstOrDefault().id;
+
+            //get the group id
+            List<int> groupId = new List<int>();
+            var group_people = db.group_people.Where(p => p.people_id == peopleId);
+            foreach (int i in group_people.Select(g => g.group_id).ToList())
+            {
+                groupId.Add(i);
+            }
+            //get the list enzyme list by company
+            //get the favorite enzymes
+            List<EnzymeByCompany> enzymeByCompanies = new List<EnzymeByCompany>();
+
+            //get company id list
+            var companies = db.companies;
+            if (companies.Count() > 0)
+            {
+                foreach (var c in companies)
+                {
+                    EnzymeByCompany enzymeByCompany = new EnzymeByCompany();
+
+                    //get the enzyme id in common_restriction
+                    var enzymes = db.common_restriction.Where(e => e.company_id == c.id).Where(g => groupId.Contains(g.group_id));
+                    if (enzymes.Count() > 0)
+                    {
+                        enzymeByCompany.company_id = c.id;
+                        enzymeByCompany.enzymeId = enzymes.Select(e => e.enzyme_id).ToList();
+                        enzymeByCompanies.Add(enzymeByCompany);
+                    }
+                }
+            }
+            ViewBag.Count = enzymeByCompanies.Count();
+            return View(enzymeByCompanies.ToList());
+            //return View();
         }
 
+        [Authorize]
+        public ActionResult Company()
+        {
+            return View();
+        }
         [Authorize]
         public ActionResult EnzymeList(int company_id)
         {
@@ -158,7 +200,7 @@ namespace ecloning.Controllers
                 var fav = db.common_restriction.Where(f=>f.enzyme_id == enzyme_id && f.company_id ==company_id&& f.group_id==g);
                 if (fav.Count() >0)
                 {
-                    db.common_restriction.Add(fav.FirstOrDefault());
+                    db.common_restriction.Remove(fav.FirstOrDefault());
                 }
             }
             db.SaveChanges();
@@ -166,48 +208,47 @@ namespace ecloning.Controllers
         }
 
         //show the favorite enzymes for groups
-        [Authorize]
-        public ActionResult FavoriteEnzyme()
-        {
-            //get current login email
-            var email = User.Identity.GetUserName();
-            int peopleId = 0;
-            var people = db.people.Where(e => e.email == email);
-            peopleId = people.FirstOrDefault().id;
+        //[Authorize]
+        //public ActionResult FavoriteEnzyme()
+        //{
+        //    //get current login email
+        //    var email = User.Identity.GetUserName();
+        //    int peopleId = 0;
+        //    var people = db.people.Where(e => e.email == email);
+        //    peopleId = people.FirstOrDefault().id;
 
-            //get the group id
-            List<int> groupId = new List<int>();
-            var group_people = db.group_people.Where(p => p.people_id == peopleId);
-            foreach (int i in group_people.Select(g => g.group_id).ToList())
-            {
-                groupId.Add(i);
-            }
-            //get the list enzyme list by company
-            //get the favorite enzymes
-            List<EnzymeByCompany> enzymeByCompanies = new List<EnzymeByCompany>();
+        //    //get the group id
+        //    List<int> groupId = new List<int>();
+        //    var group_people = db.group_people.Where(p => p.people_id == peopleId);
+        //    foreach (int i in group_people.Select(g => g.group_id).ToList())
+        //    {
+        //        groupId.Add(i);
+        //    }
+        //    //get the list enzyme list by company
+        //    //get the favorite enzymes
+        //    List<EnzymeByCompany> enzymeByCompanies = new List<EnzymeByCompany>();
 
-                //get company id list
-                var companies = db.companies;
-                if (companies.Count() > 0)
-                {
-                    foreach (var c in companies)
-                    {
-                        EnzymeByCompany enzymeByCompany = new EnzymeByCompany();
+        //        //get company id list
+        //        var companies = db.companies;
+        //        if (companies.Count() > 0)
+        //        {
+        //            foreach (var c in companies)
+        //            {
+        //                EnzymeByCompany enzymeByCompany = new EnzymeByCompany();
 
-                        //get the enzyme id in common_restriction
-                        var enzymes = db.common_restriction.Where(e => e.company_id == c.id).Where(g => groupId.Contains(g.group_id));
-                        if (enzymes.Count() > 0)
-                        {
-                            enzymeByCompany.company_id = c.id;
-                            enzymeByCompany.enzymeId = enzymes.Select(e => e.enzyme_id).ToList();
-                            enzymeByCompanies.Add(enzymeByCompany);
-                        }
-                    }
-                }
-
-            ViewBag.Count = enzymeByCompanies.Count();
-            return View(enzymeByCompanies.ToList());
-        }
+        //                //get the enzyme id in common_restriction
+        //                var enzymes = db.common_restriction.Where(e => e.company_id == c.id).Where(g => groupId.Contains(g.group_id));
+        //                if (enzymes.Count() > 0)
+        //                {
+        //                    enzymeByCompany.company_id = c.id;
+        //                    enzymeByCompany.enzymeId = enzymes.Select(e => e.enzyme_id).ToList();
+        //                    enzymeByCompanies.Add(enzymeByCompany);
+        //                }
+        //            }
+        //        }
+        //    ViewBag.Count = enzymeByCompanies.Count();
+        //    return View(enzymeByCompanies.ToList());
+        //}
 
         [Authorize]
         public ActionResult EnzymeInfo(int? company_id, int? enzyme_id)

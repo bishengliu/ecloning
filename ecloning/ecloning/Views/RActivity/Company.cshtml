@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var db = new ecloning.Models.ecloningEntities();
+    //find the company
+    var companies = db.companies;
+    int Count = companies.Count();
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-sm-offset-1 col-md-7 col-md-offset-1 col-lg-7 col-lg-offset-1">
+        <h3 class="text-primary"><span><i class="fa fa-flask">&nbsp;</i></span>Restriction Enzymes by Companies</h3>
+    </div>
+    @*<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <br class="hidden-xs" />
+        <div class="pull-right">
+            <a class="btn btn-sm btn-default" href="@Url.Action("FavoriteEnzyme", "RActivity")">
+                <i class="fa fa-bookmark text-danger"></i>
+                <span>Favorite Enzymes</span>
+            </a>
+        </div>
+    </div>*@
+</div>
+
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        @if (Count == 0)
+        {
+            <br />
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <div class="text-danger">No company found!</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            foreach (var c in companies)
+            {
+                //find the enzymes for each company
+                int enzymeNum = 0;
+                var cEnzyme = db.restriction_company.Where(n => n.company_id == c.id);
+                if (cEnzyme.Count() > 0)
+                {
+                    enzymeNum = cEnzyme.Select(e => e.enzyme_id).Distinct().Count();
+                }
+
+                //find the buffers, if no buffer found disable the button
+                int bufferCount = db.buffers.Where(i => i.company_id == c.id).Count();
+                if (bufferCount == 0)
+                {
+                    <div class="list-group">
+                        <a class="list-group-item disabled" href="@Url.Action("EnzymeList", "RActivity", new { company_id = c.id})">
+                            <h4 class="list-group-item-heading">
+                                <i class="fa fa-building-o text-info"></i>
+                                <span class="text-primary"><strong>@c.shortName</strong></span>
+                                <span class="badge pull-right"><span>#Enzymes:</span> @enzymeNum</span>
+                            </h4>
+                            <p class="list-group-item-text"><span class="text-info">@c.fullName </span><span>@c.des</span></p>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group">
+                        <a class="list-group-item" href="@Url.Action("EnzymeList", "RActivity", new { company_id = c.id})">
+                            <h4 class="list-group-item-heading">
+                                <i class="fa fa-building-o text-info"></i>
+                                <span class="text-primary"><strong>@c.shortName</strong></span>
+                                <span class="badge pull-right"><span>#Enzymes:</span> @enzymeNum</span>
+                            </h4>
+                            <p class="list-group-item-text"><span class="text-info">@c.fullName </span><span>@c.des</span></p>
+                        </a>
+                    </div>
+                }
+            }
+        }
+    </div>
+    <div class="col-sm-1 hidden-xs"></div>
+</div>

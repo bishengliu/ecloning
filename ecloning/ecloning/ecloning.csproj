@@ -503,6 +503,9 @@
     <Content Include="Content\datatable\jquery.dataTables.css" />
     <Content Include="Content\datatable\jquery.dataTables.min.css" />
     <Content Include="Content\datatable\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\font-awesome\font-awesome.css" />
+    <Content Include="Content\font-awesome\font-awesome.min.css" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\inputs-ext\address\address.css" />
     <Content Include="Content\inputs-ext\typeaheadjs\lib\typeahead.js-bootstrap.css" />
     <Content Include="Content\inputs-ext\wysihtml5\bootstrap-wysihtml5-0.0.2\bootstrap-wysihtml5-0.0.2.css" />
@@ -568,10 +571,7 @@
     <Content Include="Content\token-input-facebook.css" />
     <Content Include="Content\token-input-mac.css" />
     <Content Include="Content\token-input.css" />
-    <Content Include="css\font-awesome.css" />
-    <Content Include="css\font-awesome.min.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -643,11 +643,6 @@
     <Content Include="fonts\orbitron-bold.otf" />
     <Content Include="fonts\orbitron-light.otf" />
     <Content Include="fonts\orbitron-medium.otf" />
-    <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="fonts\fontawesome-webfont.woff2" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Content\less\mixins.less" />
     <Content Include="Content\less\sb-admin-2.less" />
     <Content Include="Content\less\variables.less" />
@@ -685,6 +680,11 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -890,8 +890,8 @@
     <Content Include="Views\RActivity\EnzymeList.cshtml" />
     <Content Include="Views\MActivity\Index.cshtml" />
     <Content Include="Views\MActivity\EnzymeList.cshtml" />
-    <Content Include="Views\RActivity\FavoriteEnzyme.cshtml" />
     <Content Include="Views\RActivity\EnzymeInfo.cshtml" />
+    <Content Include="Views\RActivity\Company.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />
