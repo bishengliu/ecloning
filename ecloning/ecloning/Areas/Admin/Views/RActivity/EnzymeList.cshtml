@@ -292,12 +292,13 @@
                                         //enzyme_id-buffer_id
                                         var id = item.enzyme_id.ToString() + "-";
                                         int count = 0;
+
                                         <tr>
                                             <td class="text-center">
                                                 <strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong>
                                                 <br/>
                                                 <br/>
-                                                <a>@item.temprature&deg;C</a>
+                                                <a href="#" id=@id data-pk=@item.enzyme_id data-type="number" data-url="@Url.Action("EnzymeList", "RActivity", new { company_id = item.company_id, type="temprature"})" data-title="Enter Temprature (&deg;C)" data-clear=false>@item.temprature</a><span class="text-info">&deg;C</span>
 
                                             </td>
                                             <td class="text-center">
@@ -438,6 +439,7 @@
 
             for (var e = 0; e < enzymeIdArray.length; e++) {
                 var id = enzymeIdArray[e] + "-";
+                $('#' + id).editable();
                 for (var b = 0; b < bufferIdArray.length; b++) {
                     id = id + bufferIdArray[b];
                     $('#' + id).editable({

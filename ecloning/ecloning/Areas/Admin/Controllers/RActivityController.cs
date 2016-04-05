@@ -104,13 +104,21 @@ namespace ecloning.Areas.Admin.Controllers
                 if( activity != null)
                 {
                     activity.activity = value;
-                    db.SaveChanges();
                 }
             }
-            if (type == "temp")
+            if (type == "temprature")
             {
-
+                //find the all the activity of this enzyme
+                var activities = db.activity_restriction.Where(a => a.enzyme_id == pk && a.company_id == company_id);
+                if (activities.Count() > 0)
+                {
+                    foreach(var a in activities)
+                    {
+                        a.temprature = value;
+                    }
+                }
             }
+            db.SaveChanges();
             return RedirectToAction("EnzymeList", new { company_id = company_id });
         }
 

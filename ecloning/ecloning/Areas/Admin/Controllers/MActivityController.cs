@@ -88,15 +88,30 @@ namespace ecloning.Areas.Admin.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult EnzymeList(int company_id, int pk, int value)
+        public ActionResult EnzymeList(string type, int company_id, int pk, int value)
         {
-            //find the activity
-            var activity = db.activity_modifying.Find(pk);
-            if (activity != null)
+            if (type == "activity")
             {
-                activity.activity = value;
-                db.SaveChanges();
+                //find the activity
+                var activity = db.activity_modifying.Find(pk);
+                if (activity != null)
+                {
+                    activity.activity = value;
+                }
             }
+            if (type == "temprature")
+            {
+                //find the all the activity of this enzyme
+                var activities = db.activity_modifying.Where(a => a.enzyme_id == pk && a.company_id == company_id);
+                if (activities.Count() > 0)
+                {
+                    foreach (var a in activities)
+                    {
+                        a.temprature = value;
+                    }
+                }
+            }
+            db.SaveChanges();
             return RedirectToAction("EnzymeList", new { company_id = company_id });
         }
 
