@@ -1,86 +1,124 @@
-﻿
+﻿@model IEnumerable<ecloning.Models.EnzymeByCompany>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "FavoriteEnzyme";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
     var db = new ecloning.Models.ecloningEntities();
-    //find the company
-    var companies = db.companies;
-    int Count = companies.Count();
 }
 
 <div class="row">
     <div class="col-xs-12 col-sm-7 col-sm-offset-1 col-md-7 col-md-offset-1 col-lg-7 col-lg-offset-1">
-        <h3 class="text-primary"><span><i class="fa fa-exchange">&nbsp;</i></span>Modifying Enzymes by Companies</h3>
+        <h3 class="text-primary"><span><i class="fa fa-exchange">&nbsp;</i></span>Our Modifying Enzymes</h3>
     </div>
     <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
         <br class="hidden-xs" />
         <div class="pull-right">
-            <a class="btn btn-sm btn-warning" href="@Url.Action("FavoriteEnzyme", "MActivity")">
-                <i class="fa fa-bookmark text-warning"></i>
-                <span>Favorite Enzymes</span>
+            <a class="btn btn-primary" href="@Url.Action("Company", "MActivity")">
+                <i class="fa fa-plus-circle"></i>
+                <span>More Enzymes</span>
             </a>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+        <div class="pull-right">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input id="searchEnzyme" type="text" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="clearText">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </span>
+            </div>
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-sm-1 hidden-xs"></div>
-    <div class="col-sm-10">
+    <div class="col-xs-12 col-sm-10">
+
         @if (Count == 0)
         {
             <br />
             <div class="row">
                 <div class="col-sm-1 hidden-xs"></div>
                 <div class="col-sm-10 col-sm-offset-1 col-xs-12">
-                    <div class="text-danger">No company found!</div>
+                    <h4 class="text-danger">No enzyme found!</h4>
                 </div>
             </div>
         }
         else
         {
-            foreach (var c in companies)
-            {
-
-                //find the enzymes for each company
-                int enzymeNum = 0;
-                var cEnzyme = db.modifying_company.Where(n => n.company_id == c.id);
-                if (cEnzyme.Count() > 0)
+            <div class="row">
+                <br />
+                @foreach (var item in Model)
                 {
-                    enzymeNum = cEnzyme.Select(e => e.enzyme_id).Distinct().Count();
-                }
-
-                //find the buffers, if no buffer found disable the button
-                int bufferCount = db.buffers.Where(i => i.company_id == c.id).Count();
-                if (bufferCount == 0)
-                {
-                    <div class="list-group">
-                        <a class="list-group-item disabled" href="@Url.Action("EnzymeList", "MActivity", new { company_id = c.id})">
-                            <h4 class="list-group-item-heading">
-                                <i class="fa fa-building-o text-info"></i>
-                                <span class="text-primary"><strong>@c.shortName</strong></span>
-                                <span class="badge pull-right"><span>#Enzymes:</span> @enzymeNum</span>
-                            </h4>
-                            <p class="list-group-item-text"><span class="text-info">@c.fullName </span><span>@c.des</span></p>
-                        </a>
+                    //get company name
+                    var company = db.companies.Find(item.company_id);
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <h4><strong class="text-warning">@company.fullName (@item.enzymeId.Count())</strong></h4>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @foreach (var eItem in item.enzymeId)
+                                        {
+                                            //get enzyme name
+                                            var enzyme = db.modifying_enzyme.Find(eItem);
+                                            var className = "modifyingItem " + enzyme.name;
+                                            <div class=@className onclick="window.open('@Url.Action("EnzymeInfo", "MActivity", new { company_id = item.company_id, enzyme_id = eItem})','_blank')">
+                                                <i class="fa fa-exchange text-danger"></i>
+                                                <span class="text-primary">@enzyme.name</span>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <br />
+                    <br />
+                    <div style="clear:both;"></div>
                 }
-                else
-                {
-                    <div class="list-group">
-                        <a class="list-group-item" href="@Url.Action("EnzymeList", "MActivity", new { company_id = c.id})">
-                            <h4 class="list-group-item-heading">
-                                <i class="fa fa-building-o text-info"></i>
-                                <span class="text-primary"><strong>@c.shortName</strong></span>
-                                <span class="badge pull-right"><span>#Enzymes:</span> @enzymeNum</span>
-                            </h4>
-                            <p class="list-group-item-text"><span class="text-info">@c.fullName </span><span>@c.des</span></p>
-                        </a>
-                    </div>
-                }
-
-
-            }
+            </div>
         }
     </div>
     <div class="col-sm-1 hidden-xs"></div>
 </div>
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(function () {
+        $('#searchEnzyme').keyup(function () {
+            var _text = $(this).val().toLowerCase();
+            $('tbody tr td div').each(function () {
+                $(this).removeClass("hidden");
+                $(this).addClass("hidden");
+                var _aText = $(this).children('span').eq(0).text().toLowerCase().replace(/\s+/g, '');
+                if (RegExp('^' + _text).test(_aText)) {
+                    $(this).removeClass("hidden");
+                    $(this).fadeIn(400);
+                };
+            });
+        });
+
+        $('#clearText').click(function (e) {
+            e.preventDefault();
+            $('#searchEnzyme').val('');
+            $('tbody tr td div').each(function () {
+                $(this).removeClass("hidden");
+                $(this).fadeIn(400);
+            });
+        });
+    });
+</script>

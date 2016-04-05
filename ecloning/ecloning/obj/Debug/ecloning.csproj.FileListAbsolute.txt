@@ -153,3 +153,4 @@
 \\Mac\Home\ecloning\ecloning\ecloning\bin\dotless.Core.pdb
 \\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.pdb
 \\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.xml
+\\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache

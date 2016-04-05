@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<ecloning.Models.ModifyingActivity>
+@using Microsoft.AspNet.Identity;
 @{
     ViewBag.Title = "EnzymeList";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -46,6 +47,21 @@
             bufferIdString.Append(bufferId[i].ToString()).Append(",");
         }
         bufferIdString.Append(bufferId.Last().ToString());
+    }
+
+    //get group info
+    //get current login email
+    var email = User.Identity.GetUserName();
+    int peopleId = 0;
+    var people = db.people.Where(e => e.email == email);
+    peopleId = people.FirstOrDefault().id;
+
+    //get the group id
+    List<int> groupId = new List<int>();
+    var group_people = db.group_people.Where(p => p.people_id == peopleId);
+    foreach (int i in group_people.Select(g => g.group_id).ToList())
+    {
+        groupId.Add(i);
     }
 
 }
@@ -182,12 +198,36 @@
                                             //enzyme_id-buffer_id
                                             var id = item.enzyme_id.ToString() + "-";
                                             int count = 0;
+
+                                            bool inFavorite = false;
+                                            foreach (var g in groupId)
+                                            {
+                                                var FavEnzyme = db.common_modifying.Where(f => f.enzyme_id == item.enzyme_id && f.company_id == item.company_id && f.group_id == g);
+                                                if (FavEnzyme.Count() > 0)
+                                                {
+                                                    inFavorite = true;
+                                                }
+                                            }
+
                                             <tr>
                                                 <td>
                                                     <span class="text-primary">@Html.DisplayFor(modelItem => enzyme.category)</span>
                                                 </td>
                                                 <td>
-                                                    <span class="text-warning"><strong>@Html.DisplayFor(modelItem => enzyme.name)</strong><span class="text-info">&nbsp;(<em>@item.temprature&deg;C</em>)</span></span>
+                                                    @if (!inFavorite)
+                                                    {
+                                                        <a href="@Url.Action("AddToFavorite", "MActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                            <i class="fa fa-bookmark-o text-info"></i>
+                                                            <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong><span class="text-info">&nbsp;(<em>@item.temprature&deg;C</em>)</span></span>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="@Url.Action("RemoveFromFavorite", "MActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                            <i class="fa fa-bookmark text-danger"></i>
+                                                            <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong><span class="text-info">&nbsp;(<em>@item.temprature&deg;C</em>)</span></span>
+                                                        </a>
+                                                    }
                                                 </td>
                                                 @foreach (var i in bufferId)
                                                 {

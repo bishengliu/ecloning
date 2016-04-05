@@ -54,7 +54,6 @@ namespace ecloning.Controllers
             }
             ViewBag.Count = enzymeByCompanies.Count();
             return View(enzymeByCompanies.ToList());
-            //return View();
         }
 
         [Authorize]
