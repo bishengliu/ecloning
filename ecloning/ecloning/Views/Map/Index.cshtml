@@ -41,7 +41,7 @@
 <span id="sequence" class="hidden">@seqCount</span>
 <span id="name" class="hidden">@Name</span>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-5 col-md-offset-1">        
+    <div class="col-xs-12 col-sm-12 col-md-6">        
         <div id="giraffe-map"></div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6">
@@ -408,7 +408,12 @@ gd.read([6363,
 
 
 
-        gd.CircularMap({ 'map_dom_id': 'giraffe-map', 'plasmid_name': name })
+        gd.CircularMap({
+            'map_dom_id': 'giraffe-map',
+            'plasmid_name': name,
+            'map_width': 848,
+            'map_height': 848
+        })
     }
     catch(e)
     {
