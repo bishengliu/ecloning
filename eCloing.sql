@@ -466,7 +466,7 @@ VALUES
 ('N', 'G'),
 ('N', 'C'),
 ('M', 'A'),
-('N', 'C'),
+('M', 'C'),
 ('V', 'A'),
 ('V', 'C'),
 ('V', 'G');
@@ -617,6 +617,100 @@ CREATE TABLE modifying_company
 	CONSTRAINT fk_modifying_company_company_id FOREIGN KEY (company_id) REFERENCES company(id),
 	CONSTRAINT uq_modifying_company_enzyme_id_company_id UNIQUE (enzyme_id,company_id)
 );
+
+
+--dam enzyme table
+--GmATC
+--first check the appending letter and then locate where is "GA" or "GAT" is, if it is appending with "TC", or "C" then it is affected!!!
+CREATE TABLE Dam
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(100) NOT NULL,
+	COverlapping BIT NOT NULL, --completely overlapping, true = completely, false= paritially
+	CBlocked BIT NOT NULL, --complately blocked or paritally impaired, true = completely, false= paritially	
+	appending NVARCHAR(100) --appending letter to check	
+);
+
+INSERT INTO [Dam]
+VALUES
+--completely overlapping and completely blocked
+('BclI', 1, 1, null),
+('BspPI', 1, 1, null),
+('MboI', 1, 1, null),
+('DpnII', 1, 1, null),
+('AlwI', 1, 1, null),
+
+
+--partially overpping and completely blocked
+('Bsu15I', 0, 1, 'C'),
+('HphI', 0, 1, 'TC'),
+('MboII', 0, 1, 'TC'),
+('TaqI', 0, 1, 'TC'),
+('XbaI', 0, 1, 'TC'),
+('NruI', 0, 1, 'TC'),
+('Hpy188I', 0, 1, 'TC'),
+('Hpy188III', 0, 1, 'TC'),
+('ClaI', 0, 1, 'C'),
+('BspHI', 0, 1, 'TC'),
+('BspEI', 0, 1, 'TC'),
+('BspDI', 0, 1, 'C'),
+
+--in middle
+('BdaI', 0, 0, 'TC'),
+('BseJI', 0, 0, 'C'),
+('Hin4I', 0, 0, 'C'),
+('BsaB1', 0, 0, 'C'),
+
+
+--partially overlapping and partially blocked
+('PagI', 0, 0, 'TC'),
+('PfoI', 0, 0, 'TC'),
+('SmoI', 0, 0, 'TC'),
+--need to be careful to deel with, in middle
+('BcgI', 0, 0, 'TC');
+
+
+--CCAGG or CCTGG
+CREATE TABLE Dcm
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(100) NOT NULL,
+	COverlapping BIT NOT NULL, --completely overlapping, true = completely, false= paritially
+	CBlocked BIT NOT NULL, --complately blocked or paritally impaired, true = completely, false= paritially
+	prefixing NVARCHAR(100), --appending letter to check	
+	appending NVARCHAR(100) --appending letter to check	
+);
+
+INSERT INTO [Dcm]
+VALUES
+--completely overlapping and completely blocked
+('EcoRII', 1, 1, null,null),
+
+--partially overpping and completely blocked
+('Bme1390I', 0, 1, null, null), --in middle
+('Bsp120I', 0, 1, null,'WGG'), 
+('CaiI', 0, 1, 'C','G'), 
+('CfrI', 0, 1, null,'GG'), 
+('Cfr13I', 0, 1, null,'WGG'),
+('Eco47I', 0, 1, null,'WGG'),
+('Eco57MI', 0, 1, 'C',null),
+('Eco147I', 0, 1, null,'GG'),
+('Eco0109I', 0, 1, null,'GG'),
+('GsuI', 0, 1, null,'G'),
+('MlsI', 0, 1, null,'GG'),
+('PfoI', 0, 1, null,null), --in middle
+('Psp5II', 0, 1, null,'GG'),
+('Van91I', 0, 1, null,'GG'),
+
+--partially overlapping and partially blocked
+('Acc65I', 0, 0, null,'WGG'),
+('ApaI', 0, 0, null,'WGG'),
+('BseLI', 0, 0, null,'WGG'),
+('BshNI', 0, 0, null,'WGG'),
+('Eco31I', 0, 0, 'CCW',null),
+('Hin1I', 0, 0, null,'WGG'),
+('SfiI', 0, 0, null,'WGG');
+
 
 
 --pcr primers

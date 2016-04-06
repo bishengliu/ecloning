@@ -145,6 +145,11 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
@@ -248,7 +253,7 @@ namespace ecloning.Controllers
                 if (plasmid.sequence != null)
                 {
                     //auto generate features
-                    var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                    var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
                 }
 
                 //upload img file
@@ -484,6 +489,10 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
@@ -596,7 +605,7 @@ namespace ecloning.Controllers
                         //backup plasmid map
                         var Backup = new BackupMap(plasmid.id);
                         //auto generate features
-                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence,groupInfo.groupId);
                     }   
                 }                
 

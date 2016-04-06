@@ -35,11 +35,17 @@ namespace ecloning.Controllers
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
 
+
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+
             //autogenerate
             if (tag == "autogenerate")
             {
                 //auto generate features
-                var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
             }
 
             //backup
@@ -188,6 +194,9 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id != 10 || f.id != 4), "id", "des", common_feature.feature_id);
+
+
+
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();
             foreach (var i in groupInfo.groupIdName)
@@ -218,7 +227,7 @@ namespace ecloning.Controllers
                         //backup plasmid map
                         var Backup = new BackupMap(plasmid.id);
                         //auto generate features
-                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence);
+                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
                     }
                     return RedirectToAction("Index", "Map", new { id = plasmid_id, tag = "personDispaly" });
                 }

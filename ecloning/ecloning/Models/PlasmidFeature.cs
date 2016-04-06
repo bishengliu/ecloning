@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNet.Identity;
+using System.Web.Mvc;
+
 
 namespace ecloning.Models
 {
@@ -12,10 +15,17 @@ namespace ecloning.Models
         public int PlasmidId { get; set; }
         public bool result { get; set; }
 
-        public PlasmidFeature(int id, string seq)
+        //to get group id for group used enzymes
+        public List<int> GroupId { get; set; }
+
+
+        public PlasmidFeature(int id, string seq, List<int> groupId)
         {
+            //**************all the classes doesn't add 1 to indexes, therefore, must add 1 to all feature starts, ends and cuts***************//
+
             PlasmidId = id;
             Sequence = seq;
+            GroupId = groupId;
 
             //remove exsited features to backup table
             var currentPlasmidMap = db.plasmid_map.Where(p => p.plasmid_id == PlasmidId);
@@ -75,15 +85,16 @@ namespace ecloning.Models
                     if (indexes1.Count() > 0)
                     {
                         //add to plasmd_feature
-                        foreach(int index in indexes1)
+                        //start and end need to add 1, since seq starts from 1;
+                        foreach (int index in indexes1)
                         {
                             var feature = new plasmid_map();
                             feature.plasmid_id = PlasmidId;
                             feature.show_feature = 1;
                             feature.feature = item.label;
                             feature.feature_id = item.feature_id;
-                            feature.start = index;
-                            feature.end = index + subSeq.Length;
+                            feature.start = index +1;
+                            feature.end = index + subSeq.Length+1;
                             feature.common_id = item.id;
                             feature.clockwise = 1;
                             db.plasmid_map.Add(feature);
@@ -102,6 +113,7 @@ namespace ecloning.Models
                     if (indexes2.Count() > 0)
                     {
                         //add to plasmd_feature
+                        //start and end need to add 1, since seq starts from 1;
                         foreach (int index in indexes2)
                         {
                             var feature = new plasmid_map();
@@ -109,8 +121,8 @@ namespace ecloning.Models
                             feature.show_feature = 1;
                             feature.feature = item.label;
                             feature.feature_id = item.feature_id;
-                            feature.start = index;
-                            feature.end = index + subSeq.Length;
+                            feature.start = index + 1;
+                            feature.end = index + subSeq.Length + 1;
                             feature.common_id = item.id;
                             feature.clockwise = 0;
                             db.plasmid_map.Add(feature);
@@ -123,20 +135,32 @@ namespace ecloning.Models
 
             //=====================================================================
             //check restriciton cut
-            var restrictions = db.restri_enzyme;
-            if (restrictions.Count() > 0)
+
+            //first check the group common restriction enzymes
+            //if no common restriction, then look all the restriction enzymes
+
+            //first the common the enzymes
+            List<int> enzymeId = new List<int>();
+            var common_restriction = db.common_restriction.Where(g => GroupId.Contains(g.group_id));
+            if (common_restriction.Count() > 0)
             {
-                //find all the indexes of features in both forward and reserver seq
-                //forward
-
-                //reverse must be checked for cut blockages
-
-
-                //if indexes founded
-                //result = true;
-                //add table
-                //don't add cut blockage
+                enzymeId = common_restriction.OrderBy(e => e.enzyme_id).Select(e => e.enzyme_id).Distinct().ToList();
             }
+            else
+            {
+                var restrictions = db.restri_enzyme;
+                if (restrictions.Count() > 0)
+                {
+                    enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
+                }
+            }
+
+            //generate enzyme restriction features
+
+            var restriciton = new FindRestriction();
+            var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId);
+
+
             //========================================================================
             //========================================================================
             ////check ORF
@@ -148,6 +172,7 @@ namespace ecloning.Models
             if (orf.Count() > 0)
             {
                 //save to plasmid_map table
+                //start and end need to add 1, since seq starts from 1;
                 foreach (var orfItem in orf)
                 {
                     var feature = new plasmid_map();
@@ -155,8 +180,8 @@ namespace ecloning.Models
                     feature.show_feature = 1;
                     feature.feature = orfItem.Name;
                     feature.feature_id = 10;
-                    feature.start = orfItem.start;
-                    feature.end = orfItem.end;
+                    feature.start = orfItem.start+1;
+                    feature.end = orfItem.end+1;
                     feature.clockwise = orfItem.clockwise;
                     feature.common_id = null;
                     db.plasmid_map.Add(feature);

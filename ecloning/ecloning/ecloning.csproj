@@ -319,6 +319,7 @@
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DecodeRestrictionSeq.cs" />
     <Compile Include="Models\department.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -345,6 +346,7 @@
     <Compile Include="Models\EnzymeByCompany.cs" />
     <Compile Include="Models\FeatureViewModel.cs" />
     <Compile Include="Models\FileTransfer.cs" />
+    <Compile Include="Models\FindRestriction.cs" />
     <Compile Include="Models\FindSeq.cs" />
     <Compile Include="Models\group.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
@@ -439,6 +441,7 @@
     <Compile Include="Models\restriction_company.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RestriFeatureObject.cs" />
     <Compile Include="Models\restri_enzyme.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
