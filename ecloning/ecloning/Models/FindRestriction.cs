@@ -13,7 +13,8 @@ namespace ecloning.Models
         //find the restriction enzyme feature
         public List<RestriFeatureObject> RestricitonObject(string fullSeq, List<int> enzymeId, int cutNum=0)
         {
-            List<RestriFeatureObject> restricFeatures = new List<RestriFeatureObject>();
+            List<RestriFeatureObject> Objects = new List<RestriFeatureObject>();
+
             foreach (var e in enzymeId)
             {
                 var enzyme = db.restri_enzyme.Find(e);
@@ -26,47 +27,15 @@ namespace ecloning.Models
                 var forwardSeqList = decodes.Decode(restriSeq);
 
 
-
-                if(enzyme.forward_cut2 == null || enzyme.reverse_cut2 == null)
+                if (enzyme.forward_cut2 == null || enzyme.reverse_cut2 == null)
                 {
-                    //only one cut each time
+                
                     foreach(var rs in forwardSeqList)
                     {
-                        List<int> indexes = new List<int>();
-                        for (int index = 0; ; index += rs.Length)
-                        {
-                            index = fullSeq.IndexOf(rs, index);
-                            if (index == -1)
-                                break;
-                            indexes.Add(index);
-                        }
-                        if(cutNum != 0)
-                        {
-                            //user set the cut number
-                            if (indexes.Count() > cutNum)
-                            {
-                                //too many cuts, skip
-                                break;
-                            }
-                            else
-                            {
-                                //need to add these to the map    
-                                foreach(var i in indexes)
-                                {
-                                    //check for dam and dcm
-
-                                }                                                            
-                            }
-                        }
-                        else
-                        {
-                            //find all the cuts and show on the map
-                            //check for dam and dcm
-
-                            
-
-                        }
-
+                        List<RestriFeatureObject> FRrObjects = new List<RestriFeatureObject>();
+                        var findObjects = new FindRestriction();
+                        FRrObjects = findObjects.FRrObject(rs, fullSeq, enzyme);
+                        Objects = Objects.Concat(FRrObjects).ToList();
                     }
                 }
                 else
@@ -75,11 +44,932 @@ namespace ecloning.Models
 
                 }
 
+
             }
 
 
-            return restricFeatures;
+            return Objects;
+        }
 
+
+
+        //this funciton returen forward and completement restrictionObject
+        public List<RestriFeatureObject> FRrObject(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        {
+            List<RestriFeatureObject> FRrObjects = new List<RestriFeatureObject>();
+            List<RestriFeatureObject> FrObjects = new List<RestriFeatureObject>();
+            List<RestriFeatureObject> RrObjects = new List<RestriFeatureObject>();
+
+
+            //find forward
+            var findObject = new FindRestriction();
+            FrObjects = findObject.FrObject(rs, fullSeq, enzyme);
+            //find the completment
+            var crs = FindSeq.cDNA(rs);
+            if (FrObjects.Count() > 0)
+            {
+                if (object.Equals(rs, crs))
+                {
+                    //find left side for dam or dcm
+                    FrObjects = findObject.newFrObject(rs, fullSeq, enzyme, FrObjects);
+                }
+            }        
+            if(!object.Equals(rs, crs))
+            {
+                RrObjects = findObject.FrObject(crs, fullSeq, enzyme);
+            }
+            FRrObjects = FrObjects.Concat(RrObjects).ToList();
+
+            return FRrObjects;
+        }
+        //single cut one enzyme
+        //forward
+        public List<RestriFeatureObject> FrObject(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        {
+            List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
+
+            //get dam and dcm info
+
+            //dam
+            //completely overlapping and completely blocked
+            var CBDam = db.Dams.Where(a => a.COverlapping == true && a.CBlocked == true).Select(n => n.name).ToList();
+            //completely overlapping and partially impaired
+            var CIDam = db.Dams.Where(a => a.COverlapping == true && a.CBlocked == false).Select(n => n.name).ToList();
+            //partiallyly overlapping and completely blocked
+            var PBDam = db.Dams.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+            //partiallyly overlapping and partially impaired
+            var PIDam = db.Dams.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+
+            //dcm
+            //completely overlapping and completely blocked
+            var CBDcm = db.Dcms.Where(a => a.COverlapping == true && a.CBlocked == true).Select(n => n.name).ToList();
+            //completely overlapping and partially impaired
+            var CIDcm = db.Dcms.Where(a => a.COverlapping == true && a.CBlocked == false).Select(n => n.name).ToList();
+            //partiallyly overlapping and completely blocked
+            var PBDcm = db.Dcms.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+            //partiallyly overlapping and partially impaired
+            var PIDcm = db.Dcms.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+
+
+            for (int index = 0; ; index += rs.Length)
+            {
+                //object
+                var FObject = new RestriFeatureObject();
+                index = fullSeq.IndexOf(rs, index);
+                if (index == -1)
+                {
+                    break;
+                    //don't generate the object
+                }
+                else
+                {
+
+                    //find
+                    FObject.clockwise = 1;
+                    FObject.start = index;
+                    FObject.end = rs.Length + index - 1; //switch to 0 index mode
+                    FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode
+
+                    //check dam
+
+                    //completely overlapping
+                    if(CBDam.Count()>0 && CBDam.Contains(enzyme.name))
+                    {
+                        //completely overlapping and completely blocked
+                        FObject.dam_complete = true;
+                        FObject.dam_impaired = false;
+                    }
+                    else if (CIDam.Count() > 0 && CIDam.Contains(enzyme.name))
+                    {
+                        //completely overlapping and partially impaired
+                        FObject.dam_complete = false;
+                        FObject.dam_impaired = true;
+                    }
+
+                    //partially overlapping 
+                    //need to check the seq GATC
+                    else if(PBDam.Count()>0 && PBDam.Contains(enzyme.name))
+                    {
+                        //completely blocked
+                        //find the appending letters
+                        var damEnzyme = db.Dams.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        //appending  letters cannot be both empty
+                        if(damEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if(damEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (damEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if(string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dam_complete = true;
+                                FObject.dam_impaired = false;
+                            }
+                            else
+                            {
+                                if(letters == "GAT")
+                                {
+                                    if(fullSeq[index+3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dam_complete = true;
+                                        FObject.dam_impaired = false;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dam_complete = true;
+                                        FObject.dam_impaired = false;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dam_complete = true;
+                            FObject.dam_impaired = false;
+                        }
+                    }
+                    else if(PIDam.Count() > 0 && PIDam.Contains(enzyme.name))
+                    {
+                        //partially impaired
+                        //find the appending letters
+                        var damEnzyme = db.Dams.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        if (damEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (damEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (damEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dam_complete = false;
+                                FObject.dam_impaired = true;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dam_complete = false;
+                                        FObject.dam_impaired = true;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dam_complete = false;
+                                        FObject.dam_impaired = true;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dam_complete = false;
+                            FObject.dam_impaired = true;
+                        }
+
+                    }
+                    else
+                    {
+                        //enzyme not in the dam list, set both to false
+                        FObject.dam_complete = false;
+                        FObject.dam_impaired = false;
+                    }
+
+
+
+                    //check dcm
+
+
+                    //completely overlapping
+                    if (CBDcm.Count() > 0 && CBDcm.Contains(enzyme.name))
+                    {
+                        //completely overlapping and completely blocked
+                        FObject.dcm_complete = true;
+                        FObject.dcm_impaired = false;
+                    }
+                    else if (CIDcm.Count() > 0 && CIDcm.Contains(enzyme.name))
+                    {
+                        //completely overlapping and partially impaired
+                        FObject.dcm_complete = false;
+                        FObject.dcm_impaired = true;
+                    }
+
+                    //partially overlapping 
+                    //need to check the seq GATC
+                    else if (PBDcm.Count() > 0 && PBDcm.Contains(enzyme.name))
+                    {
+                        //completely blocked
+                        //find the appending letters
+                        var dcmEnzyme = db.Dcms.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        //appending  letters cannot be both empty
+                        if (dcmEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (dcmEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (dcmEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dcm_complete = true;
+                                FObject.dcm_impaired = false;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dcm_complete = true;
+                                        FObject.dcm_impaired = false;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dcm_complete = true;
+                                        FObject.dcm_impaired = false;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dcm_complete = true;
+                            FObject.dcm_impaired = false;
+                        }
+                    }
+                    else if (PIDcm.Count() > 0 && PIDcm.Contains(enzyme.name))
+                    {
+                        //partially impaired
+                        //find the appending letters
+                        var dcmEnzyme = db.Dcms.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        if (dcmEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (dcmEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (dcmEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dcm_complete = false;
+                                FObject.dcm_impaired = true;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dcm_complete = false;
+                                        FObject.dcm_impaired = true;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dcm_complete = false;
+                                        FObject.dcm_impaired = true;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dcm_complete = false;
+                            FObject.dcm_impaired = true;
+                        }
+
+                    }
+                    else
+                    {
+                        //enzyme not in the dam list, set both to false
+                        FObject.dcm_complete = false;
+                        FObject.dcm_impaired = false;
+                    }
+
+
+
+                    //set the name of the feature
+                    var featureName = enzyme.name;
+                    if((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
+                    {
+                        featureName = featureName + " (affected by Dam/Dcm Methylation)";
+                    }
+                    if((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
+                    {
+                        featureName = featureName + " (affected by Dam Methylation)";
+                    }
+                    if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
+                    {
+                        featureName = featureName + " (affected by Dcm Methylation)";
+                    }
+
+                }
+
+                rObjects.Add(FObject);
+            }
+            return rObjects;
+        }
+
+        //if rs complementaty is same same as rs, then no need to find new restriciton site, but need to check the dam and dcm
+        public List<RestriFeatureObject> newFrObject(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, List<RestriFeatureObject> FrObjects)
+        {
+            //get dam and dcm info
+
+            //dam
+            
+            //partiallyly overlapping and completely blocked
+            var PBDam = db.Dams.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+            //partiallyly overlapping and partially impaired
+            var PIDam = db.Dams.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+
+            //dcm
+            
+            //partiallyly overlapping and completely blocked
+            var PBDcm = db.Dcms.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+            //partiallyly overlapping and partially impaired
+            var PIDcm = db.Dcms.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+
+
+            foreach (var o in FrObjects)
+            {
+                int index = o.start;
+                if(index < 3)
+                {
+                    break;
+                }
+                //check dam
+                if (o.dam_complete == false && o.dam_impaired == false)
+                {
+                    if (PBDam.Count() > 0 && PBDam.Contains(enzyme.name))
+                    {
+                        //completely blocked
+                        //find the appending letters
+                        var damEnzyme = db.Dams.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        //appending  letters cannot be both empty
+                        if (damEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (damEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (damEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                o.dam_complete = true;
+                                o.dam_impaired = false;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index - 3].ToString() == "C".ToString())
+                                    {
+                                        o.dam_complete = true;
+                                        o.dam_impaired = false;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index - 2].ToString() == "T".ToString()) && (fullSeq[index - 3].ToString() == "C".ToString()))
+                                    {
+                                        o.dam_complete = true;
+                                        o.dam_impaired = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (PIDam.Count() > 0 && PIDam.Contains(enzyme.name))
+                    {
+                        //partially impaired
+                        //find the appending letters
+                        var damEnzyme = db.Dams.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        if (damEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (damEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (damEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                o.dam_complete = false;
+                                o.dam_impaired = true;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index - 3].ToString() == "C".ToString())
+                                    {
+                                        o.dam_complete = false;
+                                        o.dam_impaired = true;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index - 2].ToString() == "T".ToString()) && (fullSeq[index - 3].ToString() == "C".ToString()))
+                                    {
+                                        o.dam_complete = false;
+                                        o.dam_impaired = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //check dcm
+                if(o.dcm_complete == false && o.dcm_impaired == false)
+                {
+                    if (PBDcm.Count() > 0 && PBDcm.Contains(enzyme.name))
+                    {
+                        //completely blocked
+                        //find the appending letters
+                        var dcmEnzyme = db.Dcms.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        //appending  letters cannot be both empty
+                        if (dcmEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (dcmEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (dcmEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                o.dcm_complete = true;
+                                o.dcm_impaired = false;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index - 3].ToString() == "C".ToString())
+                                    {
+                                        o.dcm_complete = true;
+                                        o.dcm_impaired = false;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index - 2].ToString() == "T".ToString()) && (fullSeq[index - 3].ToString() == "C".ToString()))
+                                    {
+                                        o.dcm_complete = true;
+                                        o.dcm_impaired = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (PIDcm.Count() > 0 && PIDcm.Contains(enzyme.name))
+                    {
+                        //partially impaired
+                        //find the appending letters
+                        var dcmEnzyme = db.Dcms.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        if (dcmEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (dcmEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (dcmEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                o.dcm_complete = false;
+                                o.dcm_impaired = true;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index - 3].ToString() == "C".ToString())
+                                    {
+                                        o.dcm_complete = false;
+                                        o.dcm_impaired = true;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index - 2].ToString() == "T".ToString()) && (fullSeq[index - 3].ToString() == "C".ToString()))
+                                    {
+                                        o.dcm_complete = false;
+                                        o.dcm_impaired = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return FrObjects;
+        }
+
+        //complementary
+        //for rs != crs
+        public List<RestriFeatureObject> RrObject(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        {
+            List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
+
+            //get dam and dcm info
+
+            //dam
+            //completely overlapping and completely blocked
+            var CBDam = db.Dams.Where(a => a.COverlapping == true && a.CBlocked == true).Select(n => n.name).ToList();
+            //completely overlapping and partially impaired
+            var CIDam = db.Dams.Where(a => a.COverlapping == true && a.CBlocked == false).Select(n => n.name).ToList();
+            //partiallyly overlapping and completely blocked
+            var PBDam = db.Dams.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+            //partiallyly overlapping and partially impaired
+            var PIDam = db.Dams.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+
+            //dcm
+            //completely overlapping and completely blocked
+            var CBDcm = db.Dcms.Where(a => a.COverlapping == true && a.CBlocked == true).Select(n => n.name).ToList();
+            //completely overlapping and partially impaired
+            var CIDcm = db.Dcms.Where(a => a.COverlapping == true && a.CBlocked == false).Select(n => n.name).ToList();
+            //partiallyly overlapping and completely blocked
+            var PBDcm = db.Dcms.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+            //partiallyly overlapping and partially impaired
+            var PIDcm = db.Dcms.Where(a => a.COverlapping == false && a.CBlocked == true).Select(n => n.name).ToList();
+
+
+            for (int index = 0; ; index += rs.Length)
+            {
+                //object
+                var FObject = new RestriFeatureObject();
+                index = fullSeq.IndexOf(rs, index);
+                if (index == -1)
+                {
+                    break;
+                    //don't generate the object
+                }
+                else
+                {
+
+                    //find
+                    FObject.clockwise = 0;
+                    FObject.start = index;
+                    FObject.end = rs.Length + index - 1; //switch to 0 index mode
+                    FObject.cut = enzyme.reverse_cut + index - 1; //switch to 0 index mode
+
+
+                    //check dam
+
+                    //completely overlapping
+                    if (CBDam.Count() > 0 && CBDam.Contains(enzyme.name))
+                    {
+                        //completely overlapping and completely blocked
+                        FObject.dam_complete = true;
+                        FObject.dam_impaired = false;
+                    }
+                    else if (CIDam.Count() > 0 && CIDam.Contains(enzyme.name))
+                    {
+                        //completely overlapping and partially impaired
+                        FObject.dam_complete = false;
+                        FObject.dam_impaired = true;
+                    }
+
+                    //partially overlapping 
+                    //need to check the seq GATC
+                    else if (PBDam.Count() > 0 && PBDam.Contains(enzyme.name))
+                    {
+                        //completely blocked
+                        //find the appending letters
+                        var damEnzyme = db.Dams.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        //appending  letters cannot be both empty
+                        if (damEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (damEnzyme.appending == "C")
+                            {
+                                letters = "GAT"; ***********************need to convert letter
+                            }
+                            if (damEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dam_complete = true;
+                                FObject.dam_impaired = false;
+                            }
+                            else
+                            {
+                                
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dam_complete = true;
+                                        FObject.dam_impaired = false;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dam_complete = true;
+                                        FObject.dam_impaired = false;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dam_complete = true;
+                            FObject.dam_impaired = false;
+                        }
+                    }
+                    else if (PIDam.Count() > 0 && PIDam.Contains(enzyme.name))
+                    {
+                        //partially impaired
+                        //find the appending letters
+                        var damEnzyme = db.Dams.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        if (damEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (damEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (damEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dam_complete = false;
+                                FObject.dam_impaired = true;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dam_complete = false;
+                                        FObject.dam_impaired = true;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dam_complete = false;
+                                        FObject.dam_impaired = true;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dam_complete = false;
+                            FObject.dam_impaired = true;
+                        }
+
+                    }
+                    else
+                    {
+                        //enzyme not in the dam list, set both to false
+                        FObject.dam_complete = false;
+                        FObject.dam_impaired = false;
+                    }
+
+
+
+                    //check dcm
+
+
+                    //completely overlapping
+                    if (CBDcm.Count() > 0 && CBDcm.Contains(enzyme.name))
+                    {
+                        //completely overlapping and completely blocked
+                        FObject.dcm_complete = true;
+                        FObject.dcm_impaired = false;
+                    }
+                    else if (CIDcm.Count() > 0 && CIDcm.Contains(enzyme.name))
+                    {
+                        //completely overlapping and partially impaired
+                        FObject.dcm_complete = false;
+                        FObject.dcm_impaired = true;
+                    }
+
+                    //partially overlapping 
+                    //need to check the seq GATC
+                    else if (PBDcm.Count() > 0 && PBDcm.Contains(enzyme.name))
+                    {
+                        //completely blocked
+                        //find the appending letters
+                        var dcmEnzyme = db.Dcms.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        //appending  letters cannot be both empty
+                        if (dcmEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (dcmEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (dcmEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dcm_complete = true;
+                                FObject.dcm_impaired = false;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dcm_complete = true;
+                                        FObject.dcm_impaired = false;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dcm_complete = true;
+                                        FObject.dcm_impaired = false;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dcm_complete = true;
+                            FObject.dcm_impaired = false;
+                        }
+                    }
+                    else if (PIDcm.Count() > 0 && PIDcm.Contains(enzyme.name))
+                    {
+                        //partially impaired
+                        //find the appending letters
+                        var dcmEnzyme = db.Dcms.Where(n => n.name == enzyme.name).FirstOrDefault();
+                        if (dcmEnzyme.appending != null)
+                        {
+                            string letters = null;
+                            if (dcmEnzyme.appending == "C")
+                            {
+                                letters = "GAT";
+                            }
+                            if (dcmEnzyme.appending == "TC")
+                            {
+                                letters = "GA";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(letters))
+                            {
+                                //if the appending letter is empty, assume it is blocked
+                                FObject.dcm_complete = false;
+                                FObject.dcm_impaired = true;
+                            }
+                            else
+                            {
+                                if (letters == "GAT")
+                                {
+                                    if (fullSeq[index + 3].ToString() == "C".ToString())
+                                    {
+                                        FObject.dcm_complete = false;
+                                        FObject.dcm_impaired = true;
+                                    }
+                                }
+
+                                if (letters == "GA")
+                                {
+                                    if ((fullSeq[index + 2].ToString() == "T".ToString()) && (fullSeq[index + 3].ToString() == "C".ToString()))
+                                    {
+                                        FObject.dcm_complete = false;
+                                        FObject.dcm_impaired = true;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //if the appending letter is empty, assume it is blocked
+                            FObject.dcm_complete = false;
+                            FObject.dcm_impaired = true;
+                        }
+
+                    }
+                    else
+                    {
+                        //enzyme not in the dam list, set both to false
+                        FObject.dcm_complete = false;
+                        FObject.dcm_impaired = false;
+                    }
+
+
+
+                    //set the name of the feature
+                    var featureName = enzyme.name;
+                    if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
+                    {
+                        featureName = featureName + " (affected by Dam/Dcm Methylation)";
+                    }
+                    if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
+                    {
+                        featureName = featureName + " (affected by Dam Methylation)";
+                    }
+                    if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
+                    {
+                        featureName = featureName + " (affected by Dcm Methylation)";
+                    }
+
+                }
+
+                rObjects.Add(FObject);
+            }
+            return rObjects;
         }
     }
 }

@@ -94,7 +94,7 @@ namespace ecloning.Models
                             feature.feature = item.label;
                             feature.feature_id = item.feature_id;
                             feature.start = index +1;
-                            feature.end = index + subSeq.Length+1;
+                            feature.end = index + subSeq.Length;
                             feature.common_id = item.id;
                             feature.clockwise = 1;
                             db.plasmid_map.Add(feature);
@@ -122,7 +122,7 @@ namespace ecloning.Models
                             feature.feature = item.label;
                             feature.feature_id = item.feature_id;
                             feature.start = index + 1;
-                            feature.end = index + subSeq.Length + 1;
+                            feature.end = index + subSeq.Length;
                             feature.common_id = item.id;
                             feature.clockwise = 0;
                             db.plasmid_map.Add(feature);

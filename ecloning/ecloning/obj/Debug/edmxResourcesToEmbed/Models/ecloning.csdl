@@ -209,6 +209,27 @@
     <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
+  <EntityType Name="Dam">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="COverlapping" Type="Boolean" Nullable="false" />
+    <Property Name="CBlocked" Type="Boolean" Nullable="false" />
+    <Property Name="appending" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Dcm">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="COverlapping" Type="Boolean" Nullable="false" />
+    <Property Name="CBlocked" Type="Boolean" Nullable="false" />
+    <Property Name="prefixing" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="appending" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
   <EntityType Name="department">
     <Key>
       <PropertyRef Name="id" />
@@ -1238,6 +1259,8 @@
     <EntitySet Name="common_restriction" EntityType="Self.common_restriction" />
     <EntitySet Name="companies" EntityType="Self.company" />
     <EntitySet Name="containers" EntityType="Self.container" />
+    <EntitySet Name="Dams" EntityType="Self.Dam" />
+    <EntitySet Name="Dcms" EntityType="Self.Dcm" />
     <EntitySet Name="departments" EntityType="Self.department" />
     <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
     <EntitySet Name="groups" EntityType="Self.group" />

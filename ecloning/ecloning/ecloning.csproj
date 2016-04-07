@@ -319,6 +319,12 @@
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Dam.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Dcm.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DecodeRestrictionSeq.cs" />
     <Compile Include="Models\department.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
@@ -676,6 +682,11 @@
     <Content Include="Areas\Admin\Views\MActivity\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MActivity\EnzymeList.cshtml" />
     <Content Include="Areas\Admin\Views\MActivity\AddEnzyme.cshtml" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
     <EntityDeploy Include="Models\ecloning.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
@@ -683,11 +694,6 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
-    <Content Include="Content\fonts\fontawesome-webfont.eot" />
-    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Content\fonts\fontawesome-webfont.woff" />
-    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
-    <Content Include="Content\fonts\FontAwesome.otf" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

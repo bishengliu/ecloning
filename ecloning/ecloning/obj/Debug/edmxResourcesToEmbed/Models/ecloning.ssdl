@@ -179,6 +179,27 @@
     <Property Name="category" Type="nvarchar" MaxLength="100" />
     <Property Name="des" Type="text" />
   </EntityType>
+  <EntityType Name="Dam">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="COverlapping" Type="bit" Nullable="false" />
+    <Property Name="CBlocked" Type="bit" Nullable="false" />
+    <Property Name="appending" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Dcm">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="COverlapping" Type="bit" Nullable="false" />
+    <Property Name="CBlocked" Type="bit" Nullable="false" />
+    <Property Name="prefixing" Type="nvarchar" MaxLength="100" />
+    <Property Name="appending" Type="nvarchar" MaxLength="100" />
+  </EntityType>
   <EntityType Name="department">
     <Key>
       <PropertyRef Name="id" />
@@ -1173,6 +1194,8 @@
     <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Dam" EntityType="Self.Dam" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />

@@ -184,6 +184,29 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Dams">
+      <EntityTypeMapping TypeName="ecloningModel.Dam">
+        <MappingFragment StoreEntitySet="Dam">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="COverlapping" ColumnName="COverlapping" />
+          <ScalarProperty Name="CBlocked" ColumnName="CBlocked" />
+          <ScalarProperty Name="appending" ColumnName="appending" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Dcms">
+      <EntityTypeMapping TypeName="ecloningModel.Dcm">
+        <MappingFragment StoreEntitySet="Dcm">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="COverlapping" ColumnName="COverlapping" />
+          <ScalarProperty Name="CBlocked" ColumnName="CBlocked" />
+          <ScalarProperty Name="prefixing" ColumnName="prefixing" />
+          <ScalarProperty Name="appending" ColumnName="appending" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="departments">
       <EntityTypeMapping TypeName="ecloningModel.department">
         <MappingFragment StoreEntitySet="department">

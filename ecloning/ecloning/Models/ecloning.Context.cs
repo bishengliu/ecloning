@@ -40,6 +40,8 @@ namespace ecloning.Models
         public virtual DbSet<common_restriction> common_restriction { get; set; }
         public virtual DbSet<company> companies { get; set; }
         public virtual DbSet<container> containers { get; set; }
+        public virtual DbSet<Dam> Dams { get; set; }
+        public virtual DbSet<Dcm> Dcms { get; set; }
         public virtual DbSet<department> departments { get; set; }
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }
         public virtual DbSet<group> groups { get; set; }

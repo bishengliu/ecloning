@@ -184,6 +184,27 @@
           <Property Name="category" Type="nvarchar" MaxLength="100" />
           <Property Name="des" Type="text" />
         </EntityType>
+        <EntityType Name="Dam">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="COverlapping" Type="bit" Nullable="false" />
+          <Property Name="CBlocked" Type="bit" Nullable="false" />
+          <Property Name="appending" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Dcm">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="COverlapping" Type="bit" Nullable="false" />
+          <Property Name="CBlocked" Type="bit" Nullable="false" />
+          <Property Name="prefixing" Type="nvarchar" MaxLength="100" />
+          <Property Name="appending" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="department">
           <Key>
             <PropertyRef Name="id" />
@@ -1178,6 +1199,8 @@
           <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dam" EntityType="Self.Dam" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
@@ -1623,6 +1646,27 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Dam">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="COverlapping" Type="Boolean" Nullable="false" />
+          <Property Name="CBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="appending" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Dcm">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="COverlapping" Type="Boolean" Nullable="false" />
+          <Property Name="CBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="prefixing" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="appending" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="department">
           <Key>
@@ -2653,6 +2697,8 @@
           <EntitySet Name="common_restriction" EntityType="Self.common_restriction" />
           <EntitySet Name="companies" EntityType="Self.company" />
           <EntitySet Name="containers" EntityType="Self.container" />
+          <EntitySet Name="Dams" EntityType="Self.Dam" />
+          <EntitySet Name="Dcms" EntityType="Self.Dcm" />
           <EntitySet Name="departments" EntityType="Self.department" />
           <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
           <EntitySet Name="groups" EntityType="Self.group" />
@@ -3067,6 +3113,29 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="category" ColumnName="category" />
                 <ScalarProperty Name="des" ColumnName="des" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dams">
+            <EntityTypeMapping TypeName="ecloningModel.Dam">
+              <MappingFragment StoreEntitySet="Dam">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="COverlapping" ColumnName="COverlapping" />
+                <ScalarProperty Name="CBlocked" ColumnName="CBlocked" />
+                <ScalarProperty Name="appending" ColumnName="appending" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dcms">
+            <EntityTypeMapping TypeName="ecloningModel.Dcm">
+              <MappingFragment StoreEntitySet="Dcm">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="COverlapping" ColumnName="COverlapping" />
+                <ScalarProperty Name="CBlocked" ColumnName="CBlocked" />
+                <ScalarProperty Name="prefixing" ColumnName="prefixing" />
+                <ScalarProperty Name="appending" ColumnName="appending" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
