@@ -71,9 +71,11 @@ namespace ecloning.Models
             {
 
                 //=======================================================
+                //!!!!!!!!!!NEED TO DEEL WITH CIRCULAIR END!!!!!!!REMOVE THIS IF DONE!!!!!!!!!!
+                //=======================================================
                 //find common features
                 //except restriction cut and ORF
-                foreach(var item in features.ToList())
+                foreach (var item in features.ToList())
                 {
                     //find all the indexes of features in both forward and reserver seq
                     //feature sequence
@@ -164,7 +166,9 @@ namespace ecloning.Models
             //========================================================================
             //========================================================================
             ////check ORF
-
+            //=======================================================
+            //!!!!!!!!!!NEED TO DEEL WITH CIRCULAIR END!!!!!!! REMOVE THIS IF DONE!!!!!!!!!!
+            //=======================================================
             var orf = new List<ORFObject>();
             var orfFinder = new ORFFinder(0, 0, 0, 0, 300, Sequence);
             //ORFFinder(int startCodon, int stopCodon, int frame, int direction, int minSzie, string sequence)
