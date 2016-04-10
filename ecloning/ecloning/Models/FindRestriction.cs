@@ -46,6 +46,10 @@ namespace ecloning.Models
                         {
                             List<RestriFeatureObject> FRrObjects = new List<RestriFeatureObject>();
 
+                            //mutiple cut following these rules
+                            //NNNNNNNNNATCGNNNNNNATGCNNNNNNNNN
+                            var findObjects = new FindRestriction();
+
                             //don't look for dam and dcm
                             //generate 2 object for each index
 
@@ -101,9 +105,6 @@ namespace ecloning.Models
         public List<RestriFeatureObject> FrObject(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
-
-            
-
             for (int index = 0; ; index += rs.Length)
             {
                 //object
@@ -116,11 +117,35 @@ namespace ecloning.Models
                 }
                 else
                 {
-                    FObject.clockwise = 1;
-                    FObject.start = index;
-                    FObject.end = rs.Length + index - 1; //switch to 0 index mode
-                    FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode                    
+                    if(enzyme.forward_cut <0 &&index < Math.Max(Math.Abs(enzyme.forward_cut), Math.Abs(enzyme.reverse_cut)) - 1)
+                    {
+                        //enzyme cut is left to the restriciton site
+                        var lenth1 = Math.Abs(enzyme.forward_cut) - 1 - index;
+                        FObject.start = fullSeq.Length - lenth1 - 1;
+                        var lenth = Math.Abs(enzyme.reverse_cut) - 1 - index;
+                        FObject.end = fullSeq.Length - lenth - 1;
+                        FObject.cut = FObject.start;
+                        FObject.clockwise = 1;
+                    }
+                    if (((index + 1 + (Math.Max(Math.Abs(enzyme.forward_cut), Math.Abs(enzyme.reverse_cut)))) > fullSeq.Length))
+                    {
+                        //enzyme cut is to the right if the restriciotn site
+                        FObject.start = index + (int)enzyme.forward_cut - fullSeq.Length - 1;
+                        FObject.end = index + (int)enzyme.reverse_cut - -fullSeq.Length - 1;
+                        FObject.cut = FObject.start;
+                        FObject.clockwise = 1;
 
+                    }
+                    else
+                    {
+                        FObject.clockwise = 1;
+                        FObject.start = index;
+                        FObject.end = rs.Length + index - 1; //switch to 0 index mode
+                        FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode 
+                    }
+                    
+                    //when the cut is outside the resriciton site                   
+                    //dam and dcm is not possible
 
                     //check dam and dcm
                     var findRestrction = new FindRestriction();
@@ -678,8 +703,6 @@ namespace ecloning.Models
         {
             List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
 
-
-
             for (int index = 0; ; index += crs.Length)
             {
                 //object
@@ -692,10 +715,25 @@ namespace ecloning.Models
                 }
                 else
                 {
-                    FObject.clockwise = 0;
-                    FObject.start = index;
-                    FObject.end = crs.Length + index - 1; //switch to 0 index mode
-                    FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode                    
+
+                    //deel with end pour of range problem
+                    if(enzyme.forward_cut < 0 && (((Math.Max(Math.Abs(enzyme.forward_cut), Math.Abs(enzyme.reverse_cut))) -1 + index + 1)  > fullSeq.Length))
+                    {
+
+                    }
+                    else if ((enzyme.forward_cut > enzyme.forward_seq.Length) && (index + 1 < (enzyme.forward_cut - enzyme.forward_seq.Length)))
+                    {
+
+                    }
+                    else
+                    {
+                        FObject.clockwise = 0;
+                        FObject.start = index;
+                        FObject.end = crs.Length + index - 1; //switch to 0 index mode
+                        FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode 
+                    }
+                                       
+
 
 
                     //check dam and dcm
@@ -1297,5 +1335,207 @@ namespace ecloning.Models
 
 
         //=====================deel with more than one cut each enzyme ======================================================//
+
+        //find the non N letters in the restriciton sites
+        
+        public List<RestriFeatureObject> FRr2Object (string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        {
+            List<RestriFeatureObject> FRr2Objects = new List<RestriFeatureObject>();
+            List<RestriFeatureObject> Fr2Objects = new List<RestriFeatureObject>();
+            List<RestriFeatureObject> Rr2Objects = new List<RestriFeatureObject>();
+
+            var findObject = new FindRestriction();
+            Fr2Objects = findObject.Fr2Object(rs, fullSeq, enzyme, isCircular);
+
+
+
+
+
+            FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
+            return FRr2Objects;
+        }
+
+        public List<RestriFeatureObject> Fr2Object(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        {
+            List<RestriFeatureObject> r2Objects = new List<RestriFeatureObject>();
+            //process rs
+            var findRestrciton = new FindRestriction();
+            var r2SeqObject = new TwocutRestriObject();
+            r2SeqObject = findRestrciton.TwocutForardSeq(rs);
+            //find the leftSeq
+            for (int index = 0; ; index += r2SeqObject.leftSeq.Length)
+            {
+                //need to add two objects for each matched index
+                var FObject1 = new RestriFeatureObject();
+                var FObject2 = new RestriFeatureObject();
+                index = fullSeq.IndexOf(r2SeqObject.leftSeq, index);
+                if (index == -1)
+                {
+                    break;
+                    //don't generate the object
+                }
+                else
+                {                   
+                        if(r2SeqObject.innerLength != 0)
+                        {
+                            //check rightSeq
+                            int rightIndex = index + r2SeqObject.innerLength;
+                            if(fullSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                            {
+                                //add to object
+                                //index found but the cut is out of the range
+                                if (index < (Math.Max(Math.Abs(enzyme.forward_cut), Math.Abs(enzyme.reverse_cut))) - 1)
+                                {
+                                //left end
+                                var lenth1 = Math.Abs(enzyme.forward_cut) - 1 - index;
+                                FObject1.start = fullSeq.Length - lenth1 - 1;
+                                var lenth2 = Math.Abs(enzyme.reverse_cut) - 1 - index;
+                                FObject1.end = fullSeq.Length - lenth2 - 1;
+                                FObject1.cut = FObject1.start;
+
+
+                                FObject2.start = index + (int)enzyme.forward_cut2;
+                                FObject2.end = index + (int)enzyme.reverse_cut2;
+                                FObject2.cut = FObject2.start;
+
+                                }
+                                else if (((index + 1 + (Math.Max(Math.Abs((int)enzyme.forward_cut2), Math.Abs((int)enzyme.reverse_cut2)))) > fullSeq.Length))
+                                {
+                                //right end
+                                FObject1.start = index + enzyme.forward_cut;
+                                FObject1.end = index + enzyme.reverse_cut;
+                                FObject1.cut = FObject1.start;
+
+                                FObject2.start = index + (int)enzyme.forward_cut2 - fullSeq.Length -1;
+                                FObject2.end = index + (int)enzyme.reverse_cut2 - -fullSeq.Length - 1;
+                                FObject2.cut = FObject2.start;
+                                }
+                                else
+                                {
+                                    FObject1.start = index + enzyme.forward_cut;
+                                    FObject1.end = index + enzyme.reverse_cut;
+                                    FObject1.cut = FObject1.start;
+
+                                    FObject2.start = index + (int)enzyme.forward_cut2;
+                                    FObject2.end = index + (int)enzyme.reverse_cut2;
+                                    FObject2.cut = FObject2.start;
+                                }
+                                
+                                
+                                FObject1.clockwise = 1;
+                                FObject2.clockwise = 1;
+
+                                //for noe don't check dam and dcm
+
+                                FObject1.name = enzyme.name;
+                                FObject2.name = enzyme.name;
+
+                                FObject1.dam_complete = false;
+                                FObject1.dam_impaired = false;
+                                FObject1.dcm_complete = false;
+                                FObject1.dcm_impaired = false;
+
+
+                                FObject2.dam_complete = false;
+                                FObject2.dam_impaired = false;
+                                FObject2.dcm_complete = false;
+                                FObject2.dcm_impaired = false;
+
+                                r2Objects.Add(FObject1);
+                                r2Objects.Add(FObject2);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            //add to Fobject
+                            //add to object
+                            FObject1.start = index + enzyme.forward_cut;
+                            FObject1.end = index + enzyme.reverse_cut;
+                            FObject1.cut = FObject1.start;
+
+                            FObject2.start = index + (int)enzyme.forward_cut2;
+                            FObject2.end = index + (int)enzyme.reverse_cut2;
+                            FObject2.cut = FObject2.start;
+
+                            FObject1.clockwise = 1;
+                            FObject2.clockwise = 1;
+                            //for noe don't check dam and dcm
+
+                            FObject1.name = enzyme.name;
+                            FObject2.name = enzyme.name;
+
+                            FObject1.dam_complete = false;
+                            FObject1.dam_impaired = false;
+                            FObject1.dcm_complete = false;
+                            FObject1.dcm_impaired = false;
+
+
+                            FObject2.dam_complete = false;
+                            FObject2.dam_impaired = false;
+                            FObject2.dcm_complete = false;
+                            FObject2.dcm_impaired = false;
+
+                            r2Objects.Add(FObject1);
+                            r2Objects.Add(FObject2);
+                        }
+
+                }
+
+             if (isCircular)
+             {
+                    //end
+                    var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, fullSeq, enzyme);
+                    foreach(var o in endObjects)
+                    {
+                        r2Objects.Add(o);
+                    }
+             }
+            }
+
+         return r2Objects;
+    }
+
+        public List<RestriFeatureObject> FindEnd2Restriction(TwocutRestriObject r2SeqObject, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        {
+            List<RestriFeatureObject> r2Objects = new List<RestriFeatureObject>();
+
+            return r2Objects;
+        }
+
+        public TwocutRestriObject TwocutForardSeq(string rs)
+        {
+            var seqObject = new TwocutRestriObject();
+
+            string leftSeq = null;
+            string rightSeq = null;
+            int innerLength = 0;
+
+            rs = rs.TrimEnd('N').TrimStart('N');
+            if (rs.Contains('N'))
+            {
+                int firstN = rs.IndexOf('N');
+                int lastN = rs.LastIndexOf('N');
+                leftSeq = rs.Substring(0, firstN);
+                rightSeq = rs.Substring(lastN+1);
+                innerLength = lastN - firstN + 1;
+            }
+            else
+            {
+                leftSeq = rs;
+            }
+
+            seqObject.leftSeq = leftSeq;
+            seqObject.rightSeq = rightSeq;
+            seqObject.innerLength = innerLength;
+
+            return seqObject;
+        }
+
+
+
     }
 }

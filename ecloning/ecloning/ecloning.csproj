@@ -457,6 +457,7 @@
     <Compile Include="Models\storage.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TwocutRestriObject.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Models\WordWrap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
