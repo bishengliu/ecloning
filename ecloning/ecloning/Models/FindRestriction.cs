@@ -37,8 +37,6 @@ namespace ecloning.Models
                                 Objects = Objects.Concat(FRrObjects).ToList();
                             }                          
                         }
-
-
                     }
                     else
                     {
@@ -47,15 +45,18 @@ namespace ecloning.Models
                         var forwardSeqList = decodes.DecodeNonN(restriSeq);
                         foreach (var rs in forwardSeqList)
                         {
-                            List<RestriFeatureObject> FRrObjects = new List<RestriFeatureObject>();
+                            List<RestriFeatureObject> FRr2Objects = new List<RestriFeatureObject>();
 
                             //mutiple cut following these rules
                             //ATCGNNNNNNATGC
                             var findObjects = new FindRestriction();
-
                             //don't look for dam and dcm
                             //generate 2 object for each index
-
+                            FRr2Objects = FRr2Object(cutNum, rs, fullSeq, enzyme, true);
+                            if (FRr2Objects.Count() > 0)
+                            {
+                                Objects = Objects.Concat(FRr2Objects).ToList();
+                            }
                         }
                     }
                 }
@@ -133,52 +134,16 @@ namespace ecloning.Models
                     {
                         //enzyme cut is left to the restriciton site
                         var lenth1 = Math.Abs(enzyme.forward_cut) - index;
-                        FObject.cut = fullSeq.Length - lenth1 - 1;
-                        //var lenth1 = Math.Abs(enzyme.forward_cut) - index;
-                        //FObject.start = fullSeq.Length - lenth1 - 1;
-
-                        //if(index >= Math.Abs(enzyme.reverse_cut))
-                        //{
-                        //    //reverse_cut is short than forward
-                        //    FObject.end = index - Math.Abs(enzyme.reverse_cut);
-                        //}
-                        //else
-                        //{
-                        //    //reverse id longer than forward
-                        //    var lenth = Math.Abs(enzyme.reverse_cut) - index;
-                        //    FObject.end = fullSeq.Length - lenth -1;
-                        //}
-
-                        //FObject.cut = FObject.start;
-                        //FObject.clockwise = 1;
+                        FObject.cut = fullSeq.Length - lenth1 - 1;                        
                     }
                     if (enzyme.forward_cut > enzyme.forward_seq.Length && (index + Math.Abs(enzyme.forward_cut) > fullSeq.Length))
                     {
                         //enzyme cut is to the right if the restriciotn site
                         var length1 = enzyme.forward_cut - (fullSeq.Length - index);
-                        FObject.cut = FObject.start = length1 - 1;
-                        //var length1 = enzyme.forward_cut - (fullSeq.Length - index);
-                        //FObject.start = length1 - 1;
-
-                        //if(enzyme.reverse_cut + index <= fullSeq.Length)
-                        //{
-                        //    //reverse cut is still within the range
-                        //    FObject.end = fullSeq.Length - index - enzyme.reverse_cut - 1;
-                        //}
-                        //else
-                        //{
-                        //    //out of the range
-                        //    FObject.end = index - enzyme.reverse_cut - fullSeq.Length - 1;
-                        //}
-
-                        //FObject.cut = FObject.start;
-                        //FObject.clockwise = 1;
+                        FObject.cut = FObject.start = length1 - 1;                       
                     }
                     else
-                    {
-                        //FObject.clockwise = 1;
-                        //FObject.start = index;
-                        //FObject.end = rs.Length + index - 1; //switch to 0 index mode
+                    {                        
                         FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode 
                     }
                     
@@ -212,6 +177,7 @@ namespace ecloning.Models
                     {
                         featureName = featureName + " (affected by Dcm Methylation)";
                     }
+                    FObject.name = featureName;
                 }
 
                 rObjects.Add(FObject);
@@ -224,7 +190,7 @@ namespace ecloning.Models
                 //if it is plasmid, default
                 var findRestrction = new FindRestriction();
                 var EndObject = findRestrction.FindEndRestriction(rs, fullSeq, enzyme);
-                if(EndObject != null)
+                if(EndObject.name != null)
                 {
                     rObjects.Add(EndObject);
                 }
@@ -288,6 +254,7 @@ namespace ecloning.Models
                 {
                     featureName = featureName + " (affected by Dcm Methylation)";
                 }
+                EndObject.name = featureName;
             }           
             return EndObject;
         }
@@ -731,8 +698,6 @@ namespace ecloning.Models
             return dict;
         }
 
-
-
         //reverse
         public List<RestriFeatureObject> RrObject(string crs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
         {
@@ -761,45 +726,18 @@ namespace ecloning.Models
                         //FObject.start = index;
                         var length2 = Math.Abs(enzyme.reverse_cut) - (fullSeq.Length - index);
                         FObject.cut = length2 - 1;
-                        //if (enzyme.forward_cut + index > fullSeq.Length)
-                        //{
-                        //    var length = Math.Abs(enzyme.forward_cut) - (fullSeq.Length - index);
-                        //    FObject.end = length - 1;
-                            
-                        //}
-                        //else
-                        //{                            
-                        //    FObject.end = Math.Abs(enzyme.forward_cut) + index - 1;
-                        //}
-
                     }
                     else if ((enzyme.reverse_cut > crs.Length) && (index < (enzyme.reverse_cut + 1 -crs.Length)))
                     {
                         //FObject.clockwise = 0;
                         //FObject.start = index;
-                        var length2 = enzyme.reverse_cut - enzyme.forward_seq.Length - index;
-                        //FObject.cut = fullSeq.Length - length2 - 1;
-                        //if (enzyme.forward_cut +1 - crs.Length <= index)
-                        //{
-                        //    FObject.end = index - (enzyme.forward_cut - crs.Length) - 1;
-                        //}
-                        //else
-                        //{
-                        //    var length = enzyme.forward_cut - crs.Length - index; 
-                        //    FObject.end = fullSeq.Length - length - 1;
-                        //}
+                        var length2 = enzyme.reverse_cut - enzyme.forward_seq.Length - index;                        
                     }
                     else
-                    {
-                        //FObject.clockwise = 0;
-                        //FObject.start = index;
-                        //FObject.end = crs.Length + index - 1; //switch to 0 index mode
+                    {                       
                         FObject.cut =(crs.Length - enzyme.reverse_cut)  + index - 1; //switch to 0 index mode 
                     }
                                        
-
-
-
                     //check dam and dcm
                     var findRestrction = new FindRestriction();
                     //chack dam
@@ -827,6 +765,7 @@ namespace ecloning.Models
                     {
                         featureName = featureName + " (affected by Dcm Methylation)";
                     }
+                    FObject.name = featureName;
                 }
 
                 rObjects.Add(FObject);
@@ -839,7 +778,7 @@ namespace ecloning.Models
                 //if it is plasmid, default
                 var findRestrction = new FindRestriction();
                 var EndObject = findRestrction.FindREndRestriction(crs, fullSeq, enzyme);
-                if(EndObject != null)
+                if(EndObject.name != null)
                 {
                     rObjects.Add(EndObject);
                 }
@@ -903,6 +842,7 @@ namespace ecloning.Models
                     {
                         featureName = featureName + " (affected by Dcm Methylation)";
                     }
+                    EndObject.name = featureName;
                 }
             }
 
@@ -1402,7 +1342,7 @@ namespace ecloning.Models
 
         //find the non N letters in the restriciton sites
         
-        public List<RestriFeatureObject> FRr2Object (string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> FRr2Object (int cutNum, string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> FRr2Objects = new List<RestriFeatureObject>();
             List<RestriFeatureObject> Fr2Objects = new List<RestriFeatureObject>();
@@ -1410,16 +1350,19 @@ namespace ecloning.Models
 
             var findObject = new FindRestriction();
             Fr2Objects = findObject.Fr2Object(rs, fullSeq, enzyme, isCircular);
+            if (cutNum == 0 || (cutNum != 0 && Fr2Objects.Count() < cutNum))
+            {
+                Rr2Objects = findObject.Rr2Object(rs, fullSeq, enzyme, isCircular);
+            }
 
-
-
-
-
-            FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
+            if (cutNum == 0 || (cutNum != 0 && Fr2Objects.Count() <= cutNum))
+            {
+                FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
+            }
             return FRr2Objects;
         }
 
-        public List<RestriFeatureObject> Fr2Object(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> Fr2Object(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> r2Objects = new List<RestriFeatureObject>();
             //process rs
@@ -1439,145 +1382,80 @@ namespace ecloning.Models
                     //don't generate the object
                 }
                 else
-                {                   
-                        if(r2SeqObject.innerLength != 0)
+                {
+                    //check rightSeq
+                    int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
+                    if(rightIndex > fullSeq.Length - 1)
+                    {
+                        //out of the range at the end, deal this when it is circular
+                        continue;
+                    }
+                    if (fullSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                    {
+                        FObject1.start = index;
+                        FObject1.end = index + rs.Length - 1;
+                        FObject2.start = index;
+                        FObject2.end = index + rs.Length - 1;
+
+                        //add to object
+                        //index found but the cut is out of the range
+                        if (index < Math.Abs(enzyme.forward_cut))
                         {
-                            //check rightSeq
-                            int rightIndex = index + r2SeqObject.innerLength;
-                            if(fullSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
-                            {
-                            FObject1.start = index + enzyme.forward_cut;
-                            FObject1.end = index + enzyme.reverse_cut;
-                            FObject2.start = index + (int)enzyme.forward_cut2;
-                            FObject2.end = index + (int)enzyme.reverse_cut2;
-
-                            //add to object
-                            //index found but the cut is out of the range
-                            if (index < Math.Abs(enzyme.forward_cut))
-                            {
-                                //left end
-                                var lenth1 = Math.Abs(enzyme.forward_cut) - index;
-                                FObject1.cut = fullSeq.Length - lenth1 - 1;
-                                FObject2.cut = index + (int)enzyme.forward_cut2;
-                            }
-                            else if ((index + Math.Abs((int)enzyme.forward_cut2)) > fullSeq.Length)
-                            {
-                                //right end
-                                FObject1.cut = index + enzyme.forward_cut;
-                                var length = index + (int)enzyme.forward_cut2 - fullSeq.Length;
-                                FObject2.cut = length - 1;
-                            }
-                            else
-                            {
-                                FObject1.cut = index + enzyme.forward_cut;
-                                FObject2.cut = index + (int)enzyme.forward_cut2;
-                            }
-
-                            FObject1.clockwise = 1;
-                                FObject2.clockwise = 1;
-
-                                //for now don't check dam and dcm
-
-                                FObject1.name = enzyme.name;
-                                FObject2.name = enzyme.name;
-
-                                FObject1.dam_complete = false;
-                                FObject1.dam_impaired = false;
-                                FObject1.dcm_complete = false;
-                                FObject1.dcm_impaired = false;
-
-
-                                FObject2.dam_complete = false;
-                                FObject2.dam_impaired = false;
-                                FObject2.dcm_complete = false;
-                                FObject2.dcm_impaired = false;
-
-                                r2Objects.Add(FObject1);
-                                r2Objects.Add(FObject2);
-                            }
-                            else
-                            {
-                                continue;
-                            }
+                            //left end
+                            var lenth1 = Math.Abs(enzyme.forward_cut) - index;
+                            FObject1.cut = fullSeq.Length - lenth1 - 1;
+                            FObject2.cut = index + (int)enzyme.forward_cut2;
+                        }
+                        else if ((index + Math.Abs((int)enzyme.forward_cut2)) > fullSeq.Length)
+                        {
+                            //right end
+                            FObject1.cut = index + enzyme.forward_cut;
+                            var length = index + (int)enzyme.forward_cut2 - fullSeq.Length;
+                            FObject2.cut = length - 1;
                         }
                         else
                         {
-                            string seq = r2SeqObject.leftSeq + r2SeqObject.rightSeq;
-                            var idx = fullSeq.IndexOf(seq, index);
-                            if (idx != -1)
-                            {
-                                FObject1.start = index + enzyme.forward_cut;
-                                FObject1.end = index + enzyme.reverse_cut;
-                                FObject2.start = index + (int)enzyme.forward_cut2;
-                                FObject2.end = index + (int)enzyme.reverse_cut2;
+                            FObject1.cut = index + enzyme.forward_cut;
+                            FObject2.cut = index + (int)enzyme.forward_cut2;
+                        }
 
-                                //add to object
-                                //index found but the cut is out of the range
-                                if (index < Math.Abs(enzyme.forward_cut))
-                                {
-                                    //left end
-                                    var lenth1 = Math.Abs(enzyme.forward_cut) - index;
-                                    FObject1.cut = fullSeq.Length - lenth1 - 1;
-                                    FObject2.cut = index + (int)enzyme.forward_cut2;
-                                }
-                                else if ((index + Math.Abs((int)enzyme.forward_cut2)) > fullSeq.Length)
-                                {
-                                    //right end
-                                    FObject1.cut = index + enzyme.forward_cut;
-                                    var length = index + (int)enzyme.forward_cut2 - fullSeq.Length;
-                                    FObject2.cut = length - 1;
-                                }
-                                else
-                                {
-                                    FObject1.cut = index + enzyme.forward_cut;
-                                    FObject2.cut = index + (int)enzyme.forward_cut2;
-                                }
+                        FObject1.clockwise = 1;
+                        FObject2.clockwise = 1;
 
-                                FObject1.clockwise = 1;
-                                FObject2.clockwise = 1;
+                        //for now don't check dam and dcm
 
-                                //for now don't check dam and dcm
+                        FObject1.name = enzyme.name;
+                        FObject2.name = enzyme.name;
 
-                                FObject1.name = enzyme.name;
-                                FObject2.name = enzyme.name;
-
-                                FObject1.dam_complete = false;
-                                FObject1.dam_impaired = false;
-                                FObject1.dcm_complete = false;
-                                FObject1.dcm_impaired = false;
+                        FObject1.dam_complete = false;
+                        FObject1.dam_impaired = false;
+                        FObject1.dcm_complete = false;
+                        FObject1.dcm_impaired = false;
 
 
-                                FObject2.dam_complete = false;
-                                FObject2.dam_impaired = false;
-                                FObject2.dcm_complete = false;
-                                FObject2.dcm_impaired = false;
+                        FObject2.dam_complete = false;
+                        FObject2.dam_impaired = false;
+                        FObject2.dcm_complete = false;
+                        FObject2.dcm_impaired = false;
 
-                                r2Objects.Add(FObject1);
-                                r2Objects.Add(FObject2);
-                            }
-                            else
-                            {
-                                continue;
-                            }
+                        r2Objects.Add(FObject1);
+                        r2Objects.Add(FObject2);
                     }
-
                 }
-
-             if (isCircular)
-             {
-                    //end
-                    var endObjects= findRestrciton.FindEnd2Restriction(r2SeqObject, fullSeq, enzyme);
-                    if (endObjects.Count() >0)
+            }
+            if (isCircular)
+            {
+                //end
+                var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, fullSeq, enzyme);
+                foreach (var o in endObjects)
+                {
+                    if (o.name != null)
                     {
-                        foreach(var o in endObjects)
-                        {
-                            r2Objects.Add(o);
-                        }                        
+                        r2Objects.Add(o);
                     }
-             }
-
-        }
-         return r2Objects;
+                }
+            }
+            return r2Objects;
     }
 
         public List<RestriFeatureObject> FindEnd2Restriction(TwocutRestriObject r2SeqObject, string fullSeq, restri_enzyme enzyme)
@@ -1592,80 +1470,186 @@ namespace ecloning.Models
 
             if(index != -1)
             {
-                if (r2SeqObject.innerLength != 0)
+                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
+                if (rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
-                    int rightIndex = index + r2SeqObject.innerLength;
-                    if (rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
-                    {
-                        //left cut 
-                        r2EndObject.cut = fullSeq.Length - 1 - rsLength - 1 - Math.Abs(enzyme.forward_cut) + index;
-                        r2EndObject2.cut = rsLength - 1 - (2 * (rsLength - 1) - (index + rsLength)) + (int)enzyme.forward_cut2 - 1;
+                    //left cut 
+                    r2EndObject.cut = fullSeq.Length - 1 - rsLength - 1 - Math.Abs(enzyme.forward_cut) + index;
+                    r2EndObject2.cut = rsLength - 1 - (2 * (rsLength - 1) - (index + rsLength)) + (int)enzyme.forward_cut2 - 1;
 
-                        r2EndObject.clockwise = 1;
-                        r2EndObject.start = fullSeq.Length - index;
-                        r2EndObject.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
-                        r2EndObject2.clockwise = 1;
-                        r2EndObject2.start = fullSeq.Length - index;
-                        r2EndObject2.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
+                    r2EndObject.clockwise = 1;
+                    r2EndObject.start = fullSeq.Length - index;
+                    r2EndObject.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
+                    r2EndObject2.clockwise = 1;
+                    r2EndObject2.start = fullSeq.Length - index;
+                    r2EndObject2.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
 
-                        r2EndObject.name = enzyme.name;
-                        r2EndObject2.name = enzyme.name;
+                    r2EndObject.name = enzyme.name;
+                    r2EndObject2.name = enzyme.name;
 
-                        r2EndObject.dam_complete = false;
-                        r2EndObject.dam_impaired = false;
-                        r2EndObject.dcm_complete = false;
-                        r2EndObject.dcm_impaired = false;
+                    r2EndObject.dam_complete = false;
+                    r2EndObject.dam_impaired = false;
+                    r2EndObject.dcm_complete = false;
+                    r2EndObject.dcm_impaired = false;
 
-
-                        r2EndObject2.dam_complete = false;
-                        r2EndObject2.dam_impaired = false;
-                        r2EndObject2.dcm_complete = false;
-                        r2EndObject2.dcm_impaired = false;
-                        r2EndObjects.Add(r2EndObject);
-                        r2EndObjects.Add(r2EndObject2);
-                    }
-                }
-                else
-                {
-                    string seq = r2SeqObject.leftSeq + r2SeqObject.rightSeq;
-                    var idx = fullSeq.IndexOf(seq, index);
-                    if(idx != -1)
-                    {
-                        r2EndObject.cut = fullSeq.Length - 1 - rsLength - 1 - Math.Abs(enzyme.forward_cut) + index;
-                        r2EndObject2.cut = rsLength - 1 - (2 * (rsLength - 1) - (index + rsLength)) + (int)enzyme.forward_cut2 - 1;
-
-                        r2EndObject.clockwise = 1;
-                        r2EndObject.start = fullSeq.Length - index;
-                        r2EndObject.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
-                        r2EndObject2.clockwise = 1;
-                        r2EndObject2.start = fullSeq.Length - index;
-                        r2EndObject2.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
-
-                        r2EndObject.name = enzyme.name;
-                        r2EndObject2.name = enzyme.name;
-
-                        r2EndObject.dam_complete = false;
-                        r2EndObject.dam_impaired = false;
-                        r2EndObject.dcm_complete = false;
-                        r2EndObject.dcm_impaired = false;
-
-
-                        r2EndObject2.dam_complete = false;
-                        r2EndObject2.dam_impaired = false;
-                        r2EndObject2.dcm_complete = false;
-                        r2EndObject2.dcm_impaired = false;
-
-                        r2EndObjects.Add(r2EndObject);
-                        r2EndObjects.Add(r2EndObject2);
-                    }                    
+                    r2EndObject2.dam_complete = false;
+                    r2EndObject2.dam_impaired = false;
+                    r2EndObject2.dcm_complete = false;
+                    r2EndObject2.dcm_impaired = false;
+                    r2EndObjects.Add(r2EndObject);
+                    r2EndObjects.Add(r2EndObject2);
                 }
             }
 
             return r2EndObjects;
         }
 
+        public List<RestriFeatureObject> Rr2Object(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
+        {
+            List<RestriFeatureObject> r2Objects = new List<RestriFeatureObject>();
+
+            //get the complementary fullseq
+            var cfullSeq = FindSeq.cDNA(fullSeq);
+            //get the reverse rs
+            var rrs = FindSeq.ReverseSeq(rs);
+
+            var findRestrciton = new FindRestriction();
+            var r2SeqObject = new TwocutRestriObject();
+            r2SeqObject = findRestrciton.TwocutForardSeq(rrs);
+            for (int index = 0; ; index += r2SeqObject.leftSeq.Length)
+            {
+                //need to add two objects for each matched index
+                var FObject1 = new RestriFeatureObject();
+                var FObject2 = new RestriFeatureObject();
+                index = cfullSeq.IndexOf(r2SeqObject.leftSeq, index);
+                if (index == -1)
+                {
+                    break;
+                    //don't generate the object
+                }
+                else
+                {
+                    //check rightSeq
+                    int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
+                    if (rightIndex > cfullSeq.Length - 1)
+                    {
+                        //out of the range at the end, deal this when it is circular
+                        continue;
+                    }
+                    if (cfullSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                    {
+
+                        FObject1.start = index;
+                        FObject1.end = index + rrs.Length - 1;
+                        FObject2.start = index;
+                        FObject2.end = index + rrs.Length - 1;
+
+                        //add to object
+                        //index found but the cut is out of the range
+                        if (index - 1 < Math.Abs((int)enzyme.forward_cut2) - rrs.Length)
+                        {
+                            //left end
+                            var lenth1 = Math.Abs((int)enzyme.forward_cut2) - rrs.Length + 1 - index;
+                            FObject1.cut = fullSeq.Length - lenth1 - 1;
+                            FObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1;
+                        }
+                        else if ((index + Math.Abs((int)enzyme.forward_cut) - 1) > fullSeq.Length)
+                        {
+                            //right end
+                            FObject1.cut = index + Math.Abs((int)enzyme.forward_cut2) - rrs.Length - 1;
+                            var length = index + Math.Abs((int)enzyme.forward_cut) - 1 - fullSeq.Length;
+                            FObject2.cut = length - 1;
+                        }
+                        else
+                        {
+                            //in the middle
+                            FObject1.cut = index + Math.Abs((int)enzyme.forward_cut2) - rrs.Length - 1;
+                            FObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1;
+                        }
+
+                        FObject1.clockwise = 0;
+                        FObject2.clockwise = 0;
+
+                        //for now don't check dam and dcm
+
+                        FObject1.name = enzyme.name;
+                        FObject2.name = enzyme.name;
+
+                        FObject1.dam_complete = false;
+                        FObject1.dam_impaired = false;
+                        FObject1.dcm_complete = false;
+                        FObject1.dcm_impaired = false;
 
 
+                        FObject2.dam_complete = false;
+                        FObject2.dam_impaired = false;
+                        FObject2.dcm_complete = false;
+                        FObject2.dcm_impaired = false;
+
+                        r2Objects.Add(FObject1);
+                        r2Objects.Add(FObject2);
+                    }
+                }
+            }
+            //check the circular
+            if (isCircular)
+            {
+                //end
+                var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, cfullSeq, enzyme);
+                foreach (var o in endObjects)
+                {
+                    if (o.name != null)
+                    {
+                        r2Objects.Add(o);
+                    }
+                }
+            }
+            return r2Objects;
+        }
+
+        public List<RestriFeatureObject> FindREnd2Restriction(TwocutRestriObject r2SeqObject, string cfullSeq, restri_enzyme enzyme)
+        {
+            List<RestriFeatureObject> r2EndObjects = new List<RestriFeatureObject>();
+            RestriFeatureObject r2EndObject = new RestriFeatureObject();
+            RestriFeatureObject r2EndObject2 = new RestriFeatureObject();
+            var rsLength = r2SeqObject.leftSeq.Length + r2SeqObject.innerLength + r2SeqObject.rightSeq.Length;
+            string rightEndSeq = cfullSeq.Substring(cfullSeq.Length - rsLength) + cfullSeq.Substring(0, rsLength - 1);
+            int index = rightEndSeq.IndexOf(r2SeqObject.leftSeq);
+            if (index != -1)
+            {
+                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
+                if (rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                {
+
+                    r2EndObject.cut = cfullSeq.Length - 1 - rsLength - 1 - Math.Abs((int)enzyme.forward_cut2 - rsLength + 1) + index;
+                    r2EndObject2.cut = rsLength - 1 - (2 * (rsLength - 1) - (index + rsLength)) + Math.Abs(enzyme.forward_cut) -1 - 1;
+
+                    r2EndObject.clockwise = 0;
+                    r2EndObject.start = cfullSeq.Length - index;
+                    r2EndObject.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
+                    r2EndObject2.clockwise = 0;
+                    r2EndObject2.start = cfullSeq.Length - index;
+                    r2EndObject2.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
+
+
+                    r2EndObject.name = enzyme.name;
+                    r2EndObject2.name = enzyme.name;
+
+                    r2EndObject.dam_complete = false;
+                    r2EndObject.dam_impaired = false;
+                    r2EndObject.dcm_complete = false;
+                    r2EndObject.dcm_impaired = false;
+
+                    r2EndObject2.dam_complete = false;
+                    r2EndObject2.dam_impaired = false;
+                    r2EndObject2.dcm_complete = false;
+                    r2EndObject2.dcm_impaired = false;
+                    r2EndObjects.Add(r2EndObject);
+                    r2EndObjects.Add(r2EndObject2);
+                }
+            }
+           return r2EndObjects;
+        }
 
         public TwocutRestriObject TwocutForardSeq(string rs)
         {
