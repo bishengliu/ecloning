@@ -19,6 +19,10 @@ namespace ecloning.Models
         public int cut { get; set; }
         public int clockwise { get; set; }
         public string name { get; set; }
+        public bool dam_complete { get; set; }
+        public bool dam_impaired { get; set; }
+        public bool dcm_complete { get; set; }
+        public bool dcm_impaired { get; set; }
     
         public virtual plasmid plasmid { get; set; }
     }

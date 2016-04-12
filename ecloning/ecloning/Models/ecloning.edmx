@@ -302,6 +302,10 @@
           <Property Name="cut" Type="int" Nullable="false" />
           <Property Name="clockwise" Type="int" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="dam_complete" Type="bit" Nullable="false" />
+          <Property Name="dam_impaired" Type="bit" Nullable="false" />
+          <Property Name="dcm_complete" Type="bit" Nullable="false" />
+          <Property Name="dcm_impaired" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="minus180_liquid_nitrogen">
           <Key>
@@ -1807,6 +1811,10 @@
           <Property Name="cut" Type="Int32" Nullable="false" />
           <Property Name="clockwise" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="dam_complete" Type="Boolean" Nullable="false" />
+          <Property Name="dam_impaired" Type="Boolean" Nullable="false" />
+          <Property Name="dcm_complete" Type="Boolean" Nullable="false" />
+          <Property Name="dcm_impaired" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="plasmid" Relationship="Self.fk_methylation_plasmid_id" FromRole="methylation" ToRole="plasmid" />
         </EntityType>
         <EntityType Name="minus180_liquid_nitrogen">
@@ -3301,6 +3309,10 @@
                 <ScalarProperty Name="cut" ColumnName="cut" />
                 <ScalarProperty Name="clockwise" ColumnName="clockwise" />
                 <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="dam_complete" ColumnName="dam_complete" />
+                <ScalarProperty Name="dam_impaired" ColumnName="dam_impaired" />
+                <ScalarProperty Name="dcm_complete" ColumnName="dcm_complete" />
+                <ScalarProperty Name="dcm_impaired" ColumnName="dcm_impaired" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

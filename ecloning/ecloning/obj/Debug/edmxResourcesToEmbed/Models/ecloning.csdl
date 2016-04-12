@@ -342,6 +342,10 @@
     <Property Name="cut" Type="Int32" Nullable="false" />
     <Property Name="clockwise" Type="Int32" Nullable="false" />
     <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="dam_complete" Type="Boolean" Nullable="false" />
+    <Property Name="dam_impaired" Type="Boolean" Nullable="false" />
+    <Property Name="dcm_complete" Type="Boolean" Nullable="false" />
+    <Property Name="dcm_impaired" Type="Boolean" Nullable="false" />
     <NavigationProperty Name="plasmid" Relationship="Self.fk_methylation_plasmid_id" FromRole="methylation" ToRole="plasmid" />
   </EntityType>
   <EntityType Name="minus180_liquid_nitrogen">

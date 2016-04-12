@@ -313,6 +313,10 @@
           <ScalarProperty Name="cut" ColumnName="cut" />
           <ScalarProperty Name="clockwise" ColumnName="clockwise" />
           <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="dam_complete" ColumnName="dam_complete" />
+          <ScalarProperty Name="dam_impaired" ColumnName="dam_impaired" />
+          <ScalarProperty Name="dcm_complete" ColumnName="dcm_complete" />
+          <ScalarProperty Name="dcm_impaired" ColumnName="dcm_impaired" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

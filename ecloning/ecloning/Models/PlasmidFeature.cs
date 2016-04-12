@@ -165,23 +165,32 @@ namespace ecloning.Models
             {
                 var map = new plasmid_map();
                 var methylation = new methylation();
+
+                //add tp map table
                 map.plasmid_id = PlasmidId;
                 map.show_feature = 1;
                 map.feature = rObject.name;
                 map.feature_id = 4;
                 map.start = rObject.start + 1;
                 map.end = rObject.end + 1;
-                map.cut = rObject.cut;
+                map.cut = rObject.cut +1;
                 map.clockwise = rObject.clockwise;
-
                 db.plasmid_map.Add(map);
 
+
+                //add to methylation table
                 methylation.plasmid_id = PlasmidId;
-                methylation.cut = rObject.cut;
+                methylation.cut = rObject.cut +1;
                 methylation.clockwise = rObject.clockwise;
                 methylation.name = rObject.name;
-
-
+                methylation.dam_complete = rObject.dam_complete;
+                methylation.dam_impaired = rObject.dam_impaired;
+                methylation.dcm_complete = rObject.dcm_complete;
+                methylation.dcm_impaired = rObject.dcm_impaired;
+                if(methylation.dam_complete || methylation.dam_impaired || methylation.dcm_complete || methylation.dcm_impaired)
+                {
+                    db.methylations.Add(methylation);
+                }
             }
 
 
