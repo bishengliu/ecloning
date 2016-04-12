@@ -161,6 +161,28 @@ namespace ecloning.Models
 
             var restriciton = new FindRestriction();
             var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId); //find all the restrictions cutNum default is 0 == all.
+            foreach( var rObject in restricitonObjects)
+            {
+                var map = new plasmid_map();
+                var methylation = new methylation();
+                map.plasmid_id = PlasmidId;
+                map.show_feature = 1;
+                map.feature = rObject.name;
+                map.feature_id = 4;
+                map.start = rObject.start + 1;
+                map.end = rObject.end + 1;
+                map.cut = rObject.cut;
+                map.clockwise = rObject.clockwise;
+
+                db.plasmid_map.Add(map);
+
+                methylation.plasmid_id = PlasmidId;
+                methylation.cut = rObject.cut;
+                methylation.clockwise = rObject.clockwise;
+                methylation.name = rObject.name;
+
+
+            }
 
 
             //========================================================================

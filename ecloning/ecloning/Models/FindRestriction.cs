@@ -165,18 +165,18 @@ namespace ecloning.Models
 
                     //set the name of the feature
                     var featureName = enzyme.name;
-                    if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
-                    {
-                        featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                    }
-                    if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
-                    {
-                        featureName = featureName + " (affected by Dam Methylation)";
-                    }
-                    if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
-                    {
-                        featureName = featureName + " (affected by Dcm Methylation)";
-                    }
+                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
+                    //{
+                    //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
+                    //}
+                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
+                    //{
+                    //    featureName = featureName + " (affected by Dam Methylation)";
+                    //}
+                    //if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
+                    //{
+                    //    featureName = featureName + " (affected by Dcm Methylation)";
+                    //}
                     FObject.name = featureName;
                 }
 
@@ -242,18 +242,18 @@ namespace ecloning.Models
 
                 //set the name of the feature
                 var featureName = enzyme.name;
-                if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete || EndObject.dcm_impaired))
-                {
-                    featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                }
-                if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete == false && EndObject.dcm_impaired == false))
-                {
-                    featureName = featureName + " (affected by Dam Methylation)";
-                }
-                if ((EndObject.dcm_complete || EndObject.dcm_impaired) && (EndObject.dam_complete == false && EndObject.dam_impaired == false))
-                {
-                    featureName = featureName + " (affected by Dcm Methylation)";
-                }
+                //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete || EndObject.dcm_impaired))
+                //{
+                //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
+                //}
+                //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete == false && EndObject.dcm_impaired == false))
+                //{
+                //    featureName = featureName + " (affected by Dam Methylation)";
+                //}
+                //if ((EndObject.dcm_complete || EndObject.dcm_impaired) && (EndObject.dam_complete == false && EndObject.dam_impaired == false))
+                //{
+                //    featureName = featureName + " (affected by Dcm Methylation)";
+                //}
                 EndObject.name = featureName;
             }           
             return EndObject;
@@ -753,18 +753,18 @@ namespace ecloning.Models
 
                     //set the name of the feature
                     var featureName = enzyme.name;
-                    if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
-                    {
-                        featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                    }
-                    if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
-                    {
-                        featureName = featureName + " (affected by Dam Methylation)";
-                    }
-                    if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
-                    {
-                        featureName = featureName + " (affected by Dcm Methylation)";
-                    }
+                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
+                    //{
+                    //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
+                    //}
+                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
+                    //{
+                    //    featureName = featureName + " (affected by Dam Methylation)";
+                    //}
+                    //if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
+                    //{
+                    //    featureName = featureName + " (affected by Dcm Methylation)";
+                    //}
                     FObject.name = featureName;
                 }
 
@@ -830,18 +830,18 @@ namespace ecloning.Models
 
                     //set the name of the feature
                     var featureName = enzyme.name;
-                    if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete || EndObject.dcm_impaired))
-                    {
-                        featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                    }
-                    if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete == false && EndObject.dcm_impaired == false))
-                    {
-                        featureName = featureName + " (affected by Dam Methylation)";
-                    }
-                    if ((EndObject.dcm_complete || EndObject.dcm_impaired) && (EndObject.dam_complete == false && EndObject.dam_impaired == false))
-                    {
-                        featureName = featureName + " (affected by Dcm Methylation)";
-                    }
+                    //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete || EndObject.dcm_impaired))
+                    //{
+                    //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
+                    //}
+                    //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete == false && EndObject.dcm_impaired == false))
+                    //{
+                    //    featureName = featureName + " (affected by Dam Methylation)";
+                    //}
+                    //if ((EndObject.dcm_complete || EndObject.dcm_impaired) && (EndObject.dam_complete == false && EndObject.dam_impaired == false))
+                    //{
+                    //    featureName = featureName + " (affected by Dcm Methylation)";
+                    //}
                     EndObject.name = featureName;
                 }
             }

@@ -305,6 +305,17 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="methylations">
+      <EntityTypeMapping TypeName="ecloningModel.methylation">
+        <MappingFragment StoreEntitySet="methylation">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+          <ScalarProperty Name="cut" ColumnName="cut" />
+          <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="minus180_liquid_nitrogen">
       <EntityTypeMapping TypeName="ecloningModel.minus180_liquid_nitrogen">
         <MappingFragment StoreEntitySet="minus180_liquid_nitrogen">

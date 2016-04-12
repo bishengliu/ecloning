@@ -52,6 +52,7 @@ namespace ecloning.Models
         public virtual DbSet<letter_code> letter_code { get; set; }
         public virtual DbSet<license> licenses { get; set; }
         public virtual DbSet<main_step> main_step { get; set; }
+        public virtual DbSet<methylation> methylations { get; set; }
         public virtual DbSet<minus180_liquid_nitrogen> minus180_liquid_nitrogen { get; set; }
         public virtual DbSet<minus20> minus20 { get; set; }
         public virtual DbSet<minus80> minus80 { get; set; }

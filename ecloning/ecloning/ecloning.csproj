@@ -384,6 +384,9 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\methylation.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\minus180_liquid_nitrogen.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

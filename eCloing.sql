@@ -718,6 +718,10 @@ CREATE TABLE methylation
 	cut INT NOT NULL,
 	clockwise INT NOT NULL,
 	name NVARCHAR(100) NOT NULL,
+	dam_complete BIT NOT NULL,
+	dam_impaired BIT NOT NULL,
+	dcm_complete BIT NOT NULL,
+	dcm_impaired BIT NOT NULL,
 	CONSTRAINT fk_methylation_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id)
 );
 

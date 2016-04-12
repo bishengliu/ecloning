@@ -293,6 +293,16 @@
           <Property Name="name" Type="nvarchar" MaxLength="200" />
           <Property Name="des" Type="text" />
         </EntityType>
+        <EntityType Name="methylation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="plasmid_id" Type="int" Nullable="false" />
+          <Property Name="cut" Type="int" Nullable="false" />
+          <Property Name="clockwise" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
         <EntityType Name="minus180_liquid_nitrogen">
           <Key>
             <PropertyRef Name="id" />
@@ -930,6 +940,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_methylation_plasmid_id">
+          <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+          <End Role="methylation" Type="Self.methylation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="plasmid">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="methylation">
+              <PropertyRef Name="plasmid_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_modifying_company_company_id">
           <End Role="company" Type="Self.company" Multiplicity="1" />
           <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
@@ -1211,6 +1233,7 @@
           <EntitySet Name="letter_code" EntityType="Self.letter_code" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="main_step" EntityType="Self.main_step" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="methylation" EntityType="Self.methylation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="minus20" EntityType="Self.minus20" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="minus80" EntityType="Self.minus80" Schema="dbo" store:Type="Tables" />
@@ -1347,6 +1370,10 @@
           <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
             <End Role="group" EntitySet="group" />
             <End Role="group_shared" EntitySet="group_shared" />
+          </AssociationSet>
+          <AssociationSet Name="fk_methylation_plasmid_id" Association="Self.fk_methylation_plasmid_id">
+            <End Role="plasmid" EntitySet="plasmid" />
+            <End Role="methylation" EntitySet="methylation" />
           </AssociationSet>
           <AssociationSet Name="fk_modifying_company_company_id" Association="Self.fk_modifying_company_company_id">
             <End Role="company" EntitySet="company" />
@@ -1771,6 +1798,17 @@
           <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="methylation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="plasmid_id" Type="Int32" Nullable="false" />
+          <Property Name="cut" Type="Int32" Nullable="false" />
+          <Property Name="clockwise" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="plasmid" Relationship="Self.fk_methylation_plasmid_id" FromRole="methylation" ToRole="plasmid" />
+        </EntityType>
         <EntityType Name="minus180_liquid_nitrogen">
           <Key>
             <PropertyRef Name="id" />
@@ -1913,6 +1951,7 @@
           <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="seq_length" Type="Int32" />
           <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
+          <NavigationProperty Name="methylations" Relationship="Self.fk_methylation_plasmid_id" FromRole="plasmid" ToRole="methylation" />
           <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
           <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_plasmid_id" FromRole="plasmid" ToRole="plasmid_map_backup" />
           <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />
@@ -2497,6 +2536,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_methylation_plasmid_id">
+          <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+          <End Role="methylation" Type="Self.methylation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="plasmid">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="methylation">
+              <PropertyRef Name="plasmid_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_modifying_company_enzyme_id">
           <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
           <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
@@ -2709,6 +2760,7 @@
           <EntitySet Name="letter_code" EntityType="Self.letter_code" />
           <EntitySet Name="licenses" EntityType="Self.license" />
           <EntitySet Name="main_step" EntityType="Self.main_step" />
+          <EntitySet Name="methylations" EntityType="Self.methylation" />
           <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" />
           <EntitySet Name="minus20" EntityType="Self.minus20" />
           <EntitySet Name="minus80" EntityType="Self.minus80" />
@@ -2861,6 +2913,10 @@
           <AssociationSet Name="fk_people_license_licence_id" Association="Self.fk_people_license_licence_id">
             <End Role="license" EntitySet="licenses" />
             <End Role="people_license" EntitySet="people_license" />
+          </AssociationSet>
+          <AssociationSet Name="fk_methylation_plasmid_id" Association="Self.fk_methylation_plasmid_id">
+            <End Role="plasmid" EntitySet="plasmids" />
+            <End Role="methylation" EntitySet="methylations" />
           </AssociationSet>
           <AssociationSet Name="fk_modifying_company_enzyme_id" Association="Self.fk_modifying_company_enzyme_id">
             <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
@@ -3234,6 +3290,17 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="des" ColumnName="des" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="methylations">
+            <EntityTypeMapping TypeName="ecloningModel.methylation">
+              <MappingFragment StoreEntitySet="methylation">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+                <ScalarProperty Name="cut" ColumnName="cut" />
+                <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

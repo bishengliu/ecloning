@@ -52,3 +52,4 @@ namespace ecloning.Models
         public virtual ICollection<protocol> protocols { get; set; }
     }
 }
+

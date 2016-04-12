@@ -4,55 +4,56 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2bd85b69903a48eaa0a9e39083cc8f3b" Name="Diagram1">
-        <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.activity_modifying" Width="1.5" PointX="15.25" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.activity_restriction" Width="1.5" PointX="18.25" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="6" PointY="6.375" IsExpanded="true" />
+      <Diagram DiagramId="7162a618cda84a67ac679571810e2344" Name="Diagram1">
+        <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.activity_modifying" Width="1.5" PointX="17.25" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.activity_restriction" Width="1.5" PointX="20.25" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="9" PointY="15" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUser" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.buffer" Width="1.5" PointX="13" PointY="18.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.clone_group" Width="1.5" PointX="5.25" PointY="22.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.common_feature" Width="1.5" PointX="6" PointY="45.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.common_modifying" Width="1.5" PointX="13" PointY="11.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.common_restriction" Width="1.5" PointX="16" PointY="11.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.company" Width="1.5" PointX="10.75" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.container" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.Dam" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.Dcm" Width="1.5" PointX="12.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.department" Width="1.5" PointX="1.5" PointY="11.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.dropdownitem" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.group" Width="1.5" PointX="3.75" PointY="10.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.group_people" Width="1.5" PointX="6" PointY="19.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.group_shared" Width="1.5" PointX="6" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.ladder" Width="1.5" PointX="7.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.ladder_size" Width="1.5" PointX="10" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.letter_code" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.license" Width="1.5" PointX="3.75" PointY="15.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.main_step" Width="1.5" PointX="14.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.minus180_liquid_nitrogen" Width="1.5" PointX="15.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.minus20" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.minus80" Width="1.5" PointX="17.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.modifying_company" Width="1.5" PointX="13" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.modifying_enzyme" Width="1.5" PointX="10.75" PointY="15.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.nuclease" Width="1.5" PointX="3" PointY="22.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.oligo" Width="1.5" PointX="3" PointY="17.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.person" Width="1.5" PointX="0.75" PointY="19.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.people_license" Width="1.5" PointX="6" PointY="16.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.plasmid" Width="1.5" PointX="3" PointY="25.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="3.75" PointY="46.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.plasmid_map" Width="1.5" PointX="5.25" PointY="28.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.plasmid_map_backup" Width="1.5" PointX="8.25" PointY="26.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.primer" Width="1.5" PointX="3" PointY="31.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.probe" Width="1.5" PointX="8.25" PointY="21.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.project" Width="1.5" PointX="3" PointY="36.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.protocol" Width="1.5" PointX="3" PointY="40.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.restri_enzyme" Width="1.5" PointX="10.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.restriction_company" Width="1.5" PointX="13" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.seq_code" Width="1.5" PointX="17.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.storage" Width="1.5" PointX="15.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.buffer" Width="1.5" PointX="15" PointY="18.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.clone_group" Width="1.5" PointX="5.25" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_feature" Width="1.5" PointX="6" PointY="47.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_modifying" Width="1.5" PointX="15" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_restriction" Width="1.5" PointX="18" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.company" Width="1.5" PointX="12.75" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.container" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.Dam" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.Dcm" Width="1.5" PointX="7.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.department" Width="1.5" PointX="1.5" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.dropdownitem" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group" Width="1.5" PointX="3.75" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group_people" Width="1.5" PointX="6" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group_shared" Width="1.5" PointX="6" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.ladder" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.ladder_size" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.letter_code" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.license" Width="1.5" PointX="5.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.main_step" Width="1.5" PointX="9.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.methylation" Width="1.5" PointX="5.25" PointY="28.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus180_liquid_nitrogen" Width="1.5" PointX="7.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus20" Width="1.5" PointX="9.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus80" Width="1.5" PointX="0.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.modifying_company" Width="1.5" PointX="15" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.modifying_enzyme" Width="1.5" PointX="12.75" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.nuclease" Width="1.5" PointX="3" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.oligo" Width="1.5" PointX="3" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.person" Width="1.5" PointX="0.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.people_license" Width="1.5" PointX="8" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid" Width="1.5" PointX="3" PointY="26.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="3.75" PointY="47.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_map" Width="1.5" PointX="8.25" PointY="27.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_map_backup" Width="1.5" PointX="5.25" PointY="32" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.primer" Width="1.5" PointX="3" PointY="33.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.probe" Width="1.5" PointX="10.25" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.project" Width="1.5" PointX="3" PointY="38.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.protocol" Width="1.5" PointX="3" PointY="42.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.restri_enzyme" Width="1.5" PointX="15.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.restriction_company" Width="1.5" PointX="18" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.seq_code" Width="1.5" PointX="2.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.storage" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="ecloningModel.fk_activity_modifying_buffer_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_activity_modifying_company_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_activity_modifying_enzyme_id" ManuallyRouted="false" />
@@ -86,6 +87,7 @@
         <AssociationConnector Association="ecloningModel.fk_group_people_people_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_padder_size_ladder_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_people_license_licence_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_methylation_plasmid_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_modifying_company_enzyme_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_oligo_people_id" ManuallyRouted="false" />
         <AssociationConnector Association="ecloningModel.fk_people_license_people_id" ManuallyRouted="false" />
