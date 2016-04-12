@@ -594,7 +594,6 @@ CREATE TABLE common_modifying
 );
 
 
-
 -- link restriciton enzyme to company
 CREATE TABLE restriction_company
 (
@@ -689,7 +688,7 @@ VALUES
 --partially overpping and completely blocked
 ('Bme1390I', 0, 1, null, null), --in middle
 ('Bsp120I', 0, 1, null,'WGG'), 
-('CaiI', 0, 1, 'C','G'), 
+('CaiI', 0, 1, null,null), 
 ('CfrI', 0, 1, null,'GG'), 
 ('Cfr13I', 0, 1, null,'WGG'),
 ('Eco47I', 0, 1, null,'WGG'),
@@ -711,7 +710,16 @@ VALUES
 ('Hin1I', 0, 0, null,'WGG'),
 ('SfiI', 0, 0, null,'WGG');
 
-
+--table to keep the dam and dcm on plasmid map
+CREATE TABLE methylation
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	plasmid_id INT NOT NULL,
+	cut INT NOT NULL,
+	clockwise INT NOT NULL,
+	name NVARCHAR(100) NOT NULL,
+	CONSTRAINT fk_methylation_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id)
+);
 
 --pcr primers
 CREATE TABLE [primer]
@@ -803,6 +811,7 @@ CREATE TABLE nuclease
 );
 
 --create crispr group or virus group, plasmid group
+--==============need to thin this again!!!!!++++++++++
 CREATE TABLE [clone_group]
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
