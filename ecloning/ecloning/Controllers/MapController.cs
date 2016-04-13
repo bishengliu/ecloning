@@ -442,7 +442,7 @@ namespace ecloning.Controllers
             ViewBag.PlasmidId = plasmid_id;
 
             //get all the feature of the current plasmid
-            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id).OrderBy(i=>i.id);           
+            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id).OrderBy(c=>c.start);           
             ViewBag.Count = plasmid_map.Count();
             return View(plasmid_map.ToList());
         }

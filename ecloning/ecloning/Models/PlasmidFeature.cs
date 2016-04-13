@@ -160,7 +160,8 @@ namespace ecloning.Models
             //generate enzyme restriction features
 
             var restriciton = new FindRestriction();
-            var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId); //find all the restrictions cutNum default is 0 == all.
+            var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, 1); //find all the restrictions cutNum default is 0 == all.
+
             foreach( var rObject in restricitonObjects)
             {
                 var map = new plasmid_map();

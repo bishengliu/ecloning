@@ -13,10 +13,11 @@ namespace ecloning.Models
         //find the restriction enzyme feature
         public List<RestriFeatureObject> RestricitonObject(string fullSeq, List<int> enzymeId, int cutNum=0)
         {
-            List<RestriFeatureObject> Objects = new List<RestriFeatureObject>();
+            List<RestriFeatureObject> FObjects = new List<RestriFeatureObject>();
 
             foreach (var e in enzymeId)
             {
+                List<RestriFeatureObject> Objects = new List<RestriFeatureObject>();
                 var enzyme = db.restri_enzyme.Find(e);
                 if(enzyme != null)
                 {
@@ -60,14 +61,18 @@ namespace ecloning.Models
                         }
                     }
                 }
-                else
+                Objects = Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
+                if (cutNum != 0 && Objects.Count() <= cutNum)
                 {
-                    continue;
+                    FObjects = FObjects.Concat(Objects).ToList();
+                }
+                if(cutNum == 0)
+                {
+                    FObjects = FObjects.Concat(Objects).ToList();
                 }
             }
-            return Objects;
+            return FObjects;
         }
-
 
         //====================================deel with one cut each enzyme=======================================================//
         //this funciton returen forward and completement restrictionObject
@@ -81,7 +86,7 @@ namespace ecloning.Models
             //find forward
             var findObject = new FindRestriction();
             FrObjects = findObject.FrObject(rs, fullSeq, enzyme, isCircular);
-            if(cutNum == 0 || (cutNum !=0 && FrObjects.Count() < cutNum))
+            if (cutNum == 0 || (cutNum != 0 && FrObjects.Count() < cutNum))
             {
                 //find the completment
                 var crs = FindSeq.cDNA(rs);
@@ -93,21 +98,17 @@ namespace ecloning.Models
                     if (object.Equals(rs, rcrs))
                     {
                         //find left side for dam or dcm
-                        FrObjects = findObject.newFrObject(rs, fullSeq, enzyme, FrObjects, isCircular);
+                        FrObjects = findObject.newFrObject(rcrs, fullSeq, enzyme, FrObjects, isCircular);
                     }
-                }        
-                if(!object.Equals(rs, rcrs))
+                }
+                if (!object.Equals(rs, rcrs))
                 {
                     RrObjects = findObject.FrObject(rcrs, fullSeq, enzyme, isCircular);
                 }
             }
-            if(cutNum == 0 || (cutNum != 0 && FrObjects.Count() <= cutNum))
-            {
-                FRrObjects = FrObjects.Concat(RrObjects).ToList();
-            }          
+            FRrObjects = FrObjects.Concat(RrObjects).ToList();     
             return FRrObjects;
         }
-
 
         //single cut one enzyme
         //forward
@@ -165,18 +166,6 @@ namespace ecloning.Models
 
                     //set the name of the feature
                     var featureName = enzyme.name;
-                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
-                    //{
-                    //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                    //}
-                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
-                    //{
-                    //    featureName = featureName + " (affected by Dam Methylation)";
-                    //}
-                    //if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
-                    //{
-                    //    featureName = featureName + " (affected by Dcm Methylation)";
-                    //}
                     FObject.name = featureName;
                 }
 
@@ -753,18 +742,6 @@ namespace ecloning.Models
 
                     //set the name of the feature
                     var featureName = enzyme.name;
-                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete || FObject.dcm_impaired))
-                    //{
-                    //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                    //}
-                    //if ((FObject.dam_complete || FObject.dam_impaired) && (FObject.dcm_complete == false && FObject.dcm_impaired == false))
-                    //{
-                    //    featureName = featureName + " (affected by Dam Methylation)";
-                    //}
-                    //if ((FObject.dcm_complete || FObject.dcm_impaired) && (FObject.dam_complete == false && FObject.dam_impaired == false))
-                    //{
-                    //    featureName = featureName + " (affected by Dcm Methylation)";
-                    //}
                     FObject.name = featureName;
                 }
 
@@ -1293,13 +1270,13 @@ namespace ecloning.Models
 
 
         //if rs complementaty is same same as rs, then no need to find new restriciton site, but need to check the dam and dcm
-        public List<RestriFeatureObject> newFrObject(string crs, string fullSeq, ecloning.Models.restri_enzyme enzyme, List<RestriFeatureObject> FrObjects, bool isCircular)
+        public List<RestriFeatureObject> newFrObject(string rs, string fullSeq, restri_enzyme enzyme, List<RestriFeatureObject> FrObjects, bool isCircular)
         {
             var findObject = new FindRestriction();
             foreach (var o in FrObjects)
             {
                 //chack dam
-                var dam = findObject.CheckRDam(crs, o.start, fullSeq, enzyme);
+                var dam = findObject.CheckRDam(rs, o.start, fullSeq, enzyme);
                 if (!o.dam_complete)
                 {
                     o.dam_complete = dam.Keys.FirstOrDefault();
@@ -1309,7 +1286,7 @@ namespace ecloning.Models
                     o.dam_impaired = dam.Values.FirstOrDefault();
                 }
                 //check dcm
-                var dcm = findObject.CheckRDcm(crs, o.start, fullSeq, enzyme);
+                var dcm = findObject.CheckRDcm(rs, o.start, fullSeq, enzyme);
                 if (!o.dcm_complete)
                 {
                     o.dcm_complete = dcm.Keys.FirstOrDefault();
@@ -1321,18 +1298,7 @@ namespace ecloning.Models
 
                 //update name
                 var featureName = enzyme.name;
-                if ((o.dam_complete || o.dam_impaired) && (o.dcm_complete || o.dcm_impaired))
-                {
-                    featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                }
-                if ((o.dam_complete || o.dam_impaired) && (o.dcm_complete == false && o.dcm_impaired == false))
-                {
-                    featureName = featureName + " (affected by Dam Methylation)";
-                }
-                if ((o.dcm_complete || o.dcm_impaired) && (o.dam_complete == false && o.dam_impaired == false))
-                {
-                    featureName = featureName + " (affected by Dcm Methylation)";
-                }
+                o.name = featureName;
             }
             return FrObjects;
         }
@@ -1355,10 +1321,11 @@ namespace ecloning.Models
                 Rr2Objects = findObject.Rr2Object(rs, fullSeq, enzyme, isCircular);
             }
 
-            if (cutNum == 0 || (cutNum != 0 && Fr2Objects.Count() <= cutNum))
-            {
-                FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
-            }
+            FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
+
+            //remove duplicates
+            FRr2Objects = FRr2Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
+
             return FRr2Objects;
         }
 
