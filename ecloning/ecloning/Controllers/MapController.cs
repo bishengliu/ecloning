@@ -75,6 +75,20 @@ namespace ecloning.Controllers
             return View(plasmid_map.ToList());
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult Enzyme(int? plasmid_id)
+        {
+
+            return View();
+        }
+        [Authorize]
+        [HttpGet]
+        public ActionResult Sequence(int? plasmid_id)
+        {
+
+            return View();
+        }
 
         [Authorize]
         [HttpGet]
@@ -442,7 +456,7 @@ namespace ecloning.Controllers
             ViewBag.PlasmidId = plasmid_id;
 
             //get all the feature of the current plasmid
-            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id).OrderBy(c=>c.start);           
+            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id && p.feature_id != 4).OrderBy(c=>c.start);           
             ViewBag.Count = plasmid_map.Count();
             return View(plasmid_map.ToList());
         }
@@ -555,7 +569,7 @@ namespace ecloning.Controllers
             ViewBag.SeqLength = plasmid.seq_length;
             ViewBag.PlasmidId = plasmid_id;
             //get all the feature of the current plasmid
-            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id);
+            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == plasmid_id && p.feature_id != 4).OrderBy(c => c.start);
             ViewBag.Count = plasmid_map.Count();
             return View(plasmid_map.ToList());
         }
