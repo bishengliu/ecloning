@@ -162,6 +162,15 @@ namespace ecloning.Models
             var restriciton = new FindRestriction();
             var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId); //find all the restrictions cutNum default is 0 == all.
 
+            //remove all the old methylation info
+            var methy = db.methylations.Where(p => p.plasmid_id == PlasmidId);
+            if (methy.Count() > 0)
+            {
+                foreach (var m in methy)
+                {
+                    db.methylations.Remove(m);
+                }
+            }
             foreach( var rObject in restricitonObjects)
             {
                 var map = new plasmid_map();

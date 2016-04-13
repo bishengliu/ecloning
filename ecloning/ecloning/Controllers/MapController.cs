@@ -79,6 +79,26 @@ namespace ecloning.Controllers
         [HttpGet]
         public ActionResult Enzyme(int? plasmid_id)
         {
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Name = plasmid.name;
+            ViewBag.Sequence = plasmid.sequence;
+            ViewBag.SeqLength = plasmid.seq_length;
+            //pass json
+            //display all enzyme cuts of the current plasmid
+            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
+            var Enzymes = plasmid_map.Where(f=>f.feature_id==4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Enzymes = JsonConvert.SerializeObject(Enzymes.ToList());
+
+            //all the methylation
+
 
             return View();
         }
