@@ -5,6 +5,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int Count = (int)ViewBag.Count;
     var msg = (string)TempData["msg"];
+
+    int adminGroupId = ViewBag.adminGroupId;
+    List<int> groupId = (List<int>)ViewBag.UserGroupId; //list
+    bool isAppAdmin = false;
+    if (groupId.Contains(adminGroupId))
+    {
+        isAppAdmin = true;
+    }
 }
 
 <div class="row">
@@ -38,21 +46,17 @@
         }
         else
         {
-
                 <table id="featureTable" class="table">
                     <thead>
                         <tr>
                             <th>
-                                Feature
+                                Feature Category
                             </th>
                             <th>
-                                Name
+                                Feature Name
                             </th>
                             <th class="no-sort">
                                 Sequence
-                            </th>
-                            <th >
-                                Group
                             </th>
                             <th class="no-sort">
                                 Remarks
@@ -74,7 +78,6 @@
                                 <td>
                                     @if (item.sequence.Count() >= 50)
                                     {
-
                                         var GenerateModel = new ecloning.Models.ModalSeq(item.sequence, item.group_id, item.label, 125);
                                         <span>@Html.Raw(GenerateModel.ModalRawHTML())</span>
                                     }
@@ -84,21 +87,45 @@
                                     }
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.group.name)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.des)
                                 </td>
                                 <td>
-                                    <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
-                                        <i class="fa fa-pencil-square-o text-danger"></i>
-                                        <span>Feature</span>
-                                    </a>
-                                    <span>&nbsp;</span>
-                                    <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
-                                        <i class="glyphicon glyphicon-trash text-danger"></i>
-                                        <span>Feature</span>
-                                    </a>
+                                    @if (item.group_id == adminGroupId)
+                                    {
+                                        if (isAppAdmin)
+                                        {
+                                            <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
+                                                <i class="fa fa-pencil-square-o text-danger"></i>
+                                                <span>Feature</span>
+                                            </a>
+                                            <span>&nbsp;</span>
+                                            <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
+                                                <i class="glyphicon glyphicon-trash text-danger"></i>
+                                                <span>Feature</span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-pencil-square-o text-muted"></i>
+                                            <span>Feature</span>
+                                            <span>&nbsp;</span>
+                                            <i class="glyphicon glyphicon-trash text-muted"></i>
+                                            <span>Feature</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
+                                            <i class="fa fa-pencil-square-o text-danger"></i>
+                                            <span>Feature</span>
+                                        </a>
+                                        <span>&nbsp;</span>
+                                        <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
+                                            <i class="glyphicon glyphicon-trash text-danger"></i>
+                                            <span>Feature</span>
+                                        </a>
+                                    }
+
                                 </td>
                             </tr>
                         }

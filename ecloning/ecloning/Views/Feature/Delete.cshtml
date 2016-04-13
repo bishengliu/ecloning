@@ -27,23 +27,18 @@
             <table class="table">
                 <tr>
                     <th>
-                        Feature
+                        Feature Category
                     </th>
                     <th>
-                        Name
+                        Feature Name
                     </th>
                     <th>
                         Sequence
                     </th>
                     <th>
-                        Group
-                    </th>
-                    <th>
                         Remarks
                     </th>
                 </tr>
-
-
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => Model.plasmid_feature.des)
@@ -62,9 +57,6 @@
                         {
                             <span>@Model.sequence</span>
                         }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => Model.group.name)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => Model.des)

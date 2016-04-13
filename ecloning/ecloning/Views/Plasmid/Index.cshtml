@@ -161,7 +161,6 @@
 
                                                 <span>
                                                     <!-- Trigger the modal with a button -->
-                                                    @*<a  class="btn btn-link" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open text-warning"></i>&nbsp;Full Sequence</a>*@
                                                     <a data-toggle="modal" data-target=@refId>
                                                         <i class="fa fa-align-justify text-info"></i>
                                                         <span>Plasmid Sequence</span>
@@ -221,8 +220,8 @@
                                                 </span>
                                               }
                                             
-                                            <span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>
-                                            <br />
+                                            @*<span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>*@
+                                            @*<br />*@
                                             <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
                                                 <i class="fa fa-bullseye text-info"></i>
                                                 <span>Plasmid Map</span>

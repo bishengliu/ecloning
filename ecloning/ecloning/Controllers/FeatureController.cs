@@ -20,13 +20,23 @@ namespace ecloning.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            //get the AppAdmin groupId
+            var adminGroupId = 0;
+            var adminGroup = db.groups.Where(g => g.name == "AppAdmin");
+            if (adminGroup.Count() > 0)
+            {
+                adminGroupId = adminGroup.FirstOrDefault().id;
+            }
+
             //get userId
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            var common_feature = db.common_feature.Include(c => c.plasmid_feature).Where(g=>groupInfo.groupId.Contains(g.group_id));
+            var common_feature = db.common_feature.Include(c => c.plasmid_feature).Where(g=>groupInfo.groupId.Contains(g.group_id) || g.id == adminGroupId).OrderBy(l=>l.label);
             ViewBag.Count = common_feature.Count();
-            
+
+            ViewBag.adminGroupId = adminGroupId;
+            ViewBag.UserGroupId = groupInfo.groupId; //list
             return View(common_feature.ToList());
         }
 
