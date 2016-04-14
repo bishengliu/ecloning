@@ -201,7 +201,6 @@ namespace ecloning.Models
     }
 }
 
-
 namespace ecloning.Models
 {
     using System;
@@ -215,6 +214,7 @@ namespace ecloning.Models
         {
             this.clone_group = new HashSet<clone_group>();
             this.methylations = new HashSet<methylation>();
+            this.methylation_backup = new HashSet<methylation_backup>();
             this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
             this.plasmid_map = new HashSet<plasmid_map>();
         }
@@ -252,6 +252,8 @@ namespace ecloning.Models
         public virtual ICollection<clone_group> clone_group { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<methylation> methylations { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<methylation_backup> methylation_backup { get; set; }
         public virtual person person { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
@@ -259,6 +261,4 @@ namespace ecloning.Models
         public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }
 }
-
-
 

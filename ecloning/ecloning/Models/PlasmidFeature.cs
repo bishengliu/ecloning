@@ -58,8 +58,37 @@ namespace ecloning.Models
                     db.plasmid_map_backup.Add(b);
                     db.plasmid_map.Remove(c);
                 }
+
+                //backup current methylation
+
             }
-            
+
+            //remove current mehtylation info
+            var previousMethylation = db.methylation_backup.Where(p => p.plasmid_id == PlasmidId);
+            if (previousMethylation.Count() > 0)
+            {
+                foreach (var m in previousMethylation)
+                {
+                    db.methylation_backup.Remove(m);
+                }
+
+                //remove current methylation
+                var currentMethylation = db.methylations.Where(p => p.plasmid_id == PlasmidId);
+                foreach(var c in currentMethylation)
+                {
+                    var b = new methylation_backup();
+                    b.plasmid_id = c.plasmid_id;
+                    b.cut = c.cut;
+                    b.clockwise = c.clockwise;
+                    b.name = c.name;
+                    b.dam_complete = c.dam_complete;
+                    b.dam_impaired = c.dam_impaired;
+                    b.dcm_complete = c.dcm_complete;
+                    b.dcm_impaired = c.dcm_impaired;
+                    db.methylation_backup.Add(b);
+                    db.methylations.Remove(c);
+                }
+            }
 
             //put all features in list except ORF/ restriction cut
             var features = db.common_feature.Where(f => f.plasmid_feature.feature != "orf" || f.plasmid_feature.feature != "enzyme");
