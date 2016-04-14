@@ -724,6 +724,21 @@ CREATE TABLE methylation
 	dcm_impaired BIT NOT NULL,
 	CONSTRAINT fk_methylation_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id)
 );
+--to backup the methylation data
+CREATE TABLE methylation_backup
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	plasmid_id INT NOT NULL,
+	cut INT NOT NULL,
+	clockwise INT NOT NULL,
+	name NVARCHAR(100) NOT NULL,
+	dam_complete BIT NOT NULL,
+	dam_impaired BIT NOT NULL,
+	dcm_complete BIT NOT NULL,
+	dcm_impaired BIT NOT NULL,
+	CONSTRAINT fk_methylation_backup_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id)
+);
+
 
 --pcr primers
 CREATE TABLE [primer]
