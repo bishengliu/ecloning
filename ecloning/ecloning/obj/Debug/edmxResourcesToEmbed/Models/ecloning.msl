@@ -320,6 +320,21 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="methylation_backup">
+      <EntityTypeMapping TypeName="ecloningModel.methylation_backup">
+        <MappingFragment StoreEntitySet="methylation_backup">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+          <ScalarProperty Name="cut" ColumnName="cut" />
+          <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="dam_complete" ColumnName="dam_complete" />
+          <ScalarProperty Name="dam_impaired" ColumnName="dam_impaired" />
+          <ScalarProperty Name="dcm_complete" ColumnName="dcm_complete" />
+          <ScalarProperty Name="dcm_impaired" ColumnName="dcm_impaired" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="minus180_liquid_nitrogen">
       <EntityTypeMapping TypeName="ecloningModel.minus180_liquid_nitrogen">
         <MappingFragment StoreEntitySet="minus180_liquid_nitrogen">

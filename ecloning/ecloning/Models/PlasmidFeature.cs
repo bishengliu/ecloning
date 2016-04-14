@@ -98,10 +98,6 @@ namespace ecloning.Models
             }
             else
             {
-
-                //=======================================================
-                //!!!!!!!!!!NEED TO DEEL WITH CIRCULAIR END!!!!!!!REMOVE THIS IF DONE!!!!!!!!!!
-                //=======================================================
                 //find common features
                 //except restriction cut and ORF
                 foreach (var item in features.ToList())
@@ -133,10 +129,28 @@ namespace ecloning.Models
                         result = true;
                     }
 
+                    //deal with the right end
+                    var endSeq = Sequence.Substring(Sequence.Length - subSeq.Length + 1) + Sequence.Substring(0, subSeq.Length - 1 - 1);  // 2 * (subSeq.Length -1)
+                    var endIdx = endSeq.IndexOf(subSeq);
+                    if (endIdx != -1)
+                    {
+                        //find an extra feature
+                        var f = new plasmid_map();
+                        f.plasmid_id = PlasmidId;
+                        f.show_feature = 1;
+                        f.feature = item.label;
+                        f.feature_id = item.feature_id;
+                        f.start = Sequence.Length - subSeq.Length + endIdx; //-1 + 1
+                        f.end = endIdx + subSeq.Length - (subSeq.Length - 1);
+                        f.common_id = item.id;
+                        f.clockwise = 1;
+                        db.plasmid_map.Add(f);
+                        result = true;
+                    }
+
 
                     //reverse                    
                     var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
-
                     //get completment DNA, but not reverse
                     var cSequence = FindSeq.cDNA(Sequence);
                     List<int> indexes2 = new List<int>();
@@ -158,6 +172,25 @@ namespace ecloning.Models
                             feature.clockwise = 0;
                             db.plasmid_map.Add(feature);
                         }
+                        result = true;
+                    }
+
+                    //deal with the left end
+                    var endcSeq = cSequence.Substring(cSequence.Length - reversesubSeq.Length + 1) + cSequence.Substring(0, reversesubSeq.Length - 1 - 1);  // 2 * (subSeq.Length -1)
+                    var endRIdx = endcSeq.IndexOf(reversesubSeq);
+                    if (endRIdx != -1)
+                    {
+                        //find an extra feature
+                        var rf = new plasmid_map();
+                        rf.plasmid_id = PlasmidId;
+                        rf.show_feature = 1;
+                        rf.feature = item.label;
+                        rf.feature_id = item.feature_id;
+                        rf.start = Sequence.Length - subSeq.Length + endRIdx; //-1 + 1
+                        rf.end = endRIdx + subSeq.Length - (subSeq.Length - 1);
+                        rf.common_id = item.id;
+                        rf.clockwise = 0;
+                        db.plasmid_map.Add(rf);
                         result = true;
                     }
                 }
