@@ -23,13 +23,13 @@
             {
                 if (Model.Count() > 0 && Model.FirstOrDefault().locked == 1)
                 {
-                    <a class="btn btn-md btn-link" href="@Url.Action("unLock", "Map", new { plasmid_id = plasmidId })">
+                    <a class="btn btn-md btn-link" href="@Url.Action("unLock", "Map", new { plasmid_id = plasmidId, tag = Tag })">
                         <i class="fa fa-lock fa-2x pull-left text-danger"></i>
                     </a>
                 }
                 else
                 {
-                    <a class="btn btn-md btn-link" href="@Url.Action("Lock", "Map", new { plasmid_id = plasmidId})">
+                    <a class="btn btn-md btn-link" href="@Url.Action("Lock", "Map", new { plasmid_id = plasmidId, tag = Tag})">
                         <i class="fa fa-unlock fa-2x pull-left text-danger"></i>
                     </a>
                 }
@@ -38,14 +38,14 @@
     </div>
     <div class="col-sx-12 col-sm-12 col-md-3 col-lg-2">
         <h3>
-            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Sequence", "Map", new { id = plasmidId })">
-                        <i class="fa fa-exchange text-danger"></i>
-                        <span>Sequence</span>
-                    </a>                
-            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { id = plasmidId })">
-                        <i class="fa fa-scissors text-danger"></i>
-                        <span>Enzymes</span>
-                    </a>
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Sequence", "Map", new { plasmid_id = plasmidId, tag = Tag})">
+                 <i class="fa fa-exchange text-danger"></i>
+                 <span>Sequence</span>
+            </a>                
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = plasmidId, tag = Tag})">
+                 <i class="fa fa-scissors text-danger"></i>
+                 <span>Enzymes</span>
+           </a>
         </h3>
     </div>
 </div>
@@ -261,67 +261,11 @@
     try
     {
         features = JSON.parse(features);
-        console.log(features);
+        //console.log(features);
         data = [seqCount, features];
         //console.log(data);
         var gd = GiraffeDraw();
         gd.read(data);
-
-
-
-/*
-//sample data
-gd.read([6363,
-[{ "show_feature": 0, "cut": 41, "end": 46, "type_id": 4, "feature": "BsrGI", "start": 41, "clockwise": true },
-{ "show_feature": 1, "end": 660, "type_id": 2, "feature": "CMV_immearly_promoter", "start": 84, "clockwise": true },
-{ "show_feature": 1, "cut": 97, "end": 102, "type_id": 4, "feature": "SpeI", "start": 97, "clockwise": true },
-{ "show_feature": 1, "end": 974, "type_id": 1, "feature": "5_LTR", "start": 148, "clockwise": true },
-{ "show_feature": 1, "end": 450, "type_id": 7, "feature": "CAG_enhancer", "start": 163, "clockwise": true },
-{ "show_feature": 0, "cut": 438, "end": 441, "type_id": 4, "feature": "SnaBI", "start": 436, "clockwise": true },
-{ "show_feature": 1, "end": 637, "type_id": 3, "feature": "CMV_fwd_primer", "start": 617, "clockwise": true },
-{ "show_feature": 1, "end": 687, "type_id": 2, "feature": "CMV_promoter", "start": 618, "clockwise": true },
-{ "show_feature": 1, "end": 749, "type_id": 2, "feature": "CMV2_promoter", "start": 630, "clockwise": true },
-{ "show_feature": 1, "end": 680, "type_id": 3, "feature": "pCEP_fwd_primer", "start": 661, "clockwise": true },
-{ "show_feature": 1, "end": 687, "type_id": 3, "feature": "LNCX_primer", "start": 663, "clockwise": true },
-{ "show_feature": 1, "cut": 753, "end": 758, "type_id": 4, "feature": "SalI", "start": 753, "clockwise": true },
-{ "show_feature": 0, "cut": 754, "end": 758, "type_id": 4, "feature": "AccI", "start": 753, "clockwise": true },
-{ "show_feature": 1, "end": 1350, "type_id": 1, "feature": "bGlob_int", "start": 778, "clockwise": true },
-{ "show_feature": 0, "cut": 1130, "end": 1135, "type_id": 4, "feature": "MfeI", "start": 1130, "clockwise": true },
-{ "start": 1276, "clockwise": true, "end": 2955, "feature": "ORF frame 1", "type_id": 10 },
-{ "show_feature": 0, "cut": 1305, "end": 1310, "type_id": 4, "feature": "PspOMI", "start": 1305, "clockwise": true },
-{ "show_feature": 1, "cut": 1309, "end": 1310, "type_id": 4, "feature": "ApaI", "start": 1305, "clockwise": true },
-{ "show_feature": 1, "end": 2955, "type_id": 5, "feature": "vsv-G", "start": 1420, "clockwise": true },
-{ "show_feature": 0, "cut": 1556, "end": 1560, "type_id": 4, "feature": "SwaI", "start": 1553, "clockwise": true },
-{ "show_feature": 1, "cut": 2119, "end": 2122, "type_id": 4, "feature": "StuI", "start": 2117, "clockwise": true },
-{ "show_feature": 1, "cut": 2208, "end": 2209, "type_id": 4, "feature": "PstI", "start": 2204, "clockwise": true },
-{ "show_feature": 1, "cut": 2401, "end": 2406, "type_id": 4, "feature": "AgeI", "start": 2401, "clockwise": true },
-{ "show_feature": 0, "cut": 2428, "end": 2433, "type_id": 4, "feature": "Acc65I", "start": 2428, "clockwise": true },
-{ "show_feature": 1, "cut": 2432, "end": 2433, "type_id": 4, "feature": "KpnI", "start": 2428, "clockwise": true },
-{ "show_feature": 1, "cut": 2504, "end": 2509, "type_id": 4, "feature": "BclI", "start": 2504, "clockwise": true },
-{ "show_feature": 1, "cut": 2681, "end": 2685, "type_id": 4, "feature": "BstBI", "start": 2680, "clockwise": true },
-{ "start": 2920, "clockwise": true, "end": 2952, "feature": "VSVG Tag", "type_id": 1 },
-{ "show_feature": 1, "end": 3500, "type_id": 8, "feature": "rb_glob_PA_terminator", "start": 2974, "clockwise": true },
-{ "show_feature": 1, "cut": 3022, "end": 3025, "type_id": 4, "feature": "MscI", "start": 3020, "clockwise": true },
-{ "show_feature": 1, "cut": 3051, "end": 3056, "type_id": 4, "feature": "BglII", "start": 3051, "clockwise": true },
-{ "show_feature": 1, "end": 3567, "type_id": 3, "feature": "M13_pUC_rev_primer", "start": 3545, "clockwise": false },
-{ "show_feature": 1, "end": 3610, "type_id": 2, "feature": "lac_promoter", "start": 3581, "clockwise": false },
-{ "show_feature": 1, "end": 5553, "type_id": 5, "feature": "Ampicillin", "start": 4693, "clockwise": false },
-{ "start": 4693, "clockwise": false, "end": 5553, "feature": "ORF frame 1", "type_id": 10 },
-{ "show_feature": 1, "end": 5623, "type_id": 2, "feature": "AmpR_promoter", "start": 5595, "clockwise": false },
-{ "show_feature": 0, "cut": 6011, "end": 6014, "type_id": 4, "feature": "NaeI", "start": 6009, "clockwise": true },
-{ "show_feature": 0, "cut": 6009, "end": 6014, "type_id": 4, "feature": "NgoMIV", "start": 6009, "clockwise": true },
-{ "show_feature": 1, "end": 6295, "type_id": 1, "feature": "lacZ_a", "start": 6140, "clockwise": false },
-{ "show_feature": 1, "end": 6288, "type_id": 3, "feature": "M13_pUC_fwd_primer", "start": 6266, "clockwise": true },
-{ "show_feature": 1, "end": 6297, "type_id": 2, "feature": "M13_forward20_primer", "start": 6281, "clockwise": true },
-{ "show_feature": 0, "cut": 6300, "end": 6305, "type_id": 4, "feature": "BssHII", "start": 6300, "clockwise": true },
-{ "show_feature": 1, "end": 6325, "type_id": 2, "feature": "T7_promoter", "start": 6307, "clockwise": true },
-{ "show_feature": 1, "cut": 6345, "end": 6347, "type_id": 4, "feature": "SacII", "start": 6342, "clockwise": true },
-{ "show_feature": 1, "cut": 6351, "end": 6357, "type_id": 4, "feature": "NotI", "start": 6350, "clockwise": true },
-{ "show_feature": 1, "cut": 6358, "end": 6363, "type_id": 4, "feature": "XbaI", "start": 6358, "clockwise": true }]])
-
-//end of sample data
-
-*/
 
         gd.CircularMap({
             'map_dom_id': 'giraffe-map',
@@ -335,8 +279,9 @@ gd.read([6363,
     }
     catch(e)
     {
-        //alert(e);
+        console.error(e);
     }
+
 </script>
 
 <script>
@@ -352,18 +297,38 @@ gd.read([6363,
         $('#restore i').removeClass("fa-undo");
         $('#restore i').addClass("fa-spinner fa-pulse");
     });
-</script>
 
-@Scripts.Render("~/bundles/jquery")
-
-<script type="text/javascript">
-    $(window).load(function () {
-        // executes when complete page is fully loaded, including all frames, objects and images
-        $('table').paging({
-            limit: 15,
-            rowDisplayStyle: 'block',
-            activePage: 0,
-            rows: []
-        });        
+    $('svg text').click(function (event) {
+        var txt = $(event.target).text();
+        //find feature
+        var oldStart = 0;
+        $.each(data[1], function (index, d) {
+            $.each(d, function (key, value) {
+                if (value == txt) {
+                    oldStart = d['start'];
+                }
+            });
+        });
+        //change all features
+        var seqLength = data[0];
+        var oldFeature = data[1];
+        //change the start and end
+        $.each(oldFeature, function (i, d) {            
+            $.each(d, function (key, value) {
+                if (d['start'] >= oldStart) {
+                    d['start'] = d['start'] - oldStart;
+                    d['end'] = d['end'] - oldStart;
+                }
+                else {
+                    d['start'] = seqLength - oldStart + d['start'];
+                    if (d['end'] >= oldStart) {
+                        d['end'] = d['end'] - oldStart;
+                    }
+                    else {
+                        d['end'] = seqLength - oldStart + d['end'];
+                    }
+                }
+            });
+        });
     });
 </script>

@@ -910,6 +910,7 @@
     <Content Include="Views\RActivity\Company.cshtml" />
     <Content Include="Views\MActivity\Company.cshtml" />
     <Content Include="Views\MActivity\EnzymeInfo.cshtml" />
+    <Content Include="Views\Map\Enzyme.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

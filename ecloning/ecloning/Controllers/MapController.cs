@@ -70,14 +70,14 @@ namespace ecloning.Controllers
             ViewBag.BackupCount = backup.Count();
             ViewBag.Tag = tag;
             //pass json
-            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
+            var features = plasmid_map.Where(f=>f.feature_id !=4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             return View(plasmid_map.ToList());
         }
 
         [Authorize]
         [HttpGet]
-        public ActionResult Enzyme(int? plasmid_id)
+        public ActionResult Enzyme(int? plasmid_id, string tag)
         {
             if (plasmid_id == null)
             {
@@ -88,23 +88,31 @@ namespace ecloning.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.Tag = tag;
+            ViewBag.PlasmidId = plasmid_id;
             ViewBag.Name = plasmid.name;
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
             //pass json
             //display all enzyme cuts of the current plasmid
             var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
-            var Enzymes = plasmid_map.Where(f=>f.feature_id==4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            var Enzymes = plasmid_map.Where(f=>f.feature_id == 4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Enzymes = JsonConvert.SerializeObject(Enzymes.ToList());
 
             //all the methylation
+            var methylation = db.methylations.Where(m => m.plasmid_id == plasmid_id);
+            var Methylation = methylation.OrderBy(n => n.name).Select(m => new { name = m.name, cut = m.cut, clockwise = m.clockwise, dam_cm = m.dam_complete, dam_ip = m.dam_impaired, dcm_cm = m.dcm_complete, dcm_ip = m.dcm_impaired});
+            ViewBag.Methylation = JsonConvert.SerializeObject(Methylation.ToList());
 
-
+            //all other features
+            //pass json
+            var features = plasmid_map.Where(f => f.feature_id != 4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             return View();
         }
         [Authorize]
         [HttpGet]
-        public ActionResult Sequence(int? plasmid_id)
+        public ActionResult Sequence(int? plasmid_id, string tag)
         {
 
             return View();
