@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewBag.Title = "Compare";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Plasmids = ViewBag.Plasmids;
+    var Features = ViewBag.Features;
+    var msg = (string)TempData["msg"];
+}
+
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-3">
+        <h3 class="text-warning">Compare Plasmids</h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <p class="text-danger">@msg</p>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <label for="plasmid" class="required">Search plasmids to compare:</label>
+                    <input type="text" name="plasmid" class="form-control" id="plasmid">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                
+                <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                    <br />
+                    <input type="submit" id="compare" value="Compare Plasmids" class="btn btn-block btn-primary" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script>
+    var Plasmids = ("@Plasmids");
+    document.getElementById("decodeIt").innerHTML = Plasmids;
+    Plasmids = document.getElementById("decodeIt").innerText;
+
+    var Features = ("@Features");
+    document.getElementById("decodeIt").innerHTML = Features;
+    Features = document.getElementById("decodeIt").innerText;
+
+    try {
+        data = JSON.parse(Plasmids);
+    } catch (e)
+    {
+        console.log(e);
+    }
+
+    $(document).ready(function () {
+        $("#plasmid").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type plasmid name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "name",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.name + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+            $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+    });
+</script>
+
+<script>
+    $('#compare').click(compare);
+
+    function compare(event) {
+        alert("submitted!");
+        event.preventDefault();
+        var idString = $('#plasmid').val();
+        alert(idString);
+        //get id list and then generate maps
+    };
+
+</script>

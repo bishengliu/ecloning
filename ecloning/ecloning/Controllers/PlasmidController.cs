@@ -97,7 +97,34 @@ namespace ecloning.Controllers
             return View(plasmids.ToList());
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult Compare()
+        {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
 
+            //get all the people in the group
+            var peopleId = db.group_people.Where(p => groupInfo.groupId.Contains(p.group_id)).Select(p=>p.people_id).ToList();
+
+            //pass all the plasmids and setLength into json
+            var plasmids = db.plasmids.Where(p => peopleId.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
+            ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
+            var plasmidId = plasmids.Select(p => p.id).ToList();
+            //pass all features into json
+            var features = db.plasmid_map.Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p=>plasmidId.Contains(p.plasmid_id)).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Compare(string plasmid)
+        {
+            return View();
+        }
         // GET: Plasmid/Create
         [Authorize]
         public ActionResult Create()
