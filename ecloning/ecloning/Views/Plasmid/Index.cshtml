@@ -17,28 +17,52 @@
     </div>
 
     <div class="col-sm-2 col-xs-6">
-        <h3>
+        <h3 class="hidden-xs">
             <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Plasmid")">
-                <i class="glyphicon glyphicon-plus text-danger"></i>
+                <i class="glyphicon glyphicon-plus"></i>
                 <span>Add Plasmid</span>
             </a>
         </h3>
+        <a class="btn btn-sm btn-primary hidden-sm hidden-md hidden-lg" href="@Url.Action("Create", "Plasmid")">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Add Plasmid</span>
+        </a>
     </div>
     <div class="col-sm-2 col-xs-6">
-        <h3>
-            <a class="btn btn-sm btn-info" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
-                <i class="glyphicon glyphicon-search text-danger"></i>
+        <h3 class="hidden-xs">
+            <a class="btn btn-sm btn-default" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
+                <i class="glyphicon glyphicon-search"></i>
                 <span>Find Plasmid</span>
             </a>
         </h3>
+        <a class="btn btn-sm btn-default hidden-sm hidden-md hidden-lg" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
+            <i class="glyphicon glyphicon-search"></i>
+            <span>Find Plasmid</span>
+        </a>
     </div>
     <div class="col-sm-2 col-xs-6">
-        <h3>
+        <h3 class="hidden-xs">
             <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
-                <i class="fa fa-bullseye text-danger"></i>
-                <span>Compare Plasmids</span>
+                <i class="fa fa-bullseye"></i>
+                <span>Compare</span>
             </a>
         </h3>
+        <a class="btn btn-default hidden-sm hidden-md hidden-lg" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+            <i class="fa fa-bullseye"></i>
+            <span>Compare</span>
+        </a>
+    </div>
+    <div class="col-sm-2 col-xs-6">
+        <h3 class="hidden-xs">
+            <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+                <i class="fa fa-th"></i>
+                <span>Overview</span>
+            </a>
+        </h3>
+        <a class="btn btn-default hidden-sm hidden-md hidden-lg" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+            <i class="fa fa-th"></i>
+            <span>Overview</span>
+        </a>
     </div>
 </div>
 <p class="text-danger text-center">@msg</p>

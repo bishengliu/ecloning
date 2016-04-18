@@ -16,7 +16,8 @@
 <div class="row">
     <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
-        <p class="text-danger">@msg</p>
+        <p id="error" class="text-danger text-center"></p>
+        <p id="msg" class="text-info text-center"></p>
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
@@ -26,9 +27,8 @@
                     <input type="text" name="plasmid" class="form-control" id="plasmid">
                 </div>
             </div>
-            
-            <div class="form-group">
-                
+
+            <div class="form-group">                
                 <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
                     <br />
                     <input type="submit" id="compare" value="Compare Plasmids" class="btn btn-block btn-primary" />
@@ -37,7 +37,14 @@
         }
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12 col-lg-11 col-lg-offset-1" id="maps">
+
+    </div>
+</div>
+
 @Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
 <script>
     var Plasmids = ("@Plasmids");
     document.getElementById("decodeIt").innerHTML = Plasmids;
@@ -49,34 +56,169 @@
 
     try {
         data = JSON.parse(Plasmids);
-    } catch (e)
-    {
-        console.log(e);
-    }
-
-    $(document).ready(function () {
-        $("#plasmid").tokenInput(data, {
+        Features = JSON.parse(Features);
+        //token list
+        $(document).ready(function () {
+            $("#plasmid").tokenInput(data, {
                 theme: 'facebook',
                 hintText: 'Type plasmid name to search',
                 //tokenLimit: 1,
                 propertyToSearch: "name",
+                preventDuplicates: true,
                 resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.name + "</span></p></li>" },
                 tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
             });
 
             $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
-    });
-</script>
+        });
 
-<script>
+    } catch (e)
+    {
+        console.log(e);
+        $('#error').text("Unable to load plasmid data, please try again later!");
+        $("#compare").addClass("disabled");
+    }
+
+
+    //submit form
     $('#compare').click(compare);
 
+
     function compare(event) {
-        alert("submitted!");
+        //alert("submitted!");
         event.preventDefault();
         var idString = $('#plasmid').val();
-        alert(idString);
-        //get id list and then generate maps
+        if (!idString.trim()) {
+            $('#error').text("You haven't selected any plasmid!");
+            $('#msg').text(null);
+        }
+        //get id list and then generate maps and remove duplicates
+        var idArray = unique(idString.split(','));
+        //remove all the divs
+        $("#maps").empty();
+                
+        //append dom to show map
+        $.each(idArray, function (i, d) {
+            //add dom
+            var mapDiv = $("#maps").append("<div id=\"map-" + d + "\" class=\"col-xs-12 col-sm-6\"></div>");
+
+            //filer data
+            var currentFeatures = $.grep(Features, function (n, i) {
+                return n.pId === +d;
+            });         
+            pName = currentFeatures[0].pName;
+            pCount = currentFeatures[0].pSeqCount;
+            pId = currentFeatures[0].pId;
+
+            delete currentFeatures['pId'];
+            delete currentFeatures['pName'];
+            delete currentFeatures['pCount'];
+
+            fData = [pCount, currentFeatures];
+            var divId = "map-" + d;
+            //draw the map
+            var gd = GiraffeDraw();
+            gd.read(fData);
+            gd.CircularMap({
+                'map_dom_id': divId,
+                'plasmid_name': pName,
+                'map_width': 848,
+                'map_height': 648
+            });
+        });
+   
+        //redraw maps
+        $('svg text tspan').click({ idArray: idArray }, redrawMap);
+        $('#error').text(null);
+        $('#msg').text('Click the feature name to rotate the maps.');
+
     };
 
+    function unique(list) {
+        var result = [];
+        $.each(list, function (i, e) {
+            if ($.inArray(e, result) == -1) result.push(e);
+        });
+        return result;
+    };
+
+
+    function redrawMap(event) {
+        var txt = $(event.target).text();
+        //find feature clicked
+        var idArray = event.data.idArray;
+        $.each(idArray, function (i, d) {
+            
+            //filer data
+            var currentFeatures = $.grep(Features, function (n, i) {
+                return n.pId === +d;
+            });
+            pName = currentFeatures[0].pName;
+            pCount = currentFeatures[0].pSeqCount;
+            pId = currentFeatures[0].pId;
+
+            delete currentFeatures['pId'];
+            delete currentFeatures['pName'];
+            delete currentFeatures['pCount'];
+
+            fData = [pCount, currentFeatures];
+
+            var oldStart = 0;
+            $.each(fData[1], function (index, d) {
+                $.each(d, function (key, value) {
+                    if (value == txt) {
+                        oldStart = d['start'];
+                    }
+                });
+            });
+
+            //change the start and end
+            $.each(fData[1], function (i, dt) {
+                if (oldStart != 0) {
+                    if (dt['start'] >= oldStart) {
+                        dt['start'] = dt['start'] - oldStart + 1;
+                        dt['end'] = dt['end'] - oldStart + 1;
+                    }
+                    else {
+                        dt['start'] = pCount - oldStart + dt['start'] + 1;
+                        if (dt['end'] >= oldStart) {
+                            dt['end'] = dt['end'] - oldStart + 1;
+                        }
+                        else {
+                            dt['end'] = pCount - oldStart + dt['end'] + 1;
+                        }
+                    }
+                }
+            });
+            //reorder the data
+            fData[1].sort(sortByProperty('start'));
+
+            var divId = "map-" + d;
+            //redraw the map
+            var gd = GiraffeDraw();
+            gd.read(fData);
+            gd.CircularMap({
+                'map_dom_id': divId,
+                'plasmid_name': pName,
+                'map_width': 848,
+                'map_height': 648
+            });
+        });
+        //run the click-event again
+        $('svg text tspan').click({ idArray: idArray }, redrawMap);
+    };
+
+
+    function sortByProperty(property) {
+        'use strict';
+        return function (a, b) {
+            var sortStatus = 0;
+            if (a[property] < b[property]) {
+                sortStatus = -1;
+            } else if (a[property] > b[property]) {
+                sortStatus = 1;
+            }
+            return sortStatus;
+        };
+    }
 </script>

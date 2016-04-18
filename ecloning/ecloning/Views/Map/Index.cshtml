@@ -336,11 +336,9 @@
                 }
             }
         });
-        console.log(data[1]);
 
         //reorder the data
         data[1].sort(sortByProperty('start'));
-        console.log(data[1]);
         //redraw the map
         gd.read(data);
         gd.CircularMap({
