@@ -1,0 +1,174 @@
+﻿
+@{
+    ViewBag.Title = "Overview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Features = ViewBag.Features;
+    var fLabels = ViewBag.fLabels;
+}
+
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-3">
+        <h3 class="text-warning">Plasmid Overview</h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="hidden-xs hidden-sm col-md-1">
+
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-10">
+        <div id="overview">
+
+        </div>
+    </div>
+    <div class="hidden-xs hidden-sm col-md-1">
+
+    </div>
+</div>
+
+<style>
+    .axis path,.axis line {fill: none;stroke:#b6b6b6;shape-rendering: crispEdges;}
+/*.tick line{fill:none;stroke:none;}*/
+    .tick text{fill:#999;font-size:10px;}
+    g.plasmid.active{cursor:pointer;}
+    text.label{font-size:12px;font-weight:bold;cursor:pointer;}
+    text.value{font-size:12px;font-weight:bold;}
+</style>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+
+<script>
+
+    var fLabels = ("@fLabels");
+    document.getElementById("decodeIt").innerHTML = fLabels;
+    fLabels = document.getElementById("decodeIt").innerText;
+
+
+
+    var Features = ("@Features");
+    document.getElementById("decodeIt").innerHTML = Features;
+    Features = document.getElementById("decodeIt").innerText;
+
+    try {
+        fLabels = JSON.parse(fLabels);
+        Features = JSON.parse(Features);
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+
+    var margin = { top: 20, right: 200, bottom: 0, left: 20 },
+        width = $("#overview").width() - 20 - margin.left - margin.right;
+	    height = 650;
+	    var padding = 0.5;
+	    
+
+    var x = d3.scale.ordinal()
+        .domain(fLabels)
+	    .rangeRoundPoints([0, width], padding);
+
+    var xAxis = d3.svg.axis()
+	            .scale(x)
+	            .orient("top");
+
+    var svg = d3.select("#overview").append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	    .style("margin-left", margin.left + "px")
+	    .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var nData = d3.nest()
+              .key(function (d) { return d.pName; })
+              .key(function (d) { return d.pSeqCount; })
+               .entries(Features);
+    var c = nData.length <= 10 ? d3.scale.category10() : d3.scale.category20c();
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + 50 + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", -10)
+        .attr("x", 10)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "start");
+
+
+    for (var j = 0; j < nData.length; j++) {
+        var g = svg.append("g").attr("class", "plasmid")
+                .attr("transform", "translate(0," + 50 + ")");
+
+
+        var circles = g.selectAll("circle")
+			.data(nData[j]['values'][0]['values'])
+			.enter()
+			.append("circle");
+        
+        var text = g.selectAll("text")
+			.data(nData[j]['values'][0]['values'])
+			.enter()
+			.append("text");
+
+        var rScale = d3.scale.linear()
+			.domain([0, d3.max(nData[j]['values'][0]['values'], function (d) { return d['fLength']; })])
+			.range([2, 9]);
+        var rpScale = d3.scale.linear()
+			.domain([0, 1])
+			.range([0, 100]);
+        //circles
+        circles
+			.attr("cx", function (d, i) {  return x(d['feature']); })
+			.attr("cy", j * 20 + 20)
+			.attr("r", function (d) { return rScale(d['fLength']); })
+			.style("fill", function (d) { return c(j); });
+
+        //plasmid length % numbers
+
+        text
+			.attr("y", j * 20 + 25)
+			.attr("x", function (d, i) { return x(d['feature']); })
+			.attr("class", "value")
+			.text(function (d) { return d3.round(rpScale(d['fLength'] / nData[j]['values'][0]['key']), 1); })
+			.style("fill", function (d) { return c(j); })
+			.style("display", "none");
+
+        //plasmid title
+        g.append("text")
+			.attr("y", j * 20 + 25)
+			.attr("x", width +20 )
+			.attr("class", "label")
+			.text(truncate(nData[j]['key'] + " (" + nData[j]['values'][0]['key'] + "bp)"), 20, "...")
+			.style("fill", function (d) { return c(j); })
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+
+    };
+
+
+    function mouseover(p) {
+        
+        var g = d3.select(this).node().parentNode;
+        d3.select(g).selectAll("circle").style("display", "none");
+        d3.select(g).selectAll("text.value").style("display", "block");
+    }
+    function mouseout(p) {
+
+        var g = d3.select(this).node().parentNode;
+        d3.select(g).selectAll("circle").style("display", "block");
+        d3.select(g).selectAll("text.value").style("display", "none");
+    }
+
+    function truncate(str, maxLength, suffix) {
+        if (str.length > maxLength) {
+            str = str.substring(0, maxLength + 1);
+            str = str.substring(0, Math.min(str.length, str.lastIndexOf(" ")));
+            str = str + suffix;
+        }
+        return str;
+    }
+
+</script>

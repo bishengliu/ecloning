@@ -98,6 +98,30 @@ namespace ecloning.Controllers
         }
 
         [Authorize]
+        public ActionResult Overview()
+        {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+
+            //get all the people in the group
+            var peopleId = db.group_people.Where(p => groupInfo.groupId.Contains(p.group_id)).Select(p => p.people_id).ToList();
+
+            //pass all the plasmids and setLength into json
+            var plasmids = db.plasmids.Where(p => peopleId.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
+            //ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
+            var plasmidId = plasmids.Select(p => p.id).ToList();
+            //pass all features into json
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 5 && f.feature_id != 10);
+            var fLabels = features.Select(f => f.common_feature.label).Distinct().ToList();
+            var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f=>f.common_feature.label).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
+            ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
+            ViewBag.Features = JsonConvert.SerializeObject(featuresJson.ToList());
+            return View();
+        }
+
+        [Authorize]
         [HttpGet]
         public ActionResult Compare()
         {

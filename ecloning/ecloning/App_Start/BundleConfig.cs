@@ -51,6 +51,8 @@ namespace ecloning
 
             bundles.Add(new ScriptBundle("~/bundles/nvd3").Include(
                       "~/Scripts/nv.d3.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/d3").Include(
+                      "~/Scripts/d3/d3.min.js"));
 
             //less bundle
             bundles.Add(new LessBundle("~/Content/less").Include(
