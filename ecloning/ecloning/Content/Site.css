@@ -320,3 +320,10 @@ textarea {
     box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 
+svg text tspan{
+    cursor:pointer;
+}
+
+.tickLable{
+    cursor:pointer;
+}

@@ -91,15 +91,21 @@
         .attr("transform", "translate(0," + 50 + ")")
         .call(xAxis)
         .selectAll("text")
+        .attr("class", "tickLable")
         .attr("y", -10)
         .attr("x", 10)
         .attr("dy", ".35em")
         .attr("transform", "rotate(-45)")
-        .style("text-anchor", "start");
+        .style("text-anchor", "start")
+        .on("click", sortPlasmid)
+        .on("mouseover", mouseoverTickText)
+        .on("mouseout", mouseoutTickText);
 
 
     for (var j = 0; j < nData.length; j++) {
         var g = svg.append("g").attr("class", "plasmid")
+                .data(nData[j]['values'][0]['values'])
+                .attr("id", function (d) { return "plasmid" + d['pId']; })
                 .attr("transform", "translate(0," + 50 + ")");
 
 
@@ -116,9 +122,11 @@
         var rScale = d3.scale.linear()
 			.domain([0, d3.max(nData[j]['values'][0]['values'], function (d) { return d['fLength']; })])
 			.range([2, 9]);
+
         var rpScale = d3.scale.linear()
 			.domain([0, 1])
 			.range([0, 100]);
+
         //circles
         circles
 			.attr("cx", function (d, i) {  return x(d['feature']); })
@@ -127,7 +135,6 @@
 			.style("fill", function (d) { return c(j); });
 
         //plasmid length % numbers
-
         text
 			.attr("y", j * 20 + 25)
 			.attr("x", function (d, i) { return x(d['feature']); })
@@ -141,6 +148,7 @@
 			.attr("y", j * 20 + 25)
 			.attr("x", width +20 )
 			.attr("class", "label")
+            .attr("id", function (d) { return "plasmid-" + d['pId'];}) //there is a dash between
 			.text(truncate(nData[j]['key'] + " (" + nData[j]['values'][0]['key'] + "bp)"), 20, "...")
 			.style("fill", function (d) { return c(j); })
             .on("mouseover", mouseover)
@@ -169,6 +177,22 @@
             str = str + suffix;
         }
         return str;
+    }
+
+    function mouseoverTickText(p) {
+        d3.select(this)
+            .style("fill", "red");
+    }
+    function mouseoutTickText(p) {
+        d3.select(this)
+            .style("fill", "#999");
+    }
+
+    function sortPlasmid(event) {
+        var tg = d3.event.target;
+        var txt = d3.select(tg).text();
+
+        var plasmidCircles = d3.selectAll(".plasmid");
     }
 
 </script>
