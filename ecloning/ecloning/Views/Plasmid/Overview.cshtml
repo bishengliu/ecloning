@@ -132,6 +132,7 @@
 			.attr("cx", function (d, i) {  return x(d['feature']); })
 			.attr("cy", j * 20 + 20)
 			.attr("r", function (d) { return rScale(d['fLength']); })
+            .attr("class", function (d, i) { return d['feature']; })
 			.style("fill", function (d) { return c(j); });
 
         //plasmid length % numbers
@@ -192,7 +193,29 @@
         var tg = d3.event.target;
         var txt = d3.select(tg).text();
 
-        var plasmidCircles = d3.selectAll(".plasmid");
+        var plasmids = d3.selectAll(".plasmid")
+                         .each(function (d, i) {
+                             d3.select(this).selectAll("circle")
+                                            .each(function (cd, ci) {
+                                                if ($(this).hasClass(txt)) {
+                                                    //console.log(this);
+                                                    //move the parentnode up to the first
+                                                    var firstChild = this.parentNode.parentNode.firstChild;
+                                                    //console.log(this.parentNode);
+                                                    //console.log(firstChild.nextSibling);
+                                                    if (this.parentNode != firstChild.nextSibling) {
+                                                        var g = d3.select(this).node().parentNode;
+                                                        d3.select(g).attr("transform", "scale(2)")
+                                                        .attr("transform", "scale(1)")
+                                                        ;
+                                                        //console.log("d3 g");
+                                                        console.log(g);
+                                                        //this.parentNode.insertBefore(this.parentNode, firstChild.nextSibling);
+                                                    }
+                                                }
+                                            });
+                         });
+
     }
 
 </script>
