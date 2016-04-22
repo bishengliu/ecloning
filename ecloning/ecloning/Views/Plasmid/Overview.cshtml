@@ -7,11 +7,41 @@
 }
 
 <div class="row">
-    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-3">
+    <div class="col-xs-offset-1 col-sm-offset-1 col-sm-3">
         <h3 class="text-warning">Plasmid Overview</h3>
     </div>
+    <div class="col-xs-12 col-sm-4 col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-3">
+        <div class="pull-right">
+            <br class="hidden-xs" />
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input id="searchFeature" type="text" class="form-control" placeholder="Search features...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="clearFeature">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+        <div class="pull-right">
+            <br class="hidden-xs"/>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input id="searchPlasmid" type="text" class="form-control" placeholder="Search plasmids...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="clearText">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
 </div>
+
 <span id="decodeIt" class="hidden"></span>
+<br/>
 <div class="row">
     <div class="hidden-xs hidden-sm col-md-1">
 
@@ -43,6 +73,11 @@
       border-radius: 2px;
     }
 
+    /*highlight feature name*/
+    .highlighted{
+        fill: #2ca02c !important;
+        font-weight: bold;
+    }
 
 </style>
 
@@ -72,7 +107,7 @@
     }
 
     var margin = { top: 20, right: 200, bottom: 0, left: 20 },
-        width = $("#overview").width() - 20 - margin.left - margin.right;
+        width = ($("#overview").width() <= 250 ? 250 : $("#overview").width()) - 20 - margin.left - margin.right;
 	    height = 650;
 	    var padding = 0.5;
 	    
@@ -90,7 +125,7 @@
               .key(function (d) { return d.pName; })
               .key(function (d) { return d.pSeqCount; })
                .entries(Features);
-    height = 50 + nData.length * 25;
+    height = 80 + nData.length * 25;
     var svg = d3.select("#overview").append("svg")
 	    .attr("width", width + margin.left + margin.right)
 	    .attr("height", height + margin.top + margin.bottom)
@@ -111,7 +146,7 @@
 
     svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + 50 + ")")
+        .attr("transform", "translate(0," + 80 + ")")
         .call(xAxis)
         .selectAll("text")
         .attr("class", "tickLable")
@@ -160,7 +195,7 @@
             var g = svg.append("g").attr("class", "plasmid")
                     .data(nData[j]['values'][0]['values'])
                     .attr("id", function (d) { return "plasmid" + d['pId']; })
-                    .attr("transform", "translate(0," + 50 + ")");
+                    .attr("transform", "translate(0," + 80 + ")");
 
 
             var circles = g.selectAll("circle")
@@ -216,7 +251,7 @@
                 .attr("y", j * 20 + 25)
                 .attr("x", width + 20)
                 .attr("class", "label")
-                .attr("id", function (d) { return "plasmid-" + d['pId']; }) //there is a dash between
+                .attr("id", function (d) { return nData[j]['key']+ "-" + d['pId']; }) //there is a dash between
                 .text(truncate(nData[j]['key'] + " (" + nData[j]['values'][0]['key'] + "bp)"), 20, "...")
                 .style("fill", function (d) { return c(j); })
                 .on("click", sortTick)
@@ -289,12 +324,9 @@
     function sortTick(event) {
         var tg = d3.event.target;
         var txt = d3.select(tg).property("id");
-        console.log(txt);
         //get the plasmid Id 
         var plasmidId = txt.split('-');
         var pId = parseInt(plasmidId[plasmidId.length - 1]);
-        console.log(pId);
-        console.log(nData);
         //get all the feaures of this plasmid
         var pFeatures = [];
         nData.forEach(function (d, i) {
@@ -304,7 +336,6 @@
                 });
             };
         });
-        console.log(pFeatures);
         //remove the pFeature from the fLabels
         var newLabels = [];
         fLabels.forEach(function (d, i) {
@@ -316,9 +347,7 @@
         pFeatures.forEach(function (d, i) {
             newLabels.push(d);
         });
-        console.log(fLabels);
         fLabels = newLabels;
-        console.log(fLabels);
 
         //update the x.domain() and axis
 
@@ -342,4 +371,63 @@
         draw(nData, svg, x, c);
     }
 
+</script>
+
+<script>
+    
+    $(function () {
+        //search plasmids
+        $('#searchPlasmid').keyup(function () {
+            var _text = $(this).val().toLowerCase().replace(/\s+/g, '');
+            $('.plasmid').each(function () {
+                $(this).removeClass("hidden");
+                $(this).addClass("hidden");
+                var _aText = $(this).children('text').last().text().toLowerCase().replace(/\s+/g, '');
+                if (RegExp('^' + _text).test(_aText) || _aText.indexOf(_text) >= 0) {
+                    $(this).removeClass("hidden");
+                    $(this).fadeIn(400);
+                };
+            });
+        });
+
+        $('#clearText').click(function (e) {
+            e.preventDefault();
+            $('#searchPlasmid').val('');
+            $('.plasmid').each(function () {
+                $(this).removeClass("hidden");
+                $(this).fadeIn(400);
+            });
+        });
+        //search features
+        $('#searchFeature').keyup(function () {
+            var _text = $(this).val().toLowerCase().replace(/\s+/g, '');
+            if (_text.length === 0) {
+                $('.tickLable').each(function () {
+                    $(this).removeClass("highlighted"); 
+                });
+            }
+            else
+            {
+                $('.tickLable').each(function () {
+                    $(this).removeClass("highlighted");
+                    var _aText = $(this).text().toLowerCase().replace(/\s+/g, '');
+                    if (RegExp('^' + _text).test(_aText) || _aText.indexOf(_text) >= 0) {
+                        $(this).addClass("highlighted");
+                        $(this).fadeIn(400);
+                    };
+                });
+            }
+
+        });
+        $('#clearFeature').click(function (e) {
+            e.preventDefault();
+            $('#searchFeature').val('');
+            $('.tickLable').each(function () {
+                $(this).removeClass("highlighted");
+                $(this).fadeIn(400);
+            });
+        });
+    });
+
+    
 </script>

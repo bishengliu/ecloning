@@ -118,6 +118,7 @@ namespace ecloning.Controllers
             var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f=>f.common_feature.label).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
             ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
             ViewBag.Features = JsonConvert.SerializeObject(featuresJson.ToList());
+            ViewBag.Count = featuresJson.Count();
             return View();
         }
 
