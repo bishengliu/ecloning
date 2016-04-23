@@ -807,13 +807,29 @@ CREATE TABLE [probe] --pcr probe
 	CONSTRAINT uq_probe_name UNIQUE (name)
 );
 
+--plasmid bundle table
+CREATE TABLE plasmid_bundle
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(100) NOT NULL, --bundle name
+	[des] TEXT, --bundle remarks
+	member_type NVARCHAR(100) NOT NULL, --the resource type of the member, like plasmid, primer, etc. most of the time, it is plasmid
+	member_id INT NOT NULL, --ref to the member id
+	member_role NVARCHAR(100), --why the member is inculded?
+	ref_bundle INT NOT NULL, --default to be 0, 0 is the top level
+	img_fn NVARCHAR(100), --for upload img scheme
+	dt DATETIME DEFAULT GETDATE(),
+	people_id INT NOT NULL, --who created this bundle
+	CONSTRAINT uq_plasmid_bundle_name_people_id UNIQUE (name, people_id) -- in the same group it is allowed with the same bundle name
+);
+
 
 --table for group sharing
 CREATE TABLE group_shared
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	group_id INT NOT NULL,
-	resource_id INT NOT NULL, --plasmid, oligo, primer etc that can be shared
+	resource_id INT NOT NULL, --plasmid, oligo, primer etc, anything that can be shared
 	category NVARCHAR(50), --plasmid, primer, oligo, probe etc
 	sratus NVARCHAR(50), --submitted, appproved
 	CONSTRAINT fk_group_shared_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
@@ -829,8 +845,10 @@ CREATE TABLE nuclease
 	CONSTRAINT uq_nuclease_name UNIQUE (name)
 );
 
+
+--the table below needs to be re thought !!!!--
 --create crispr group or virus group, plasmid group
---==============need to thin this again!!!!!++++++++++
+--==============need to think this again!!!!!++++++++++
 CREATE TABLE [clone_group]
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -855,6 +873,7 @@ CREATE TABLE [clone_group]
 	CONSTRAINT fk_clone_group_pnuclease_id FOREIGN KEY (nuclease_id) REFERENCES nuclease(id),
 	CONSTRAINT uq_crispr_group_name UNIQUE (name)
 );
+
 
 
 --ladder, for both DNA and protein
