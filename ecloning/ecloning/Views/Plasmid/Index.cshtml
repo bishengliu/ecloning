@@ -15,7 +15,6 @@
     <div class="col-sm-2 col-sm-offset-1">
         <h3 class="text-warning">Plasmids</h3>
     </div>
-
     <div class="col-sm-2 col-xs-6">
         <h3 class="hidden-xs">
             <a class="btn btn-sm btn-primary" href="@Url.Action("Create", "Plasmid")">
@@ -32,36 +31,38 @@
         <h3 class="hidden-xs">
             <a class="btn btn-sm btn-default" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
                 <i class="glyphicon glyphicon-search"></i>
-                <span>Find Plasmid</span>
+                <span>Find Plasmids</span>
             </a>
         </h3>
         <a class="btn btn-sm btn-default hidden-sm hidden-md hidden-lg" href="@Url.Action("Search", "Plasmid", new { scope ="personal"})">
             <i class="glyphicon glyphicon-search"></i>
-            <span>Find Plasmid</span>
+            <span>Find Plasmids</span>
         </a>
     </div>
     <div class="col-sm-2 col-xs-6">
         <h3 class="hidden-xs">
-            <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
-                <i class="fa fa-bullseye"></i>
-                <span>Compare</span>
+            <a class="btn btn-sm btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+                <i class="fa fa-sun-o"></i>
+                <i style="position:relative; left:-10px;" class="fa fa-sun-o"></i>
+                <span style="position:relative; left:-6px;">Compare Plasmids</span>
             </a>
         </h3>
-        <a class="btn btn-default hidden-sm hidden-md hidden-lg" target="_blank" href="@Url.Action("Compare", "Plasmid")">
-            <i class="fa fa-bullseye"></i>
-            <span>Compare</span>
+        <a class="btn btn-sm btn-default hidden-sm hidden-md hidden-lg" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+            <i class="fa fa-sun-o"></i>
+            <i style="position:relative; left:-10px;" class="fa fa-sun-o"></i>
+            <span style="position:relative; left:-6px;">Compare Plasmids</span>
         </a>
     </div>
     <div class="col-sm-2 col-xs-6">
         <h3 class="hidden-xs">
-            <a class="btn btn-default"  href="@Url.Action("Overview", "Plasmid")">
+            <a class="btn btn-sm btn-default"  href="@Url.Action("Overview", "Plasmid")">
                 <i class="fa fa-th"></i>
-                <span>Overview</span>
+                <span>Plasmids Overview</span>
             </a>
         </h3>
-        <a class="btn btn-default hidden-sm hidden-md hidden-lg" href="@Url.Action("Overview", "Plasmid")">
+        <a class="btn btn-sm btn-default hidden-sm hidden-md hidden-lg" href="@Url.Action("Overview", "Plasmid")">
             <i class="fa fa-th"></i>
-            <span>Overview</span>
+            <span>Plasmids Overview</span>
         </a>
     </div>
 </div>
@@ -252,10 +253,8 @@
                                                 </span>
                                               }
                                             
-                                            @*<span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>*@
-                                            @*<br />*@
                                             <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
-                                                <i class="fa fa-bullseye text-info"></i>
+                                                <i class="fa fa-sun-o text-info"></i>
                                                 <span>Plasmid Map</span>
                                             </a>
                                         </td>
@@ -499,10 +498,9 @@
                                                                         </div>
                                                                     </span>
                                                                 }
-                                                                <span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>
-                                                                <br />
+                                                                @*<span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>*@
                                                                 <a href="@Url.Action("Index", "Map", new { id = item.id, tag="groupDispaly" })">
-                                                                    <i class="fa fa-bullseye text-info"></i>
+                                                                    <i class="fa fa-sun-o text-info"></i>
                                                                     <span>Plasmid Map</span>
                                                                 </a>
                                                             </td>
