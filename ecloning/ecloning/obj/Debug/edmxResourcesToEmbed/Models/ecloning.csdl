@@ -462,6 +462,7 @@
     <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_people_id" FromRole="people" ToRole="group_people" />
     <NavigationProperty Name="oligoes" Relationship="Self.fk_oligo_people_id" FromRole="people" ToRole="oligo" />
     <NavigationProperty Name="people_license" Relationship="Self.fk_people_license_people_id" FromRole="people" ToRole="people_license" />
+    <NavigationProperty Name="plasmid_bundle" Relationship="Self.fk_plasmid_bundle_people_id" FromRole="people" ToRole="plasmid_bundle" />
     <NavigationProperty Name="plasmids" Relationship="Self.fk_plasmid_people_id" FromRole="people" ToRole="plasmid" />
     <NavigationProperty Name="primers" Relationship="Self.fk_primer_tech_id" FromRole="people" ToRole="primer" />
     <NavigationProperty Name="probes" Relationship="Self.fk_probe_tech_id" FromRole="people" ToRole="probe" />
@@ -510,6 +511,22 @@
     <NavigationProperty Name="person" Relationship="Self.fk_plasmid_people_id" FromRole="plasmid" ToRole="people" />
     <NavigationProperty Name="plasmid_map_backup" Relationship="Self.fk_plasmid_map_backup_plasmid_id" FromRole="plasmid" ToRole="plasmid_map_backup" />
     <NavigationProperty Name="plasmid_map" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid" ToRole="plasmid_map" />
+  </EntityType>
+  <EntityType Name="plasmid_bundle">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="member_type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="member_id" Type="Int32" Nullable="false" />
+    <Property Name="member_role" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ref_bundle" Type="Int32" Nullable="false" />
+    <Property Name="img_fn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="person" Relationship="Self.fk_plasmid_bundle_people_id" FromRole="plasmid_bundle" ToRole="people" />
   </EntityType>
   <EntityType Name="plasmid_feature">
     <Key>
@@ -1151,6 +1168,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_plasmid_bundle_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="plasmid_bundle" Type="Self.plasmid_bundle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_bundle">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_plasmid_people_id">
     <End Role="people" Type="Self.person" Multiplicity="1" />
     <End Role="plasmid" Type="Self.plasmid" Multiplicity="*" />
@@ -1339,6 +1368,7 @@
     <EntitySet Name="people" EntityType="Self.person" />
     <EntitySet Name="people_license" EntityType="Self.people_license" />
     <EntitySet Name="plasmids" EntityType="Self.plasmid" />
+    <EntitySet Name="plasmid_bundle" EntityType="Self.plasmid_bundle" />
     <EntitySet Name="plasmid_feature" EntityType="Self.plasmid_feature" />
     <EntitySet Name="plasmid_map" EntityType="Self.plasmid_map" />
     <EntitySet Name="plasmid_map_backup" EntityType="Self.plasmid_map_backup" />
@@ -1501,6 +1531,10 @@
     <AssociationSet Name="fk_people_license_people_id" Association="Self.fk_people_license_people_id">
       <End Role="people" EntitySet="people" />
       <End Role="people_license" EntitySet="people_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_bundle_people_id" Association="Self.fk_plasmid_bundle_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="plasmid_bundle" EntitySet="plasmid_bundle" />
     </AssociationSet>
     <AssociationSet Name="fk_plasmid_people_id" Association="Self.fk_plasmid_people_id">
       <End Role="people" EntitySet="people" />

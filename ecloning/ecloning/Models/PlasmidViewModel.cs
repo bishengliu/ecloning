@@ -39,9 +39,6 @@ namespace ecloning.Models
         public Nullable<int> addgene { get; set; }
         public Nullable<System.DateTime> d { get; set; }
         public int people_id { get; set; }
-        //public Nullable<bool> submitted_to_group { get; set; }
-        //public Nullable<bool> shared_with_group { get; set; }
-        //public string shared_with_people { get; set; }
         public string des { get; set; }
         public string insert_species { get; set; }
 

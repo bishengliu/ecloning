@@ -439,6 +439,21 @@
     <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
     <Property Name="seq_length" Type="int" />
   </EntityType>
+  <EntityType Name="plasmid_bundle">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="member_type" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="member_id" Type="int" Nullable="false" />
+    <Property Name="member_role" Type="nvarchar" MaxLength="100" />
+    <Property Name="ref_bundle" Type="int" Nullable="false" />
+    <Property Name="img_fn" Type="nvarchar" MaxLength="100" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="plasmid_feature">
     <Key>
       <PropertyRef Name="id" />
@@ -1049,6 +1064,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_plasmid_bundle_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="plasmid_bundle" Type="Self.plasmid_bundle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_bundle">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_plasmid_map_backup_ccommon_id">
     <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
     <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
@@ -1270,6 +1297,7 @@
     <EntitySet Name="people" EntityType="Self.people" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="people_license" EntityType="Self.people_license" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="plasmid" EntityType="Self.plasmid" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="plasmid_bundle" EntityType="Self.plasmid_bundle" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="plasmid_feature" EntityType="Self.plasmid_feature" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="plasmid_map" EntityType="Self.plasmid_map" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="plasmid_map_backup" EntityType="Self.plasmid_map_backup" Schema="dbo" store:Type="Tables" />
@@ -1428,6 +1456,10 @@
     <AssociationSet Name="fk_people_license_people_id" Association="Self.fk_people_license_people_id">
       <End Role="people" EntitySet="people" />
       <End Role="people_license" EntitySet="people_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_bundle_people_id" Association="Self.fk_plasmid_bundle_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="plasmid_bundle" EntitySet="plasmid_bundle" />
     </AssociationSet>
     <AssociationSet Name="fk_plasmid_map_backup_ccommon_id" Association="Self.fk_plasmid_map_backup_ccommon_id">
       <End Role="common_feature" EntitySet="common_feature" />

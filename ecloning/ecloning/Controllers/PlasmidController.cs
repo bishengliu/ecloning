@@ -302,11 +302,7 @@ namespace ecloning.Controllers
                 var timeStamp = DateTime.Now.Millisecond.ToString();
                 string fileName = null;
 
-                if (plasmid.sequence != null)
-                {
-                    //auto generate features
-                    var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
-                }
+
 
                 //upload img file
                 HttpPostedFileBase file = null;
@@ -352,10 +348,26 @@ namespace ecloning.Controllers
                     }
                 }
 
+                //var errors = ModelState
+                //.Where(x => x.Value.Errors.Count > 0)
+                //.Select(x => new { x.Key, x.Value.Errors })
+                //.ToArray();
+
                 //save fileName to database
                 Plasmid.img_fn = fileName;
                 db.plasmids.Add(Plasmid);
                 db.SaveChanges();
+
+
+                //get the plasmid just added
+                var justAddedPlasmid = db.plasmids.Where(p => p.people_id == Plasmid.people_id && p.name == Plasmid.name).FirstOrDefault();
+                //auto generate features
+
+                if (plasmid.sequence != null)
+                {
+                    //auto generate features
+                    var autoFeatures = new PlasmidFeature(justAddedPlasmid.id, plasmid.sequence, groupInfo.groupId);
+                }
                 return RedirectToAction("Index");
             }
 
@@ -654,6 +666,7 @@ namespace ecloning.Controllers
                     }
                     if(locked != 1)
                     {
+                        //!!!!!Need to check whether the seq is changed!!!!!!!!!***********************
                         //backup plasmid map
                         var Backup = new BackupMap(plasmid.id);
                         //auto generate features

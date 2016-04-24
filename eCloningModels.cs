@@ -203,6 +203,9 @@ namespace ecloning.Models
     }
 }
 
+/*
+//move this into the viewModel
+
 namespace ecloning.Models
 {
     using System;
@@ -224,6 +227,7 @@ namespace ecloning.Models
         public int id { get; set; }
         [Required(ErrorMessage = "Required")]
         public string name { get; set; }
+		[RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
         public string sequence { get; set; }
         [Required(ErrorMessage = "Required")]
         public string expression_system { get; set; }
@@ -233,7 +237,6 @@ namespace ecloning.Models
         [Required(ErrorMessage = "Required")]
         public string resistance { get; set; }
         public string reporter { get; set; }
-        [Required(ErrorMessage = "Required")]
         public string selection { get; set; }
         [Required(ErrorMessage = "Required")]
         public string insert { get; set; }
@@ -264,3 +267,4 @@ namespace ecloning.Models
     }
 }
 
+*/

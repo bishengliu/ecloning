@@ -1431,14 +1431,19 @@ namespace ecloning.Models
             RestriFeatureObject r2EndObject = new RestriFeatureObject();
             RestriFeatureObject r2EndObject2 = new RestriFeatureObject();
 
+
+            //restriction site, the length
             var rsLength = r2SeqObject.leftSeq.Length + r2SeqObject.innerLength + r2SeqObject.rightSeq.Length;
-            string rightEndSeq = fullSeq.Substring(fullSeq.Length - rsLength) + fullSeq.Substring(0, rsLength - 1);
+
+
+            string rightEndSeq = fullSeq.Substring(fullSeq.Length - rsLength +1) + fullSeq.Substring(0, rsLength - 1);
             int index = rightEndSeq.IndexOf(r2SeqObject.leftSeq);
 
             if(index != -1)
             {
-                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
-                if (rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength - 1;
+                if (rightIndex <= rsLength -2 && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                if (rsLength >=2 && rightIndex <= rsLength -2 && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
                     //left cut 
                     r2EndObject.cut = fullSeq.Length - 1 - rsLength - 1 - Math.Abs(enzyme.forward_cut) + index;
@@ -1580,12 +1585,12 @@ namespace ecloning.Models
             RestriFeatureObject r2EndObject = new RestriFeatureObject();
             RestriFeatureObject r2EndObject2 = new RestriFeatureObject();
             var rsLength = r2SeqObject.leftSeq.Length + r2SeqObject.innerLength + r2SeqObject.rightSeq.Length;
-            string rightEndSeq = cfullSeq.Substring(cfullSeq.Length - rsLength) + cfullSeq.Substring(0, rsLength - 1);
+            string rightEndSeq = cfullSeq.Substring(cfullSeq.Length - rsLength + 1) + cfullSeq.Substring(0, rsLength - 1);
             int index = rightEndSeq.IndexOf(r2SeqObject.leftSeq);
             if (index != -1)
             {
-                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
-                if (rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength - 1 ;
+                if (rsLength >= 2 && rightIndex <= rsLength - 2 && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
 
                     r2EndObject.cut = cfullSeq.Length - 1 - rsLength - 1 - Math.Abs((int)enzyme.forward_cut2 - rsLength + 1) + index;

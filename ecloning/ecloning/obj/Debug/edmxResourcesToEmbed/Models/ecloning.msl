@@ -468,6 +468,22 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="plasmid_bundle">
+      <EntityTypeMapping TypeName="ecloningModel.plasmid_bundle">
+        <MappingFragment StoreEntitySet="plasmid_bundle">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="member_type" ColumnName="member_type" />
+          <ScalarProperty Name="member_id" ColumnName="member_id" />
+          <ScalarProperty Name="member_role" ColumnName="member_role" />
+          <ScalarProperty Name="ref_bundle" ColumnName="ref_bundle" />
+          <ScalarProperty Name="img_fn" ColumnName="img_fn" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="plasmid_feature">
       <EntityTypeMapping TypeName="ecloningModel.plasmid_feature">
         <MappingFragment StoreEntitySet="plasmid_feature">
