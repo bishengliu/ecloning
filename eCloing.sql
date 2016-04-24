@@ -820,6 +820,7 @@ CREATE TABLE plasmid_bundle
 	img_fn NVARCHAR(100), --for upload img scheme
 	dt DATETIME DEFAULT GETDATE(),
 	people_id INT NOT NULL, --who created this bundle
+	CONSTRAINT fk_plasmid_bundle_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_plasmid_bundle_name_people_id UNIQUE (name, people_id) -- in the same group it is allowed with the same bundle name
 );
 

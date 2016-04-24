@@ -153,7 +153,6 @@ namespace ecloning.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-
     public partial class person
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -163,6 +162,7 @@ namespace ecloning.Models
             this.group_people = new HashSet<group_people>();
             this.oligoes = new HashSet<oligo>();
             this.people_license = new HashSet<people_license>();
+            this.plasmid_bundle = new HashSet<plasmid_bundle>();
             this.plasmids = new HashSet<plasmid>();
             this.primers = new HashSet<primer>();
             this.probes = new HashSet<probe>();
@@ -188,6 +188,8 @@ namespace ecloning.Models
         public virtual ICollection<oligo> oligoes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<people_license> people_license { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<plasmid_bundle> plasmid_bundle { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<plasmid> plasmids { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

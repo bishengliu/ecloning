@@ -64,6 +64,7 @@ namespace ecloning.Models
         public virtual DbSet<person> people { get; set; }
         public virtual DbSet<people_license> people_license { get; set; }
         public virtual DbSet<plasmid> plasmids { get; set; }
+        public virtual DbSet<plasmid_bundle> plasmid_bundle { get; set; }
         public virtual DbSet<plasmid_feature> plasmid_feature { get; set; }
         public virtual DbSet<plasmid_map> plasmid_map { get; set; }
         public virtual DbSet<plasmid_map_backup> plasmid_map_backup { get; set; }
