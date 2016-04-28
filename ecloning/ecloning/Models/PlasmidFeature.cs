@@ -90,6 +90,12 @@ namespace ecloning.Models
                 }
             }
 
+
+
+            //========================================================================
+            //========================================================================
+            //===========================find common features==============================
+            //find all features
             //put all features in list except ORF/ restriction cut
             var features = db.common_feature.Where(f => f.plasmid_feature.feature != "orf" || f.plasmid_feature.feature != "enzyme");
             if(features.Count() == 0)
@@ -107,13 +113,13 @@ namespace ecloning.Models
                     var subSeq = item.sequence;
 
                     //forward
-                    List<int> indexes1 = new List<int>();
-                    indexes1 = FindSeq.NotRestriction(Sequence, subSeq);
-                    if (indexes1.Count() > 0)
+                    List<int> indexesF = new List<int>();
+                    indexesF = FindSeq.NotRestriction(Sequence, subSeq);
+                    if (indexesF.Count() > 0)
                     {
                         //add to plasmd_feature
                         //start and end need to add 1, since seq starts from 1;
-                        foreach (int index in indexes1)
+                        foreach (int index in indexesF)
                         {
                             var feature = new plasmid_map();
                             feature.plasmid_id = PlasmidId;
@@ -130,7 +136,7 @@ namespace ecloning.Models
                     }
 
                     //deal with the right end
-                    var endSeq = Sequence.Substring(Sequence.Length - subSeq.Length + 1) + Sequence.Substring(0, subSeq.Length - 1 - 1);  // 2 * (subSeq.Length -1)
+                    var endSeq = Sequence.Substring(Sequence.Length - subSeq.Length + 1, subSeq.Length - 1) + Sequence.Substring(0, subSeq.Length - 1);  // 2 * (subSeq.Length -1)
                     var endIdx = endSeq.IndexOf(subSeq);
                     if (endIdx != -1)
                     {
@@ -140,7 +146,7 @@ namespace ecloning.Models
                         f.show_feature = 1;
                         f.feature = item.label;
                         f.feature_id = item.feature_id;
-                        f.start = Sequence.Length - subSeq.Length + endIdx; //-1 + 1
+                        f.start = Sequence.Length - subSeq.Length + endIdx + 2; //1 + 1
                         f.end = endIdx + subSeq.Length - (subSeq.Length - 1);
                         f.common_id = item.id;
                         f.clockwise = 1;
@@ -149,17 +155,17 @@ namespace ecloning.Models
                     }
 
 
-                    //reverse                    
+                    //reverse the subseq (feature seq)                  
                     var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
-                    //get completment DNA, but not reverse
+                    //get completment DNA of plasmid seq, but not reverse
                     var cSequence = FindSeq.cDNA(Sequence);
-                    List<int> indexes2 = new List<int>();
-                    indexes2 = FindSeq.NotRestriction(cSequence, reversesubSeq);
-                    if (indexes2.Count() > 0)
+                    List<int> indexesR = new List<int>();
+                    indexesR = FindSeq.NotRestriction(cSequence, reversesubSeq);
+                    if (indexesR.Count() > 0)
                     {
                         //add to plasmd_feature
                         //start and end need to add 1, since seq starts from 1;
-                        foreach (int index in indexes2)
+                        foreach (int index in indexesR)
                         {
                             var feature = new plasmid_map();
                             feature.plasmid_id = PlasmidId;
@@ -176,7 +182,7 @@ namespace ecloning.Models
                     }
 
                     //deal with the left end
-                    var endcSeq = cSequence.Substring(cSequence.Length - reversesubSeq.Length + 1) + cSequence.Substring(0, reversesubSeq.Length - 1 - 1);  // 2 * (subSeq.Length -1)
+                    var endcSeq = cSequence.Substring(cSequence.Length - reversesubSeq.Length + 1, subSeq.Length - 1) + cSequence.Substring(0, reversesubSeq.Length - 1);  // 2 * (subSeq.Length -1)
                     var endRIdx = endcSeq.IndexOf(reversesubSeq);
                     if (endRIdx != -1)
                     {
@@ -186,7 +192,7 @@ namespace ecloning.Models
                         rf.show_feature = 1;
                         rf.feature = item.label;
                         rf.feature_id = item.feature_id;
-                        rf.start = Sequence.Length - subSeq.Length + endRIdx; //-1 + 1
+                        rf.start = Sequence.Length - subSeq.Length + endRIdx + 2; 
                         rf.end = endRIdx + subSeq.Length - (subSeq.Length - 1);
                         rf.common_id = item.id;
                         rf.clockwise = 0;
@@ -197,6 +203,8 @@ namespace ecloning.Models
 
             }
 
+            //========================================================================
+            //========================================================================
             //=====================================================================
             //check restriciton cut
 
@@ -204,6 +212,7 @@ namespace ecloning.Models
             //if no common restriction, then look all the restriction enzymes
 
             //first the common the enzymes
+            //if no common enzyme found, check all the enzymes available
             List<int> enzymeId = new List<int>();
             var common_restriction = db.common_restriction.Where(g => GroupId.Contains(g.group_id));
             if (common_restriction.Count() > 0)
@@ -219,51 +228,59 @@ namespace ecloning.Models
                 }
             }
 
-            //generate enzyme restriction features
-
-            var restriciton = new FindRestriction();
-            var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId); //find all the restrictions cutNum default is 0 == all.
-
-            //remove all the old methylation info
-            var methy = db.methylations.Where(p => p.plasmid_id == PlasmidId);
-            if (methy.Count() > 0)
+            if (enzymeId.Count() > 0)
             {
-                foreach (var m in methy)
+                //check whether enzymeId.count >0 
+                //generate enzyme restriction features
+
+                var restriciton = new FindRestriction();
+                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId); //find all the restrictions cutNum default is 0 == all.
+
+                //remove all the old methylation info
+                var methy = db.methylations.Where(p => p.plasmid_id == PlasmidId);
+                if (methy.Count() > 0)
                 {
-                    db.methylations.Remove(m);
+                    foreach (var m in methy)
+                    {
+                        db.methylations.Remove(m);
+                    }
+                }
+
+
+                //add results to plasmid map table
+                foreach( var rObject in restricitonObjects)
+                {
+                    var map = new plasmid_map();
+                    var methylation = new methylation();
+
+                    //add to map table
+                    map.plasmid_id = PlasmidId;
+                    map.show_feature = 1;
+                    map.feature = rObject.name;
+                    map.feature_id = 4;
+                    map.start = rObject.start + 1;
+                    map.end = rObject.end + 1;
+                    map.cut = rObject.cut +1;
+                    map.clockwise = rObject.clockwise;
+                    db.plasmid_map.Add(map);
+
+
+                    //add to methylation table
+                    methylation.plasmid_id = PlasmidId;
+                    methylation.cut = rObject.cut +1;
+                    methylation.clockwise = rObject.clockwise;
+                    methylation.name = rObject.name;
+                    methylation.dam_complete = rObject.dam_complete;
+                    methylation.dam_impaired = rObject.dam_impaired;
+                    methylation.dcm_complete = rObject.dcm_complete;
+                    methylation.dcm_impaired = rObject.dcm_impaired;
+                    if(methylation.dam_complete || methylation.dam_impaired || methylation.dcm_complete || methylation.dcm_impaired)
+                    {
+                        db.methylations.Add(methylation);
+                    }
                 }
             }
-            foreach( var rObject in restricitonObjects)
-            {
-                var map = new plasmid_map();
-                var methylation = new methylation();
 
-                //add tp map table
-                map.plasmid_id = PlasmidId;
-                map.show_feature = 1;
-                map.feature = rObject.name;
-                map.feature_id = 4;
-                map.start = rObject.start + 1;
-                map.end = rObject.end + 1;
-                map.cut = rObject.cut +1;
-                map.clockwise = rObject.clockwise;
-                db.plasmid_map.Add(map);
-
-
-                //add to methylation table
-                methylation.plasmid_id = PlasmidId;
-                methylation.cut = rObject.cut +1;
-                methylation.clockwise = rObject.clockwise;
-                methylation.name = rObject.name;
-                methylation.dam_complete = rObject.dam_complete;
-                methylation.dam_impaired = rObject.dam_impaired;
-                methylation.dcm_complete = rObject.dcm_complete;
-                methylation.dcm_impaired = rObject.dcm_impaired;
-                if(methylation.dam_complete || methylation.dam_impaired || methylation.dcm_complete || methylation.dcm_impaired)
-                {
-                    db.methylations.Add(methylation);
-                }
-            }
 
 
             //========================================================================

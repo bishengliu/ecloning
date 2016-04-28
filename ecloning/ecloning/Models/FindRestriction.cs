@@ -13,7 +13,10 @@ namespace ecloning.Models
         //find the restriction enzyme feature
         public List<RestriFeatureObject> RestricitonObject(string fullSeq, List<int> enzymeId, int cutNum=0)
         {
-            List<RestriFeatureObject> FObjects = new List<RestriFeatureObject>();
+            //fullSeq is the plasmid sequence
+            //enzymeId are the list for enzyme ids, come from group common enzymes or restricton enzymes
+            //cutNum, the number of cuts, default to 0, finding all the cuts
+            List<RestriFeatureObject> FinalObjects = new List<RestriFeatureObject>();
 
             foreach (var e in enzymeId)
             {
@@ -25,17 +28,24 @@ namespace ecloning.Models
                     var restriSeq = enzyme.forward_seq;
                     var decodes = new DecodeRestrictionSeq();
                     if (enzyme.forward_cut2 == null || enzyme.reverse_cut2 == null)
-                    {                    
+                    {               
+                        //one-cut for each enzyme
+                             
                         //deel the letter codes in the restriction sites, generate the possible restriction sites, decode also N
+                        //return the decoded restriction site list
                         var forwardSeqList = decodes.Decode(restriSeq);
                         foreach(var rs in forwardSeqList)
                         {
+                            //for forward and reverse objects
                             List<RestriFeatureObject> FRrObjects = new List<RestriFeatureObject>();
+
                             var findObjects = new FindRestriction();
+                            //find the restriction for both forward and reverse
+                            //also check dam and dcm
                             FRrObjects = findObjects.FRrObject(cutNum, rs, fullSeq, enzyme, true);
                             if (FRrObjects.Count() > 0)
                             {
-                                Objects = Objects.Concat(FRrObjects).ToList();
+                                Objects = Objects.Concat(FRrObjects).Distinct().ToList();
                             }                          
                         }
                     }
@@ -43,40 +53,44 @@ namespace ecloning.Models
                     {
                         //more than one cuts each time
                         //deel the letter codes in the restriction sites, generate the possible restriction sites, don't decode "N"
+                        //return the decoded restriction site list
                         var forwardSeqList = decodes.DecodeNonN(restriSeq);
                         foreach (var rs in forwardSeqList)
                         {
+                            //for forward and reverse objects
                             List<RestriFeatureObject> FRr2Objects = new List<RestriFeatureObject>();
 
-                            //mutiple cut following these rules
+                            //mutiple cut restuction site following these rules
                             //ATCGNNNNNNATGC
                             var findObjects = new FindRestriction();
                             //don't look for dam and dcm
                             //generate 2 object for each index
-                            FRr2Objects = FRr2Object(cutNum, rs, fullSeq, enzyme, true);
+                            FRr2Objects = findObjects.FRr2Object(cutNum, rs, fullSeq, enzyme, true);
                             if (FRr2Objects.Count() > 0)
                             {
-                                Objects = Objects.Concat(FRr2Objects).ToList();
+                                Objects = Objects.Concat(FRr2Objects).Distinct().ToList();
                             }
                         }
                     }
                 }
+                //remove the duplicates
                 Objects = Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
+
                 if (cutNum != 0 && Objects.Count() <= cutNum)
                 {
-                    FObjects = FObjects.Concat(Objects).ToList();
+                    FinalObjects = FinalObjects.Concat(Objects).ToList();
                 }
-                if(cutNum == 0)
+                if(cutNum == 0 && Objects.Count() >0)
                 {
-                    FObjects = FObjects.Concat(Objects).ToList();
+                    FinalObjects = FinalObjects.Concat(Objects).ToList();
                 }
             }
-            return FObjects;
+            return FinalObjects;
         }
 
-        //====================================deel with one cut each enzyme=======================================================//
-        //this funciton returen forward and completement restrictionObject
-        public List<RestriFeatureObject> FRrObject(int cutNum, string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        //====================================deal with one cut each enzyme=======================================================//
+        //this funciton return forward and completement restrictionObject
+        public List<RestriFeatureObject> FRrObject(int cutNum, string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> FRrObjects = new List<RestriFeatureObject>();
             List<RestriFeatureObject> FrObjects = new List<RestriFeatureObject>();
@@ -86,24 +100,30 @@ namespace ecloning.Models
             //find forward
             var findObject = new FindRestriction();
             FrObjects = findObject.FrObject(rs, fullSeq, enzyme, isCircular);
+
+            //find the reverse
             if (cutNum == 0 || (cutNum != 0 && FrObjects.Count() < cutNum))
             {
+                //get the revser completment restriction site 
                 //find the completment
                 var crs = FindSeq.cDNA(rs);
                 //find reverse
                 var rcrs = FindSeq.ReverseSeq(crs);
 
+
                 if (FrObjects.Count() > 0)
                 {
                     if (object.Equals(rs, rcrs))
                     {
-                        //find left side for dam or dcm
+                        //don't find more cuts, but need to check
+                        //the left side for dam or dcm
                         FrObjects = findObject.newFrObject(rcrs, fullSeq, enzyme, FrObjects, isCircular);
                     }
                 }
+
                 if (!object.Equals(rs, rcrs))
                 {
-                    RrObjects = findObject.FrObject(rcrs, fullSeq, enzyme, isCircular);
+                    RrObjects = findObject.RrObject(rcrs, fullSeq, enzyme, isCircular);
                 }
             }
             FRrObjects = FrObjects.Concat(RrObjects).ToList();     
@@ -112,7 +132,7 @@ namespace ecloning.Models
 
         //single cut one enzyme
         //forward
-        public List<RestriFeatureObject> FrObject(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> FrObject(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
             for (int index = 0; ; index += rs.Length)
@@ -131,23 +151,38 @@ namespace ecloning.Models
                     FObject.start = index;
                     FObject.end = rs.Length + index - 1; //switch to 0 index mode
 
-                    if (enzyme.forward_cut <0 && index < Math.Abs(enzyme.forward_cut))
+
+
+                    if (enzyme.forward_cut < 0 && index >= Math.Abs(enzyme.forward_cut))
                     {
-                        //enzyme cut is left to the restriciton site
+                        //enzyme cut is left to the restriciton site and is not close to the left side of the plasmid seq
+                        FObject.cut = enzyme.forward_cut + index;
+                    }
+                    else if (enzyme.forward_cut <0 && index < Math.Abs(enzyme.forward_cut))
+                    {
+                        //enzyme cut is left to the restriciton site and is close to the left side of the plasmid seq
                         var lenth1 = Math.Abs(enzyme.forward_cut) - index;
                         FObject.cut = fullSeq.Length - lenth1 - 1;                        
                     }
-                    if (enzyme.forward_cut > enzyme.forward_seq.Length && (index + Math.Abs(enzyme.forward_cut) > fullSeq.Length))
+                    else if (enzyme.forward_cut > enzyme.forward_seq.Length && (index + Math.Abs(enzyme.forward_cut) <= fullSeq.Length))
                     {
-                        //enzyme cut is to the right if the restriciotn site
+                        //enzyme cut is to the right if the restriciotn site and is not close to the right side of the plasmid
+                        FObject.cut = enzyme.forward_cut + index - 1;
+                    }
+                    else if (enzyme.forward_cut > enzyme.forward_seq.Length && (index + Math.Abs(enzyme.forward_cut) > fullSeq.Length))
+                    {
+                        //enzyme cut is to the right if the restriciotn site and is close to the right side of the plasmid
                         var length1 = enzyme.forward_cut - (fullSeq.Length - index);
-                        FObject.cut = FObject.start = length1 - 1;                       
+                        FObject.cut = length1 - 1;                       
                     }
                     else
-                    {                        
+                    {
+                        //cut in the middle of the restriction site                
                         FObject.cut = enzyme.forward_cut + index - 1; //switch to 0 index mode 
                     }
                     
+
+
                     //when the cut is outside the resriciton site                   
                     //dam and dcm is not possible
 
@@ -188,33 +223,37 @@ namespace ecloning.Models
         }
 
 
-        public RestriFeatureObject FindEndRestriction(string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        public RestriFeatureObject FindEndRestriction(string rs, string fullSeq, restri_enzyme enzyme)
         {
             var EndObject = new RestriFeatureObject();
 
             //right end
-            string rightEndSeq = fullSeq.Substring(fullSeq.Length - rs.Length) + fullSeq.Substring(0, rs.Length - 1);
+            string rightEndSeq = fullSeq.Substring(fullSeq.Length - rs.Length +1, rs.Length - 1) + fullSeq.Substring(0, rs.Length - 1);
             int index = rightEndSeq.IndexOf(rs);
             if (index != -1)
             {
                 EndObject.clockwise = 1;
-                EndObject.start = fullSeq.Length - index;
-
-                EndObject.end = rs.Length + index - ( rs.Length - 1) -1; //switch to 0 index mode
+                EndObject.start = fullSeq.Length - rs.Length + index +2;
+                EndObject.end= index + rs.Length - (rs.Length - 1);
                 
+
                 //cut after index
                 if (enzyme.forward_cut >= 1 && enzyme.forward_cut + index < rs.Length)
                 {
-                    EndObject.cut = fullSeq.Length - 1 - rs.Length - 1  + index + Math.Abs(enzyme.forward_cut);
+                    //cut is still before the end of plasmid
+                    EndObject.cut = fullSeq.Length - rs.Length + index + enzyme.forward_cut;
                 }
                 else if (enzyme.forward_cut < 0)
                 {
-                    EndObject.cut = fullSeq.Length -1 - rs.Length -1 - Math.Abs(enzyme.forward_cut) + index; //switch to 0 index mode
+                    //cut is left to the site
+                    EndObject.cut = fullSeq.Length - rs.Length + index - Math.Abs(enzyme.forward_cut) ; //switch to 0 index mode
                 }
                 else
                 {
-                    EndObject.cut = index + enzyme.forward_cut -(rs.Length - 1) - 1;
+                    //cut is now at the beginning
+                    EndObject.cut = index + enzyme.forward_cut -rs.Length;
                 }
+
 
                 //check dam and dcm
                 var findRestrction = new FindRestriction();
@@ -230,26 +269,13 @@ namespace ecloning.Models
                 EndObject.dcm_impaired = dcm.Values.FirstOrDefault();
 
                 //set the name of the feature
-                var featureName = enzyme.name;
-                //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete || EndObject.dcm_impaired))
-                //{
-                //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                //}
-                //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete == false && EndObject.dcm_impaired == false))
-                //{
-                //    featureName = featureName + " (affected by Dam Methylation)";
-                //}
-                //if ((EndObject.dcm_complete || EndObject.dcm_impaired) && (EndObject.dam_complete == false && EndObject.dam_impaired == false))
-                //{
-                //    featureName = featureName + " (affected by Dcm Methylation)";
-                //}
-                EndObject.name = featureName;
+                EndObject.name = enzyme.name;
             }           
             return EndObject;
         }
 
 
-        public Dictionary<bool, bool> CheckDam(string rs, int index, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        public Dictionary<bool, bool> CheckDam(string rs, int index, string fullSeq, restri_enzyme enzyme)
         {
             var dict = new Dictionary<bool, bool>();
 
@@ -454,7 +480,7 @@ namespace ecloning.Models
             return dict;
         }
 
-        public Dictionary<bool, bool> CheckDcm(string rs, int index, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        public Dictionary<bool, bool> CheckDcm(string rs, int index, string fullSeq, restri_enzyme enzyme)
         {
             var dict = new Dictionary<bool, bool>();
             //complately blocked, impaired
@@ -688,7 +714,7 @@ namespace ecloning.Models
         }
 
         //reverse
-        public List<RestriFeatureObject> RrObject(string crs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> RrObject(string crs, string fullSeq, restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
 
@@ -708,25 +734,37 @@ namespace ecloning.Models
                     FObject.start = index;
                     FObject.end = crs.Length + index - 1; //switch to 0 index mode
 
-                    //deel with end pour of range problem
-                    if (enzyme.reverse_cut< 0 && (index + crs.Length + Math.Abs(enzyme.reverse_cut) -1 > fullSeq.Length))
+                    //deel with end out of range problem
+                    if (enzyme.reverse_cut < 0 && (index + crs.Length + Math.Abs(enzyme.reverse_cut) - 1 <= fullSeq.Length))
                     {
-                        //FObject.clockwise = 0;
-                        //FObject.start = index;
-                        var length2 = Math.Abs(enzyme.reverse_cut) - (fullSeq.Length - index);
+                        //enzyme cut is to the right if the restriciotn site and is not close to the right side of the plasmid
+                        FObject.cut = (Math.Abs(enzyme.reverse_cut) -1) + crs.Length + index -1;
+                    }
+                    if (enzyme.reverse_cut < 0 && (index + crs.Length + Math.Abs(enzyme.reverse_cut) -1 > fullSeq.Length))
+                    {
+                        //enzyme cut is to the right if the restriciotn site and is close to the right side of the plasmid
+                        var length2 = (Math.Abs(enzyme.reverse_cut) - 1) + crs.Length - (fullSeq.Length - index);
                         FObject.cut = length2 - 1;
                     }
-                    else if ((enzyme.reverse_cut > crs.Length) && (index < (enzyme.reverse_cut + 1 -crs.Length)))
+                    else if ((enzyme.reverse_cut > crs.Length) && (index < (enzyme.reverse_cut + 1 - crs.Length)))
                     {
-                        //FObject.clockwise = 0;
-                        //FObject.start = index;
-                        var length2 = enzyme.reverse_cut - enzyme.forward_seq.Length - index;                        
+                        //enzyme cut is left to the restriciton site and is close to the left side of the plasmid seq
+                        var length2 = enzyme.reverse_cut + 1 - crs.Length - index;
+                        FObject.cut = fullSeq.Length - length2 - 1;
+                    }
+                    else if ((enzyme.reverse_cut > crs.Length) && (index >= (enzyme.reverse_cut + 1 - crs.Length)))
+                    {
+                        //enzyme cut is left to the restriciton site and is not close to the left side of the plasmid seq
+                        FObject.cut =  index - (enzyme.reverse_cut + 1 - crs.Length);
                     }
                     else
                     {                       
+                        //cut in the middle of the restriction site
                         FObject.cut =(crs.Length - enzyme.reverse_cut)  + index - 1; //switch to 0 index mode 
                     }
-                                       
+                    
+                    
+                             
                     //check dam and dcm
                     var findRestrction = new FindRestriction();
                     //chack dam
@@ -763,32 +801,41 @@ namespace ecloning.Models
             return rObjects;
         }
 
-        public RestriFeatureObject FindREndRestriction(string crs, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        public RestriFeatureObject FindREndRestriction(string crs, string fullSeq, restri_enzyme enzyme)
         {
             var EndObject = new RestriFeatureObject();
 
-            var index = fullSeq.LastIndexOf(crs);
+            string rightEndSeq = fullSeq.Substring(fullSeq.Length - crs.Length + 1, crs.Length - 1) + fullSeq.Substring(0, crs.Length - 1);
+            int index = rightEndSeq.IndexOf(crs);
             if (index != -1)
             {
-                string tempFulSeq = fullSeq + fullSeq.Substring(0, crs.Length - 1);
-                index = tempFulSeq.IndexOf(crs, index);// start from the last index, and look for an extra cut
-                if (index != -1)
-                {
                     ///do find an extra one that span the begining and end of the seq
                     ///
                     EndObject.clockwise = 0;
-                    EndObject.start = index;
-                    EndObject.end = crs.Length - (fullSeq.Length - 1 - index) - 1; //switch to 0 index mode
+                    EndObject.start = fullSeq.Length - crs.Length + index + 2;
+                    EndObject.end = index + crs.Length - (crs.Length - 1);
 
 
-                    //cut after index
-                    if (enzyme.reverse_cut >= 1)
+                    if (enzyme.reverse_cut < 0)
                     {
-                        EndObject.cut = (enzyme.reverse_cut + index <= fullSeq.Length) ? (enzyme.reverse_cut - 1 + index) : (enzyme.reverse_cut - 1 - (fullSeq.Length - 1 - index)); //switch to 0 index mode
+                        //must be from the begining
+                        EndObject.cut = index + Math.Abs(enzyme.reverse_cut);
+                    }
+                    else if(enzyme.reverse_cut >= 1 && enzyme.reverse_cut <= crs.Length)
+                    {
+                        if(index + (crs.Length - enzyme.reverse_cut) < (crs.Length - 1))
+                        {
+                            EndObject.cut = fullSeq.Length  + index - enzyme.reverse_cut;
+                        }
+                        else
+                        {
+                            EndObject.cut = index  - enzyme.reverse_cut;
+                        }
                     }
                     else
                     {
-                        EndObject.cut = enzyme.reverse_cut + index; //switch to 0 index mode
+                        //enzyme.reverse_cut >= 1 && enzyme.reverse_cut > crs.Length
+                        EndObject.cut = fullSeq.Length - enzyme.reverse_cut + index;
                     }
 
 
@@ -806,27 +853,13 @@ namespace ecloning.Models
                     EndObject.dcm_impaired = dcm.Values.FirstOrDefault();
 
                     //set the name of the feature
-                    var featureName = enzyme.name;
-                    //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete || EndObject.dcm_impaired))
-                    //{
-                    //    featureName = featureName + " (affected by Dam/Dcm Methylation)";
-                    //}
-                    //if ((EndObject.dam_complete || EndObject.dam_impaired) && (EndObject.dcm_complete == false && EndObject.dcm_impaired == false))
-                    //{
-                    //    featureName = featureName + " (affected by Dam Methylation)";
-                    //}
-                    //if ((EndObject.dcm_complete || EndObject.dcm_impaired) && (EndObject.dam_complete == false && EndObject.dam_impaired == false))
-                    //{
-                    //    featureName = featureName + " (affected by Dcm Methylation)";
-                    //}
-                    EndObject.name = featureName;
-                }
+                    EndObject.name = enzyme.name;
             }
 
             return EndObject;
         }
 
-        public Dictionary<bool, bool> CheckRDam(string crs, int index, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        public Dictionary<bool, bool> CheckRDam(string crs, int index, string fullSeq, restri_enzyme enzyme)
         {
             var dict = new Dictionary<bool, bool>();
 
@@ -1031,7 +1064,7 @@ namespace ecloning.Models
         }
 
 
-        public Dictionary<bool, bool> CheckRDcm(string crs, int index, string fullSeq, ecloning.Models.restri_enzyme enzyme)
+        public Dictionary<bool, bool> CheckRDcm(string crs, int index, string fullSeq, restri_enzyme enzyme)
         {
             var dict = new Dictionary<bool, bool>();
             //complately blocked, impaired
@@ -1304,11 +1337,11 @@ namespace ecloning.Models
         }
 
 
-        //=====================deel with more than one cut each enzyme ======================================================//
+        //=====================deal with more than one cut each enzyme ======================================================//
 
         //find the non N letters in the restriciton sites
         
-        public List<RestriFeatureObject> FRr2Object (int cutNum, string rs, string fullSeq, ecloning.Models.restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> FRr2Object (int cutNum, string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
         {
             List<RestriFeatureObject> FRr2Objects = new List<RestriFeatureObject>();
             List<RestriFeatureObject> Fr2Objects = new List<RestriFeatureObject>();
