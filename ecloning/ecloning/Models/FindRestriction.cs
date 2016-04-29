@@ -233,9 +233,8 @@ namespace ecloning.Models
             if (index != -1)
             {
                 EndObject.clockwise = 1;
-                EndObject.start = fullSeq.Length - rs.Length + index +2;
-                EndObject.end= index + rs.Length - (rs.Length - 1);
-                
+                EndObject.start = fullSeq.Length - rs.Length + index;
+                EndObject.end= index;
 
                 //cut after index
                 if (enzyme.forward_cut >= 1 && enzyme.forward_cut + index < rs.Length)
@@ -1475,19 +1474,18 @@ namespace ecloning.Models
             if(index != -1)
             {
                 int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength - 1;
-                if (rightIndex <= rsLength -2 && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
-                if (rsLength >=2 && rightIndex <= rsLength -2 && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                if (rightIndex + r2SeqObject.rightSeq.Length <= rightEndSeq.Length &&  rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
-                    //left cut 
-                    r2EndObject.cut = fullSeq.Length - 1 - rsLength - 1 - Math.Abs(enzyme.forward_cut) + index;
-                    r2EndObject2.cut = rsLength - 1 - (2 * (rsLength - 1) - (index + rsLength)) + (int)enzyme.forward_cut2 - 1;
+                    //rightindex is at the end of fullseq
+
+                    //forward_cut2 must be at the beging of the full seq
+                    //forward_cut must be at the end of the full seq
+                    // cuts
+                    r2EndObject.cut = fullSeq.Length - rsLength - Math.Abs(enzyme.forward_cut) + index;
+                    r2EndObject2.cut = index + (int)enzyme.forward_cut2 - rsLength;
 
                     r2EndObject.clockwise = 1;
-                    r2EndObject.start = fullSeq.Length - index;
-                    r2EndObject.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
                     r2EndObject2.clockwise = 1;
-                    r2EndObject2.start = fullSeq.Length - index;
-                    r2EndObject2.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
 
                     r2EndObject.name = enzyme.name;
                     r2EndObject2.name = enzyme.name;
@@ -1503,6 +1501,15 @@ namespace ecloning.Models
                     r2EndObject2.dcm_impaired = false;
                     r2EndObjects.Add(r2EndObject);
                     r2EndObjects.Add(r2EndObject2);
+
+
+                    //find the start and end
+                    r2EndObject.start = fullSeq.Length - rsLength + index;
+                    r2EndObject.end =index;
+                    r2EndObject2.start = fullSeq.Length - rsLength + index;
+                    r2EndObject2.end = index; //switch to 0 index mode
+
+
                 }
             }
 
@@ -1623,18 +1630,18 @@ namespace ecloning.Models
             if (index != -1)
             {
                 int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength - 1 ;
-                if (rsLength >= 2 && rightIndex <= rsLength - 2 && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
+                if (rightIndex + r2SeqObject.rightSeq.Length <= rightEndSeq.Length && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
 
-                    r2EndObject.cut = cfullSeq.Length - 1 - rsLength - 1 - Math.Abs((int)enzyme.forward_cut2 - rsLength + 1) + index;
-                    r2EndObject2.cut = rsLength - 1 - (2 * (rsLength - 1) - (index + rsLength)) + Math.Abs(enzyme.forward_cut) -1 - 1;
-
+                    r2EndObject.cut = cfullSeq.Length - (int)enzyme.forward_cut2  - 1 + index;
+                    r2EndObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1;
                     r2EndObject.clockwise = 0;
-                    r2EndObject.start = cfullSeq.Length - index;
-                    r2EndObject.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
                     r2EndObject2.clockwise = 0;
-                    r2EndObject2.start = cfullSeq.Length - index;
-                    r2EndObject2.end = rsLength + index - (rsLength - 1) - 1; //switch to 0 index mode
+                    r2EndObject.start = cfullSeq.Length - rsLength + index;
+                    r2EndObject.end = index; //switch to 0 index mode
+                    
+                    r2EndObject2.start = cfullSeq.Length - rsLength + index;
+                    r2EndObject2.end = index; //switch to 0 index mode
 
 
                     r2EndObject.name = enzyme.name;
