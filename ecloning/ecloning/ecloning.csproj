@@ -264,6 +264,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\MiscellaneousController.cs" />
+    <Compile Include="Controllers\pBundleController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\RActivityController.cs" />
     <Compile Include="Controllers\RootController.cs" />
@@ -415,6 +416,7 @@
     </Compile>
     <Compile Include="Models\ORFFinder.cs" />
     <Compile Include="Models\ORFObject.cs" />
+    <Compile Include="Models\pBundle.cs" />
     <Compile Include="Models\people_license.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -916,6 +918,12 @@
     <Content Include="Views\Map\Enzyme.cshtml" />
     <Content Include="Views\Plasmid\Compare.cshtml" />
     <Content Include="Views\Plasmid\Overview.cshtml" />
+    <Content Include="Views\pBundle\Create.cshtml" />
+    <Content Include="Views\pBundle\Delete.cshtml" />
+    <Content Include="Views\pBundle\Details.cshtml" />
+    <Content Include="Views\pBundle\Edit.cshtml" />
+    <Content Include="Views\pBundle\Index.cshtml" />
+    <Content Include="Views\pBundle\Select.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\plasmid\" />

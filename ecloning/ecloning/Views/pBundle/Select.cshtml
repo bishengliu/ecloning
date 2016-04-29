@@ -1,0 +1,156 @@
+﻿@model ecloning.Models.pBundle
+@{
+    ViewBag.Title = "Select Plasmids";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Plasmids = ViewBag.Plasmids;
+    var Features = ViewBag.Features;
+    var msg = (string)TempData["msg"];
+}
+
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Create a new plasmid bundle</h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <p id="error" class="text-danger text-center"></p>
+        <p id="msg" class="text-info text-center"></p>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">                     
+                     <div class="col-xs-12">
+                         @Html.LabelFor(model => model.Name, "Bundle Name", htmlAttributes: new { @class = "control-label required" })
+                         @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                         @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                     </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">                    
+                    <div class="col-xs-12">
+                        @Html.LabelFor(model => model.Upload, "Upload file", htmlAttributes: new { @class = "control-label" })
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="file_name" readonly>
+                            <span class="input-group-btn">
+                                <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="file_fn" id="file_fn" onchange="getFilePath()" /></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Upload, "", new { @class = "text-danger" })
+                        <p id="max_size" class="text-danger" style="font-size:90%;"></p>
+                    </div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="col-xs-12">
+                        @Html.LabelFor(model => model.Des, "Bundle Description", htmlAttributes: new { @class = "control-label" })
+                        @Html.TextAreaFor(model => model.Des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-12">
+                    <div class="col-xs-12">
+                        <label for="plasmid" class="control-label required">Select plasmids for the new bundle:</label>
+                        <input type="text" name="plasmid" class="form-control" id="plasmid">
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-12">
+                    <div class="col-xs-12 col-lg-11 col-lg-offset-1" id="maps">
+
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-12">
+                    <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                        <br />
+                        <input type="submit" id="addBundle" value="Add Bundle" class="btn btn-block btn-primary" />
+                    </div>
+                </div>
+
+
+        }
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+<script>
+    function uploadSize() {
+
+        if (typeof ($('#file_fn')[0].files) != "undefined") {
+            //check upload file size
+            var size = parseFloat($('#file_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+            if (size > 10) {
+                $('#max_size').text('Maximum upload file size is 10MB!');
+                return false;
+            }
+        }
+    }
+</script>
+<script>
+    function getFilePath() {
+        var fullPath = document.getElementById("file_fn").value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById("file_name").value = fileName;
+    }
+</script>
+<script>
+    var Plasmids = ("@Plasmids");
+    document.getElementById("decodeIt").innerHTML = Plasmids;
+    Plasmids = document.getElementById("decodeIt").innerText;
+
+    var Features = ("@Features");
+    document.getElementById("decodeIt").innerHTML = Features;
+    Features = document.getElementById("decodeIt").innerText;
+
+    try {
+        data = JSON.parse(Plasmids);
+        Features = JSON.parse(Features);
+        //token list
+        $(document).ready(function () {
+            $("#plasmid").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type plasmid name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "name",
+                preventDuplicates: true,
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.name + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+            $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+        });
+
+    }
+    catch (e)
+    {
+        console.log(e);
+        $('#error').text("Unable to load plasmid data, please try again later!");
+        $("#compare").addClass("disabled");
+    }
+
+
+
+    //next step
+    $('#addBundle').click(showForm);
+
+    function showForm(event) {
+        //prevent the submission
+        event.preventDefault();
+        var idString = $('#plasmid').val();
+        if (!idString.trim()) {
+            $('#error').text("You haven't selected any plasmid!");
+            $('#msg').text(null);
+        }
+        else
+        {
+            //submit the form
+
+        }
+    }
+</script>
