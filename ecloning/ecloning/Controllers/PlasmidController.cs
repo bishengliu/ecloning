@@ -113,7 +113,7 @@ namespace ecloning.Controllers
             //ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
             var plasmidId = plasmids.Select(p => p.id).ToList();
             //pass all features into json
-            var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 5 && f.feature_id != 10);
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10);
             var fLabels = features.Select(f => f.common_feature.label).Distinct().ToList();
             var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f=>f.common_feature.label).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
             ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
@@ -666,11 +666,16 @@ namespace ecloning.Controllers
                     }
                     if(locked != 1)
                     {
-                        //!!!!!Need to check whether the seq is changed!!!!!!!!!***********************
-                        //backup plasmid map
-                        var Backup = new BackupMap(plasmid.id);
-                        //auto generate features
-                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence,groupInfo.groupId);
+                        //find the original seq
+                        //update plasmid map only when seq is changed
+                        var oriPlasmid = db.plasmids.Find(plasmid.id);
+                        if(oriPlasmid.sequence != Plasmid.sequence)
+                        {
+                            //backup plasmid map
+                            var Backup = new BackupMap(plasmid.id);
+                            //auto generate features
+                            var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence,groupInfo.groupId);
+                        }                        
                     }   
                 }                
 
