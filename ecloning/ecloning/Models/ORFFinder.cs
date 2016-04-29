@@ -12,17 +12,22 @@ namespace ecloning.Models
         //alternative GTG TTG CTG is 1
         //all is 2
         public int startCodon { get; set; }
+
         //stop codons are:TAA TAG  TGA
         //TAA is 1
         //TAG is 2
         //TGA is 3
         //all is 0
         public int stopCodon { get; set; }
+
+
         //frame 1
         //frame 2
         //feame 3
         //frame 1, 2, 3 is 0
         public int frame { get; set; }
+
+
         // 0 is both directions
         //1 is forward
         //2 is reverse
@@ -117,6 +122,7 @@ namespace ecloning.Models
             return ORF;
         }
 
+
         //forward methods
         //find the promotor and terminator pairs in a plasmid
         //return List<Tuple<int, int>>(promotpr, terminator)
@@ -127,17 +133,17 @@ namespace ecloning.Models
             var promotors = db.common_feature.Where(f => f.plasmid_feature.id == 2);
             bool resultPromotor = false;
             List<int> PromotorIndexes = new List<int>(); //keep all the indexes
-            List<int> indexesPromotor = new List<int>();
+            List<int> indexesPerPromotor = new List<int>();
             if (promotors.Count() > 0)
             {
                 foreach (var item in promotors.ToList())
                 {
                     //feature sequence
                     var subSeq = item.sequence;
-                    indexesPromotor = FindSeq.NotRestriction(sequence, subSeq);
-                    if (indexesPromotor.Count() > 0)
+                    indexesPerPromotor = FindSeq.NotRestriction(sequence, subSeq);
+                    if (indexesPerPromotor.Count() > 0)
                     {
-                        PromotorIndexes = PromotorIndexes.Concat(indexesPromotor).ToList();
+                        PromotorIndexes = PromotorIndexes.Concat(indexesPerPromotor).ToList();
                         resultPromotor = true;                        
                     }
                 }
@@ -147,23 +153,27 @@ namespace ecloning.Models
             var terminators = db.common_feature.Where(f => f.plasmid_feature.id == 8);
             bool resultTerminator = false;
             List<int> TerminatorIndexes = new List<int>(); //keep all the indexes
-            List<int> indexesTerminator = new List<int>();
+            List<int> indexesPerTerminator = new List<int>();
             if (terminators.Count() > 0)
             {
                 foreach (var item in terminators.ToList())
                 {
                     //feature sequence
                     var subSeq = item.sequence;
-                    indexesTerminator = FindSeq.NotRestriction(sequence, subSeq);
-                    if (indexesTerminator.Count() > 0)
+                    indexesPerTerminator = FindSeq.NotRestriction(sequence, subSeq);
+                    if (indexesPerTerminator.Count() > 0)
                     {
-                        TerminatorIndexes = TerminatorIndexes.Concat(indexesTerminator).ToList();
+                        TerminatorIndexes = TerminatorIndexes.Concat(indexesPerTerminator).ToList();
                         resultTerminator = true;                        
                     }
                 }
             }
+
+            //sort the indexes
             PromotorIndexes.Sort();
             TerminatorIndexes.Sort();
+
+            //generate the promotor and terminator pairs
             List<Tuple<int, int>> ProTerPair = new List<Tuple<int, int>>();
             var tempTerminator = 0; //for keeping the last terminator
             if (resultPromotor == true && resultTerminator ==true && PromotorIndexes.Count()>0 && TerminatorIndexes.Count()>0)
@@ -186,10 +196,7 @@ namespace ecloning.Models
                             ProTerPair.Add(new Tuple<int, int>(promotor, terminator));
                             tempTerminator = terminator;
                             TerminatorIndexes.Remove(terminator);
-                            if (TerminatorIndexes.Count() == 0)
-                            {
-                                break;
-                            }
+                            break;
                         }
                     }
                 }
@@ -317,10 +324,10 @@ namespace ecloning.Models
             List<Tuple<int, int>> StartStopPair = new List<Tuple<int, int>>();
             startPos.Sort();
             stopPos.Sort();
+
+
             if(startPos.Count()>0 && stopPos.Count() > 0)
             {
-
-
                 var tempStart = -1;
                 foreach (int stopItem in stopPos)
                 {
@@ -339,13 +346,11 @@ namespace ecloning.Models
                         }
                         else
                         {
-                            tempStart = stopItem > startItem? stopItem: startItem;
+                            tempStart = stopItem > startItem ? stopItem: startItem;
                             break;
                         }
                     }
                 }
-
-
             }
 
             return StartStopPair;
@@ -425,17 +430,17 @@ namespace ecloning.Models
             var promotors = db.common_feature.Where(f => f.plasmid_feature.id == 2);
             bool resultPromotor = false;
             List<int> PromotorIndexes = new List<int>(); //keep all the indexes
-            List<int> indexesPromotor = new List<int>();
+            List<int> indexesPerPromotor = new List<int>();
             if (promotors.Count() > 0)
             {
                 foreach (var item in promotors.ToList())
                 {
                     //feature sequence
                     var subSeq = FindSeq.ReverseSeq(item.sequence);
-                    indexesPromotor = FindSeq.NotRestriction(cSequence, subSeq);
-                    if (indexesPromotor.Count() > 0)
+                    indexesPerPromotor = FindSeq.NotRestriction(cSequence, subSeq);
+                    if (indexesPerPromotor.Count() > 0)
                     {
-                        PromotorIndexes = PromotorIndexes.Concat(indexesPromotor).ToList();
+                        PromotorIndexes = PromotorIndexes.Concat(indexesPerPromotor).ToList();
                         resultPromotor = true;
                     }
                 }
@@ -445,7 +450,7 @@ namespace ecloning.Models
             var terminators = db.common_feature.Where(f => f.plasmid_feature.id == 8);
             bool resultTerminator = false;
             List<int> TerminatorIndexes = new List<int>(); //keep all the indexes
-            List<int> indexesTerminator = new List<int>();
+            List<int> indexesPerTerminator = new List<int>();
             if (terminators.Count() > 0)
             {
                 foreach (var item in terminators.ToList())
@@ -453,16 +458,19 @@ namespace ecloning.Models
 
                     //feature sequence
                     var subSeq =FindSeq.ReverseSeq(item.sequence);
-                    indexesTerminator = FindSeq.NotRestriction(cSequence, subSeq);
-                    if (indexesTerminator.Count() > 0)
+                    indexesPerTerminator = FindSeq.NotRestriction(cSequence, subSeq);
+                    if (indexesPerTerminator.Count() > 0)
                     {
-                        TerminatorIndexes = TerminatorIndexes.Concat(indexesTerminator).ToList();
+                        TerminatorIndexes = TerminatorIndexes.Concat(indexesPerTerminator).ToList();
                         resultTerminator = true;
                     }
                 }
             }
+            //sort
             PromotorIndexes.Sort();
             TerminatorIndexes.Sort();
+
+            //find pairs
             List<Tuple<int, int>> ProTerPair = new List<Tuple<int, int>>();
             var tempPromotor = 0;
             if (resultPromotor == true && resultTerminator ==true && PromotorIndexes.Count() > 0 && TerminatorIndexes.Count() > 0)
@@ -484,11 +492,8 @@ namespace ecloning.Models
                         {
                             ProTerPair.Add(new Tuple<int, int>(terminator, promotor));
                             tempPromotor = promotor;
-                            indexesPromotor.Remove(promotor);
-                            if (PromotorIndexes.Count() == 0)
-                            {
-                                break;
-                            }
+                            PromotorIndexes.Remove(promotor);
+                            break;
                         }
                     }
                 }
@@ -525,7 +530,7 @@ namespace ecloning.Models
             //string[] stop = new string[] { "TAA", "TAG", "TGA" };
             if (startCodon == 0)
             {
-                //ATG revser to GTA
+                //ATG reverse to GTA
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
                     if (tempSeq.Substring(i, 3) == "GTA")
@@ -547,7 +552,7 @@ namespace ecloning.Models
 
             if (startCodon == 1)
             {
-                // "GTG", "TTG", "CTG" revser is GTG GTT and GTC
+                // "GTG", "TTG", "CTG" reverse is GTG GTT and GTC
                 for (var i = 0; i < (tempSeq.Length - 2); i += 3)
                 {
                     if (tempSeq.Substring(i, 3) == "GTG" || tempSeq.Substring(i, 3) == "GTT" || tempSeq.Substring(i, 3) == "GTC")
@@ -670,40 +675,38 @@ namespace ecloning.Models
             //zip start and stop
             //suppose all startcode will start and all stopcode stops absolutely
             List<Tuple<int, int>> StartStopPair = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> StartStopPair1 = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> StartStopPair2 = new List<Tuple<int, int>>();
 
-            //decending the list
             stopPos.Sort();
-            var stopPosDesc = stopPos.OrderByDescending(i => i).ToList();
             startPos.Sort();
-            var startPosDesc = startPos.OrderByDescending(i => i).ToList();
 
 
-            var tempStart = -1;
-            foreach (int stopItem in stopPosDesc)
+            if (startPos.Count() > 0 && stopPos.Count() > 0)
             {
-                foreach (int startItem in startPosDesc)
+                var tempStop = -1;
+                foreach (int startItem in startPos)
                 {
-                    if(startItem > tempStart)
+                    foreach (int stopItem in stopPos)
                     {
-                        continue;
-                    }
-                    if (startItem >= (stopItem + minSzie))
-                    {
-                        StartStopPair1.Add(new Tuple<int, int>(stopItem, startItem));
-                        tempStart = stopItem;
-                        break;
-                    }
-                    else
-                    {
-                        tempStart = stopItem > startItem ? stopItem : startItem;
-                        break;
+                        if (stopItem < tempStop)
+                        {
+                            continue;
+                        }
+
+                        if (stopItem <= (startItem - minSzie))
+                        {
+                            StartStopPair.Add(new Tuple<int, int>(stopItem, startItem));
+                            tempStop = startItem;
+                            break;
+                        }
+                        else
+                        {
+                            tempStop = startItem > stopItem ? startItem : stopItem;
+                            break;
+                        }
                     }
                 }
             }
 
-            StartStopPair = StartStopPair1.Concat(StartStopPair2).ToList();
             return StartStopPair;
         }
 

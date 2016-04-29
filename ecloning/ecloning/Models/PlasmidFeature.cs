@@ -246,7 +246,6 @@ namespace ecloning.Models
                     }
                 }
 
-
                 //add results to plasmid map table
                 foreach( var rObject in restricitonObjects)
                 {
@@ -280,7 +279,6 @@ namespace ecloning.Models
                     }
                 }
             }
-
 
 
             //========================================================================
