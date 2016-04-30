@@ -1,82 +1,66 @@
 ﻿@model IEnumerable<ecloning.Models.plasmid_bundle>
-
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<int> BundleIds = (List<int>)ViewBag.BundleIds;
 }
 
-<h2>Index</h2>
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Plasmid Bundles</h3>
+    </div>
+</div>
+<div>
+    <a class="btn btn-sm btn-primary" href="@Url.Action("Select", "pBundle")">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add Bundle</span>
+    </a>
+</div>
+<br/>
+<div>
+    @if (BundleIds.Count() > 0)
+    {
+        int x=0;
+        for (int i = 0; i < BundleIds.Count(); i++)
+        {
+            x++;
+            if(x-1 > 9)
+            {
+                x = x - 10;
+            }
+            string ClassName = "panel" + " " + "panel-color" + (x-1).ToString();
+            <div class="col-xs-12 col-sm-6">
+                <div class="@ClassName">
+                    <div class="panel-heading">
+                         <h3 class="panel-title">Panel 1</h3>
+                         <span class="pull-right clickable moveup"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                    <div class="panel-body">
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.des)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.member_type)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.member_id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.member_role)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ref_bundle)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.img_fn)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.dt)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.person.first_name)
-        </th>
-        <th></th>
-    </tr>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.des)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.member_type)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.member_id)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.member_role)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ref_bundle)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.img_fn)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.dt)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.person.first_name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
 
-</table>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('.panel-heading span.clickable').on("click", function (e) {
+            if ($(this).hasClass('panel-collapsed')) {
+                // expand the panel
+                $(this).parents('.panel').find('.panel-body').slideDown();
+                $(this).removeClass('panel-collapsed');
+                $(this).find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            }
+            else {
+                // collapse the panel
+                $(this).parents('.panel').find('.panel-body').slideUp();
+                $(this).addClass('panel-collapsed');
+                $(this).find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            }
+        });
+    });
+</script>

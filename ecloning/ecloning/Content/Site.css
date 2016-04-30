@@ -327,3 +327,73 @@ svg text tspan{
 .tickLable{
     cursor:pointer;
 }
+
+/*pBundle div css*/
+.moveup {
+        margin-top: -20px;
+        font-size: 15px;
+    }
+
+
+.clickable {
+        cursor: pointer;
+}
+
+
+.panel-color1>.panel-heading {
+    color: #333;
+    background-color: #aec7e8;
+    border-color: #aec7e8;
+}
+
+.panel-color2>.panel-heading {
+    color: #333;
+    background-color: #ffbb78;
+    border-color: #ffbb78;
+}
+
+.panel-color3>.panel-heading {
+    color: #333;
+    background-color: #98df8a;
+    border-color: #98df8a;
+}
+
+.panel-color4>.panel-heading {
+    color: #333;
+    background-color: #ff9896;
+    border-color: #ff9896;
+}
+
+.panel-color5>.panel-heading {
+    color: #333;
+    background-color: #c5b0d5;
+    border-color: #c5b0d5;
+}
+
+.panel-color6>.panel-heading {
+    color: #333;
+    background-color: #c49c94;
+    border-color: #c49c94;
+}
+
+.panel-color7>.panel-heading {
+    color: #333;
+    background-color: #f7b6d2;
+    border-color: #f7b6d2;
+}
+
+.panel-color8>.panel-heading {
+    color: #333;
+    background-color: #c7c7c7;
+    border-color: #c7c7c7;
+}
+.panel-color9>.panel-heading {
+    color: #333;
+    background-color: #dbdb8d;
+    border-color: #dbdb8d;
+}
+.panel-color0>.panel-heading {
+    color: #333;
+    background-color: #9edae5;
+    border-color: #9edae5;
+}
