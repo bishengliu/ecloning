@@ -31,8 +31,11 @@ namespace ecloning.Models
         public readonly static string iCode = "3ZxaOlh6823UTz2pUP7ExHi9qy53uf65";
 
 
-        //upload to azure directoryName
+        //upload plasmid to azure directoryName
         public readonly static string plasmidDir = "plasmid";
+
+        //upload bundle to azure dirctoryName
+        public readonly static string bundleDir = "pbundle";
 
         //local data path
         public readonly static string filePath = "~/App_Data/";

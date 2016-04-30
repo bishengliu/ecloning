@@ -927,6 +927,7 @@
     <Content Include="Views\pBundle\Select.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\pbundle\" />
     <Folder Include="App_Data\plasmid\" />
     <Folder Include="Areas\Admin\Views\Root\" />
     <Folder Include="Views\Root\" />

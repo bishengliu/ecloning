@@ -20,12 +20,12 @@
     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <p id="error" class="text-danger text-center"></p>
         <p id="msg" class="text-info text-center"></p>
-        @using (Html.BeginForm())
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="hidden">
-                <input id="plasmidID" name="idString" value=@idString/>
+                <input id="plasmidID" name="idString" value=@idString >
             </div>
             <div class="form-group col-lg-6 col-md-6 col-sm-6">
                 <div class="col-xs-12">
@@ -39,7 +39,7 @@
                         @Html.LabelFor(model => model.Upload, "Upload file", htmlAttributes: new { @class = "control-label" })
 
                         <div class="input-group">
-                            <input type="text" class="form-control" id="file_name" readonly>
+                            <input type="text" class="form-control" name="Upload" id="file_name" readonly>
                             <span class="input-group-btn">
                                 <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="file_fn" id="file_fn" onchange="getFilePath()" /></span>
                             </span>
@@ -280,7 +280,19 @@
 
     });
 
-    function uploadSize() {
+
+    //validate the form submission
+    $('form').submit(function () {
+        var Name = $('#Name').val();
+
+        if (!Name.trim()) {
+            $('#error').text("\"Bundle Name\" is required!");
+            $('#msg').text(null);
+            return false;
+        }
+        else {
+            return true;
+        }
 
         if (typeof ($('#file_fn')[0].files) != "undefined") {
             //check upload file size
@@ -290,7 +302,25 @@
                 return false;
             }
         }
-    }
+        else {
+            return true;
+        }
+
+    })
+
+
+
+    //function uploadSize() {
+
+    //    if (typeof ($('#file_fn')[0].files) != "undefined") {
+    //        //check upload file size
+    //        var size = parseFloat($('#file_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+    //        if (size > 10) {
+    //            $('#max_size').text('Maximum upload file size is 10MB!');
+    //            return false;
+    //        }
+    //    }
+    //}
 
     function getFilePath() {
         var fullPath = document.getElementById("file_fn").value;

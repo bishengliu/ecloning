@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ecloning.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace ecloning.Controllers
 {
@@ -118,23 +119,117 @@ namespace ecloning.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,des,member_type,member_id,member_role,ref_bundle,img_fn,dt,people_id")] plasmid_bundle plasmid_bundle)
+        public ActionResult Create(string idString, string Upload, [Bind(Include = "Name,Des,Upload,Plasmids")] pBundle pBundle)
         {
+            //prepare some data
+            //process the plasmid ids and parse ids to list<int>
+            List<int> pId = new List<int>();
+            string[] Ids = idString.Split(',');
+            foreach (var id in Ids)
+            {
+                pId.Add(Int32.Parse(id));
+            }
+
+            //get the features for the selected plasmids
+            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => pId.Contains(p.plasmid_id)).Where(f => f.feature_id != 4);
+
+            //pass all features into json
+            var features = plasmid_map.OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+
+            ViewBag.IdString = idString;
+            ViewBag.Count = pId.Count();
+            ViewBag.pId = pId;
+            //==========================================
+
             //get userId
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
-            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //var groupInfo = new GroupInfo(userInfo.PersonId);
 
+            if (String.IsNullOrWhiteSpace(idString))
+            {
+                TempData["msg"] = "Something went wrong, please try again later!";
+                return RedirectToAction("Select");
+            }
 
             if (ModelState.IsValid)
             {
-                db.plasmid_bundle.Add(plasmid_bundle);
+                if (!String.IsNullOrWhiteSpace(Upload))
+                {
+                    //deal with upload
+                    var timeStamp = DateTime.Now.Millisecond.ToString();
+                    string fileName = null;
+
+                    //upload  file
+                    HttpPostedFileBase file = null;
+                    file = Request.Files["file_fn"];
+
+                    if (eCloningSettings.AppHosting == "Cloud")
+                    {
+                        //upload to azure
+                        if (file != null && file.FileName != null && file.ContentLength > 0)
+                        {
+                            try
+                            {
+                                fileName = timeStamp + Path.GetFileName(file.FileName);
+                                AzureBlob azureBlob = new AzureBlob();
+                                azureBlob.directoryName = eCloningSettings.bundleDir;
+                                azureBlob.AzureBlobUpload(fileName, file);
+                            }
+                            catch (Exception)
+                            {
+                                ModelState.AddModelError("", "File upload failed!");
+                                return View(pBundle);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //upload to local plasmid folder
+                        var bundlePath = eCloningSettings.filePath + eCloningSettings.bundleDir;
+                        if (file != null && file.FileName != null && file.ContentLength > 0)
+                        {
+                            try
+                            {
+                                fileName = timeStamp + Path.GetFileName(file.FileName);
+                                var path = Path.Combine(Server.MapPath(bundlePath), fileName);
+                                file.SaveAs(path);
+                            }
+                            catch (Exception)
+                            {
+                                ModelState.AddModelError("", "File upload failed!");
+                                return View(pBundle);
+                            }
+                        }
+                    }
+                    Upload = fileName;
+                }
+
+                //add pBundle into database
+                foreach (var item in pBundle.Plasmids)
+                {
+                    var bundle = new plasmid_bundle();
+                    bundle.name = pBundle.Name;
+                    bundle.des = pBundle.Des;
+                    bundle.img_fn = Upload;
+                    bundle.dt = DateTime.Now;
+                    bundle.people_id = userInfo.PersonId;
+                    bundle.member_type = "plasmid";
+                    bundle.member_id = item.plasmidId;
+                    bundle.member_role = item.plasmidRole;
+                    db.plasmid_bundle.Add(bundle);
+                }
                 db.SaveChanges();
+
+
+
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.people_id = new SelectList(db.people, "id", "first_name", plasmid_bundle.people_id);
-            return View(plasmid_bundle);
+
+            return View(pBundle);
         }
 
         // GET: pBundle/Edit/5
