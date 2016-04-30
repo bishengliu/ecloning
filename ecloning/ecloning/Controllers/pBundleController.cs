@@ -54,17 +54,62 @@ namespace ecloning.Controllers
             //pass all the plasmids and setLength into json
             var plasmids = db.plasmids.Where(p => peopleId.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
             ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
-            var plasmidId = plasmids.Select(p => p.id).ToList();
-            //pass all features into json
-            var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
-            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             return View();
         }
 
-        // GET: pBundle/Create
-        public ActionResult Create()
+        [Authorize]
+        [HttpPost]
+        public ActionResult Select(string plasmid)
         {
-            ViewBag.people_id = new SelectList(db.people, "id", "first_name");
+            if (String.IsNullOrWhiteSpace(plasmid))
+            {
+                //get userId
+                var userId = User.Identity.GetUserId();
+                var userInfo = new UserInfo(userId);
+                var groupInfo = new GroupInfo(userInfo.PersonId);
+
+                //get all the people in the group
+                var peopleId = db.group_people.Where(p => groupInfo.groupId.Contains(p.group_id)).Select(p => p.people_id).ToList();
+
+                //pass all the plasmids and setLength into json
+                var plasmids = db.plasmids.Where(p => peopleId.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
+                ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
+                var plasmidId = plasmids.Select(p => p.id).ToList();
+                //pass all features into json
+                var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+                ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+                return View();
+            }
+            
+            return RedirectToAction("Create", new { idString = plasmid});
+        }
+        // GET: pBundle/Create
+        public ActionResult Create(string idString)
+        {
+            if (String.IsNullOrWhiteSpace(idString))
+            {
+                TempData["msg"] = "Something went wrong, please try again later!";
+                return RedirectToAction("Select");
+            }
+
+            //process the plasmid ids and parse ids to list<int>
+            List<int> pId = new List<int>();
+            string[] Ids = idString.Split(',');
+            foreach (var id in Ids)
+            {
+                pId.Add(Int32.Parse(id));
+            }
+
+            //get the features for the selected plasmids
+            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => pId.Contains(p.plasmid_id)).Where(f=>f.feature_id != 4);
+
+            //pass all features into json
+            var features = plasmid_map.OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+
+            ViewBag.IdString = idString;
+            ViewBag.Count = pId.Count();
+            ViewBag.pId = pId;
             return View();
         }
 
@@ -75,6 +120,12 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,des,member_type,member_id,member_role,ref_bundle,img_fn,dt,people_id")] plasmid_bundle plasmid_bundle)
         {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+
+
             if (ModelState.IsValid)
             {
                 db.plasmid_bundle.Add(plasmid_bundle);
