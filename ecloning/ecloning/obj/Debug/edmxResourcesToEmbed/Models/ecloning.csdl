@@ -526,6 +526,7 @@
     <Property Name="img_fn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="dt" Type="DateTime" Precision="3" />
     <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="bundle_id" Type="Int32" Nullable="false" />
     <NavigationProperty Name="person" Relationship="Self.fk_plasmid_bundle_people_id" FromRole="plasmid_bundle" ToRole="people" />
   </EntityType>
   <EntityType Name="plasmid_feature">

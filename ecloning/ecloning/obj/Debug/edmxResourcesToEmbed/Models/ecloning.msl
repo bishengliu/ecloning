@@ -481,6 +481,7 @@
           <ScalarProperty Name="img_fn" ColumnName="img_fn" />
           <ScalarProperty Name="dt" ColumnName="dt" />
           <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="bundle_id" ColumnName="bundle_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

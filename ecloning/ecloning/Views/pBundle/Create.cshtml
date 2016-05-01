@@ -3,6 +3,7 @@
     ViewBag.Title = "Select Plasmids";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var Features = ViewBag.Features;
+    var Bundles = ViewBag.Bundles;
     var msg = (string)TempData["msg"];
     var idString = (string)ViewBag.IdString;
     int Count = (int)ViewBag.Count;
@@ -125,18 +126,17 @@
 @Scripts.Render("~/bundles/giraffe")
 
 <script>
-    
+
     //<reference path="~/Scripts/jquery-2.1.0-vsdoc.js" />
     $(window).load(function () {
 
         var Features = ("@Features");
         document.getElementById("decodeIt").innerHTML = Features;
         Features = document.getElementById("decodeIt").innerText;
-
-        try
-        {
+        //draw plasmid map (also in modals)
+        try {
             Features = JSON.parse(Features);
-
+            
             //console.log(Features);
             var IdString = $('#plasmidID').val();
             //process the idString to array
@@ -271,8 +271,7 @@
             }
 
         }
-        catch (e)
-        {
+        catch (e) {
             console.log(e);
             $('#error').text("Unable to load plasmid data, please try again later!");
             $("#addBundle").addClass("disabled");
@@ -283,18 +282,9 @@
 
     //validate the form submission
     $('form').submit(function () {
-        var Name = $('#Name').val();
 
-        if (!Name.trim()) {
-            $('#error').text("\"Bundle Name\" is required!");
-            $('#msg').text(null);
-            return false;
-        }
-        else {
-            return true;
-        }
-
-        if (typeof ($('#file_fn')[0].files) != "undefined") {
+        //check upload file size
+        if ($('#file_name').val() && typeof ($('#file_fn')[0].files) != "undefined") {
             //check upload file size
             var size = parseFloat($('#file_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
             if (size > 10) {
@@ -302,26 +292,38 @@
                 return false;
             }
         }
-        else {
+
+        var Name = $('#Name').val();
+        //get bundle names to check the unique of the bundle name
+        var Bundles = ("@Bundles");
+        document.getElementById("decodeIt").innerHTML = Bundles;
+        Bundles = document.getElementById("decodeIt").innerText;
+        try{
+            Bundles = JSON.parse(Bundles);
+            console.log(Bundles);
+
+            if (!Name.trim()) {
+                $('#error').text("\"Bundle Name\" is required!");
+                $('#msg').text(null);
+                return false;
+            }
+            if (Name.trim() && $.inArray(Name.trim(), Bundles) !== -1) {
+                $('#error').text("\"Bundle Name\" has been taken, please give a different name!");
+                $('#msg').text(null);
+                return false;
+            }
+
             return true;
         }
-
+        catch (e) {
+            console.log(e);
+            $('#error').text("Unable to check \"Bundle Name\", please try again later!");
+            $("#addBundle").addClass("disabled");
+            return false;           
+        }
     })
 
-
-
-    //function uploadSize() {
-
-    //    if (typeof ($('#file_fn')[0].files) != "undefined") {
-    //        //check upload file size
-    //        var size = parseFloat($('#file_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
-    //        if (size > 10) {
-    //            $('#max_size').text('Maximum upload file size is 10MB!');
-    //            return false;
-    //        }
-    //    }
-    //}
-
+    //get the upload file name
     function getFilePath() {
         var fullPath = document.getElementById("file_fn").value;
         fileName = fullPath.split(/(\\|\/)/g).pop();

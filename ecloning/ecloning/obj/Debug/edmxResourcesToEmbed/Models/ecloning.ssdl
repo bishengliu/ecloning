@@ -453,6 +453,7 @@
     <Property Name="img_fn" Type="nvarchar" MaxLength="100" />
     <Property Name="dt" Type="datetime" />
     <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="bundle_id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="plasmid_feature">
     <Key>

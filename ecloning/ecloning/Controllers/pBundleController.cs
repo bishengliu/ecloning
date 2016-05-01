@@ -11,6 +11,10 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System.IO;
 
+//for transaction
+using System.Transactions;
+
+
 namespace ecloning.Controllers
 {
     public class pBundleController : Controller
@@ -139,8 +143,16 @@ namespace ecloning.Controllers
             var features = plasmid_map.OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
 
-
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            //get all the people in the group
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            var peopleIds = db.group_people.Where(g => groupInfo.groupId.Contains(g.group_id)).Select(p=>p.people_id).ToList();
             //pass the bundle name
+            var bundles = db.plasmid_bundle.Where(p => peopleIds.Contains(p.people_id)).Select(n=> n.name).Distinct().ToList();
+            ViewBag.Bundles = JsonConvert.SerializeObject(bundles);
+
 
             ViewBag.IdString = idString;
             ViewBag.Count = pId.Count();
@@ -179,7 +191,12 @@ namespace ecloning.Controllers
             //get userId
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
-            //var groupInfo = new GroupInfo(userInfo.PersonId);
+            //get all the people in the group
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            var peopleIds = db.group_people.Where(g => groupInfo.groupId.Contains(g.group_id)).Select(p => p.people_id).ToList();
+            //pass the bundle name
+            var allBundles = db.plasmid_bundle.Where(p => peopleIds.Contains(p.people_id)).Select(n => n.name ).Distinct().ToList();
+            ViewBag.Bundles = JsonConvert.SerializeObject(allBundles);
 
             if (String.IsNullOrWhiteSpace(idString))
             {
@@ -230,7 +247,7 @@ namespace ecloning.Controllers
                                 var path = Path.Combine(Server.MapPath(bundlePath), fileName);
                                 file.SaveAs(path);
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
                                 ModelState.AddModelError("", "File upload failed!");
                                 return View(pBundle);
@@ -239,25 +256,44 @@ namespace ecloning.Controllers
                     }
                     Upload = fileName;
                 }
-
-                //add pBundle into database
-                foreach (var item in pBundle.Plasmids)
+                //start transaction
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    var bundle = new plasmid_bundle();
-                    bundle.name = pBundle.Name;
-                    bundle.des = pBundle.Des;
-                    bundle.img_fn = Upload;
-                    bundle.dt = DateTime.Now;
-                    bundle.people_id = userInfo.PersonId;
-                    bundle.member_type = "plasmid";
-                    bundle.member_id = item.plasmidId;
-                    bundle.member_role = item.plasmidRole;
-                    db.plasmid_bundle.Add(bundle);
+                    try
+                    {
+                        //check the max bundle id
+                        int maxId = 0;
+                        var bundles = db.plasmid_bundle;
+                        if (bundles.Count() > 0)
+                        {
+                            maxId = bundles.OrderByDescending(i => i.bundle_id).FirstOrDefault().bundle_id;
+                        }
+                        //add pBundle into database
+                        foreach (var item in pBundle.Plasmids)
+                        {
+                            var bundle = new plasmid_bundle();
+                            bundle.bundle_id = maxId + 1;
+                            bundle.name = pBundle.Name;
+                            bundle.des = pBundle.Des;
+                            bundle.img_fn = Upload;
+                            bundle.dt = DateTime.Now;
+                            bundle.people_id = userInfo.PersonId;
+                            bundle.member_type = "plasmid";
+                            bundle.member_id = item.plasmidId;
+                            bundle.member_role = item.plasmidRole;
+                            db.plasmid_bundle.Add(bundle);
+                        }
+                        db.SaveChanges();
+                        // If all execution successful
+                        scope.Complete();
+                    }
+                    catch (Exception e)
+                    {
+                        // If any exception is caught, roll back the entire transaction and end the scope.
+                        scope.Dispose();
+                    }
+                    
                 }
-                db.SaveChanges();
-
-
-
 
                 return RedirectToAction("Index");
             }
