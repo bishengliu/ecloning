@@ -339,61 +339,119 @@ svg text tspan{
         cursor: pointer;
 }
 
-
 .panel-color1>.panel-heading {
     color: #333;
     background-color: #aec7e8;
-    border-color: #aec7e8;
+    border: solid 1px #aec7e8 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color2 {
+    border: solid 1px #aec7e8 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color2>.panel-heading {
     color: #333;
     background-color: #ffbb78;
-    border-color: #ffbb78;
+    border: solid 1px #ffbb78 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color2 {
+    border: solid 1px #ffbb78 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color3>.panel-heading {
     color: #333;
     background-color: #98df8a;
-    border-color: #98df8a;
+    border: solid 1px #98df8a !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color3 {
+    border: solid 1px #98df8a !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color4>.panel-heading {
     color: #333;
     background-color: #ff9896;
-    border-color: #ff9896;
+    border: solid 1px #ff9896 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color4 {
+    border: solid 1px #ff9896 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color5>.panel-heading {
     color: #333;
     background-color: #c5b0d5;
-    border-color: #c5b0d5;
+    border: solid 1px #c5b0d5 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color5 {
+    border: solid 1px #c5b0d5 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color6>.panel-heading {
     color: #333;
     background-color: #c49c94;
-    border-color: #c49c94;
+    border: solid 1px #c49c94 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color6 {
+    border: solid 1px #c49c94 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color7>.panel-heading {
     color: #333;
     background-color: #f7b6d2;
-    border-color: #f7b6d2;
+    border: solid 1px #f7b6d2 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-
+.panel.panel-color7 {
+    border: solid 1px #f7b6d2 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
 .panel-color8>.panel-heading {
     color: #333;
     background-color: #c7c7c7;
-    border-color: #c7c7c7;
+    border: solid 1px #c7c7c7 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
+.panel.panel-color8 {
+    border: solid 1px #c7c7c7 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
 .panel-color9>.panel-heading {
     color: #333;
     background-color: #dbdb8d;
-    border-color: #dbdb8d;
+    border: solid 1px #dbdb8d !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
+.panel.panel-color9 {
+    border: solid 1px #dbdb8d !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
 .panel-color0>.panel-heading {
     color: #333;
     background-color: #9edae5;
-    border-color: #9edae5;
+    border: solid 1px #9edae5 !important;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
+.panel.panel-color0 {
+    border: solid 1px #9edae5 !important;   
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+}
+.noPadding{
+    padding: 0px !important;
+}
+
+.bundleDes{
+    border: solid 1px white;
+    border-radius: 1px;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    background-color:#969696;
+}
+.plasmidName{
+    height: 20px;
+    background-color: #fdd0a2;
+    border-radius: 6px;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }

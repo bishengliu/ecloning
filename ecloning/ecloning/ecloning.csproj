@@ -428,6 +428,7 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PlasmidFeature.cs" />
+    <Compile Include="Models\PlasmidInfo.cs" />
     <Compile Include="Models\PlasmidViewModel.cs" />
     <Compile Include="Models\plasmid_bundle.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
@@ -922,7 +923,6 @@
     <Content Include="Views\Plasmid\Overview.cshtml" />
     <Content Include="Views\pBundle\Create.cshtml" />
     <Content Include="Views\pBundle\Delete.cshtml" />
-    <Content Include="Views\pBundle\Details.cshtml" />
     <Content Include="Views\pBundle\Edit.cshtml" />
     <Content Include="Views\pBundle\Index.cshtml" />
     <Content Include="Views\pBundle\Select.cshtml" />
