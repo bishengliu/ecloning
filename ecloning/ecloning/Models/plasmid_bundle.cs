@@ -24,6 +24,7 @@ namespace ecloning.Models
         public string img_fn { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
         public int people_id { get; set; }
+        public int bundle_id { get; set; }
     
         public virtual person person { get; set; }
     }

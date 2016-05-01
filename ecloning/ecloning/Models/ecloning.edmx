@@ -458,6 +458,7 @@
           <Property Name="img_fn" Type="nvarchar" MaxLength="100" />
           <Property Name="dt" Type="datetime" />
           <Property Name="people_id" Type="int" Nullable="false" />
+          <Property Name="bundle_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="plasmid_feature">
           <Key>
@@ -2058,6 +2059,7 @@
           <Property Name="img_fn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="people_id" Type="Int32" Nullable="false" />
+          <Property Name="bundle_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="person" Relationship="Self.fk_plasmid_bundle_people_id" FromRole="plasmid_bundle" ToRole="people" />
         </EntityType>
         <EntityType Name="plasmid_feature">
@@ -3607,6 +3609,7 @@
                 <ScalarProperty Name="img_fn" ColumnName="img_fn" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
+                <ScalarProperty Name="bundle_id" ColumnName="bundle_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

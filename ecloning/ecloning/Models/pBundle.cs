@@ -8,6 +8,7 @@ namespace ecloning.Models
     public class pBundle
     {
         public string Name { get; set; }
+        public int bundle_id { get; set; }
         public string Des { get; set; }
         public string Upload { get; set; }
 

@@ -1,4 +1,5 @@
 
+
 namespace ecloning.Models
 {
     using System;
@@ -34,3 +35,4 @@ namespace ecloning.Models
         public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }
 }
+
