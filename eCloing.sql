@@ -811,6 +811,7 @@ CREATE TABLE [probe] --pcr probe
 CREATE TABLE plasmid_bundle
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	bundle_id INT NOT NULL,
 	name NVARCHAR(100) NOT NULL, --bundle name
 	[des] TEXT, --bundle remarks
 	member_type NVARCHAR(100) NOT NULL, --the resource type of the member, like plasmid, primer, etc. most of the time, it is plasmid
