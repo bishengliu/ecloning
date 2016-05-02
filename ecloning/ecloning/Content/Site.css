@@ -345,7 +345,7 @@ svg text tspan{
     border: solid 1px #aec7e8 !important;
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
-.panel.panel-color2 {
+.panel.panel-color1 {
     border: solid 1px #aec7e8 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
