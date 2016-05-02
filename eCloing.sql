@@ -812,13 +812,13 @@ CREATE TABLE plasmid_bundle
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	bundle_id INT NOT NULL,
-	name NVARCHAR(100) NOT NULL, --bundle name
+	name NVARCHAR(200) NOT NULL, --bundle name
 	[des] TEXT, --bundle remarks
 	member_type NVARCHAR(100) NOT NULL, --the resource type of the member, like plasmid, primer, etc. most of the time, it is plasmid
 	member_id INT NOT NULL, --ref to the member id
-	member_role NVARCHAR(100), --why the member is inculded?
-	ref_bundle INT NOT NULL, --default to be 0, 0 is the top level
-	img_fn NVARCHAR(100), --for upload img scheme
+	member_role TEXT, --why the member is inculded?
+	--ref_bundle INT NOT NULL, --default to be 0, 0 is the top level
+	img_fn NVARCHAR(200), --for upload img scheme
 	dt DATETIME DEFAULT GETDATE(),
 	people_id INT NOT NULL, --who created this bundle
 	CONSTRAINT fk_plasmid_bundle_people_id FOREIGN KEY (people_id) REFERENCES people(id),

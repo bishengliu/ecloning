@@ -50,7 +50,7 @@ namespace ecloning.Controllers
 
             ViewBag.BundleIds = combinedIds;
             //get top level bundles
-            var rootBundles = db.plasmid_bundle.Where(r => r.ref_bundle == 0).Where(i => combinedIds.Contains(i.bundle_id));
+            var rootBundles = db.plasmid_bundle.Where(i => combinedIds.Contains(i.bundle_id));
             //get the features into json
             //get all the plasmidId
             var plasmidIds = rootBundles.Select(p => p.member_id).Distinct().ToList();
@@ -234,7 +234,7 @@ namespace ecloning.Controllers
                                 var path = Path.Combine(Server.MapPath(bundlePath), fileName);
                                 file.SaveAs(path);
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 ModelState.AddModelError("", "File upload failed!");
                                 return View(pBundle);
@@ -274,7 +274,7 @@ namespace ecloning.Controllers
                         // If all execution successful
                         scope.Complete();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         // If any exception is caught, roll back the entire transaction and end the scope.
                         scope.Dispose();

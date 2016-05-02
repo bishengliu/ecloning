@@ -15,16 +15,15 @@ namespace ecloning.Models
     public partial class plasmid_bundle
     {
         public int id { get; set; }
+        public int bundle_id { get; set; }
         public string name { get; set; }
         public string des { get; set; }
         public string member_type { get; set; }
         public int member_id { get; set; }
         public string member_role { get; set; }
-        public int ref_bundle { get; set; }
         public string img_fn { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
         public int people_id { get; set; }
-        public int bundle_id { get; set; }
     
         public virtual person person { get; set; }
     }

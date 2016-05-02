@@ -449,16 +449,15 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="bundle_id" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="des" Type="text" />
           <Property Name="member_type" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="member_id" Type="int" Nullable="false" />
-          <Property Name="member_role" Type="nvarchar" MaxLength="100" />
-          <Property Name="ref_bundle" Type="int" Nullable="false" />
-          <Property Name="img_fn" Type="nvarchar" MaxLength="100" />
+          <Property Name="member_role" Type="text" />
+          <Property Name="img_fn" Type="nvarchar" MaxLength="200" />
           <Property Name="dt" Type="datetime" />
           <Property Name="people_id" Type="int" Nullable="false" />
-          <Property Name="bundle_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="plasmid_feature">
           <Key>
@@ -2050,16 +2049,15 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="bundle_id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="member_type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="member_id" Type="Int32" Nullable="false" />
-          <Property Name="member_role" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ref_bundle" Type="Int32" Nullable="false" />
-          <Property Name="img_fn" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="member_role" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="img_fn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="people_id" Type="Int32" Nullable="false" />
-          <Property Name="bundle_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="person" Relationship="Self.fk_plasmid_bundle_people_id" FromRole="plasmid_bundle" ToRole="people" />
         </EntityType>
         <EntityType Name="plasmid_feature">
@@ -3600,16 +3598,15 @@
             <EntityTypeMapping TypeName="ecloningModel.plasmid_bundle">
               <MappingFragment StoreEntitySet="plasmid_bundle">
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="bundle_id" ColumnName="bundle_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="member_type" ColumnName="member_type" />
                 <ScalarProperty Name="member_id" ColumnName="member_id" />
                 <ScalarProperty Name="member_role" ColumnName="member_role" />
-                <ScalarProperty Name="ref_bundle" ColumnName="ref_bundle" />
                 <ScalarProperty Name="img_fn" ColumnName="img_fn" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
-                <ScalarProperty Name="bundle_id" ColumnName="bundle_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -444,16 +444,15 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="bundle_id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="des" Type="text" />
     <Property Name="member_type" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="member_id" Type="int" Nullable="false" />
-    <Property Name="member_role" Type="nvarchar" MaxLength="100" />
-    <Property Name="ref_bundle" Type="int" Nullable="false" />
-    <Property Name="img_fn" Type="nvarchar" MaxLength="100" />
+    <Property Name="member_role" Type="text" />
+    <Property Name="img_fn" Type="nvarchar" MaxLength="200" />
     <Property Name="dt" Type="datetime" />
     <Property Name="people_id" Type="int" Nullable="false" />
-    <Property Name="bundle_id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="plasmid_feature">
     <Key>
