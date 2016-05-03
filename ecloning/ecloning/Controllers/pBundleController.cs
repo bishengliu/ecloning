@@ -395,6 +395,10 @@ namespace ecloning.Controllers
                 allpIds = allPlasmids.Select(p => p.id).ToList();
             }
 
+            //pass all the plasmids and setLength into json
+            var plasmids = allPlasmids.Select(p => new { id = p.id, length = p.seq_length, name = p.name });
+            ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
+
             //all features
             //pass all features into json
             var features = db.plasmid_map.Include(p => p.plasmid).Where(p => allpIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });

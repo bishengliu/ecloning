@@ -455,3 +455,7 @@ svg text tspan{
     border-radius: 6px;
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
 }
+/*#modalPlasmid ul li{
+    position: relative;
+    z-index: 10000;
+}*/

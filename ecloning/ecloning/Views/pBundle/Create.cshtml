@@ -21,103 +21,103 @@
     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <p id="error" class="text-danger text-center"></p>
         <p id="msg" class="text-info text-center"></p>
-        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="hidden">
-                <input id="plasmidID" name="idString" value=@idString >
-            </div>
-            <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                <div class="col-xs-12">
-                    @Html.LabelFor(model => model.Name, "Bundle Name", htmlAttributes: new { @class = "control-label required" })
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="row">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="hidden">
+                    <input id="plasmidID" name="idString" value=@idString >
                 </div>
-            </div>
                 <div class="form-group col-lg-6 col-md-6 col-sm-6">
                     <div class="col-xs-12">
-                        @Html.LabelFor(model => model.Upload, "Upload file", htmlAttributes: new { @class = "control-label" })
+                        @Html.LabelFor(model => model.Name, "Bundle Name", htmlAttributes: new { @class = "control-label required" })
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                        <div class="col-xs-12">
+                            @Html.LabelFor(model => model.Upload, "Upload file", htmlAttributes: new { @class = "control-label" })
 
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="Upload" id="file_name" readonly>
-                            <span class="input-group-btn">
-                                <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="file_fn" id="file_fn" onchange="getFilePath()" /></span>
-                            </span>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Upload" id="file_name" readonly>
+                                <span class="input-group-btn">
+                                    <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="file_fn" id="file_fn" onchange="getFilePath()" /></span>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Upload, "", new { @class = "text-danger" })
+                            <p id="max_size" class="text-danger" style="font-size:90%;"></p>
                         </div>
-                        @Html.ValidationMessageFor(model => model.Upload, "", new { @class = "text-danger" })
-                        <p id="max_size" class="text-danger" style="font-size:90%;"></p>
                     </div>
-                </div>
-                <div class="form-group col-sm-12">
-                    <div class="col-xs-12">
-                        @Html.LabelFor(model => model.Des, "Bundle Description", htmlAttributes: new { @class = "control-label" })
-                        @Html.TextAreaFor(model => model.Des, 6, 150, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Des, "", new { @class = "text-danger" })
+                    <div class="form-group col-sm-12">
+                        <div class="col-xs-12">
+                            @Html.LabelFor(model => model.Des, "Bundle Description", htmlAttributes: new { @class = "control-label" })
+                            @Html.TextAreaFor(model => model.Des, 6, 150, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Des, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
 
-            for(int i = 0; i< Count; i++)
-            {
-                var mapId = "map-" + @pId[i].ToString();
-                var modalMapId = "modal-map-" + @pId[i].ToString();
-                var modalId = "modal-" + @pId[i].ToString();
-                var modalRefId = "#modal-" + @pId[i].ToString();
-                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                for(int i = 0; i< Count; i++)
+                {
+                    var mapId = "map-" + @pId[i].ToString();
+                    var modalMapId = "modal-map-" + @pId[i].ToString();
+                    var modalId = "modal-" + @pId[i].ToString();
+                    var modalRefId = "#modal-" + @pId[i].ToString();
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <div class="col-xs-12" id=@mapId></div>
+                        <div class="col-xs-12">
+                            <!-- Trigger the modal with a button -->
 
+                            <a href="#" data-toggle="modal" data-target=@modalRefId class="pull-right">
+                                <i class="fa fa-2x fa-search-plus"></i>
+                                <span class=""></span>
+                            </a>
 
-                    <div class="col-xs-12" id=@mapId></div>
+                            <!-- Modal -->
+                            <div id=@modalId class="modal fade" role="dialog">
+                                <div class="modal-dialog">
 
-                    <div class="col-xs-12">
-                        <!-- Trigger the modal with a button -->
-
-                        <a href="#" data-toggle="modal" data-target=@modalRefId class="pull-right">
-                            <i class="fa fa-2x fa-search-plus"></i>
-                            <span class=""></span>
-                        </a>
-
-                        <!-- Modal -->
-                        <div id=@modalId class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-
-                                <!-- Modal content-->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title text-center">Plasmid Map</h4>
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title text-center">Plasmid Map</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id=@modalMapId></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <div id=@modalMapId></div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
+
                                 </div>
-
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-xs-12">
-                      <div class="col-xs-12 hidden">
-                          @Html.LabelFor(model => model.Plasmids[i].plasmidId, "Plasmid Id", htmlAttributes: new { @class = "control-label" })
-                          @Html.EditorFor(model => model.Plasmids[i].plasmidId, new { htmlAttributes = new { @class = "form-control", @Value = pId[i] } })
-                          @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidId, "", new { @class = "text-danger" })
-                      </div>
-                          @Html.LabelFor(model => model.Plasmids[i].plasmidRole, "Comment", htmlAttributes: new { @class = "control-label" })
-                          @Html.TextAreaFor(model => model.Plasmids[i].plasmidRole, 2, 150, new { @class = "form-control" })
-                          @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidRole, "", new { @class = "text-danger" })
-                   </div>
-                </div>   
-             }
-
-             <div class="form-group col-sm-12">
-                 <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
-                     <br />
-                     <input type="submit" id="addBundle" value="Add Bundle" class="btn btn-block btn-primary" />
-                 </div>
+                        <div class="col-xs-12">
+                          <div class="col-xs-12 hidden">
+                              @Html.LabelFor(model => model.Plasmids[i].plasmidId, "Plasmid Id", htmlAttributes: new { @class = "control-label" })
+                              @Html.EditorFor(model => model.Plasmids[i].plasmidId, new { htmlAttributes = new { @class = "form-control", @Value = pId[i] } })
+                              @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidId, "", new { @class = "text-danger" })
+                          </div>
+                              @Html.LabelFor(model => model.Plasmids[i].plasmidRole, "Comment", htmlAttributes: new { @class = "control-label" })
+                              @Html.TextAreaFor(model => model.Plasmids[i].plasmidRole, 2, 150, new { @class = "form-control" })
+                              @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidRole, "", new { @class = "text-danger" })
+                       </div>
+                    </div>   
+                 }
+                 <div class="form-group col-sm-12">
+                     <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                         <br />
+                         <input type="submit" id="addBundle" value="Add Bundle" class="btn btn-block btn-primary" />
+                     </div>
+                </div>
+            }
             </div>
-        }
+        </div>
     </div>
 </div>
 
