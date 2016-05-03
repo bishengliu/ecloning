@@ -94,6 +94,14 @@ namespace ecloning.Controllers
                 plasmids = db.plasmids.Include(p => p.person).Where(p => p.person.email == email);
             }
             ViewBag.Count = plasmids.Count();
+
+            //get the combined plasmid ids
+            var combinedIds = sharedPlasmidId.Concat(plasmids.Select(i => i.id).ToList()).Distinct();
+            //get the feautures
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            ViewBag.plasmidIds = JsonConvert.SerializeObject(combinedIds.ToList());
+
             return View(plasmids.ToList());
         }
 

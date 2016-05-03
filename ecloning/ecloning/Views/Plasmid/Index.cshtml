@@ -5,12 +5,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int Count = (int)ViewBag.Count;
 
+    //features
+    var Features = ViewBag.Features;
+    //combined plasmid IDs
+    var PlasmidIDs = ViewBag.plasmidIds;
+
     //for the shared
     int GroupCount =(int)ViewBag.GroupCount;
 
     var msg = (string)TempData["msg"];
 
 }
+<span id="decodeIt" class="hidden"></span>
+
 <div class="row">
     <div class="col-sm-2 col-sm-offset-1">
         <h3 class="text-warning">Plasmids</h3>
@@ -97,13 +104,13 @@
                                     string refId = "#";
                                     id = item.name;
                                     refId = refId + id;
-
+                                    var mapId ="map-" + item.id.ToString();
                                     //for submit
                                     string shareId = item.name.Trim() + item.id.ToString();
                                     string hrefShareId = "#" + shareId;
 
                                     <tr>
-                                        <td class="col-sm-6">
+                                        <td class="col-sm-6 col-xs-6 ">
                                             <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
 
                                             <span class="text-info"><strong>Expression: </strong></span><span>@Html.DisplayFor(modelItem => item.expression_system)</span>&nbsp;&nbsp;<span>@Html.DisplayFor(modelItem => item.expression_subsystem)</span><br />
@@ -179,7 +186,11 @@
                                             <br />
                                             <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
                                         </td>
-                                        <td class="col-sm-4">
+                                        <td class="col-sm-4 col-xs-4">
+                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
+                                                <div id="@mapId"></div>
+                                            </a>
+
                                             @if (item.sequence != null)
                                             {
                                                 //count sequence
@@ -192,7 +203,7 @@
                                                 int countLeft = 1;
                                                 int countRight = 125;
 
-                                                <span>
+                                                <span class="clickable">
                                                     <!-- Trigger the modal with a button -->
                                                     <a data-toggle="modal" data-target=@refId>
                                                         <i class="fa fa-align-justify text-info"></i>
@@ -253,7 +264,7 @@
                                                 </span>
                                               }
                                             
-                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
+                                            <a id="@item.id" class="hidden" href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
                                                 <i class="fa fa-sun-o text-info"></i>
                                                 <span>Plasmid Map</span>
                                             </a>
@@ -347,6 +358,7 @@
                                                         string refId = "#";
                                                         id = groupName + item.name;
                                                         refId = refId + id;
+                                                        var mapId = "map-" + item.id.ToString();
                                                         <tr>
                                                             <td class="col-sm-6">
                                                                 <span class="text-danger">@Html.DisplayFor(modelItem => item.name)</span>&nbsp;&nbsp;
@@ -424,6 +436,9 @@
                                                                 <span class="text-info"><strong>Remarks: </strong></span><span>@Html.DisplayFor(modelItem => item.des)</span>
                                                             </td>
                                                             <td class="col-sm-4">
+                                                                <a href="@Url.Action("Index", "Map", new { id = item.id, tag="groupDispaly" })">
+                                                                    <div id="@mapId"></div>
+                                                                </a>
                                                                 @if (item.sequence != null)
                                                                 {
                                                                     //count sequence
@@ -436,7 +451,7 @@
                                                                     int countLeft = 1;
                                                                     int countRight = 125;
 
-                                                                    <span>
+                                                                    <span class="clickable">
                                                                         <!-- Trigger the modal with a button -->
                                                                         @*<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target=@refId><i class="glyphicon glyphicon-eye-open text-warning"></i>&nbsp;Full Sequence</button>*@
                                                                         <a data-toggle="modal" data-target=@refId>
@@ -498,8 +513,7 @@
                                                                         </div>
                                                                     </span>
                                                                 }
-                                                                @*<span class="fa fa-exchange text-info"></span><text> </text><span class="text-info"><strong>Length: </strong></span><span>@Html.DisplayFor(modelItem => item.seq_length) bp</span>*@
-                                                                <a href="@Url.Action("Index", "Map", new { id = item.id, tag="groupDispaly" })">
+                                                                <a class="hidden" id="@item.id.ToString()" href="@Url.Action("Index", "Map", new { id = item.id, tag="groupDispaly" })">
                                                                     <i class="fa fa-sun-o text-info"></i>
                                                                     <span>Plasmid Map</span>
                                                                 </a>
@@ -526,7 +540,7 @@
     </div>
 
 @Scripts.Render("~/bundles/jquery")
-
+@Scripts.Render("~/bundles/giraffe")
 <script type="text/javascript">
     $(document).ready(function(){
         $("#vert-tab li:first-child").addClass("active");
@@ -548,4 +562,78 @@
             rows: []
         });
     });  
+</script>
+
+<script>
+    $(window).load(function () {
+
+        //get plasmid ids
+        var PlasmidIDs = ("@PlasmidIDs");
+        document.getElementById("decodeIt").innerHTML = PlasmidIDs;
+        PlasmidIDs = document.getElementById("decodeIt").innerText;
+
+        //get fearues
+        var Features = ("@Features");
+        document.getElementById("decodeIt").innerHTML = Features;
+        Features = document.getElementById("decodeIt").innerText;
+
+        try{
+            Features = JSON.parse(Features);
+            PlasmidIDs = JSON.parse(PlasmidIDs);
+            //console.log(Features);
+            var idArray = [];
+            $.each(PlasmidIDs, function (i, b) {               
+                    idArray.push("map-" + b);
+            });
+            //console.log(idArray);
+            //draw maps
+            $.each(idArray, function (index, value) {
+                mapId = value;
+                //get the plasmid id
+                var pieces = mapId.split('-');
+                var plasmidId = +pieces[pieces.length - 1];
+                //filter featrues
+                //console.log(plasmidId);
+                //console.log(Features);
+                var currentFeatures = $.grep(Features, function (n, i) {
+                    return n.pId === plasmidId;
+                });
+                //console.log(currentFeatures);
+                if (currentFeatures.length > 0) {
+                    pName = currentFeatures[0].pName;
+                    pCount = currentFeatures[0].pSeqCount;
+                    pId = currentFeatures[0].pId;
+
+                    delete currentFeatures['pId'];
+                    delete currentFeatures['pName'];
+                    delete currentFeatures['pCount'];
+
+                    fData = [pCount, currentFeatures];
+
+                    if ($('#' + mapId).length != 0) {
+                        //draw the map
+                        var gd = GiraffeDraw();
+                        gd.read(fData);
+                        gd.CircularMap({
+                            'map_dom_id': mapId,
+                            'plasmid_name': pName,
+                            'map_width': 250,
+                            'map_height': 150
+                        });
+                    }
+                }
+            });
+        }
+        catch (e) {
+            console.log(e);           
+        }
+
+
+        //display the link if the map is not shown
+        $.each(PlasmidIDs, function (i, v) {
+            if ($('#map-' + v).is(':empty')) {
+                $('#' + v).removeClass('hidden');
+            }
+        });
+    });
 </script>
