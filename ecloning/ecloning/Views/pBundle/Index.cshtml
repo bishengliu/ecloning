@@ -7,6 +7,7 @@
     var Features = ViewBag.Features;
     var PlasmidIDs = ViewBag.plasmidIds;
     var AllBundleIds = ViewBag.AllBundleIds;
+    var GroupBundleIds = (List<int>)ViewBag.GrouppBundleIds;
 }
 
 <div class="col-xs-12">
@@ -70,7 +71,18 @@
                          <span class="pull-right clickable moveup"><i class="glyphicon glyphicon-chevron-up"></i></span>
                     </div>
                     <div class="panel-body noPadding">
-                        <div class="bundleDes"><span class="text-info"><strong>Bundle Description: </strong></span>@bundle.First().des</div>
+                        <div class="bundleDes">
+                            <span class="text-info"><strong>Bundle Description: </strong></span>@bundle.First().des<br/>
+                            @if (!String.IsNullOrWhiteSpace(bundle.First().img_fn))
+                            {
+                                <span class="text-info"><strong>Bundle Document: </strong></span>
+                                <span>
+                                    <a href="@Url.Action("Download", "pBundle", new { fileName=bundle.First().img_fn })">
+                                        <span style="color:darkred">@bundle.First().img_fn</span>&nbsp;<i class="fa fa-arrow-circle-o-down " style="font-size:80%; color:darkred;"></i>
+                                    </a>
+                                </span>
+                            }
+                        </div>
                         @foreach (var item in bundle)
                         {
                             //define the map Id and map modal id
@@ -119,11 +131,42 @@
                                 </div>
                             </div>
                         }
-                        <div class="col-xs-12">
-                            <button class="btn btn-danger">Edit Bundle</button>
-                            <button class="btn btn-danger">Remove Bundle</button>
-                            <button class="btn btn-danger">Share Bundle</button>
-                            <button class="btn btn-danger">Batch Analysis</button>
+                        <div class="col-xs-offset-2 col-xs-10">
+                            @if (GroupBundleIds.Contains(bundleId))
+                            {
+                                <a class="btn btn-default disabled" href="@Url.Action("Edit", "pBundle")">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                    <span>Edit Bundle</span>
+                                </a>
+                                <a class="btn btn-default disabled" href="@Url.Action("Delete", "pBundle")">
+                                    <i class="fa fa-trash-o"></i>
+                                    <span>Remove Bundle</span>
+                                </a>
+                                <a class="btn btn-default disabled" href="@Url.Action("Share", "pBundle")">
+                                    <i class="fa fa-share-alt"></i>
+                                    <span>Share Bundle</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-default" href="@Url.Action("Edit", "pBundle", new { bundle_id = bundleId})">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                    <span>Edit Bundle</span>
+                                </a>
+                                <a class="btn btn-default" href="@Url.Action("Delete", "pBundle", new { bundle_id = bundleId})">
+                                    <i class="fa fa-trash-o"></i>
+                                    <span>Remove Bundle</span>
+                                </a>
+                                <a class="btn btn-default" href="@Url.Action("Share", "pBundle", new { bundle_id = bundleId})">
+                                    <i class="fa fa-share-alt"></i>
+                                    <span>Share Bundle</span>
+                                </a>
+                            }
+
+                            <a class="btn btn-default" href="@Url.Action("Analysis", "pBundle", new { bundle_id = bundleId})">
+                                <i class="fa fa-rocket"></i>
+                                <span>Batch Analysis</span>
+                            </a>
                         </div>
                     </div>
                 </div>

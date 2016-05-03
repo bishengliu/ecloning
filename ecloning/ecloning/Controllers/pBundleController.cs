@@ -32,7 +32,7 @@ namespace ecloning.Controllers
             //get the group shared plasmid bundle id          
             var grouppBundleIds = db.group_shared.Where(g => groupInfo.groupId.Contains(g.group_id)).Where(c => c.category == "pBundle").Select(r => r.resource_id).ToList();
 
-
+            ViewBag.GrouppBundleIds = grouppBundleIds;
             //only show my bundles that are not shared with any group  
             IQueryable<plasmid_bundle> pBundles = null;
             if (grouppBundleIds.Count() > 0)
@@ -46,7 +46,7 @@ namespace ecloning.Controllers
             var pBundleIds = pBundles.Select(i => i.bundle_id).ToList();
 
             //get combined bundle ids
-            var combinedIds = grouppBundleIds.Concat(pBundleIds).Distinct().ToList();
+            var combinedIds = pBundleIds.Concat(grouppBundleIds).Distinct().ToList();
 
             ViewBag.BundleIds = combinedIds;
             //get top level bundles
@@ -60,6 +60,47 @@ namespace ecloning.Controllers
             ViewBag.plasmidIds = JsonConvert.SerializeObject(plasmidIds.ToList());
             ViewBag.AllBundleIds = JsonConvert.SerializeObject(combinedIds);
             return View(rootBundles.ToList());
+        }
+        [Authorize]
+        public ActionResult Download(string fileName)
+        {
+            if (eCloningSettings.AppHosting == "Cloud")
+            {
+                //download from azure
+                AzureBlob azureBlob = new AzureBlob();
+                azureBlob.directoryName = eCloningSettings.bundleDir;
+                try
+                {
+                    if (azureBlob.AzureBlobUri(fileName) == "notFound")
+                    {
+                        return HttpNotFound();
+                    }
+                    else
+                    {
+                        azureBlob.AzureBlobDownload(fileName);
+                    }
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("FileError");
+                }
+            }
+            else
+            {
+                //download from local
+                try
+                {
+                    var bundlePath = eCloningSettings.filePath + eCloningSettings.bundleDir;
+                    var path = Path.Combine(Server.MapPath(bundlePath), fileName);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(path);
+                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("FileError");
+                }
+            }
+            return RedirectToAction("Index");
         }
 
         [Authorize]
@@ -322,29 +363,124 @@ namespace ecloning.Controllers
             return View(plasmid_bundle);
         }
 
-        // GET: pBundle/Delete/5
-        public ActionResult Delete(int? id)
+        [Authorize]
+        [HttpGet]
+        public ActionResult Share(int? bundle_id)
         {
-            if (id == null)
+            //check the existence of bundle id
+            if (bundle_id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            plasmid_bundle plasmid_bundle = db.plasmid_bundle.Find(id);
-            if (plasmid_bundle == null)
+            var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
+            if (pBundle.Count() ==0)
             {
                 return HttpNotFound();
             }
-            return View(plasmid_bundle);
+
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //check whether it has already been shared
+            var isShared = db.group_shared.Where(r => r.category == "pBundle" && r.resource_id == bundle_id && r.group_id == groupInfo.groupId.FirstOrDefault());
+            if (isShared.Count() > 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //share the bundle
+            var share = new group_shared();
+            share.category = "pBundle";
+            share.group_id = groupInfo.groupId.FirstOrDefault();
+            share.resource_id = (int)bundle_id;
+            share.sratus = "submitted";
+            db.group_shared.Add(share);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
+        // GET: pBundle/Delete/5
+        public ActionResult Delete(int? bundle_id)
+        {
+            if (bundle_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+
+            var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id && b.people_id == userInfo.PersonId);
+            if (pBundle.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+
+            List<int> plasmidIds = pBundle.Select(p => p.member_id).ToList();
+            //bundle
+            List<int> BundleIds = new List<int>(){ (int)bundle_id };
+            ViewBag.plasmidIds = JsonConvert.SerializeObject(plasmidIds.ToList());
+            ViewBag.AllBundleIds = JsonConvert.SerializeObject(BundleIds);
+            //features
+            //pass all features into json
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => plasmidIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+
+            return View(pBundle.ToList());
         }
 
         // POST: pBundle/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int bundle_id)
         {
-            plasmid_bundle plasmid_bundle = db.plasmid_bundle.Find(id);
-            db.plasmid_bundle.Remove(plasmid_bundle);
+            //check if in shared
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //check whether it has already been shared
+            var isShared = db.group_shared.Where(r => r.category == "pBundle" && r.resource_id == bundle_id && r.group_id == groupInfo.groupId.FirstOrDefault());
+            if (isShared.Count() > 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //not in shared, then delete the bundle
+            var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
+            foreach(var item in pBundle)
+            {
+                db.plasmid_bundle.Remove(item);
+            }           
             db.SaveChanges();
+
+            //remove any uploaded file
+            if (!String.IsNullOrWhiteSpace(pBundle.First().img_fn))
+            {
+                if (eCloningSettings.AppHosting == "Cloud")
+                {
+                    //delete from azure
+                    AzureBlob azureBlob = new AzureBlob();
+                    azureBlob.directoryName = eCloningSettings.bundleDir;
+                    azureBlob.AzureBlobDelete(pBundle.First().img_fn);
+                }
+                else
+                {
+                    //delete from local
+                    string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.bundleDir + "/" + pBundle.First().img_fn);
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Delete(path);
+                    }
+                }
+            }
+
             return RedirectToAction("Index");
         }
 
