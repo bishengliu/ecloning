@@ -331,19 +331,84 @@ namespace ecloning.Controllers
         }
 
         // GET: pBundle/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? bundle_id)
         {
-            if (id == null)
+            if (bundle_id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            plasmid_bundle plasmid_bundle = db.plasmid_bundle.Find(id);
-            if (plasmid_bundle == null)
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            //get all the people in the group
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            var peopleIds = db.group_people.Where(g => groupInfo.groupId.Contains(g.group_id)).Select(p => p.people_id).ToList();
+
+
+            //current bundle and plasmid id
+            var bundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id && b.people_id == userInfo.PersonId);
+            if (bundle.Count() == 0)
             {
                 return HttpNotFound();
             }
-            ViewBag.people_id = new SelectList(db.people, "id", "first_name", plasmid_bundle.people_id);
-            return View(plasmid_bundle);
+            //current plasmind ids
+            List<int> plasmidIds = bundle.Select(p => p.member_id).ToList();
+            ViewBag.Count = plasmidIds.Count();
+            ViewBag.pId = plasmidIds;
+
+            //prepare plasmid idString of the current bundle
+            string[] Ids = new string[plasmidIds.Count()];
+            for(int i=0; i< plasmidIds.Count(); i++)
+            {
+                Ids[i] = plasmidIds[i].ToString();
+            }
+            string idString = string.Join(','.ToString(), Ids);
+            ViewBag.IdString = idString;
+
+            //load current bundle data to pBundle class
+            var pBundle = new pBundle();
+            pBundle.bundle_id = (int)bundle_id;
+            pBundle.Des = bundle.First().des;
+            pBundle.Name = bundle.First().name;
+            pBundle.Upload = bundle.First().img_fn;
+
+            //plasmid class
+            var bundleItems = new List<BundleItem>();
+            foreach (var item in bundle)
+            {
+                var bundleItem = new BundleItem();
+                bundleItem.plasmidId = item.member_id;
+                bundleItem.plasmidRole = item.member_role;
+                bundleItems.Add(bundleItem);
+            }
+
+            pBundle.Plasmids = bundleItems;
+
+
+            //load relavent data into json
+            //get the the plasmid ids in the group
+            var allPlasmids = db.plasmids.Where(p => peopleIds.Contains(p.people_id)).OrderBy(p=>p.id);
+            List<int> allpIds = new List<int>();
+            if (allPlasmids.Count() > 0)
+            {
+                allpIds = allPlasmids.Select(p => p.id).ToList();
+            }
+
+            //all features
+            //pass all features into json
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => allpIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+
+
+            //all bundle
+            //pass the bundle name
+            var bundles = db.plasmid_bundle.Where(p => peopleIds.Contains(p.people_id)).Select(n => n.name).Distinct().ToList();
+            ViewBag.Bundles = JsonConvert.SerializeObject(bundles);
+
+
+
+            return View(pBundle);
         }
 
         // POST: pBundle/Edit/5
