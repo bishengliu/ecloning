@@ -32,10 +32,10 @@
                 <input class="form-control" id="newPlasmid" name="newPlasmids" />
             </div>
                 <div class="col-xs-4 col-sm-2 col-md-1">
-                    <a id="add" class="btn btn-block btn-warning">
+                    <button type="submit" id="add" class="btn btn-danger">
                         <i class="fa fa-plus-circle"></i>
                         <span class="">Plasmids</span>
-                    </a>
+                    </button>
                 </div>
         }
         </div>
@@ -54,7 +54,7 @@
             {
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="hidden">
+                <div class="">
                     <input id="plasmidID" name="idString" value=@idString>
                 </div>
                 <div class="form-group col-lg-6 col-md-6 col-sm-6">
@@ -140,7 +140,7 @@
                     </div>
                 }
 
-                <div class="form-group col-sm-12">
+                <div class="form-group col-sm-12" id="formButton">
                     <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
                         <br />
                         <input type="submit" id="addBundle" value="Save Bundle" class="btn btn-block btn-primary" />
@@ -183,44 +183,7 @@
             //console.log(idArray);
 
             //draw maps
-            $.each(idArray, function (index, value) {
-                mapId = "map-" + value;
-                modalMapId = "modal-map-" + value;
-                //filter featrues
-                var currentFeatures = $.grep(Features, function (n, i) {
-                    return n.pId === +value;
-                });
-                if (currentFeatures.length > 0) {
-                    pName = currentFeatures[0].pName;
-                    pCount = currentFeatures[0].pSeqCount;
-                    pId = currentFeatures[0].pId;
-
-                    delete currentFeatures['pId'];
-                    delete currentFeatures['pName'];
-                    delete currentFeatures['pCount'];
-
-                    fData = [pCount, currentFeatures];
-
-                    width = ($("#" + mapId).width() <= 348 ? 348 : $("#" + mapId).width());
-                    //console.log(width);
-                    //draw the map
-                    var gd = GiraffeDraw();
-                    gd.read(fData);
-                    gd.CircularMap({
-                        'map_dom_id': mapId,
-                        'plasmid_name': pName,
-                        'map_width': width,
-                        'map_height': width
-                    });
-
-                    gd.CircularMap({
-                        'map_dom_id': modalMapId,
-                        'plasmid_name': pName,
-                        'map_width': 1048,
-                        'map_height': 1048
-                    });
-                }
-            });
+            drawMaps(idArray, Features);
 
             //redraw maps in modal
             $('.modal-body div div svg text tspan').click({ idArray: idArray }, redrawMap);
@@ -232,11 +195,53 @@
                 //tokenLimit: 1,
                 propertyToSearch: "name",
                 preventDuplicates: true,
-                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.seq_length + "bp" + "</span></p></li>" },
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.length + "bp" + "</span></p></li>" },
                 tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
             });
             
-            //$("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+            $("#modalPlasmid div ul").addClass('token-input-list-facebook form-control text-box single-line');
+
+            function drawMaps(idArray, Features) {
+                $.each(idArray, function (index, value) {
+                    mapId = "map-" + value;
+                    modalMapId = "modal-map-" + value;
+                    //filter featrues
+                    var currentFeatures = $.grep(Features, function (n, i) {
+                        return n.pId === +value;
+                    });
+                    if (currentFeatures.length > 0) {
+                        pName = currentFeatures[0].pName;
+                        pCount = currentFeatures[0].pSeqCount;
+                        pId = currentFeatures[0].pId;
+
+                        delete currentFeatures['pId'];
+                        delete currentFeatures['pName'];
+                        delete currentFeatures['pCount'];
+
+                        fData = [pCount, currentFeatures];
+
+                        width = ($("#" + mapId).width() <= 348 ? 348 : $("#" + mapId).width());
+                        //console.log(width);
+                        //draw the map
+                        var gd = GiraffeDraw();
+                        gd.read(fData);
+                        gd.CircularMap({
+                            'map_dom_id': mapId,
+                            'plasmid_name': pName,
+                            'map_width': width,
+                            'map_height': width
+                        });
+
+                        gd.CircularMap({
+                            'map_dom_id': modalMapId,
+                            'plasmid_name': pName,
+                            'map_width': 1048,
+                            'map_height': 1048
+                        });
+                    }
+                });
+            }
+
 
             function redrawMap(event) {
                 var txt = $(event.target).text();
@@ -369,7 +374,7 @@
             $("#addBundle").addClass("disabled");
             return false;
         }
-    })
+    });
 
     //get the upload file name
     function getFilePath() {
@@ -377,11 +382,91 @@
         fileName = fullPath.split(/(\\|\/)/g).pop();
         document.getElementById("file_name").value = fileName;
     }
-</script>
 
-<script>
+
     //remove plasmid
     $(document).ready(function () {
+        removePlasmid();
+    });
+
+    //add plasmid
+    $(document).ready(function () {
+
+        var Features = ("@Features");
+        document.getElementById("decodeIt").innerHTML = Features;
+        Features = document.getElementById("decodeIt").innerText;
+        
+        Features = JSON.parse(Features);
+
+
+        $('#addPlasmid').click(function () {
+            $(this).addClass('hidden');
+            $('#modalPlasmid').parent().removeClass('hidden');
+        });
+
+        $('#add').click(function (event) {
+            event.preventDefault();
+            $('#addPlasmid').removeClass('hidden');
+            $('#modalPlasmid').parent().addClass('hidden');
+
+            var newPlasmidIds = $('#newPlasmid').val();
+            if (!newPlasmidIds.trim()) {
+                $('#error').text("You haven't selected any plasmid!");
+                $('#msg').text(null);
+                return false;
+            } else {
+                //get id list and then generate maps and remove duplicates
+                var newIdArray = unique(newPlasmidIds.split(','));
+
+                //put update the plasmidID
+                //get the plasmidID
+                var IdString = $('#plasmidID').val();
+                //process the idString to array
+                var idArray = [];
+                if (IdString.trim()) {
+                    var idStringArray = IdString.split(',');
+                    $.each(idStringArray, function (index, value) {
+                        idArray.push(parseInt(value));
+                    })
+                }
+
+                var iLength = idArray.length;
+                //add the dom and concat array
+                $.each(newIdArray, function (i, d) {
+                    //first check whether it is in the idArray
+                    if ($.inArray(+d, idArray) == -1) {
+                        //push to the idArray
+                        idArray.push(+d);
+                        //add div
+                        iLength++;
+                        var count = iLength;
+                        var id = +d;
+                        var modalRefId = "#modal-" + d;
+                        var mapId = "map-" + d;
+                        var modalMapId = "modal-map-" + d;
+                        var modalId = "modal-" + d;
+                        var idDiv = "plasmid-" + d;
+
+
+                        $('#formButton').before(BundleHTML(count, id, modalRefId, mapId, idDiv, modalId, modalMapId));
+                        //draw map in div and modal
+                        drawMap(idArray, Features, mapId, modalMapId, d);
+                    }
+                });
+                //run the click to remove function again
+                removePlasmid();
+                //put the inArray back
+                //convert array to string separated by ','
+                IdString = idArray.join(',');
+                $('#plasmidID').val(IdString);
+                return false;
+            }
+            return false;
+        });
+
+    });
+
+    function removePlasmid() {
         $('.delete').click(function () {
             //get the plasmid id
             var id = $(this).attr('id');
@@ -413,20 +498,109 @@
             $(this).parent().parent().remove();
             return true;
         });
-    });
+    }
 
-
-    //add plasmid
-    $(document).ready(function () {
-        $('#addPlasmid').click(function () {
-            $(this).addClass('hidden');
-            $('#modalPlasmid').parent().removeClass('hidden');
+    function unique(list) {
+        var result = [];
+        $.each(list, function (i, e) {
+            if ($.inArray(e, result) == -1) result.push(e);
         });
+        return result;
+    };
 
-        $('#add').click(function () {
-            $('#addPlasmid').removeClass('hidden');
-            $('#modalPlasmid').parent().addClass('hidden');
-        });
-    });
+    function BundleHTML(count, id, modalRefId, mapId, idDiv, modalId, modalMapId)
+    {
+        var html = '';
 
+        //parent div
+        html = html +"<div class=\"col-xs-12 col-sm-6 col-md-4 col-lg-4\">";
+            //map wrapped inside a
+            html = html +"<a href=\"#\" data-toggle=\"modal\" data-target=" + modalRefId + " class=\"pull-left\">";
+            //map
+            html = html +"<div class=\"col-xs-12\" id=" + mapId + "></div>";
+            html = html +"</a>";
+
+            //trash and modal
+            html = html +"<div class=\"col-xs-12\">";
+                //trash
+                html = html +"<a href=\"#\" class=\"pull-right delete\" id=\"" + idDiv + "\">";
+                    html = html +"<i class=\"fa fa-2x fa-trash-o text-warning\"></i>";
+                    html = html +"<span class=\"text-warning\"></span>";
+                html = html +"</a>";
+
+            //modal
+            html = html +"<div id=" + modalId + " class=\"modal fade\" role=\"dialog\">";
+                html = html +"<div class=\"modal-dialog\">";
+                    html = html +"<div class=\"modal-content\">";
+                            html = html +"<div class=\"modal-header\">";
+                                html = html +"<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                                html = html +"<h4 class=\"modal-title text-center\">Plasmid Map</h4>";
+                            html = html +"</div>";
+                            html = html +"<div class=\"modal-body\">";
+                                html = html +"<div id=" + modalMapId + "></div>";
+                            html = html +"</div>";
+                            html = html +"<div class=\"modal-footer\">";
+                                html = html +"<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>";
+                            html = html +"</div>";
+                        html = html +"</div>";
+                    html = html +"</div>";
+                html = html +"</div>";
+
+            html = html +"</div>";
+
+            //form data
+            html = html +"<div class=\"col-xs-12\">";
+                //hidden id
+                html = html +"<div class=\"hidden\">";
+
+                html = html + '<input value="'+id+'" class="form-control text-box single-line" data-val="true" data-val-number="The field plasmidId must be a number." data-val-required="The plasmidId field is required." id="Plasmids_'+count+'__plasmidId" name="Plasmids['+count+'].plasmidId" type="number">';
+                html = html +"</div>";
+
+                //comment
+                html = html +'<label class="control-label" for="Plasmids_'+count+'__plasmidRole">Comment</label>';
+                html = html +'<textarea class="form-control" cols="150" id="Plasmids_'+count+'__plasmidRole" name="Plasmids['+count+'].plasmidRole" rows="4"></textarea>';
+
+                html = html + "</div>";
+
+        html = html + "</div>";
+
+        return html;
+    }
+
+
+    function drawMap(idArray, Features, mapId, modalMapId, d) {
+            //filter featrues
+            var currentFeatures = $.grep(Features, function (n, i) {
+                return n.pId === +d;
+            });
+            if (currentFeatures.length > 0) {
+                pName = currentFeatures[0].pName;
+                pCount = currentFeatures[0].pSeqCount;
+                pId = currentFeatures[0].pId;
+
+                delete currentFeatures['pId'];
+                delete currentFeatures['pName'];
+                delete currentFeatures['pCount'];
+
+                fData = [pCount, currentFeatures];
+
+                width = ($("#" + mapId).width() <= 348 ? 348 : $("#" + mapId).width());
+                //draw the map
+                var gd = GiraffeDraw();
+                gd.read(fData);
+                gd.CircularMap({
+                    'map_dom_id': mapId,
+                    'plasmid_name': pName,
+                    'map_width': width,
+                    'map_height': width
+                });
+
+                gd.CircularMap({
+                    'map_dom_id': modalMapId,
+                    'plasmid_name': pName,
+                    'map_width': 1048,
+                    'map_height': 1048
+                });
+            }
+    };
 </script>

@@ -17,11 +17,17 @@ namespace ecloning.Models
 
         public UserInfo(string userId)
         {
-            string email = db.AspNetUsers.Where(u => u.Id == userId).FirstOrDefault().Email;
-            this.userEmail = email;
-            var person = db.people.Where(e => e.email == email).FirstOrDefault();
-            this.userName = person.first_name + " " + person.last_name;
-            this.PersonId = person.id;
+            try{
+                string email = db.AspNetUsers.Where(u => u.Id == userId).FirstOrDefault().Email;
+                this.userEmail = email;
+                var person = db.people.Where(e => e.email == email).FirstOrDefault();
+                this.userName = person.first_name + " " + person.last_name;
+                this.PersonId = person.id;
+            }
+            catch (Exception)
+            {
+
+            }        
         }
     }
 }
