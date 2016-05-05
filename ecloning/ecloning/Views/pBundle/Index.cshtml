@@ -70,7 +70,7 @@
                          <h3 class="panel-title text-center"><em><strong>@bundle.First().name</strong></em><span>&nbsp;</span><span class="badge">@bundle.Count()</span></h3>
                          <span class="pull-right clickable moveup"><i class="glyphicon glyphicon-chevron-up"></i></span>
                     </div>
-                    <div class="panel-body noPadding">
+                    <div class="panel-body noPadding" style="display:none;">
                         <div class="bundleDes">
                             <span class="text-info"><strong>Bundle Description: </strong></span>@bundle.First().des<br/>
                             @if (!String.IsNullOrWhiteSpace(bundle.First().img_fn))
@@ -181,7 +181,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('.panel-body').each(function (index) {
-            $(this).slideUp();
+            $(this).slideUp(0);
             $(this).parent('div').find('.panel-heading span.clickable').addClass('panel-collapsed');
             $(this).parent('div').find('.panel-heading span.clickable').find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
         });
@@ -191,13 +191,13 @@
         $('.panel-heading span.clickable').on("click", function (e) {
             if ($(this).hasClass('panel-collapsed')) {
                 // expand the panel
-                $(this).parents('.panel').find('.panel-body').slideDown();
+                $(this).parents('.panel').find('.panel-body').slideDown(50);
                 $(this).removeClass('panel-collapsed');
                 $(this).find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
             }
             else {
                 // collapse the panel
-                $(this).parents('.panel').find('.panel-body').slideUp();
+                $(this).parents('.panel').find('.panel-body').slideUp(50);
                 $(this).addClass('panel-collapsed');
                 $(this).find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
             }
