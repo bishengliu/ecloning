@@ -45,14 +45,13 @@
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
+<script src="~/Scripts/ecloning.js"></script>
 <script>
     var Plasmids = ("@Plasmids");
-    document.getElementById("decodeIt").innerHTML = Plasmids;
-    Plasmids = document.getElementById("decodeIt").innerText;
+    Plasmids = LoadData(Plasmids);
 
     var Features = ("@Features");
-    document.getElementById("decodeIt").innerHTML = Features;
-    Features = document.getElementById("decodeIt").innerText;
+    Features = LoadData(Features);
 
     try {
         data = JSON.parse(Plasmids);
@@ -102,123 +101,14 @@
             //add dom
             var mapDiv = $("#maps").append("<div id=\"map-" + d + "\" class=\"col-xs-12 col-sm-6\"></div>");
 
-            //filer data
-            var currentFeatures = $.grep(Features, function (n, i) {
-                return n.pId === +d;
-            });         
-            pName = currentFeatures[0].pName;
-            pCount = currentFeatures[0].pSeqCount;
-            pId = currentFeatures[0].pId;
-
-            delete currentFeatures['pId'];
-            delete currentFeatures['pName'];
-            delete currentFeatures['pCount'];
-
-            fData = [pCount, currentFeatures];
-            var divId = "map-" + d;
-            //draw the map
-            var gd = GiraffeDraw();
-            gd.read(fData);
-            gd.CircularMap({
-                'map_dom_id': divId,
-                'plasmid_name': pName,
-                'map_width': 848,
-                'map_height': 648
-            });
+            var mapId = "map-" + d;
+            draw1Map(Features, mapId, d, 848, 648);
         });
    
         //redraw maps
-        $('svg text tspan').click({ idArray: idArray }, redrawMap);
+        $('svg text tspan').click({ idArray: idArray, width: 848, height: 648 }, redrawMap);
         $('#error').text(null);
         $('#msg').text('Click the feature name to rotate the maps.');
 
     };
-
-    function unique(list) {
-        var result = [];
-        $.each(list, function (i, e) {
-            if ($.inArray(e, result) == -1) result.push(e);
-        });
-        return result;
-    };
-
-
-    function redrawMap(event) {
-        var txt = $(event.target).text();
-        //find feature clicked
-        var idArray = event.data.idArray;
-        $.each(idArray, function (i, d) {
-            
-            //filer data
-            var currentFeatures = $.grep(Features, function (n, i) {
-                return n.pId === +d;
-            });
-            pName = currentFeatures[0].pName;
-            pCount = currentFeatures[0].pSeqCount;
-            pId = currentFeatures[0].pId;
-
-            delete currentFeatures['pId'];
-            delete currentFeatures['pName'];
-            delete currentFeatures['pCount'];
-
-            fData = [pCount, currentFeatures];
-
-            var oldStart = 0;
-            $.each(fData[1], function (index, d) {
-                $.each(d, function (key, value) {
-                    if (value == txt) {
-                        oldStart = d['start'];
-                    }
-                });
-            });
-
-            //change the start and end
-            $.each(fData[1], function (i, dt) {
-                if (oldStart != 0) {
-                    if (dt['start'] >= oldStart) {
-                        dt['start'] = dt['start'] - oldStart + 1;
-                        dt['end'] = dt['end'] - oldStart + 1;
-                    }
-                    else {
-                        dt['start'] = pCount - oldStart + dt['start'] + 1;
-                        if (dt['end'] >= oldStart) {
-                            dt['end'] = dt['end'] - oldStart + 1;
-                        }
-                        else {
-                            dt['end'] = pCount - oldStart + dt['end'] + 1;
-                        }
-                    }
-                }
-            });
-            //reorder the data
-            fData[1].sort(sortByProperty('start'));
-
-            var divId = "map-" + d;
-            //redraw the map
-            var gd = GiraffeDraw();
-            gd.read(fData);
-            gd.CircularMap({
-                'map_dom_id': divId,
-                'plasmid_name': pName,
-                'map_width': 848,
-                'map_height': 648
-            });
-        });
-        //run the click-event again
-        $('svg text tspan').click({ idArray: idArray }, redrawMap);
-    };
-
-
-    function sortByProperty(property) {
-        'use strict';
-        return function (a, b) {
-            var sortStatus = 0;
-            if (a[property] < b[property]) {
-                sortStatus = -1;
-            } else if (a[property] > b[property]) {
-                sortStatus = 1;
-            }
-            return sortStatus;
-        };
-    }
 </script>

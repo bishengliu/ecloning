@@ -177,6 +177,7 @@
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
+<script src="~/Scripts/ecloning.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('.panel-body').each(function (index) {
@@ -205,22 +206,19 @@
 
 
     //draw plasmid maps
-    $(window).load(function () {
+    $(document).ready(function () {
 
         //get plasmid ids
         var PlasmidIDs = ("@PlasmidIDs");
-        document.getElementById("decodeIt").innerHTML = PlasmidIDs;
-        PlasmidIDs = document.getElementById("decodeIt").innerText;
+        PlasmidIDs = LoadData(PlasmidIDs);
         //get bundle ids
 
         var BundleIds = ("@AllBundleIds");
-        document.getElementById("decodeIt").innerHTML = BundleIds;
-        BundleIds = document.getElementById("decodeIt").innerText;
+        BundleIds = LoadData(BundleIds);
 
         //get fearues
         var Features = ("@Features");
-        document.getElementById("decodeIt").innerHTML = Features;
-        Features = document.getElementById("decodeIt").innerText;
+        Features = LoadData(Features);
         //draw plasmid map (also in modals)
         try {
             Features = JSON.parse(Features);
@@ -233,61 +231,64 @@
                 });
             });
 
-            //console.log(idArray);
-
             //draw maps
-            $.each(idArray, function (index, value) {
-                mapId = value;
-                modalMapId = "modal-" + mapId;
-                //get the plasmid id
-                var pieces = mapId.split('-');
-                var plasmidId = +pieces[pieces.length - 1];
-                //filter featrues
-                var currentFeatures = $.grep(Features, function (n, i) {
-                    return n.pId === plasmidId;
-                });
-                pName = currentFeatures[0].pName;
-                pCount = currentFeatures[0].pSeqCount;
-                pId = currentFeatures[0].pId;
-
-                delete currentFeatures['pId'];
-                delete currentFeatures['pName'];
-                delete currentFeatures['pCount'];
-
-                fData = [pCount, currentFeatures];
-
-                width = ($("#" + mapId).width() <= 300 ? 300 : $("#" + mapId).width());
-                if ($('#' + mapId).length != 0) {
-                    //draw the map
-                    var gd = GiraffeDraw();
-                    gd.read(fData);
-                    gd.CircularMap({
-                        'map_dom_id': mapId,
-                        'plasmid_name': pName,
-                        'map_width': width,
-                        'map_height': width
-                    });
-
-                    gd.CircularMap({
-                        'map_dom_id': modalMapId,
-                        'plasmid_name': pName,
-                        'map_width': 1048,
-                        'map_height': 1048
-                    });
-                }
-            });
+            drawCustMaps(idArray, Features, 300, 1048);
 
 
             //redraw maps in modal
-            $('.modal-body div div svg text tspan').click({ idArray: idArray }, redrawMap);
+            $('.modal-body div div svg text tspan').click({ idArray: idArray }, redrawCustMap);
 
 
-            function redrawMap(event) {
+            function drawCustMaps(idArray, Features, minWidth, modalWidth) {
+                //draw maps
+                $.each(idArray, function (index, value) {
+                    mapId = value;
+                    modalMapId = "modal-" + mapId;
+                    //get the plasmid id
+                    var pieces = mapId.split('-');
+                    var plasmidId = +pieces[pieces.length - 1];
+                    //filter featrues
+                    var currentFeatures = $.grep(Features, function (n, i) {
+                        return n.pId === plasmidId;
+                    });
+                    pName = currentFeatures[0].pName;
+                    pCount = currentFeatures[0].pSeqCount;
+                    pId = currentFeatures[0].pId;
+
+                    delete currentFeatures['pId'];
+                    delete currentFeatures['pName'];
+                    delete currentFeatures['pCount'];
+
+                    fData = [pCount, currentFeatures];
+
+                    width = ($("#" + mapId).width() <= minWidth ? minWidth : $("#" + mapId).width());
+                    if ($('#' + mapId).length != 0) {
+                        //draw the map
+                        var gd = GiraffeDraw();
+                        gd.read(fData);
+                        gd.CircularMap({
+                            'map_dom_id': mapId,
+                            'plasmid_name': pName,
+                            'map_width': width,
+                            'map_height': width
+                        });
+
+                        gd.CircularMap({
+                            'map_dom_id': modalMapId,
+                            'plasmid_name': pName,
+                            'map_width': modalWidth,
+                            'map_height': modalWidth
+                        });
+                    }
+                });
+            };
+
+            function redrawCustMap(event) {
                 var txt = $(event.target).text();
                 //find feature clicked
                 var idArray = event.data.idArray;
                 $.each(idArray, function (i, d) {
-                    mapId = value;
+                    mapId = d;
                     modalMapId = "modal-" + mapId;
                     //get the plasmid id
                     var pieces = mapId.split('-');
@@ -348,26 +349,12 @@
                     }
                 });
                 //run the click-event again
-                $('svg text tspan').click({ idArray: idArray }, redrawMap);
+                $('svg text tspan').click({ idArray: idArray }, redrawCustMap);
             };
-
-            function sortByProperty(property) {
-                'use strict';
-                return function (a, b) {
-                    var sortStatus = 0;
-                    if (a[property] < b[property]) {
-                        sortStatus = -1;
-                    } else if (a[property] > b[property]) {
-                        sortStatus = 1;
-                    }
-                    return sortStatus;
-                };
-            }
 
         }
         catch (e) {
             console.log(e);
-            //$('#error').text("Unable to load plasmid maps, please try again later!");
         }
 
     });

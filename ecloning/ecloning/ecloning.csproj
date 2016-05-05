@@ -720,6 +720,7 @@
     <Content Include="Scripts\datatable\jquery.dataTables.js" />
     <Content Include="Scripts\datatable\jquery.dataTables.min.js" />
     <Content Include="Scripts\datatable\jquery.js" />
+    <Content Include="Scripts\ecloning.js" />
     <Content Include="Scripts\giraffe\analyze-2.0.js" />
     <Content Include="Scripts\giraffe\analyze.js" />
     <Content Include="Scripts\giraffe\analyze_page-2.0.js" />

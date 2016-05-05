@@ -357,6 +357,7 @@ namespace ecloning.Controllers
             List<int> plasmidIds = bundle.Select(p => p.member_id).ToList();
             ViewBag.Count = plasmidIds.Count();
             ViewBag.pId = plasmidIds;
+            ViewBag.bundleName = bundle.First().name;
 
             //prepare plasmid idString of the current bundle
             string[] Ids = new string[plasmidIds.Count()];

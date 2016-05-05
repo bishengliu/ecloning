@@ -124,15 +124,14 @@
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
-
+<script src="~/Scripts/ecloning.js"></script>
 <script>
 
     //<reference path="~/Scripts/jquery-2.1.0-vsdoc.js" />
-    $(window).load(function () {
+    $(document).ready(function () {
 
         var Features = ("@Features");
-        document.getElementById("decodeIt").innerHTML = Features;
-        Features = document.getElementById("decodeIt").innerText;
+        Features = LoadData(Features);
         //draw plasmid map (also in modals)
         try {
             Features = JSON.parse(Features);
@@ -151,124 +150,12 @@
             $.each(idArray, function (index, value) {
                 mapId = "map-" + value;
                 modalMapId = "modal-map-" + value;
-                //filter featrues
-                var currentFeatures = $.grep(Features, function (n, i) {
-                    return n.pId === +value;
-                });
-                pName = currentFeatures[0].pName;
-                pCount = currentFeatures[0].pSeqCount;
-                pId = currentFeatures[0].pId;
-
-                delete currentFeatures['pId'];
-                delete currentFeatures['pName'];
-                delete currentFeatures['pCount'];
-
-                fData = [pCount, currentFeatures];
-
-                width = ($("#" + mapId).width() <= 348 ? 348 : $("#" + mapId).width());
-                //console.log(width);
-                //draw the map
-                var gd = GiraffeDraw();
-                gd.read(fData);
-                gd.CircularMap({
-                    'map_dom_id': mapId,
-                    'plasmid_name': pName,
-                    'map_width': width,
-                    'map_height': width
-                });
-
-                gd.CircularMap({
-                    'map_dom_id': modalMapId,
-                    'plasmid_name': pName,
-                    'map_width': 1048,
-                    'map_height': 1048
-                });
+                draw2Maps(Features, mapId, modalMapId, value, 348, 1048);
             });
 
 
             //redraw maps in modal
-            $('.modal-body div div svg text tspan').click({ idArray: idArray }, redrawMap);
-
-
-            function redrawMap(event) {
-                var txt = $(event.target).text();
-                //find feature clicked
-                var idArray = event.data.idArray;
-                $.each(idArray, function (i, d) {
-                    //mapId = "map-" + d;
-                    modalMapId = "modal-map-" + d;
-                    //filer data
-                    var currentFeatures = $.grep(Features, function (n, i) {
-                        return n.pId === +d;
-                    });
-                    pName = currentFeatures[0].pName;
-                    pCount = currentFeatures[0].pSeqCount;
-                    pId = currentFeatures[0].pId;
-
-                    delete currentFeatures['pId'];
-                    delete currentFeatures['pName'];
-                    delete currentFeatures['pCount'];
-
-                    fData = [pCount, currentFeatures];
-
-                    var oldStart = 0;
-                    $.each(fData[1], function (index, d) {
-                        $.each(d, function (key, value) {
-                            if (value == txt) {
-                                oldStart = d['start'];
-                            }
-                        });
-                    });
-
-                    //change the start and end
-                    $.each(fData[1], function (i, dt) {
-                        if (oldStart != 0) {
-                            if (dt['start'] >= oldStart) {
-                                dt['start'] = dt['start'] - oldStart + 1;
-                                dt['end'] = dt['end'] - oldStart + 1;
-                            }
-                            else {
-                                dt['start'] = pCount - oldStart + dt['start'] + 1;
-                                if (dt['end'] >= oldStart) {
-                                    dt['end'] = dt['end'] - oldStart + 1;
-                                }
-                                else {
-                                    dt['end'] = pCount - oldStart + dt['end'] + 1;
-                                }
-                            }
-                        }
-                    });
-                    //reorder the data
-                    fData[1].sort(sortByProperty('start'));
-
-                    //width = ($("#" + mapId).width() <= 348 ? 348 : $("#" + mapId).width());
-
-                    //redraw the map
-                    var gd = GiraffeDraw();
-                    gd.read(fData);
-                    gd.CircularMap({
-                        'map_dom_id': modalMapId,
-                        'plasmid_name': pName,
-                        'map_width': 1048,
-                        'map_height': 1048
-                    });
-                });
-                //run the click-event again
-                $('svg text tspan').click({ idArray: idArray }, redrawMap);
-            };
-
-            function sortByProperty(property) {
-                'use strict';
-                return function (a, b) {
-                    var sortStatus = 0;
-                    if (a[property] < b[property]) {
-                        sortStatus = -1;
-                    } else if (a[property] > b[property]) {
-                        sortStatus = 1;
-                    }
-                    return sortStatus;
-                };
-            }
+            $('.modal-body div div svg text tspan').click({ idArray: idArray, Features: Features }, redrawModalMap);
 
         }
         catch (e) {
@@ -296,11 +183,9 @@
         var Name = $('#Name').val();
         //get bundle names to check the unique of the bundle name
         var Bundles = ("@Bundles");
-        document.getElementById("decodeIt").innerHTML = Bundles;
-        Bundles = document.getElementById("decodeIt").innerText;
-        try{
+        Bundles = LoadData(Bundles);
+        try {
             Bundles = JSON.parse(Bundles);
-            console.log(Bundles);
 
             if (!Name.trim()) {
                 $('#error').text("\"Bundle Name\" is required!");
@@ -319,9 +204,9 @@
             console.log(e);
             $('#error').text("Unable to check \"Bundle Name\", please try again later!");
             $("#addBundle").addClass("disabled");
-            return false;           
+            return false;
         }
-    })
+    });
 
     //get the upload file name
     function getFilePath() {
