@@ -56,6 +56,11 @@
     </div>
 </div>
 
+<div class="alert alert-success navbar-fixed-bottom" id="success-alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Click the feature name to sort the column; click the plasmid name to sort the row.
+</div>
+
 <style>
     .axis path,.axis line {fill: none;stroke:#b6b6b6;shape-rendering: crispEdges;}
 /*.tick line{fill:none;stroke:none;}*/
@@ -85,7 +90,11 @@
 @Scripts.Render("~/bundles/giraffe")
 @Scripts.Render("~/bundles/d3")
 
-
+<script>
+    $("#success-alert").fadeTo(20000, 500).slideUp(500, function () {
+        $("#success-alert").alert('close');
+    });
+</script>
 <script>
 
     var fLabels = ("@fLabels");

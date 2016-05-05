@@ -10,13 +10,14 @@
     var features = ViewBag.Features;
     var BackupCount = (int)ViewBag.BackupCount;
     var Tag = (string)ViewBag.Tag;
+    var Plasmid = (ecloning.Models.plasmid)ViewBag.Plasmid;
 }
 
 <div class="row">
-    <div class="hidden-sm hidden-xs col-md-3 col-lg-3">
+    <div class="hidden-sm hidden-xs col-md-0 col-lg-3">
         &nbsp;
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <div class="col-xs-12 col-sm-6 col-sm-offset-4 col-md-offset-4 col-md-5 col-lg-offset-0 col-lg-5">
         <h3 class="text-warning text-center">
             Plasmid <em>@Name</em> Map(@seqCount bp)&nbsp;
             @if (Tag != "groupDispaly")
@@ -36,7 +37,7 @@
             }           
         </h3>
     </div>
-    <div class="col-sx-12 col-sm-12 col-md-3 col-lg-3">
+    <div class="col-sx-12 col-sm-offset-4 col-sm-8 col-md-7 col-lg-offset-0 col-lg-4">
         <h3>
                 <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
                     <i class="fa fa-bullseye text-danger"></i>
@@ -50,14 +51,14 @@
                     <i class="fa fa-scissors text-danger"></i>
                     <span>Enzymes</span>
                 </a>
-</h3>
+       </h3>
     </div>
 </div>
 <span id="decodeIt" class="hidden"></span>
 <span id="seqCount" class="hidden">@seqCount</span>
 <span id="name" class="hidden">@Name</span>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-1">
         <div class="col-xs-12 col-sm-offset-2 col-md-offset-3">
             @if (Tag != "groupDispaly")
             {
@@ -243,18 +244,85 @@
                 }
             }
         </div>        
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1" id="giraffe-map"></div>
+        <div class="col-xs-12 col-sm-10 col-sm-offset-2 col-md-offset-2 col-md-10 col-lg-offset-1" id="giraffe-map"></div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2">
+    <div class="col-xs-10 col-xs-offset-2 col-lg-offset-0 col-lg-3">
+        <br/>
+        <div class="plasmidDiv">
+            <span class="text-danger">@Plasmid.name</span><br/>
+            <span class="text-info"><strong>Expression: </strong></span><span>@Plasmid.expression_system</span>&nbsp;&nbsp;<span>@Plasmid.expression_subsystem</span><br />
+            <span class="text-info"><strong>Insert/Gene: </strong></span>
+            @if (Plasmid.insert != null)
+            {
+                <span>@Plasmid.insert_species</span>
+                <span>&nbsp; &nbsp;</span><span>@Plasmid.insert</span><br />
+                if (Plasmid.promotor != null)
+                {
+                    <span class="text-info"><strong>Promotor: </strong></span><span>@Plasmid.promotor</span><br />
+                }
+                if (Plasmid.polyA != null)
+                {
+                    <span class="text-info"><strong>PolyA: </strong></span><span>@Plasmid.polyA</span><br />
+                }
+            }
+            else
+            {
+                <span>None</span><br />
+            }
+            <span class="text-info"><strong>Resistance: </strong></span><span>@Plasmid.resistance</span><br />
+            @if (Plasmid.selection != null)
+            {
+                <span class="text-info"><strong>Selection: </strong></span><span>@Plasmid.selection</span><br />
+            }
+            @if (Plasmid.reporter != null)
+            {
+                <span class="text-info"><strong>Reporter: </strong></span><span>@Plasmid.reporter</span><br />
+            }
 
+            <span class="text-info"><strong>Experimental Use: </strong></span><span>@Plasmid.usage</span><br />
+            @if (Plasmid.plasmid_type != null)
+            {
+                <span class="text-info"><strong>Plasmid Type: </strong></span><span>@Plasmid.plasmid_type</span><br />
+            }
+
+            @if (Plasmid.img_fn != null)
+            {
+                <span class="text-info"><strong>Linked File: </strong></span>
+                <span>
+                    <a href="@Url.Action("Download", "Plasmid", new { fileName=Plasmid.img_fn })">
+                        <span style="color:black">@Plasmid.img_fn</span><i class="fa fa-download" style="font-size:80%; color:black;"></i>
+                    </a>
+                </span><br />
+            }
+
+            @if (Plasmid.ref_plasmid != null)
+            {
+                <span class="text-info"><strong>Linked Plasmid(s): </strong></span><span>@Plasmid.ref_plasmid</span><br />
+
+            }
+            @if (Plasmid.addgene != null)
+            {
+                <span class="text-info"><strong>Addgene#: </strong></span><span>@Plasmid.addgene</span><br />
+            }
+            <span class="text-info"><strong>Remarks: </strong></span><span>@Plasmid.des</span>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="text-info pull-left"><span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Click the feature name to rotate the map.&nbsp;</div>
+
+<div class="alert alert-success navbar-fixed-bottom" id="success-alert">
+     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+     <span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Click the feature name to rotate the map.
 </div>
+
+
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
+<script>
+    $("#success-alert").fadeTo(20000, 500).slideUp(500, function () {
+        $("#success-alert").alert('close');
+    });
+</script>
 
 <script>
 

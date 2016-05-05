@@ -348,6 +348,8 @@ svg text tspan{
 .panel.panel-color1 {
     border: solid 1px #aec7e8 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color2>.panel-heading {
     color: #333;
@@ -358,6 +360,8 @@ svg text tspan{
 .panel.panel-color2 {
     border: solid 1px #ffbb78 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color3>.panel-heading {
     color: #333;
@@ -368,6 +372,8 @@ svg text tspan{
 .panel.panel-color3 {
     border: solid 1px #98df8a !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color4>.panel-heading {
     color: #333;
@@ -378,6 +384,8 @@ svg text tspan{
 .panel.panel-color4 {
     border: solid 1px #ff9896 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color5>.panel-heading {
     color: #333;
@@ -388,6 +396,8 @@ svg text tspan{
 .panel.panel-color5 {
     border: solid 1px #c5b0d5 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color6>.panel-heading {
     color: #333;
@@ -398,6 +408,8 @@ svg text tspan{
 .panel.panel-color6 {
     border: solid 1px #c49c94 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color7>.panel-heading {
     color: #333;
@@ -408,6 +420,8 @@ svg text tspan{
 .panel.panel-color7 {
     border: solid 1px #f7b6d2 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color8>.panel-heading {
     color: #333;
@@ -418,6 +432,8 @@ svg text tspan{
 .panel.panel-color8 {
     border: solid 1px #c7c7c7 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color9>.panel-heading {
     color: #333;
@@ -428,6 +444,8 @@ svg text tspan{
 .panel.panel-color9 {
     border: solid 1px #dbdb8d !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .panel-color0>.panel-heading {
     color: #333;
@@ -438,6 +456,8 @@ svg text tspan{
 .panel.panel-color0 {
     border: solid 1px #9edae5 !important;   
     background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
 }
 .noPadding{
     padding: 0px !important;
@@ -459,3 +479,31 @@ svg text tspan{
     position: relative;
     z-index: 10000;
 }*/
+
+.divCenter{
+    width: 50%;
+    margin: 2px auto;
+}
+
+.plasmidDiv{
+    background-color:#e3dfe0;
+    width:100%;
+    margin: 4px;
+    float: left;
+    padding: 15px 5px;
+    overflow: hidden;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+}
+
+.sendTop{
+    position:relative;
+    z-index:9999;
+}
+
+#success-alert{
+    height:15px;
+    padding:0px;
+}

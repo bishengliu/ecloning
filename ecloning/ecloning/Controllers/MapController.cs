@@ -34,7 +34,7 @@ namespace ecloning.Controllers
             ViewBag.Id = id;
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
-
+            ViewBag.Plasmid = plasmid;
 
             //get userId
             var userId = User.Identity.GetUserId();

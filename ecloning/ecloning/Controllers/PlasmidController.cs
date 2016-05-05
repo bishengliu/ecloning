@@ -106,6 +106,92 @@ namespace ecloning.Controllers
         }
 
         [Authorize]
+        public ActionResult TableIndex()
+        {
+            //get current login email
+            var email = User.Identity.GetUserName();
+            //find group shared plasmid
+            List<int> sharedPlasmidId = new List<int>();
+            IQueryable<int> sharePlasmids = null;
+            //get my people_id
+            int peopleId = 0;
+            var people = db.people.Where(e => e.email == email);
+            if (people.Count() == 0)
+            {
+                //no group plasmid to show
+                ViewBag.GroupCount = 0;
+            }
+            else
+            {
+                peopleId = people.FirstOrDefault().id;
+            }
+            //get the group id
+            List<int> groupId = new List<int>();
+            var group_people = db.group_people.Where(p => p.people_id == peopleId);
+            if (group_people.Count() == 0)
+            {
+                //no group plasmid to show
+                ViewBag.GroupCount = 0;
+            }
+            else
+            {
+                foreach (int i in group_people.Select(g => g.group_id).ToList())
+                {
+                    groupId.Add(i);
+                }
+            }
+            if (groupId.Count() > 0)
+            {
+
+                //get the shared plasmid id
+                sharePlasmids = db.group_shared.Where(g => groupId.Contains(g.group_id)).Where(c => c.category == "plasmid").Select(r => r.resource_id);
+                if (sharePlasmids.Count() > 0)
+                {
+                    //show group plasmid
+                    ViewBag.GroupCount = groupId.Count();
+                    //all the plasmid shared
+                    sharedPlasmidId = sharePlasmids.ToList();
+                    //get share plasmid for each group
+                    int tag = 1;
+                    foreach (int g in groupId)
+                    {
+                        ViewData["groupName" + tag] = db.groups.Find(g).name;
+                        var sharedId = db.group_shared.Where(gp => gp.group_id == g).Where(c => c.category == "plasmid").Select(r => r.resource_id);
+                        ViewData["sharePlasmid" + tag] = db.plasmids.Include(p => p.person).Where(p => sharedId.Contains(p.id));
+                        tag++;
+                    }
+                }
+                else
+                {
+                    //no group plasmid to show
+                    ViewBag.GroupCount = 0;
+                }
+            }
+
+
+            //only show my plasmids that are not shared with any group            
+            IQueryable<plasmid> plasmids = null;
+            if (sharedPlasmidId.Count() > 0)
+            {
+                plasmids = db.plasmids.Include(p => p.person).Where(p => p.person.email == email).Where(p => !sharedPlasmidId.Contains(p.id));
+            }
+            else
+            {
+                plasmids = db.plasmids.Include(p => p.person).Where(p => p.person.email == email);
+            }
+            ViewBag.Count = plasmids.Count();
+
+            //get the combined plasmid ids
+            var combinedIds = sharedPlasmidId.Concat(plasmids.Select(i => i.id).ToList()).Distinct();
+            //get the feautures
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            ViewBag.plasmidIds = JsonConvert.SerializeObject(combinedIds.ToList());
+
+            return View(plasmids.ToList());
+        }
+
+        [Authorize]
         public ActionResult Overview()
         {
             //get userId

@@ -927,6 +927,7 @@
     <Content Include="Views\pBundle\Edit.cshtml" />
     <Content Include="Views\pBundle\Index.cshtml" />
     <Content Include="Views\pBundle\Select.cshtml" />
+    <Content Include="Views\Plasmid\TableIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
