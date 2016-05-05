@@ -57,6 +57,9 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="hidden">
                     <input id="plasmidID" name="idString" value=@idString>
+                    <input name="oldUpload" value=@Model.Upload>
+                    <input name="BundleId" value=@Model.bundle_id readonly>
+                    @Html.EditorFor(model => model.bundle_id, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
                 <div class="form-group col-lg-6 col-md-6 col-sm-6">
                     <div class="col-xs-12">
@@ -257,7 +260,7 @@
                             var idDiv = "plasmid-" + d;
 
 
-                            $('#formButton').before(BundleHTML(count, id, modalRefId, mapId, idDiv, modalId, modalMapId));
+                            $('#formButton').before(BundleHTML(count - 1, id, modalRefId, mapId, idDiv, modalId, modalMapId));
                             //draw map in div and modal
                             draw2Maps(Features, mapId, modalMapId, d, 348, 1048);
                         }

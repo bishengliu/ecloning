@@ -423,16 +423,141 @@ namespace ecloning.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,des,member_type,member_id,member_role,ref_bundle,img_fn,dt,people_id")] plasmid_bundle plasmid_bundle)
+        public ActionResult Edit(string oldUpload, string Upload, int BundleId, [Bind(Include = "Name,bundle_id,Des,Upload,Plasmids")] pBundle pBundle)
         {
-            if (ModelState.IsValid)
+            //if the bundleID changes, something went wrong.
+            if(BundleId != pBundle.bundle_id)
             {
-                db.Entry(plasmid_bundle).State = EntityState.Modified;
-                db.SaveChanges();
+                ViewData["msg"] = "Something went wrong, please try again later!";
                 return RedirectToAction("Index");
             }
-            ViewBag.people_id = new SelectList(db.people, "id", "first_name", plasmid_bundle.people_id);
-            return View(plasmid_bundle);
+
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+
+            //deal with upload
+            if (!String.IsNullOrWhiteSpace(Upload))
+            {
+                //deal with upload
+                var timeStamp = DateTime.Now.Millisecond.ToString();
+                string fileName = null;
+
+                //upload  file
+                HttpPostedFileBase file = null;
+                file = Request.Files["file_fn"];
+
+                if (eCloningSettings.AppHosting == "Cloud")
+                {
+                    //upload to azure
+                    if (file != null && file.FileName != null && file.ContentLength > 0)
+                    {
+                        try
+                        {
+                            fileName = timeStamp + Path.GetFileName(file.FileName);
+                            AzureBlob azureBlob = new AzureBlob();
+                            azureBlob.directoryName = eCloningSettings.bundleDir;
+                            azureBlob.AzureBlobUpload(fileName, file);
+                        }
+                        catch (Exception)
+                        {
+                            ModelState.AddModelError("", "File upload failed!");
+                            return View(pBundle);
+                        }
+                    }
+                }
+                else
+                {
+                    //upload to local plasmid folder
+                    var bundlePath = eCloningSettings.filePath + eCloningSettings.bundleDir;
+                    if (file != null && file.FileName != null && file.ContentLength > 0)
+                    {
+                        try
+                        {
+                            fileName = timeStamp + Path.GetFileName(file.FileName);
+                            var path = Path.Combine(Server.MapPath(bundlePath), fileName);
+                            file.SaveAs(path);
+                        }
+                        catch (Exception)
+                        {
+                            ModelState.AddModelError("", "File upload failed!");
+                            return View(pBundle);
+                        }
+                    }
+                }
+                Upload = fileName;
+
+                //remove the old upload
+                if (!String.IsNullOrWhiteSpace(oldUpload))
+                {
+                    if (eCloningSettings.AppHosting == "Cloud")
+                    {
+                        //delete from azure
+                        AzureBlob azureBlob = new AzureBlob();
+                        azureBlob.directoryName = eCloningSettings.bundleDir;
+                        azureBlob.AzureBlobDelete(oldUpload);
+                    }
+                    else
+                    {
+                        //delete from local
+                        string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.bundleDir + "/" + oldUpload);
+                        if (System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Delete(path);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Upload = oldUpload;
+            }
+            
+
+            //start transaction
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    //find the original bundle plasmids
+                    var oriBundle = db.plasmid_bundle.Where(b => b.bundle_id == BundleId);
+                    if (oriBundle.Count() > 0)
+                    {
+                        foreach(var item in oriBundle)
+                        {
+                            //remove the old plasmids
+                            db.plasmid_bundle.Remove(item);
+                        }
+                    }
+
+                    //add pBundle into database
+                    foreach (var item in pBundle.Plasmids)
+                    {
+                        var bundle = new plasmid_bundle();
+                        bundle.bundle_id = BundleId;
+                        bundle.name = pBundle.Name;
+                        bundle.des = pBundle.Des;
+                        bundle.img_fn = Upload;
+                        bundle.dt = DateTime.Now;
+                        bundle.people_id = userInfo.PersonId;
+                        bundle.member_type = "plasmid";
+                        bundle.member_id = item.plasmidId;
+                        bundle.member_role = item.plasmidRole;
+                        db.plasmid_bundle.Add(bundle);
+                    }
+                    db.SaveChanges();
+                    // If all execution successful
+                    scope.Complete();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    // If any exception is caught, roll back the entire transaction and end the scope.
+                    scope.Dispose();
+                    ViewData["msg"] = "Something went wrong, please try again later!";
+                    return RedirectToAction("Index");
+                }
+            }
         }
 
         [Authorize]
