@@ -296,26 +296,33 @@
             //remove the plasmid id from IdString
             //get the idString
             var IdString = $('#plasmidID').val();
-            //remove
-            var nIdString = IdString.replace(plasmidId.toString(), '');
+            //check whether this is the last plasmid
+            if (IdString.indexOf(',') === -1) {
+                alert('You cannot remove the last plasmid!');
+                return true;
+            }
+            else {
+                //remove
+                var nIdString = IdString.replace(plasmidId.toString(), '');
 
-            //remove the join char ',', if is not the last id
-            if (nIdString.indexOf(',,') != -1) {
-                nIdString = nIdString.replace(',,', ',');
+                //remove the join char ',', if is not the last id
+                if (nIdString.indexOf(',,') != -1) {
+                    nIdString = nIdString.replace(',,', ',');
+                }
+                //remove the last ','
+                if (nIdString.length > 0 && nIdString.indexOf(',') === 0) {
+                    nIdString = nIdString.substr(1, nIdString.length - 1);
+                }
+                //remove the first ','
+                if (nIdString.length > 0 && nIdString.lastIndexOf(',') === nIdString.length - 1) {
+                    nIdString = nIdString.substr(0, nIdString.length - 1);
+                }
+                //put back the idstring
+                $('#plasmidID').val(nIdString);
+                //remove the whole div
+                $(this).parent().parent().remove();
+                return true;
             }
-            //remove the last ','
-            if (nIdString.length > 0 && nIdString.indexOf(',') === 0) {
-                nIdString = nIdString.substr(1, nIdString.length - 1);
-            }
-            //remove the first ','
-            if (nIdString.length > 0 && nIdString.lastIndexOf(',') === nIdString.length - 1) {
-                nIdString = nIdString.substr(0, nIdString.length - 1);
-            }
-            //put back the idstring
-            $('#plasmidID').val(nIdString);
-            //remove the whole div
-            $(this).parent().parent().remove();
-            return true;
         });
     }
 
