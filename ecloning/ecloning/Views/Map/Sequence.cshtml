@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewBag.Title = "Sequence";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Tag = ViewBag.Tag;
+    var Plasmid = (ecloning.Models.plasmid)ViewBag.Plasmid;
+    var seqFeatures = ViewBag.seqFeatures;
+}
+<span id="decodeIt" class="hidden"></span>
+<span id="sequence" class="hidden">@Plasmid.sequence</span>
+<span id="pName" class="hidden">@Plasmid.name</span>
+
+<div class="row">
+    <div class="hidden-sm hidden-xs col-md-0 col-lg-3">
+        &nbsp;
+    </div>
+    <div class="col-xs-12 col-sm-6 col-sm-offset-4 col-md-offset-4 col-md-5 col-lg-offset-0 col-lg-5">
+        <h3 class="text-warning text-center">
+            Plasmid <em>@Plasmid.name</em> (@Plasmid.seq_length bp)&nbsp;
+        </h3>
+    </div>
+    <div class="col-sx-12 col-sm-offset-4 col-sm-8 col-md-7 col-lg-offset-0 col-lg-3">
+        <h3 class="pull-right">
+            <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+                <i class="fa fa-bullseye text-danger"></i>
+                <span>Compare Plasmids</span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Index", "Map", new { id = Plasmid.id, tag = Tag})">
+                <i class="fa fa-sun-o text-danger"></i>
+                <span>Sequence</span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = Plasmid.id, tag = Tag})">
+                <i class="fa fa-scissors text-danger"></i>
+                <span>Enzymes</span>
+            </a>
+        </h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-danger" id="seq-error"></h3>
+    </div>
+
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-seq">
+
+    </div>
+</div>
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="tool-seq">
+    <div class="pull-right">
+            <span>&nbsp;&nbsp;</span><span class="text-right text-info" id="selectLength"></span>
+            <a class="btn btn-default btn-sm" target="_blank" href="#">
+                <i class="fa fa-bullseye text-danger"></i>
+                <span></span>
+            </a>
+            <a class="btn btn-default btn-sm" href="#">
+                <i class="fa fa-sun-o text-danger"></i>
+                <span></span>
+            </a>
+            <a class="btn btn-default btn-sm" href="#">
+                <i class="fa fa-scissors text-danger"></i>
+                <span></span>
+            </a> |
+            <a class="btn btn-default btn-sm" href="#" id="close-tool-seq" data-toggle="tooltip" title="Close this!">
+                <i class="fa fa-times"></i>
+                <span></span>
+            </a>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+@*<script src="~/Scripts/sequence-viewer/sequence-viewer.js"></script>*@
+<script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
+
+<script>
+    //show features in seq
+    $(document).ready(function () {
+        //click to dismiss the seq-tool
+        $('#close-tool-seq').click(function () {
+            $('#tool-seq').addClass('hidden');
+        });
+
+        //initiate tooltio
+        $('[data-toggle="tooltip"]').tooltip();
+
+        //get the plasmid seq
+        var seq = $('#sequence').text();
+        if (!seq.trim()) {
+            $('seq-error').text('Unable to load plasmid sequence!, please try again later!');
+        }
+        else {
+
+            var seqFeatures = ("@seqFeatures");
+            document.getElementById("decodeIt").innerHTML = seqFeatures;
+            seqFeatures = document.getElementById("decodeIt").textContent;
+            
+            try{
+                seqFeatures = JSON.parse(seqFeatures);
+                //define color scheme for seqFeatures
+                //type id, color, bgcolor
+                $.each(seqFeatures, function (i, d) {
+                    d.color = Color(+d.type_id);
+                    if (+d.type_id === 4) {
+                        d.bgcolor = "#6b6ecf";
+                    }
+                });
+
+                //get plasmid name
+                var pName = $('#pName').text();
+                var seqTitle = pName + " Sequence";
+                //display the seq
+                var pSeq = new Sequence(seq);
+                pSeq.render('#plasmid-seq', {
+                    'showLineNumbers': true,
+                    'wrapAminoAcids': true,
+                    'charsPerLine': 200,
+                    'toolbar': true,
+                    'title': seqTitle,
+                    'sequenceMaxHeight': "400px",
+                    'badge': true,
+                    'search': true
+                });
+                pSeq.coverage(seqFeatures);
+
+                //Define Legend and color codes
+                var cLegend = [
+                    { name: "Promotor", color: "#ff7f0e", underscore: false },
+                    { name: "Gene", color: "#d62728", underscore: false },
+                    { name: "Terminator", color: "#9467bd", underscore: false }
+                ];
+                pSeq.addLegend(cLegend);
+
+                //add events, selection 
+                pSeq.onMouseSelection(function (elem) {
+                    //console.log(elem.detail);
+                    //console.log(elem.detail.selection);
+                    //get the selected seq
+                    var sSeq = elem.detail.selection;
+                    //get the plasmid seq
+                    var pSeq = $('#sequence').text();
+                    var idx = pSeq.indexOf(sSeq);
+                    var len = elem.detail.selection.length;
+                    var infoText = (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                    $('#selectLength').text(infoText);
+                    $('#tool-seq').addClass('hidden');
+                    $('#tool-seq').removeClass('hidden');
+                    //show the seq
+                    //alert('need to add customer actions upon selection...');
+
+                });
+
+                //search
+                //pSeq.onSubpartSelected(function (elem) {
+                //    //console.log(elem.detail);
+                //    //console.log(elem.detail.selection);
+                //    $('#tool-alert').addClass('hidden');
+                //    $('#tool-alert').removeClass('hidden');
+                //});
+            }
+            catch (e) {
+                console.log(e);
+                $('seq-error').text('Unable to load plasmid features on sequence!, please try again later!');
+            }
+        }
+    });
+
+    function Color(type_id) {
+        switch(type_id){
+            case 1:
+                return '#1f77b4';
+                break;
+            case 2:
+                return '#ff7f0e';
+                break;
+            case 3:
+                return '#2ca02c';
+                break;
+            case 4:
+                return '#8c564b';
+                break;
+            case 5:
+                return '#d62728';
+                break;
+            case 6:
+                return '#7f7f7f';
+                break;
+            case 7:
+                return '#e377c2';
+                break;
+            case 8:
+                return '#9467bd';
+                break;
+            case 9:
+                return ' #bcbd22';
+                break;
+            case 10:
+                return '#17becf';
+                break;            
+        }  
+    }
+
+
+</script>

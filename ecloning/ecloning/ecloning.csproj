@@ -526,6 +526,7 @@
     <Content Include="Content\datatable\jquery.dataTables.css" />
     <Content Include="Content\datatable\jquery.dataTables.min.css" />
     <Content Include="Content\datatable\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\feature-viewer\fv.css" />
     <Content Include="Content\font-awesome\font-awesome.css" />
     <Content Include="Content\font-awesome\font-awesome.min.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
@@ -558,6 +559,12 @@
     <Content Include="Content\jqueryui-editable\img\clear.png" />
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
+    <Content Include="Scripts\feature-viewer\feature-viewer.nextprot.js" />
+    <Content Include="Scripts\feature-viewer\fv.nextprot.js" />
+    <Content Include="Scripts\ntseq\ntseq.js" />
+    <Content Include="Scripts\sequence-viewer\sequence-viewer.bundle.js" />
+    <Content Include="Scripts\sequence-viewer\sequence-viewer.js" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -721,6 +728,8 @@
     <Content Include="Scripts\datatable\jquery.dataTables.min.js" />
     <Content Include="Scripts\datatable\jquery.js" />
     <Content Include="Scripts\ecloning.js" />
+    <Content Include="Scripts\feature-viewer\feature-viewer.js" />
+    <Content Include="Scripts\feature-viewer\feature-viewer.min.js" />
     <Content Include="Scripts\giraffe\analyze-2.0.js" />
     <Content Include="Scripts\giraffe\analyze.js" />
     <Content Include="Scripts\giraffe\analyze_page-2.0.js" />
@@ -843,6 +852,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\sequence-viewer\sequence-viewer.min.js" />
     <Content Include="Scripts\upload.validate.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="sorter\asc.gif" />
@@ -928,6 +938,7 @@
     <Content Include="Views\pBundle\Index.cshtml" />
     <Content Include="Views\pBundle\Select.cshtml" />
     <Content Include="Views\Plasmid\TableIndex.cshtml" />
+    <Content Include="Views\Map\Sequence.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

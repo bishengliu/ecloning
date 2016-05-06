@@ -37,8 +37,8 @@
             }           
         </h3>
     </div>
-    <div class="col-sx-12 col-sm-offset-4 col-sm-8 col-md-7 col-lg-offset-0 col-lg-4">
-        <h3>
+    <div class="col-sx-12 col-sm-offset-4 col-sm-8 col-md-7 col-lg-offset-0 col-lg-3">
+        <h3 class="pull-right">
                 <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
                     <i class="fa fa-bullseye text-danger"></i>
                     <span>Compare Plasmids</span>
@@ -254,8 +254,11 @@
             <span class="text-info"><strong>Insert/Gene: </strong></span>
             @if (Plasmid.insert != null)
             {
-                <span>@Plasmid.insert_species</span>
-                <span>&nbsp; &nbsp;</span><span>@Plasmid.insert</span><br />
+                <span>@Plasmid.insert</span><br />
+                if (!string.IsNullOrWhiteSpace(Plasmid.insert_species))
+                {
+                    <span> (@Plasmid.insert_species)</span>
+                }
                 if (Plasmid.promotor != null)
                 {
                     <span class="text-info"><strong>Promotor: </strong></span><span>@Plasmid.promotor</span><br />

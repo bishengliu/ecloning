@@ -54,6 +54,15 @@ namespace ecloning
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3.min.js"));
 
+            //feature viewer and sequence viewer
+            bundles.Add(new ScriptBundle("~/bundles/bioviewer").Include(
+                      "~/Scripts/feature-viewer/feature-viewer.js",
+                      "~/Scripts/sequence-viewer/sequence-viewer.js"));
+
+
+            bundles.Add(new StyleBundle("~/Content/bioviewer").Include(
+                    "~/Content/feature-viewer/fv.css"));
+
             //less bundle
             bundles.Add(new LessBundle("~/Content/less").Include(
                 "~/Content/less/*.less"));

@@ -114,6 +114,24 @@ namespace ecloning.Controllers
         [HttpGet]
         public ActionResult Sequence(int? plasmid_id, string tag)
         {
+            if (plasmid_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Tag = tag;
+            ViewBag.Plasmid = plasmid;
+
+            //get feartures
+            //display all features of the current plasmid
+            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
+            //pass json
+            var seqFeatures = plasmid_map.Where(f=>f.feature_id ==2 || f.feature_id == 5 || f.feature_id == 8).OrderBy(s => s.start).Select(f => new { end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start -1, cut = f.cut, underscore = false, color = "black", bgcolor= "#EEEFEE", tooltip= f.common_feature != null ? f.common_feature.label : f.feature });
+            ViewBag.seqFeatures = JsonConvert.SerializeObject(seqFeatures.ToList());
 
             return View();
         }
