@@ -61,27 +61,46 @@
             <a class="btn btn-default btn-sm" href="#">
                 <i class="fa fa-scissors text-danger"></i>
                 <span></span>
-            </a> |
-            <a class="btn btn-default btn-sm" href="#" id="close-tool-seq" data-toggle="tooltip" title="Close this!">
+            </a>
+        <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Alignment">
+                <i class="text-danger alignment">A-GC</i>
+                <i class="text-primary alignment">ATGC</i>
+        </a>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="BLAST">                
+                <span class="text-danger" style="font-family:courier;">BLAST</span>
+            </a>
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-seq" id="copy-seq" data-toggle="tooltip" title="Copy">
+                <i class="fa fa-copy text-danger"></i>
+                <span></span>
+            </a>
+            |
+            <a class="btn btn-default btn-sm" href="#" id="close-tool-seq" data-toggle="tooltip" title="Close">
                 <i class="fa fa-times"></i>
                 <span></span>
             </a>
     </div>
 </div>
+<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="select-seq" value="">
 @Scripts.Render("~/bundles/jquery")
-@*<script src="~/Scripts/sequence-viewer/sequence-viewer.js"></script>*@
+
+
+@*seq viewer*@
 <script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
+
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
 
 <script>
     //show features in seq
     $(document).ready(function () {
+        //initiate tooltio
+        $('[data-toggle="tooltip"]').tooltip();
+
         //click to dismiss the seq-tool
         $('#close-tool-seq').click(function () {
             $('#tool-seq').addClass('hidden');
         });
 
-        //initiate tooltio
-        $('[data-toggle="tooltip"]').tooltip();
 
         //get the plasmid seq
         var seq = $('#sequence').text();
@@ -144,7 +163,24 @@
                     $('#selectLength').text(infoText);
                     $('#tool-seq').addClass('hidden');
                     $('#tool-seq').removeClass('hidden');
-                    //show the seq
+
+                    //put the selected seq in html
+                    $('#select-seq').val(sSeq);
+                    console.log($('#select-seq').val());
+                    //copy seq
+                    //copy selected seq to clipboard
+                    var clipboard = new Clipboard('#copy-seq');
+                    clipboard.on('success', function (e) {
+                        console.info('Action:', e.action);
+                        //console.info('Text:', e.text);
+                        //console.info('Trigger:', e.trigger);
+                        e.clearSelection();
+                    });
+
+                    clipboard.on('error', function (e) {
+                        console.error('Action:', e.action);
+                        console.error('Trigger:', e.trigger);
+                    });
                     //alert('need to add customer actions upon selection...');
 
                 });

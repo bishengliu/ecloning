@@ -531,3 +531,10 @@ svg text tspan{
     vertical-align: middle;
     white-space: nowrap;
 }
+.alignment{
+    display: block;
+    padding:0px 0px;
+    line-height: 1;
+    font-size:80%;
+    font-family: courier;
+}

@@ -559,6 +559,8 @@
     <Content Include="Content\jqueryui-editable\img\clear.png" />
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="Scripts\clipboard\clipboard.js" />
+    <Content Include="Scripts\clipboard\clipboard.min.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.nextprot.js" />
     <Content Include="Scripts\feature-viewer\fv.nextprot.js" />
