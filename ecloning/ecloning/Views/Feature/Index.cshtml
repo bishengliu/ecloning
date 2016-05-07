@@ -79,7 +79,7 @@
                                     @if (item.sequence.Count() >= 50)
                                     {
                                         var GenerateModel = new ecloning.Models.ModalSeq(item.sequence, item.group_id, item.label, 125);
-                                        <span>@Html.Raw(GenerateModel.ModalRawHTML())</span>
+                                        <span class="clickable">@Html.Raw(GenerateModel.ModalRawHTML())</span>
                                     }
                                     else
                                     {

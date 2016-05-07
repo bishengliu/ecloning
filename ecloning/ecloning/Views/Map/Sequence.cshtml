@@ -7,7 +7,7 @@
     var seqFeatures = ViewBag.seqFeatures;
 }
 <span id="decodeIt" class="hidden"></span>
-<span id="sequence" class="hidden">@Plasmid.sequence</span>
+<span id="sequence" class="hidden"> @Plasmid.sequence </span>
 <span id="pName" class="hidden">@Plasmid.name</span>
 
 <div class="row">
@@ -47,74 +47,211 @@
 
     </div>
 </div>
-<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="tool-seq">
-    <div class="pull-right">
-            <span>&nbsp;&nbsp;</span><span class="text-right text-info" id="selectLength"></span>
-            <a class="btn btn-default btn-sm" target="_blank" href="#">
-                <i class="fa fa-bullseye text-danger"></i>
-                <span></span>
+<br/>
+<div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5 hidden" id="tool-full-seq">
+        <div class="pull-left">
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Edit Sequence">
+                <i class="fa fa-pencil-square-o text-danger"></i>
             </a>
-            <a class="btn btn-default btn-sm" href="#">
-                <i class="fa fa-sun-o text-danger"></i>
-                <span></span>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Reverse Sequence" id="full-reverse">
+                <i class="fa fa-caret-right text-info"></i>
+                <i class="text-info">|</i>
+                <i class="fa fa-caret-left text-danger"></i>
             </a>
-            <a class="btn btn-default btn-sm" href="#">
-                <i class="fa fa-scissors text-danger"></i>
-                <span></span>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Reverse Complement" id="full-rc">
+                <i class="fa fa-exchange text-danger"></i>
             </a>
-        <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Alignment">
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Alignment">
                 <i class="text-danger alignment">A-GC</i>
                 <i class="text-primary alignment">ATGC</i>
-        </a>
-            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="BLAST">                
-                <span class="text-danger" style="font-family:courier;">BLAST</span>
             </a>
-            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-seq" id="copy-seq" data-toggle="tooltip" title="Copy">
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="BLAST">
+                <span class="text-danger">BLAST</span>
+            </a>
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#full-seq" id="copy-full-seq" data-toggle="tooltip" title="Copy">
                 <i class="fa fa-copy text-danger"></i>
-                <span></span>
+            </a>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5 hidden" id="tool-seq">
+        <div class="pull-right">
+            <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="selectLength"></span>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Edit Sequence">
+                <i class="fa fa-pencil-square-o text-danger"></i>
+            </a>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Reverse Sequence">
+                <i class="fa fa-caret-right text-info"></i>
+                <i class="text-info">|</i>
+                <i class="fa fa-caret-left text-danger"></i>
+            </a>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Reverse Complement">
+                <i class="fa fa-exchange text-danger"></i>
+            </a>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Alignment Selection">
+                <i class="text-danger alignment">A-GC</i>
+                <i class="text-primary alignment">ATGC</i>
+            </a>
+            <a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="BLAST Selection">
+                <span class="text-danger">BLAST</span>
+            </a>
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-seq" id="copy-seq" data-toggle="tooltip" title="Copy Selection">
+                <i class="fa fa-copy text-danger"></i>
             </a>
             |
             <a class="btn btn-default btn-sm" href="#" id="close-tool-seq" data-toggle="tooltip" title="Close">
                 <i class="fa fa-times"></i>
                 <span></span>
             </a>
+        </div>
     </div>
 </div>
+<div style="clear:both;"></div>
+<div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-seq-msg">
+        <div class="pull-left">
+            <p class="text-info"></p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5" id="tool-seq-msg">
+        <div class="pull-right">
+            <p class="text-info"></p>
+        </div>
+    </div>
+</div>
+
+
+
+<br/>
+<br/>
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="deri-seq"></div>
+</div>
+
+<br />
+<div class="hidden" id="tool-deri-full-seq">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5" >
+        <div class="pull-left">
+            <a class="btn btn-default btn-sm" href="#" id="close-full-deri-seq" data-toggle="tooltip" title="Close">
+                <i class="fa fa-times"></i>
+                <span></span>
+            </a>
+            |
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#dsequence" id="copy-deri-full-seq" data-toggle="tooltip" title="Copy">
+                <i class="fa fa-copy text-danger"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5 hidden" id="tool-deri-seq">
+        <div class="pull-right">
+            <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>            
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-dseq" id="copy-dseq" data-toggle="tooltip" title="Copy Selection">
+                <i class="fa fa-copy text-danger"></i>
+            </a>
+            |
+            <a class="btn btn-default btn-sm" href="#" id="close-tool-deri-seq" data-toggle="tooltip" title="Close">
+                <i class="fa fa-times"></i>
+                <span></span>
+            </a>
+        </div>
+    </div>
+</div>
+<div style="clear:both;"></div>
+<div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-deri-seq-msg">
+        <div class="pull-left">
+            <p class="text-info"></p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5" id="tool-deri-seq-msg">
+        <div class="pull-right">
+            <p class="text-info"></p>
+        </div>
+    </div>
+</div>
+
+
 <input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="select-seq" value="">
+<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="full-seq" value=@Plasmid.sequence>
+
+@*//derivation*@
+<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="select-dseq" value="">
+<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="dsequence" value="">
 @Scripts.Render("~/bundles/jquery")
-
-
 @*seq viewer*@
 <script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
 
 @*copy/cut to clipboard*@
 <script src="~/Scripts/clipboard/clipboard.min.js"></script>
 
+@*use ntseq*@
+<script src="~/Scripts/ntseq/ntseq.js"></script>
+
 <script>
     //show features in seq
     $(document).ready(function () {
-        //initiate tooltio
+        //initiate tooltip from bootstrap
         $('[data-toggle="tooltip"]').tooltip();
+
+        //copy full seq using clipboard.min.js
+        var clipboard = new Clipboard('#copy-full-seq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            //console.info('Text:', e.text);
+            //console.info('Trigger:', e.trigger);
+            e.clearSelection();
+            $('#full-seq-msg').find('p').eq(0).text("Copied!");
+            setTimeout(function () { $('#full-seq-msg').find('p').eq(0).text(null); }, 2000);
+        });
+
+        clipboard.on('error', function (e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+
+        //copy full seq using clipboard.min.js
+        var clipboard = new Clipboard('#copy-deri-full-seq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            //console.info('Text:', e.text);
+            //console.info('Trigger:', e.trigger);
+            e.clearSelection();
+            $('#full-deri-seq-msg').find('p').eq(0).text("Copied!");
+            setTimeout(function () { $('#full-deri-seq-msg').find('p').eq(0).text(null); }, 2000);
+        });
+
+        clipboard.on('error', function (e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+
 
         //click to dismiss the seq-tool
         $('#close-tool-seq').click(function () {
             $('#tool-seq').addClass('hidden');
         });
 
-
+        $('#close-full-deri-seq').click(function () {
+            $('#deri-seq').addClass('hidden');
+            $('#tool-deri-full-seq').addClass('hidden');
+        });
+        //to display the sequence in html
         //get the plasmid seq
         var seq = $('#sequence').text();
         if (!seq.trim()) {
             $('seq-error').text('Unable to load plasmid sequence!, please try again later!');
         }
         else {
-
             var seqFeatures = ("@seqFeatures");
             document.getElementById("decodeIt").innerHTML = seqFeatures;
             seqFeatures = document.getElementById("decodeIt").textContent;
             
             try{
                 seqFeatures = JSON.parse(seqFeatures);
+                //show the button for the full seq
+                $('#tool-full-seq').removeClass('hidden');
+
+
                 //define color scheme for seqFeatures
                 //type id, color, bgcolor
                 $.each(seqFeatures, function (i, d) {
@@ -127,7 +264,7 @@
                 //get plasmid name
                 var pName = $('#pName').text();
                 var seqTitle = pName + " Sequence";
-                //display the seq
+                //display the seq in html
                 var pSeq = new Sequence(seq);
                 pSeq.render('#plasmid-seq', {
                     'showLineNumbers': true,
@@ -139,6 +276,7 @@
                     'badge': true,
                     'search': true
                 });
+                //display colors for promotor, gene and terminator
                 pSeq.coverage(seqFeatures);
 
                 //Define Legend and color codes
@@ -147,9 +285,10 @@
                     { name: "Gene", color: "#d62728", underscore: false },
                     { name: "Terminator", color: "#9467bd", underscore: false }
                 ];
+                //display legend
                 pSeq.addLegend(cLegend);
 
-                //add events, selection 
+                //add mouse events, selection 
                 pSeq.onMouseSelection(function (elem) {
                     //console.log(elem.detail);
                     //console.log(elem.detail.selection);
@@ -157,41 +296,154 @@
                     var sSeq = elem.detail.selection;
                     //get the plasmid seq
                     var pSeq = $('#sequence').text();
+                    
+
+                    //find the index and length of the selected seq and cal Tm
                     var idx = pSeq.indexOf(sSeq);
                     var len = elem.detail.selection.length;
-                    var infoText = (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                    var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: "+ calGC(sSeq) +")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                    //display the selection count, showing as "1706 .. 2925 = 1219 bp"
                     $('#selectLength').text(infoText);
                     $('#tool-seq').addClass('hidden');
                     $('#tool-seq').removeClass('hidden');
 
-                    //put the selected seq in html
+                    //put the selected seq in html 
                     $('#select-seq').val(sSeq);
-                    console.log($('#select-seq').val());
-                    //copy seq
-                    //copy selected seq to clipboard
+                    //console.log($('#select-seq').val());
+                    
+                    //copy selected seq to clipboard using using clipboard.min.js
                     var clipboard = new Clipboard('#copy-seq');
                     clipboard.on('success', function (e) {
                         console.info('Action:', e.action);
                         //console.info('Text:', e.text);
                         //console.info('Trigger:', e.trigger);
                         e.clearSelection();
+                        //show and dismiss the text 'Copied!'
+                        $('#tool-seq-msg').find('p').eq(0).text("Copied!");
+                        setTimeout(function () { $('#tool-seq-msg').find('p').eq(0).text(null); }, 2000);
                     });
 
+                    //log the coping errors
                     clipboard.on('error', function (e) {
                         console.error('Action:', e.action);
                         console.error('Trigger:', e.trigger);
                     });
-                    //alert('need to add customer actions upon selection...');
 
                 });
 
-                //search
+                //search events
                 //pSeq.onSubpartSelected(function (elem) {
                 //    //console.log(elem.detail);
                 //    //console.log(elem.detail.selection);
                 //    $('#tool-alert').addClass('hidden');
                 //    $('#tool-alert').removeClass('hidden');
                 //});
+
+
+
+                //====================deal with reverse/compliment seq
+                //reverse
+                $('#full-reverse').click(function () {
+                    var rSeq = Reverse(seq);
+                    //put seq in html
+                    $('#dsequence').val(rSeq);
+
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').empty();
+                    $('#deri-seq').removeClass('hidden');
+                    
+                    //display reverse seq
+                    var deriTitle = pName + "  Reverse Sequence";
+                    //display the seq in html
+                    var rSeq = new Sequence(rSeq);
+                    rSeq.render('#deri-seq', {
+                        'showLineNumbers': true,
+                        'wrapAminoAcids': true,
+                        'charsPerLine': 200,
+                        'toolbar': true,
+                        'title': deriTitle,
+                        'sequenceMaxHeight': "400px",
+                        'badge': true,
+                        'search': true
+                    });
+                    rSeq.onMouseSelection(function (elem) {
+                        //console.log(elem.detail);
+                        //console.log(elem.detail.selection);
+                        //get the selected seq
+                        var sSeq = elem.detail.selection;
+                        //get the plasmid rseq
+                        var dSeq = $('#dsequence').val();
+                        //find the index and length of the selected seq and cal Tm
+                        var idx = dSeq.indexOf(sSeq);
+                        var len = elem.detail.selection.length;
+                        console.log(len);
+                        var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                        //display the selection count, showing as "1706 .. 2925 = 1219 bp"
+                        $('#dselectLength').text(infoText);
+                        $('#tool-deri-seq').addClass('hidden');
+                        $('#tool-deri-seq').removeClass('hidden');
+
+                        //put the selected seq in html 
+                        $('#select-dseq').val(sSeq);
+                        //console.log($('#select-seq').val());
+
+                        //copy selected seq to clipboard using using clipboard.min.js
+                        var clipboard = new Clipboard('#copy-dseq');
+                        clipboard.on('success', function (e) {
+                            console.info('Action:', e.action);
+                            //console.info('Text:', e.text);
+                            //console.info('Trigger:', e.trigger);
+                            e.clearSelection();
+                            //show and dismiss the text 'Copied!'
+                            $('#tool-deri-seq-msg').find('p').eq(0).text("Copied!");
+                            setTimeout(function () { $('#tool-deri-seq-msg').find('p').eq(0).text(null); }, 2000);
+                        });
+
+                        //log the coping errors
+                        clipboard.on('error', function (e) {
+                            console.error('Action:', e.action);
+                            console.error('Trigger:', e.trigger);
+                        });
+
+                    });
+                    $('#tool-deri-full-seq').removeClass('hidden');
+                    scrollTo('#deri-seq');
+                });
+        
+                //reverse complement
+                $('#full-rc').click(function () {
+                    //using ntSeq
+                    var oSeq = (new Nt.Seq()).read(seq);
+                    var rcSeq = oSeq.complement().sequence();
+                    //using sequencing viewer
+                    var rcSeq = new Sequence(rcSeq);
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').removeClass('hidden');
+                    $('#deri-seq').empty();
+                    //display reverse seq
+                    var deriTitle = pName + "  Reverse Complement";
+                    //display the seq in html
+                    rcSeq.render('#deri-seq', {
+                        'showLineNumbers': true,
+                        'wrapAminoAcids': true,
+                        'charsPerLine': 200,
+                        'toolbar': true,
+                        'title': deriTitle,
+                        'sequenceMaxHeight': "400px",
+                        'badge': true,
+                        'search': true
+                    });
+                    $('#tool-deri-full-seq').removeClass('hidden');
+                    scrollTo('#deri-seq');
+                });
+
+
+
+
+
+
+
+
             }
             catch (e) {
                 console.log(e);
@@ -235,5 +487,67 @@
         }  
     }
 
+    function Reverse(seq) {
+        return seq.split("").reverse().join("");
+    }
 
+    function calTm(sSeq) {
+        /*
+
+        Basic Melting Temperature (Tm) Calculations
+        The two standard approximation calculations are used. For sequences less than 14 nucleotides the formula is
+
+            Tm= (wA+xT) * 2 + (yG+zC) * 4
+
+            where w,x,y,z are the number of the bases A,T,G,C in the sequence, respectively (from Marmur,J., and Doty,P. (1962) J Mol Biol 5:109-118 [PubMed]).
+
+        For sequences longer than 13 nucleotides, the equation used is
+
+            Tm= 64.9 +41*(yG+zC-16.4)/(wA+xT+yG+zC)
+
+        */
+
+        var seqArray = sSeq.split("");
+        var numA = $.grep(seqArray, function (e) {
+            return e === 'A';
+        }).length;
+        var numT = $.grep(seqArray, function (e) {
+            return e === 'T';
+        }).length;
+        var numG = $.grep(seqArray, function (e) {
+            return e === 'G';
+        }).length;
+        var numC = $.grep(seqArray, function (e) {
+            return e === 'C';
+        }).length;
+        var Tm = 0;
+        if (sSeq.length > 0) {
+            if (sSeq.length <= 13) {
+                //Tm= (wA+xT) * 2 + (yG+zC) * 4                        
+                Tm = (numA + numT) * 2 + (numG + numC) * 4;
+            }
+            else {
+                //Tm= 64.9 +41*(yG+zC-16.4)/(wA+xT+yG+zC)
+                Tm = 64.9 + 41 * (numG + numC - 16.4) / (numA + numT + numG + numC);
+            }
+        }
+        
+        return Tm.toFixed(1);
+    }
+
+    function calGC(sSeq) {
+        var seq = (new Nt.Seq()).read(sSeq);
+        var pG = seq.fractionalContent()['G'];
+        var pC = seq.fractionalContent()['C'];
+
+        //convert to %
+        var pGC = (pG + pC) * 100;
+        return (pGC.toFixed(1) + '%');
+    }
+
+function scrollTo(id) {
+         $('html, body').animate({
+             scrollTop: $(id).offset().top
+          }, 1000);
+    }
 </script>

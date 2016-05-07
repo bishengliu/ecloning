@@ -512,7 +512,7 @@ svg text tspan{
     height:20px;
     padding:0px;
 }
-#selectLength{
+.selectLength{
     -moz-user-select: none;
     background-image: none;
     border: 0px solid transparent;
@@ -537,4 +537,11 @@ svg text tspan{
     line-height: 1;
     font-size:80%;
     font-family: courier;
+}
+
+.reverseButton{
+    display: inline-block;
+    padding:0px 0px;
+    line-height: 1;
+    font-size:80%;
 }

@@ -564,6 +564,8 @@
     <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.nextprot.js" />
     <Content Include="Scripts\feature-viewer\fv.nextprot.js" />
+    <Content Include="Scripts\jqueryScrollTo\jquery.scrollTo.js" />
+    <Content Include="Scripts\jqueryScrollTo\jquery.scrollTo.min.js" />
     <Content Include="Scripts\ntseq\ntseq.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.bundle.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.js" />
