@@ -90,6 +90,7 @@ namespace ecloning
                       "~/Content/chosen.css",
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
+                      "~/Content/feature-viewer/fv.css",
                       "~/Content/site.css"));
 
         }

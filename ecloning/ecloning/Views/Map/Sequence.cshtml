@@ -5,6 +5,7 @@
     var Tag = ViewBag.Tag;
     var Plasmid = (ecloning.Models.plasmid)ViewBag.Plasmid;
     var seqFeatures = ViewBag.seqFeatures;
+    var fvFeatures = ViewBag.fvFeatures;
 }
 <span id="decodeIt" class="hidden"></span>
 <span id="sequence" class="hidden"> @Plasmid.sequence </span>
@@ -42,6 +43,7 @@
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <h3 class="text-danger" id="seq-error"></h3>
     </div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-seq"></div>
 </div>
 <br/>
@@ -132,6 +134,8 @@
             </a>
         </div>
     </div>
+    <br/>
+    <br/>
     <div class="col-xs-12 col-sm-5 hidden" id="tool-deri-seq">
         <div class="pull-right">
             <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>            
@@ -168,9 +172,11 @@
 <input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="select-dseq" value="">
 <input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="dsequence" value="">
 @Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/d3")
 @*seq viewer*@
 <script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
-
+@*feature viewer*@
+<script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
 @*copy/cut to clipboard*@
 <script src="~/Scripts/clipboard/clipboard.min.js"></script>
 
@@ -231,8 +237,6 @@
         //to display the sequence in html
         //get the plasmid seq
         var seq = $('#sequence').text().trim();
-        console.log(seq);
-        console.log(seq.length);
         if (!seq.trim()) {
             $('seq-error').text('Unable to load plasmid sequence!, please try again later!');
         }
@@ -240,9 +244,15 @@
             var seqFeatures = ("@seqFeatures");
             document.getElementById("decodeIt").innerHTML = seqFeatures;
             seqFeatures = document.getElementById("decodeIt").textContent;
-            
-            try{
+
+            var fvFeatures = ("@fvFeatures");
+            document.getElementById("decodeIt").innerHTML = fvFeatures;
+            fvFeatures = document.getElementById("decodeIt").textContent;
+
+            try {
                 seqFeatures = JSON.parse(seqFeatures);
+                fvFeatures = JSON.parse(fvFeatures);
+
                 //show the button for the full seq
                 $('#tool-full-seq').removeClass('hidden');
 
@@ -283,7 +293,7 @@
                 //display legend
                 pSeq.addLegend(cLegend);
 
-                //add mouse events, selection 
+                //add mouse events, selection
                 pSeq.onMouseSelection(function (elem) {
                     //console.log(elem.detail);
                     //console.log(elem.detail.selection);
@@ -291,21 +301,21 @@
                     var sSeq = elem.detail.selection;
                     //get the plasmid seq
                     var pSeq = $('#sequence').text().trim();
-                    
+
 
                     //find the index and length of the selected seq and cal Tm
                     var idx = pSeq.indexOf(sSeq);
                     var len = elem.detail.selection.length;
-                    var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: "+ calGC(sSeq) +")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                    var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
                     //display the selection count, showing as "1706 .. 2925 = 1219 bp"
                     $('#selectLength').text(infoText);
                     $('#tool-seq').addClass('hidden');
                     $('#tool-seq').removeClass('hidden');
 
-                    //put the selected seq in html 
+                    //put the selected seq in html
                     $('#select-seq').val(sSeq);
                     //console.log($('#select-seq').val());
-                    
+
                     //copy selected seq to clipboard using using clipboard.min.js
                     var clipboard = new Clipboard('#copy-seq');
                     clipboard.on('success', function (e) {
@@ -346,7 +356,7 @@
                     $('#deri-seq').addClass('hidden');
                     $('#deri-seq').empty();
                     $('#deri-seq').removeClass('hidden');
-                    
+
                     //display reverse seq
                     var deriTitle = pName + "  Reverse Sequence";
                     //display the seq in html
@@ -378,7 +388,7 @@
                         $('#tool-deri-seq').addClass('hidden');
                         $('#tool-deri-seq').removeClass('hidden');
 
-                        //put the selected seq in html 
+                        //put the selected seq in html
                         $('#select-dseq').val(sSeq);
                         //console.log($('#select-seq').val());
 
@@ -404,7 +414,7 @@
                     $('#tool-deri-full-seq').removeClass('hidden');
                     scrollTo('#deri-seq');
                 });
-        
+
                 //reverse complement
                 $('#full-rc').click(function () {
                     //using ntSeq
@@ -447,7 +457,7 @@
                         $('#tool-deri-seq').addClass('hidden');
                         $('#tool-deri-seq').removeClass('hidden');
 
-                        //put the selected seq in html 
+                        //put the selected seq in html
                         $('#select-dseq').val(sSeq);
                         //console.log($('#select-seq').val());
 
@@ -475,16 +485,165 @@
                     scrollTo('#deri-seq');
                 });
 
+
+
+
+                //============================================================================================
+                //display features
+                //console.log(fvFeatures);
+                //preocess the data
+                var fArray = [];
+                var gFeature = getFeatureData(fvFeatures, fArray, 1); //1
+
+                var fArray = [];
+                var promotor = getFeatureData(fvFeatures, fArray, 2); //2
+
+                var fArray = [];
+                var primer = getFeatureData(fvFeatures, fArray, 3); //3
+
+                var fArray = [];
+                var enzyme = getFeatureData(fvFeatures, fArray, 4); //4
+
+                var fArray = [];
+                var gene = getFeatureData(fvFeatures, fArray, 5); //5
+
+                var fArray = [];
+                var origin = getFeatureData(fvFeatures, fArray, 6); //6
+
+                var fArray = [];
+                var regulatory = getFeatureData(fvFeatures, fArray, 7); //7
+
+                var fArray = [];
+                var terminator = getFeatureData(fvFeatures, fArray, 8); //8
+
+                var fArray = [];
+                var eFeature = getFeatureData(fvFeatures, fArray, 9); //9
+
+                var fArray = [];
+                var orf = getFeatureData(fvFeatures, fArray, 10); //10
+                                
+                var fOptions = {
+                    showAxis: true, showSequence: true,
+                    brushActive: true, toolbar: true,
+                    bubbleHelp: true, zoomMax: 20
+                };
+                var ft = new FeatureViewer(seq, "#plasmid-feature", fOptions);
+
+
+
+                if (gFeature.length > 0) {
+                    ft.addFeature({
+                        data: gFeature,
+                        name: "Generic Feature",
+                        className: "gFeature",
+                        color: Color(1),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (promotor.length > 0) {
+                    ft.addFeature({
+                        data: promotor,
+                        name: "Promotor",
+                        className: "promotor",
+                        color: Color(2),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (primer.length > 0) {
+                    ft.addFeature({
+                        data: primer,
+                        name: "Primer",
+                        className: "primer",
+                        color: Color(3),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (enzyme.length > 0) {
+                    ft.addFeature({
+                        data: enzyme,
+                        name: "Restriction Cuts",
+                        className: "enzyme",
+                        color: Color(4),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (gene.length > 0) {
+                    ft.addFeature({
+                        data: gene,
+                        name: "Gene",
+                        className: "gene",
+                        color:  Color(5),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (origin.length > 0) {
+                    ft.addFeature({
+                        data: origin,
+                        name: "Origin",
+                        className: "origin",
+                        color: Color(6),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (regulatory.length > 0) {
+                    ft.addFeature({
+                        data: regulatory,
+                        name: "Regulatory",
+                        className: "regulatory",
+                        color: Color(7),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (terminator.length > 0) {
+                    ft.addFeature({
+                        data: terminator,
+                        name: "Terminator",
+                        className: "terminator",
+                        color: Color(8),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (eFeature.length > 0) {
+                    ft.addFeature({
+                        data: eFeature,
+                        name: "Exact Features",
+                        className: "eFeature",
+                        color: Color(9),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (orf.length > 0) {
+                    ft.addFeature({
+                        data: orf,
+                        name: "ORF",
+                        className: "orf",
+                        color: Color(10),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+
+
+                
             }
             catch (e) {
                 console.log(e);
-                $('seq-error').text('Unable to load plasmid features on sequence!, please try again later!');
+                $('seq-error').text('Unable to load the features and sequence!, please try again later!');
             }
         }
     });
 
     function Color(type_id) {
-        switch(type_id){
+        switch (type_id) {
             case 1:
                 return '#1f77b4';
                 break;
@@ -514,8 +673,8 @@
                 break;
             case 10:
                 return '#17becf';
-                break;            
-        }  
+                break;
+        }
     }
 
     function Reverse(seq) {
@@ -554,7 +713,7 @@
         var Tm = 0;
         if (sSeq.length > 0) {
             if (sSeq.length <= 13) {
-                //Tm= (wA+xT) * 2 + (yG+zC) * 4                        
+                //Tm= (wA+xT) * 2 + (yG+zC) * 4
                 Tm = (numA + numT) * 2 + (numG + numC) * 4;
             }
             else {
@@ -562,7 +721,7 @@
                 Tm = 64.9 + 41 * (numG + numC - 16.4) / (numA + numT + numG + numC);
             }
         }
-        
+
         return Tm.toFixed(1);
     }
 
@@ -576,9 +735,23 @@
         return (pGC.toFixed(1) + '%');
     }
 
-function scrollTo(id) {
-         $('html, body').animate({
-             scrollTop: $(id).offset().top
-          }, 1000);
+    function scrollTo(id) {
+        $('html, body').animate({
+            scrollTop: $(id).offset().top
+        }, 1000);
+    }
+
+    function getFeatureData(fvFeatures, array, type_id) {
+        $.each($.grep(fvFeatures, function (d) {
+            return +d.type_id === type_id;
+        }), function (i, n) {
+            delete n.type_id;
+            array.push(n);
+        });
+
+        $.each(array, function (i, d) {
+            d.color = Color(type_id);
+        });
+        return array;
     }
 </script>

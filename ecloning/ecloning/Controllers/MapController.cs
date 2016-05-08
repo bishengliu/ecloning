@@ -129,9 +129,13 @@ namespace ecloning.Controllers
             //get feartures
             //display all features of the current plasmid
             var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
-            //pass json
+            //pass json for seq viewer
             var seqFeatures = plasmid_map.Where(f=>f.feature_id ==2 || f.feature_id == 5 || f.feature_id == 8).OrderBy(s => s.start).Select(f => new { end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start -1, cut = f.cut, underscore = false, color = "black", bgcolor= "#EEEFEE", tooltip= f.common_feature != null ? f.common_feature.label : f.feature });
             ViewBag.seqFeatures = JsonConvert.SerializeObject(seqFeatures.ToList());
+
+            //pass json for feature viewers
+            var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x= f.feature_id==4? f.cut : f.start, y= f.feature_id == 4 ? f.cut : f.end, description  = f.common_feature != null ? f.common_feature.label : f.feature, id= f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
+            ViewBag.fvFeatures = JsonConvert.SerializeObject(fvFeatures.ToList());
 
             return View();
         }
