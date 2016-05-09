@@ -28,7 +28,7 @@
             </a>
             <a class="btn btn-default" href="@Url.Action("Index", "Map", new { id = Plasmid.id, tag = Tag})">
                 <i class="fa fa-sun-o text-danger"></i>
-                <span>Sequence</span>
+                <span>Map</span>
             </a>
             <a class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = Plasmid.id, tag = Tag})">
                 <i class="fa fa-scissors text-danger"></i>
@@ -44,15 +44,49 @@
         <h3 class="text-danger" id="seq-error"></h3>
     </div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
+    <div class="hidden" id="tool-fv">
+        <br />
+        <br />
+        <div class="col-xs-12 col-sm-offset-6 col-sm-5">
+            <div class="pull-right">
+                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment Selection">
+                    <i class="text-danger alignment">A-GC</i>
+                    <i class="text-primary alignment">ATGC</i>
+                </a>
+                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST Selection">
+                    <span class="text-danger">BLAST</span>
+                </a>
+                <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#fv-seq" id="copy-fvseq" data-toggle="tooltip" title="Copy Sequence">
+                    <i class="fa fa-copy text-danger"></i>
+                </a>
+                |
+                <a class="btn btn-default btn-sm" id="close-tool-fv" data-toggle="tooltip" title="Close">
+                    <i class="fa fa-times"></i>
+                    <span></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="clear:both;"></div>
+<div>   
+    <div class="col-xs-12 col-sm-offset-6 col-sm-5" id="tool-fv-msg">
+        <div class="pull-right">
+            <p class="text-info"></p>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
+<br />
+
+<div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-seq"></div>
 </div>
 <br/>
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5 hidden" id="tool-full-seq">
         <div class="pull-left">
-            @*<a class="btn btn-default btn-sm" href="#" data-toggle="tooltip" title="Edit Sequence">
-                <i class="fa fa-pencil-square-o text-danger"></i>
-            </a>*@
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Reverse Sequence" id="full-reverse">
                 <i class="fa fa-caret-right text-info"></i>
                 <i class="text-info">|</i>
@@ -79,8 +113,10 @@
             <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Edit Sequence">
                 <i class="fa fa-pencil-square-o text-danger"></i>
             </a>
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Add Feature">
+                <i class="fa fa-bars text-danger"></i>
+            </a>
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Find ORF">
-                @*<i class="fa fa-search text-danger"></i>*@
                 <span class="text-danger">ORF</span>
             </a>
             <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Alignment Selection">
@@ -164,13 +200,19 @@
     </div>
 </div>
 
+<div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+    <input id="select-seq" value="">
+    <input id="full-seq" value=@Plasmid.sequence>
 
-<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="select-seq" value="">
-<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="full-seq" value=@Plasmid.sequence>
+    @*derivated seq*@
+    <input id="select-dseq" value="">
+    <input id="dsequence" value="">
 
-@*derivated seq*@
-<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="select-dseq" value="">
-<input class="navbar-fixed-bottom" style="position:relative; left:-99999px;" id="dsequence" value="">
+    @*feature seq*@
+    <input id="fv-seq" value="">
+</div>
+
+
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/d3")
 @*seq viewer*@
@@ -182,7 +224,6 @@
 
 @*use ntseq*@
 <script src="~/Scripts/ntseq/ntseq.js"></script>
-
 <script>
     //show features in seq
     $(document).ready(function () {
@@ -234,6 +275,10 @@
             $('#deri-seq').addClass('hidden');
             $('#tool-deri-full-seq').addClass('hidden');
         });
+        $('#close-tool-fv').click(function () {
+            $('#tool-fv').addClass('hidden');
+        });
+
         //to display the sequence in html
         //get the plasmid seq
         var seq = $('#sequence').text().trim();
@@ -521,7 +566,10 @@
 
                 var fArray = [];
                 var orf = getFeatureData(fvFeatures, fArray, 10); //10
-                                
+                
+                //merge eFeature and gFeature
+                mFeature = $.extend(gFeature, eFeature);
+
                 var fOptions = {
                     showAxis: true, showSequence: true,
                     brushActive: true, toolbar: true,
@@ -530,63 +578,12 @@
                 var ft = new FeatureViewer(seq, "#plasmid-feature", fOptions);
 
 
-
-                if (gFeature.length > 0) {
-                    ft.addFeature({
-                        data: gFeature,
-                        name: "Generic Feature",
-                        className: "gFeature",
-                        color: Color(1),
-                        type: "rect",
-                        filter: "type2"
-                    });
-                }
-                if (promotor.length > 0) {
-                    ft.addFeature({
-                        data: promotor,
-                        name: "Promotor",
-                        className: "promotor",
-                        color: Color(2),
-                        type: "rect",
-                        filter: "type2"
-                    });
-                }
-                if (primer.length > 0) {
-                    ft.addFeature({
-                        data: primer,
-                        name: "Primer",
-                        className: "primer",
-                        color: Color(3),
-                        type: "rect",
-                        filter: "type2"
-                    });
-                }
                 if (enzyme.length > 0) {
                     ft.addFeature({
                         data: enzyme,
                         name: "Restriction Cuts",
                         className: "enzyme",
                         color: Color(4),
-                        type: "rect",
-                        filter: "type2"
-                    });
-                }
-                if (gene.length > 0) {
-                    ft.addFeature({
-                        data: gene,
-                        name: "Gene",
-                        className: "gene",
-                        color:  Color(5),
-                        type: "rect",
-                        filter: "type2"
-                    });
-                }
-                if (origin.length > 0) {
-                    ft.addFeature({
-                        data: origin,
-                        name: "Origin",
-                        className: "origin",
-                        color: Color(6),
                         type: "rect",
                         filter: "type2"
                     });
@@ -601,22 +598,32 @@
                         filter: "type2"
                     });
                 }
+                if (promotor.length > 0) {
+                    ft.addFeature({
+                        data: promotor,
+                        name: "Promotor",
+                        className: "promotor",
+                        color: Color(2),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (gene.length > 0) {
+                    ft.addFeature({
+                        data: gene,
+                        name: "Gene",
+                        className: "gene",
+                        color:  Color(5),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
                 if (terminator.length > 0) {
                     ft.addFeature({
                         data: terminator,
                         name: "Terminator",
                         className: "terminator",
                         color: Color(8),
-                        type: "rect",
-                        filter: "type2"
-                    });
-                }
-                if (eFeature.length > 0) {
-                    ft.addFeature({
-                        data: eFeature,
-                        name: "Exact Features",
-                        className: "eFeature",
-                        color: Color(9),
                         type: "rect",
                         filter: "type2"
                     });
@@ -631,9 +638,73 @@
                         filter: "type2"
                     });
                 }
-
-
+                if (mFeature.length > 0) {
+                    ft.addFeature({
+                        data: mFeature,
+                        name: "Generic Feature",
+                        className: "gFeature",
+                        color: Color(1),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (origin.length > 0) {
+                    ft.addFeature({
+                        data: origin,
+                        name: "Origin",
+                        className: "origin",
+                        color: Color(6),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (primer.length > 0) {
+                    ft.addFeature({
+                        data: primer,
+                        name: "Primer",
+                        className: "primer",
+                        color: Color(3),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
                 
+                //mouse event
+                ft.onFeatureSelected(function (d) {
+                    console.log(d.detail);
+                    if (+d.detail.start !== +d.detail.end) {
+                        //hight in seq below
+                        pSeq.selection(+d.detail.start, +d.detail.end, '#c5b0d5');
+
+                        //scroll within div is not working
+                        //scrollTo('#plasmid-seq');
+
+                        //show tool div
+                        $('#tool-fv').removeClass('hidden');
+                        setTimeout(function () { $('#tool-fv').addClass('hidden') }, 60000);
+                        //for copy
+                        var fvSeq = $('#sequence').text().trim().substring(+d.detail.start - 1, d.detail.end);
+                        $('#fv-seq').val(fvSeq);
+                        //copy selected seq to clipboard using using clipboard.min.js
+                        var clipboard = new Clipboard('#copy-fvseq');
+                        clipboard.on('success', function (e) {
+                            console.info('Action:', e.action);
+                            //console.info('Text:', e.text);
+                            //console.info('Trigger:', e.trigger);
+                            e.clearSelection();
+                            //show and dismiss the text 'Copied!'
+                            $('#tool-fv-msg').find('p').eq(0).text("Copied!");
+                            setTimeout(function () { $('#tool-fv-msg').find('p').eq(0).text(null); }, 2000);
+                        });
+
+                        //log the coping errors
+                        clipboard.on('error', function (e) {
+                            console.error('Action:', e.action);
+                            console.error('Trigger:', e.trigger);
+                        });
+                    }
+                });
+
             }
             catch (e) {
                 console.log(e);
@@ -740,6 +811,7 @@
             scrollTop: $(id).offset().top
         }, 1000);
     }
+
 
     function getFeatureData(fvFeatures, array, type_id) {
         $.each($.grep(fvFeatures, function (d) {
