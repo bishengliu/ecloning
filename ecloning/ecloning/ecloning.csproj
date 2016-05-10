@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.1.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.1.1\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -50,6 +50,10 @@
     </Reference>
     <Reference Include="dotless.Core, Version=1.5.2.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
       <HintPath>..\packages\dotless.1.5.2\lib\dotless.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -101,12 +105,12 @@
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.7.0\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=6.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.6.2.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.7.0.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SendGrid, Version=6.3.4.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
@@ -559,13 +563,83 @@
     <Content Include="Content\jqueryui-editable\img\clear.png" />
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
+    <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\clipboard\clipboard.js" />
     <Content Include="Scripts\clipboard\clipboard.min.js" />
+    <Content Include="Scripts\d3\d3.js" />
+    <Content Include="Scripts\d3\d3.min.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.nextprot.js" />
     <Content Include="Scripts\feature-viewer\fv.nextprot.js" />
     <Content Include="Scripts\jqueryScrollTo\jquery.scrollTo.js" />
     <Content Include="Scripts\jqueryScrollTo\jquery.scrollTo.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ar.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.az.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.bg.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.bs.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ca.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.cs.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.cy.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.da.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.de.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.el.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.en-AU.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.en-GB.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.eo.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.es.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.et.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.eu.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.fa.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.fi.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.fo.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.fr-CH.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.fr.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.gl.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.he.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.hr.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.hu.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.hy.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.id.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.is.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.it-CH.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.it.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ja.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ka.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.kh.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.kk.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ko.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.kr.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.lt.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.lv.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.me.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.mk.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.mn.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ms.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.nb.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.nl-BE.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.nl.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.no.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.pl.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.pt-BR.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.pt.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ro.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.rs-latin.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.rs.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.ru.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sk.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sl.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sq.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sr-latin.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sr.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sv.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.sw.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.th.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.tr.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.uk.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.vi.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.zh-CN.min.js" />
+    <Content Include="Scripts\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="Scripts\ntseq\ntseq.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.bundle.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.js" />
@@ -651,8 +725,6 @@
     <Content Include="Scripts\biotools\morris.min.js" />
     <Content Include="Scripts\biotools\raphael-min.js" />
     <Content Include="Scripts\biotools\sb-admin-2.js" />
-    <Content Include="Scripts\bootstrap-datepicker.js" />
-    <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap-editable\js\bootstrap-editable.js" />
     <Content Include="Scripts\bootstrap-editable\js\bootstrap-editable.min.js" />
     <Content Include="Scripts\bootstrap-tokenfield.js" />
@@ -660,19 +732,8 @@
     <Content Include="Scripts\bootstrap3-editable\js\bootstrap-editable.min.js" />
     <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
-    <Content Include="Scripts\d3\d3.js" />
-    <Content Include="Scripts\d3\d3.min.js" />
-    <Content Include="Scripts\d3\LICENSE" />
     <Content Include="Content\bootstrap-tokenfield\tokenfield-typeahead.less" />
     <Content Include="Content\bootstrap-tokenfield\bootstrap-tokenfield.less" />
-    <Content Include="Content\bootstrap-datepicker3.standalone.min.css.map" />
-    <Content Include="Content\bootstrap-datepicker3.standalone.css.map" />
-    <Content Include="Content\bootstrap-datepicker3.min.css.map" />
-    <Content Include="Content\bootstrap-datepicker3.css.map" />
-    <Content Include="Content\bootstrap-datepicker.standalone.min.css.map" />
-    <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
-    <Content Include="Content\bootstrap-datepicker.min.css.map" />
-    <Content Include="Content\bootstrap-datepicker.css.map" />
     <Content Include="fonts\orbitron-black.otf" />
     <Content Include="fonts\orbitron-bold.otf" />
     <Content Include="fonts\orbitron-light.otf" />
@@ -762,6 +823,15 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="Scripts\d3\LICENSE" />
+    <Content Include="Content\bootstrap-datepicker3.standalone.min.css.map" />
+    <Content Include="Content\bootstrap-datepicker3.standalone.css.map" />
+    <Content Include="Content\bootstrap-datepicker3.min.css.map" />
+    <Content Include="Content\bootstrap-datepicker3.css.map" />
+    <Content Include="Content\bootstrap-datepicker.standalone.min.css.map" />
+    <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
+    <Content Include="Content\bootstrap-datepicker.min.css.map" />
+    <Content Include="Content\bootstrap-datepicker.css.map" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />
@@ -783,72 +853,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jqueryui-editable\js\jqueryui-editable.js" />
     <Content Include="Scripts\jqueryui-editable\js\jqueryui-editable.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ar.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.az.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.bg.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.bs.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ca.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.cs.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.cy.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.da.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.de.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.el.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.en-AU.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.en-GB.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.eo.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.es.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.et.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.eu.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.fa.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.fi.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.fo.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.fr-CH.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.fr.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.gl.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.he.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.hr.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.hu.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.hy.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.id.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.is.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.it-CH.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.it.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ja.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ka.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.kh.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.kk.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ko.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.kr.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.lt.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.lv.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.me.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.mk.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.mn.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ms.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.nb.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.nl-BE.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.nl.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.no.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.pl.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.pt-BR.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.pt.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ro.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.rs-latin.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.rs.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.ru.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sk.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sl.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sq.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sr-latin.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sr.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sv.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.sw.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.th.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.tr.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.uk.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.vi.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.zh-CN.min.js" />
-    <Content Include="Scripts\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\nv.d3.min.js" />
     <Content Include="Scripts\paging.js" />
@@ -948,6 +952,7 @@
     <Folder Include="App_Data\pbundle\" />
     <Folder Include="App_Data\plasmid\" />
     <Folder Include="Areas\Admin\Views\Root\" />
+    <Folder Include="logs\" />
     <Folder Include="Views\Root\" />
   </ItemGroup>
   <ItemGroup>
@@ -990,8 +995,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.1.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.1.1\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,5 +18,15 @@ namespace ecloning
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+
+        public void application_error(Object sender, EventArgs e)
+        {
+            ILog log = LogManager.GetLogger(typeof(MvcApplication).FullName);
+            Exception error = Server.GetLastError();
+            log.Error(error.Message);
+            log.Error(error.StackTrace);
+        }
+
     }
 }

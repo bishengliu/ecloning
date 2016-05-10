@@ -88,7 +88,6 @@
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\System.AppContext.dll
-\\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\System.Console.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\System.Diagnostics.StackTrace.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\System.IO.FileSystem.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\roslyn\System.IO.FileSystem.Primitives.dll
@@ -154,3 +153,5 @@
 \\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.pdb
 \\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.xml
 \\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache
+\\Mac\Home\ecloning\ecloning\ecloning\bin\log4net.dll
+\\Mac\Home\ecloning\ecloning\ecloning\bin\log4net.xml
