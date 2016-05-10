@@ -18,7 +18,14 @@
                     <!-- /.nav-second-level -->
                 </li>
                 <li>
-                    <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
+                    <a href="@Url.Action("Alignment", "BioTools")" data-toggle="tooltip" title="DNA,RNA & Protein Alignment">
+                        @*<span style="display:inline-block;">
+                            <i class="text-primary alignment">A-GC</i>
+                            <i class="text-primary alignment">ATGC</i>
+                        </span>*@
+                        <i class="glyphicon glyphicon-barcode fa-rotate-90"></i>                     
+                        <span> Alignment</span>
+                    </a>
                 </li>
                 <li>
                     <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>

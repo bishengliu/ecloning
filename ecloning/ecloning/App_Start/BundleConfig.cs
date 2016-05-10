@@ -27,6 +27,23 @@ namespace ecloning
                       "~/Scripts/bootstrap-datepicker.min.js",
                       "~/Scripts/datepicker.js",
                       "~/Scripts/respond.js"));
+            //bundles.Add(new ScriptBundle("~/bundles/msa").Include(
+            //           "~/Scripts/msa/*.js",
+            //          "~/Scripts/msa/src/g/selection/*.js",
+            //          "~/Scripts/msa/src/g/*.js",
+            //          "~/Scripts/msa/src/menu/views/*.js",
+            //          "~/Scripts/msa/src/menu/*.js",
+            //          "~/Scripts/msa/src/model/*.js",
+            //          "~/Scripts/msa/src/utils/*.js",
+            //          "~/Scripts/msa/src/views/*.js",
+            //          "~/Scripts/msa/src/views/canvas/*.js",
+            //          "~/Scripts/msa/src/views/header/*.js",
+            //          "~/Scripts/msa/src/views/labels/*.js",
+            //          "~/Scripts/msa/src/*.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/msa").Include(
+                        "~/Scripts/msa/*.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3*"));
 
@@ -91,6 +108,7 @@ namespace ecloning
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
                       "~/Content/feature-viewer/fv.css",
+                      "~/Content/msa/msa.css",
                       "~/Content/site.css"));
 
         }

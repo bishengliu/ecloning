@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "Alignment";
+    Layout = "~/Views/Shared/_BioToolsLayout.cshtml";
+    var Plasmids = ViewBag.Plasmids;
+}
+
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+    <div class="" id="alignment"></div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/msa")
+@*<script src=//cdn.biojs.net/msa/0.4/msa.min.gz.js></script>*@
+
+<script>
+    $(document).ready(function () {
+        var Plasmids = ("@Plasmids");
+        document.getElementById("decodeIt").innerHTML = Plasmids;
+        Plasmids = document.getElementById("decodeIt").textContent;
+        try {
+            Plasmids = JSON.parse(Plasmids);
+
+            //format seq
+            $.each(Plasmids, function(i, d){
+                d.ref = d.reference;
+            });
+            console.log(Plasmids);
+            var msa = require("msa");
+            var aliConatiner = $('#alignment');
+            var m = new msa({
+                el: aliConatiner,
+                //bootstrapMenu: true,
+                colorscheme: { "scheme": "turn_propensity" },
+                seqs: Plasmids,
+                vis : {
+                    conserv: false,
+                    //overviewbox: true,
+                    seqlogo: true
+                },
+                conf: {
+                    dropImport: true
+                },
+                zoomer: {
+                    menuFontsize: "12px",
+                    autoResize: true
+                }
+            });
+            ////define own color
+            //m.g.colorscheme.addStaticScheme("own", { A: "orange", C: "red", G: "green", T: "blue" });
+            //m.g.colorscheme.set("scheme", "own");
+            m.render();
+            //m.g.zoomer.setLeftOffset(100);
+            m.g.colorscheme.set("scheme", "taylor");
+            //m.g.zoomer.set("alignmentHeight", 500);
+
+        }
+        catch (e) {
+
+        }
+
+    });
+</script>
