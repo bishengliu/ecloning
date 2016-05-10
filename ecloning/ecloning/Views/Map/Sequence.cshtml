@@ -38,12 +38,13 @@
     </div>
 </div>
 
-
+<!--show feature-->
 <div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <h3 class="text-danger" id="seq-error"></h3>
     </div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
+    <!--show feature buttons-->
     <div class="hidden" id="tool-fv">
         <br />
         <br />
@@ -53,9 +54,17 @@
                     <i class="text-danger alignment">A-GC</i>
                     <i class="text-primary alignment">ATGC</i>
                 </a>
-                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST Selection">
-                    <span class="text-danger">BLAST</span>
-                </a>
+                <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
+                    <input type="hidden" name="DATABASE" value="nr" />
+                    <input type="hidden" name="PAGE" value="Nucleotides" />
+                    <input type="hidden" name="PROGRAM" value="blastn" />
+                    <input type="hidden" name="SERVICE" value="plain" />
+                    <input type="hidden" name="GET_SEQUENCE" value="yes" />
+                    <input type="hidden" name="QUERY" id="fv-select-blast" value="" />
+                    <button type="submit" value="BLAST" class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST Selection">
+                        <span class="text-danger">BLAST</span>
+                    </button>
+                </form>
                 <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#fv-seq" id="copy-fvseq" data-toggle="tooltip" title="Copy Sequence">
                     <i class="fa fa-copy text-danger"></i>
                 </a>
@@ -69,6 +78,7 @@
     </div>
 </div>
 <div style="clear:both;"></div>
+<!--show feature msg-->
 <div>   
     <div class="col-xs-12 col-sm-offset-6 col-sm-5" id="tool-fv-msg">
         <div class="pull-right">
@@ -79,11 +89,12 @@
 <br/>
 <br/>
 <br />
-
+<!--show plasmid seq-->
 <div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-seq"></div>
 </div>
 <br/>
+<!--show plasmid buttons-->
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5 hidden" id="tool-full-seq">
         <div class="pull-left">
@@ -95,13 +106,24 @@
             <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Reverse Complement" id="full-rc">
                 <i class="fa fa-exchange text-danger"></i>
             </a>
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Format" id="fasta">
+                <span class="text-danger">FASTA</span>
+            </a>
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment">
                 <i class="text-danger alignment">A-GC</i>
                 <i class="text-primary alignment">ATGC</i>
             </a>
-            <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="BLAST">
-                <span class="text-danger">BLAST</span>
-            </a>
+            <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
+                <input type="hidden" name="DATABASE" value="nr" />
+                <input type="hidden" name="PAGE" value="Nucleotides" />
+                <input type="hidden" name="PROGRAM" value="blastn" />
+                <input type="hidden" name="SERVICE" value="plain" />
+                <input type="hidden" name="GET_SEQUENCE" value="yes" />
+                <input type="hidden" name="QUERY" id="full-seq-blast" value="@Plasmid.sequence" />
+                <button type="submit" value="BLAST" class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST">
+                    <span class="text-danger">BLAST</span>
+                </button>
+            </form>
             <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#full-seq" id="copy-full-seq" data-toggle="tooltip" title="Copy">
                 <i class="fa fa-copy text-danger"></i>
             </a>
@@ -116,16 +138,21 @@
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Add Feature">
                 <i class="fa fa-bars text-danger"></i>
             </a>
-            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Find ORF">
-                <span class="text-danger">ORF</span>
-            </a>
             <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Alignment Selection">
                 <i class="text-danger alignment">A-GC</i>
                 <i class="text-primary alignment">ATGC</i>
             </a>
-            <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="BLAST Selection">
-                <span class="text-danger">BLAST</span>
-            </a>
+            <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
+                <input type="hidden" name="DATABASE" value="nr" />
+                <input type="hidden" name="PAGE" value="Nucleotides" />
+                <input type="hidden" name="PROGRAM" value="blastn" />
+                <input type="hidden" name="SERVICE" value="plain" />
+                <input type="hidden" name="GET_SEQUENCE" value="yes" />
+                <input type="hidden" name="QUERY" id="select-seq-blast" value="" />
+                <button type="submit" value="BLAST" class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST Selection">
+                    <span class="text-danger">BLAST</span>
+                </button>
+            </form>
             <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-seq" id="copy-seq" data-toggle="tooltip" title="Copy Selection">
                 <i class="fa fa-copy text-danger"></i>
             </a>
@@ -138,6 +165,7 @@
     </div>
 </div>
 <div style="clear:both;"></div>
+<!--show plasmid seq msg-->
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-seq-msg">
         <div class="pull-left">
@@ -152,11 +180,14 @@
 </div>
 <br/>
 <br/>
+
+<!--show plasmid derived seq-->
 <div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="deri-seq"></div>
 </div>
 
 <br />
+<!--show plasmid derived seq tool-->
 <div class="hidden" id="tool-deri-full-seq">
     <div class="col-xs-12 col-sm-offset-1 col-sm-5" >
         <div class="pull-left">
@@ -187,6 +218,7 @@
     </div>
 </div>
 <div style="clear:both;"></div>
+<!--show plasmid derived seq msg-->
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-deri-seq-msg">
         <div class="pull-left">
@@ -200,6 +232,8 @@
     </div>
 </div>
 
+
+<!--mainly for copy to clipboard, hidden is not working-->
 <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
     <input id="select-seq" value="">
     <input id="full-seq" value=@Plasmid.sequence>
@@ -327,16 +361,16 @@
                     'search': true
                 });
                 //display colors for promotor, gene and terminator
-                pSeq.coverage(seqFeatures);
+                //pSeq.coverage(seqFeatures);
 
-                //Define Legend and color codes
-                var cLegend = [
-                    { name: "Promotor", color: "#ff7f0e", underscore: false },
-                    { name: "Gene", color: "#d62728", underscore: false },
-                    { name: "Terminator", color: "#9467bd", underscore: false }
-                ];
-                //display legend
-                pSeq.addLegend(cLegend);
+                ////Define Legend and color codes
+                //var cLegend = [
+                //    { name: "Promotor", color: "#ff7f0e", underscore: false },
+                //    { name: "Gene", color: "#d62728", underscore: false },
+                //    { name: "Terminator", color: "#9467bd", underscore: false }
+                //];
+                ////display legend
+                //pSeq.addLegend(cLegend);
 
                 //add mouse events, selection
                 pSeq.onMouseSelection(function (elem) {
@@ -344,6 +378,8 @@
                     //console.log(elem.detail.selection);
                     //get the selected seq
                     var sSeq = elem.detail.selection;
+                    //set the blast seq
+                    $('#select-seq-blast').val(sSeq);
                     //get the plasmid seq
                     var pSeq = $('#sequence').text().trim();
 
@@ -530,7 +566,19 @@
                     scrollTo('#deri-seq');
                 });
 
+                //get FASTA
+                $('#fasta').click(function () {
+                    //put seq in html
+                    var pSeq = $('#sequence').text().trim();
+                    $('#dsequence').val(pSeq);
+                    //format the seq
+                    var fastaSeq = fasta(pSeq, pName, true);
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').empty();
+                    $('#deri-seq').removeClass('hidden');
+                    $('#deri-seq').html(fastaSeq);
 
+                });
 
 
                 //============================================================================================
@@ -674,7 +722,7 @@
                     console.log(d.detail);
                     if (+d.detail.start !== +d.detail.end) {
                         //hight in seq below
-                        pSeq.selection(+d.detail.start, +d.detail.end, '#c5b0d5');
+                        pSeq.selection(+d.detail.start - 1, +d.detail.end, '#c5b0d5');
 
                         //scroll within div is not working
                         //scrollTo('#plasmid-seq');
@@ -684,6 +732,9 @@
                         setTimeout(function () { $('#tool-fv').addClass('hidden') }, 60000);
                         //for copy
                         var fvSeq = $('#sequence').text().trim().substring(+d.detail.start - 1, d.detail.end);
+                        //set the blast seq
+                        $('#fv-select-blast').val(fvSeq);
+                        //set the copying seq
                         $('#fv-seq').val(fvSeq);
                         //copy selected seq to clipboard using using clipboard.min.js
                         var clipboard = new Clipboard('#copy-fvseq');
@@ -812,6 +863,39 @@
         }, 1000);
     }
 
+    // Returns array of sequence, split from input sequence
+    function wrap(seq_string, width) {
+        if (seq_string) {
+            var res = [];
+            var line = '';
+            for (var i = 0; i < seq_string.length; i++) {
+                line += seq_string.charAt(i);
+                if (line.length >= width) {
+                    res.push(line);
+                    line = '';
+                }
+            }
+            if (line.length > 0) { res.push(line); }
+            return res;
+        }
+        return [];
+    }
+
+    // Returns FASTA format of sequence
+    function fasta(seq, name, html) {
+        var line_width = 80; //fasta is normally 80bp per line
+        if (html === undefined) { html = true; }
+        var lines_vec = wrap(seq, line_width); //return an array
+        var s = '';
+        if (html) { s = '<p class="giraffe-seq-textarea">&gt;' + name + '<br/>'; }
+        else { s = '>' + name + '\n'; }
+        for (var i = 0; i < lines_vec.length; i++) {
+            s += lines_vec[i];
+            if (html) { s += '<br/>'; } else { s += '\n'; }
+        }
+        if (html) { s += '</p>'; }
+        return s;
+    }
 
     function getFeatureData(fvFeatures, array, type_id) {
         $.each($.grep(fvFeatures, function (d) {
