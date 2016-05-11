@@ -49,7 +49,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f=>f.id < 9), "id", "des"); //remove orf and exac features
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f=>f.id < 9 && f.id != 3 && f.id !=4), "id", "des"); //remove orf, enzyme, primer and exac features
 
             //prepare selectList
             List<SelectListItem> listItems = new List<SelectListItem>();

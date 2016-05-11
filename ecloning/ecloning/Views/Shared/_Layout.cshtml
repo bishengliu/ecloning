@@ -102,20 +102,6 @@
 
                                     </ul>
                                 </li>
-
-                                @*<li>
-                                    <a href="@Url.Action("Index", "Plasmid")">
-                                        <i class="fa fa-genderless fa-lg"></i>
-                                        <span class="">Plasmids</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("Index", "Feature")">
-                                        <i class="fa fa-bars"></i>
-                                        <span class="">Plasmid Features</span>
-                                    </a>
-                                </li>*@
-
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-bolt">&ensp;</span>Enzymes<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
@@ -133,6 +119,17 @@
                                             </a>
                                         </li>
 
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-wrench">&ensp;</span>Tools<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="@Url.Action("Alignment", "BioTools")" data-toggle="tooltip" title="DNA,RNA & Protein MSA Viewer">
+                                                <i class="glyphicon glyphicon-barcode fa-rotate-90"></i>
+                                                <span class="text-text-info">MSA Viewer</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li>

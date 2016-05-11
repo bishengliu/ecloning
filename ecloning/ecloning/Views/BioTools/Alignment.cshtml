@@ -1,19 +1,16 @@
 ﻿
 @{
     ViewBag.Title = "Alignment";
-    Layout = "~/Views/Shared/_BioToolsLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var Plasmids = ViewBag.Plasmids;
 }
-
-@Html.Partial("_BioTools")
-<div id="page-wrapper">
-    <div class="" id="alignment"></div>
-</div>
 <span id="decodeIt" class="hidden"></span>
+<br/>
+<br/>
+<div class="text-info">http://www.ebi.ac.uk/Tools/msa/clustalo/</div>
+<div id="aliDiv">Loading ... </div>
 @Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/msa")
-@*<script src=//cdn.biojs.net/msa/0.4/msa.min.gz.js></script>*@
-
+<script src="~/Scripts/msa/msa.min.gz.js"></script>
 <script>
     $(document).ready(function () {
         var Plasmids = ("@Plasmids");
@@ -27,16 +24,14 @@
                 d.ref = d.reference;
             });
             console.log(Plasmids);
-            var msa = require("msa");
-            var aliConatiner = $('#alignment');
-            var m = new msa({
+            //var msa = require("msa");
+            var aliConatiner = $('#aliDiv');
+            var opts = {
                 el: aliConatiner,
-                //bootstrapMenu: true,
-                colorscheme: { "scheme": "turn_propensity" },
-                seqs: Plasmids,
-                vis : {
+                //seqs: Plasmids,
+                vis: {
                     conserv: false,
-                    //overviewbox: true,
+                    overviewbox: false,
                     seqlogo: true
                 },
                 conf: {
@@ -46,14 +41,33 @@
                     menuFontsize: "12px",
                     autoResize: true
                 }
-            });
-            ////define own color
-            //m.g.colorscheme.addStaticScheme("own", { A: "orange", C: "red", G: "green", T: "blue" });
-            //m.g.colorscheme.set("scheme", "own");
-            m.render();
-            //m.g.zoomer.setLeftOffset(100);
-            m.g.colorscheme.set("scheme", "taylor");
-            //m.g.zoomer.set("alignmentHeight", 500);
+            };
+
+            var m = new msa.msa(opts);
+
+            // search in URL for fasta or clustal
+            function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+            }
+
+            var defaultURL = "https://raw.githubusercontent.com/greenify/msa/master/snippets/data/fer1.clustal";
+            var url = getURLParameter('seq') || defaultURL;
+
+            m.u.file.importURL(url, renderMSA);
+
+            function renderMSA() {
+
+                // the menu is independent to the MSA container
+                var menuOpts = {
+                    el: document.getElementById('div'),
+                    msa: m
+                };
+                var defMenu = new msa.menu.defaultmenu(menuOpts);
+                m.addView("menu", defMenu);
+
+                 //call render at the end to display the whole MSA
+                m.render();
+            }
 
         }
         catch (e) {

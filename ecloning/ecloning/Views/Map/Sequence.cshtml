@@ -50,10 +50,10 @@
         <br />
         <div class="col-xs-12 col-sm-offset-6 col-sm-5">
             <div class="pull-right">
-                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment Selection">
+                @*<a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment Selection">
                     <i class="text-danger alignment">A-GC</i>
                     <i class="text-primary alignment">ATGC</i>
-                </a>
+                </a>*@
                 <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
                     <input type="hidden" name="DATABASE" value="nr" />
                     <input type="hidden" name="PAGE" value="Nucleotides" />
@@ -109,10 +109,10 @@
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Format" id="fasta">
                 <span class="text-danger">FASTA</span>
             </a>
-            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment">
+            @*<a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment">
                 <i class="text-danger alignment">A-GC</i>
                 <i class="text-primary alignment">ATGC</i>
-            </a>
+            </a>*@
             <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
                 <input type="hidden" name="DATABASE" value="nr" />
                 <input type="hidden" name="PAGE" value="Nucleotides" />
@@ -138,10 +138,10 @@
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Add Feature">
                 <i class="fa fa-bars text-danger"></i>
             </a>
-            <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Alignment Selection">
+            @*<a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Alignment Selection">
                 <i class="text-danger alignment">A-GC</i>
                 <i class="text-primary alignment">ATGC</i>
-            </a>
+            </a>*@
             <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
                 <input type="hidden" name="DATABASE" value="nr" />
                 <input type="hidden" name="PAGE" value="Nucleotides" />
@@ -201,8 +201,6 @@
             </a>
         </div>
     </div>
-    <br/>
-    <br/>
     <div class="col-xs-12 col-sm-5 hidden" id="tool-deri-seq">
         <div class="pull-right">
             <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>            
@@ -231,7 +229,6 @@
         </div>
     </div>
 </div>
-
 
 <!--mainly for copy to clipboard, hidden is not working-->
 <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
@@ -425,8 +422,6 @@
                 //    $('#tool-alert').removeClass('hidden');
                 //});
 
-
-
                 //====================deal with reverse/compliment seq
                 //reverse
                 $('#full-reverse').click(function () {
@@ -569,6 +564,7 @@
                 //get FASTA
                 $('#fasta').click(function () {
                     //put seq in html
+                    $('#tool-deri-full-seq').addClass('hidden');
                     var pSeq = $('#sequence').text().trim();
                     $('#dsequence').val(pSeq);
                     //format the seq
