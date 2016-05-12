@@ -20,18 +20,18 @@ namespace ecloning.Models
         public string sequence { get; set; }
         [Required(ErrorMessage = "Required")]
         public int seq_length { get; set; }
-        [Required(ErrorMessage = "Required")]
+        //[Required(ErrorMessage = "Required")]
         public string expression_system { get; set; }
         public string expression_subsystem { get; set; }
         public string promotor { get; set; }
         public string polyA { get; set; }
-        [Required(ErrorMessage = "Required")]
+        //[Required(ErrorMessage = "Required")]
         public string[] resistance { get; set; }
         public string[] reporter { get; set; }
         public string[] selection { get; set; }
-        [Required(ErrorMessage = "Required")]
+        //[Required(ErrorMessage = "Required")]
         public string insert { get; set; }
-        [Required(ErrorMessage = "Required")]
+        //[Required(ErrorMessage = "Required")]
         public string[] usage { get; set; }
         public string plasmid_type { get; set; }
         public string ref_plasmid { get; set; }
