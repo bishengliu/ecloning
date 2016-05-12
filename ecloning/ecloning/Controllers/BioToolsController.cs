@@ -17,11 +17,16 @@ namespace ecloning.Controllers
             return View();
         }
 
-        public ActionResult Alignment()
+        public ActionResult MASViewer()
         {
             //get the plasmid seq
             var plasmids = db.plasmids.Where(s => s.sequence != null).Select(p => new { name = p.name, id = p.id, seq = p.sequence, height=1, reference = false });
             ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
+            return View();
+        }
+
+        public ActionResult Align2Seq()
+        {
             return View();
         }
     }

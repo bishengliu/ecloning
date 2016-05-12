@@ -138,6 +138,9 @@
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Add Feature">
                 <i class="fa fa-bars text-danger"></i>
             </a>
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Selection" id="fasta-selection">
+                <span class="text-danger">FASTA</span>
+            </a>
             @*<a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Alignment Selection">
                 <i class="text-danger alignment">A-GC</i>
                 <i class="text-primary alignment">ATGC</i>
@@ -384,7 +387,8 @@
                     //find the index and length of the selected seq and cal Tm
                     var idx = pSeq.indexOf(sSeq);
                     var len = elem.detail.selection.length;
-                    var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                    var sSeqPos = (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp';
+                    var infoText = sSeq.length > 0 ? sSeqPos + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : sSeqPos;
                     //display the selection count, showing as "1706 .. 2925 = 1219 bp"
                     $('#selectLength').text(infoText);
                     $('#tool-seq').addClass('hidden');
@@ -576,7 +580,21 @@
 
                 });
 
-
+                $('#fasta-selection').click(function () {
+                    $('#tool-deri-full-seq').addClass('hidden');
+                    var sSeq = $('#select-seq').val();
+                    var pSeq = $('#sequence').text().trim();
+                    var idx = pSeq.indexOf(sSeq);
+                    var len = sSeq.length;
+                    var sSeqPos = (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp';
+                    //format the seq
+                    var fastaSeq = fasta(sSeq, pName +" ("+sSeqPos+")", true);
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').empty();
+                    $('#deri-seq').removeClass('hidden');
+                    $('#deri-seq').html(fastaSeq);
+                    //var sSeq = elem.detail.selection;
+                });
                 //============================================================================================
                 //display features
                 //console.log(fvFeatures);

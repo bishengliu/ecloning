@@ -95,7 +95,7 @@
 
                                         <li>
                                             <a href="@Url.Action("Index", "Feature")">
-                                                <i class="glyphicon glyphicon-align-left"></i>
+                                                <i class="fa fa-sliders"></i>
                                                 <span class="">Plasmid Features</span>
                                             </a>
                                         </li>
@@ -125,7 +125,13 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-wrench">&ensp;</span>Tools<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="@Url.Action("Alignment", "BioTools")" data-toggle="tooltip" title="DNA,RNA & Protein MSA Viewer">
+                                            <a href="@Url.Action("Align2Seq", "BioTools")" data-toggle="tooltip" title="Align 2 sequences of DNA,RNA or Protein">
+                                                <i class="fa fa-exchange"></i>
+                                                <span class="">Align two Sequences</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("MASViewer", "BioTools")" data-toggle="tooltip" title="Multiple Sequence Alignment Viewer">
                                                 <i class="glyphicon glyphicon-barcode fa-rotate-90"></i>
                                                 <span class="text-text-info">MSA Viewer</span>
                                             </a>

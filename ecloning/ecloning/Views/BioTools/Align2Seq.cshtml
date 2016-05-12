@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Align2Seq";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Align two sequences</h3>
+    </div>
+</div>*@
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    You can use this tool to align two seqeucens of DNA, RNA or Protein. Please provide the sequences in the text box below, the names of the sequence is optional.
+</div>
+<div class="row" id="sequences">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+            @using (Html.BeginForm())
+            {
+                <div class="form-horizontal">
+                    <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block">
+                        <h4 class="text-primary">Sequence 1:</h4>
+                        <div class="form-group">
+                            <div class="pull-left">
+                                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-12" })
+                            </div>
+                            <div class="col-md-12">
+                                @Html.Editor("seq1Name", new { htmlAttributes = new { @class = "form-control", @placeholder="Optional" } })
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <div class="pull-left">
+                                @Html.Label("Sequence", htmlAttributes: new { @class = "control-label col-md-6" })                                
+                            </div>
+                            <p id="error1" class="text-danger text-center"></p>
+                            <div class="col-md-12">
+                                <textarea id="seq1" cols="10" rows="20" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block">
+                        <h4 class="text-primary">Sequence 2:</h4>
+                        <div class="form-group">
+                            <div class="pull-left">
+                                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-12" })
+                            </div>
+                            <div class="col-md-12">
+                                @Html.Editor("seq2Name", new { htmlAttributes = new { @class = "form-control", @placeholder = "Optional" } })
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <div class="pull-left">
+                                @Html.Label("Sequence", htmlAttributes: new { @class = "control-label col-md-6" })                                
+                            </div>
+                            <p id="error2" class="text-danger text-center"></p>
+                            <div class="col-md-12">
+                                <textarea id="seq2" cols="10" rows="20" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-5 col-sm-2">
+                            <input type="submit" value="Align Sequences" class="btn btn-block btn-primary" id="showResult"/>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+</div>
+
+
+<div class="row hidden" id="result">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10 text-warning"><h4>Result:</h4></div>
+</div>
+<div class="hidden col-xs-12 col-sm-offset-1" id="aliDiv">Loading ... </div>
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/msa/msa.min.gz.js"></script>
+<script src="~/Scripts/needleman-Wunsch.js"></script>
+
+<script>
+    $(document).ready(function () {
+        //remove all non letter in the seqeuce input
+        $('#seq1').change(function () {
+            var before = $('#seq1').val();
+            //strip out non-alpha characters and convert to uppercase
+            var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+            after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+            $('#seq1').val(after);
+        });
+        $('#seq2').change(function () {
+            var before = $('#seq2').val();
+            //strip out non-alpha characters and convert to uppercase
+            var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+            after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+            $('#seq2').val(after);
+        });
+        
+
+        //show the result
+
+    });
+    
+    $('#showResult').on('click', function (e) {
+        e.preventDefault();
+        //validate form
+        if (validateForm()) {
+            var seq1 = $('#seq1').val();
+            var seq2 = $('#seq2').val();
+            var seq1Name = $('#seq1Name').val() || "Seq1";
+            var seq2Name = $('#seq2Name').val() || "Seq2";
+            //align the seq
+            var seqsAligned = stringalign(seq1, seq2, 1, 5, .5);
+
+            //prepare for msa viewer
+            var seqs = [{ name: seq1Name, id: 0, seq: seqsAligned.string1 }, { name: seq2Name, id: 1, seq: seqsAligned.string2 }];
+            var aliConatiner = $('#aliDiv');
+            var opts = {
+                el: aliConatiner,
+                seqs: seqs,
+                vis: {
+                    conserv: false,
+                    overviewbox: false,
+                    seqlogo: false
+                },
+                conf: {
+                    dropImport: true
+                },
+                zoomer: {
+                    menuFontsize: "12px",
+                    autoResize: true,
+                    alignmentHeight: 50
+                }
+            };
+            var m = new msa.msa(opts);
+            $('#result').removeClass('hidden');
+            m.render();
+
+        } else {
+            console.log('form validation failed!');
+        }
+    })
+
+    function validateForm() {
+        //validate the form submission
+            var seq1 = $('#seq1').val();
+            var seq2 = $('#seq2').val();
+            if (!seq1.trim()) {
+                $('#error1').text("\"Sequence\" is required for Sequence 1!");
+                return false;
+            }
+            if (!seq2.trim()) {
+                $('#error2').text("\"Sequence\" is required for Sequence 2!");
+                return false;
+            }
+            return true;
+    };
+</script>

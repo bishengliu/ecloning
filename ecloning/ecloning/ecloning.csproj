@@ -707,6 +707,7 @@
     <Content Include="Scripts\msa\src\views\OverviewBox.js" />
     <Content Include="Scripts\msa\src\views\Search.js" />
     <Content Include="Scripts\msa\src\views\Stage.js" />
+    <Content Include="Scripts\needleman-Wunsch.js" />
     <Content Include="Scripts\ntseq\ntseq.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.bundle.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.js" />
@@ -1015,7 +1016,8 @@
     <Content Include="Views\pBundle\Select.cshtml" />
     <Content Include="Views\Plasmid\TableIndex.cshtml" />
     <Content Include="Views\Map\Sequence.cshtml" />
-    <Content Include="Views\BioTools\Alignment.cshtml" />
+    <Content Include="Views\BioTools\MASViewer.cshtml" />
+    <Content Include="Views\BioTools\Align2Seq.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
