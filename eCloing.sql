@@ -359,6 +359,8 @@ CREATE TABLE common_feature
 	[sequence] text NOT NULL,
 	[des] TEXT,
 	group_id INT NOT NULL,
+	people_id INT, --the person who add this feature
+	CONSTRAINT fk_common_feature_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_common_feature_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT fk_common_feature_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id),
 	CONSTRAINT uq_common_feature_label_group_id UNIQUE (label, group_id)
