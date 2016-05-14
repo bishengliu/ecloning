@@ -135,6 +135,45 @@ namespace ecloning.Controllers
             return View(dprimer);
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult Share(int? id)
+        {
+            //check the existence of bundle id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var primer = db.primers.Find(id);
+            if (primer == null)
+            {
+                return HttpNotFound();
+            }
+
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //check whether it has already been shared
+            var isShared = db.group_shared.Where(r => r.category == "Primer" && r.resource_id == id && r.group_id == groupInfo.groupId.FirstOrDefault());
+            if (isShared.Count() > 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //share the primer
+            var share = new group_shared();
+            share.category = "Primer";
+            share.group_id = groupInfo.groupId.FirstOrDefault();
+            share.resource_id = (int)id;
+            share.sratus = "submitted";
+            db.group_shared.Add(share);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
         // GET: Primer/Delete/5
         public ActionResult Delete(int? id)
         {

@@ -9,7 +9,7 @@
 }
 
 <div class="row">
-    <div class="col-sm-2 col-xs-6">
+    <div class="col-sm-offset-1 col-sm-2 col-xs-6">
         <h3 class="text-warning">Primers</h3>
     </div>
     <div class="col-sm-2 col-xs-6">
@@ -25,12 +25,12 @@
 @if (Count == 0)
 {
     <br />
-            <div class="row">
-                <div class="col-sm-1 hidden-xs"></div>
-                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
-                    <h4 class="text-info">No primer found.</h4>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-sm-1 hidden-xs"></div>
+        <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+             <h4 class="text-info">No primer found.</h4>
+        </div>
+    </div>
 }
 else
 {

@@ -985,7 +985,6 @@ namespace ecloning.Controllers
             return View();
         }
 
-
         [Authorize]
         [HttpPost]
         public ActionResult SharePlasmid(string[] group, int plasmid_table_id)

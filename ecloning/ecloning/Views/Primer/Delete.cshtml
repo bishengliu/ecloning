@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Delete";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    //get people info
+    var peopleInfo = new ecloning.Models.PeopleInfo((int)Model.people_id);
 }
 
 
@@ -28,102 +30,103 @@
 </div>
 
 
+<div class="row">
+    <div class="col-xs-12 col-lg-offset-1 col-sm-10">
+        <dl class="dl-horizontal">
+            <dt>
+                Primer Name
+            </dt>
 
+            <dd>
+                @Html.DisplayFor(model => model.name)
+            </dd>
 
+            <dt>
+                Primer Sequence
+            </dt>
 
+            <dd>
+                @Html.DisplayFor(model => model.sequence)
+            </dd>
+            <dt>
+                Location
+            </dt>
 
+            <dd>
+                @Html.DisplayFor(model => model.location)
+            </dd>
 
-<div>
+            <dt>
+                Usage
+            </dt>
 
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.usage)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.name)
-        </dd>
+            <dt>
+                Purity
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.sequence)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.purity)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.sequence)
-        </dd>
+            <dt>
+                Modification
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.company)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.modification)
+            </dd>
+            <dt>
+                Company
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.company)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.company)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.orderref)
-        </dt>
+            <dt>
+                Order#
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.orderref)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.orderref)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.location)
-        </dt>
+            <dt>
+                Comment
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.location)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.des)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.usage)
-        </dt>
+            <dt>
+                Date
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.usage)
-        </dd>
+            <dd>
+                @if (Model.dt != null)
+                {
+                    var day = Model.dt.Value.Day;
+                    var month = Model.dt.Value.Month;
+                    var year = Model.dt.Value.Year;
+                    var dc = new ecloning.Models.DateConvert();
+                    var outDate = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                    @outDate
+                }
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.purity)
-        </dt>
+            <dt>
+                People
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.purity)
-        </dd>
+            <dd>
+                @peopleInfo.Name
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.modification)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.modification)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.des)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.des)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.dt)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.dt)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.person.first_name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.person.first_name)
-        </dd>
-
-    </dl>
-
+        </dl>
+    </div>
 </div>
