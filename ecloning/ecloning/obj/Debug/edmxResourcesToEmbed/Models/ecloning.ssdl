@@ -143,6 +143,7 @@
     <Property Name="sequence" Type="text" Nullable="false" />
     <Property Name="des" Type="text" />
     <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="people_id" Type="int" />
   </EntityType>
   <EntityType Name="common_modifying">
     <Key>
@@ -792,6 +793,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_common_feature_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="0..1" />
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_feature">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_common_modifying_company_id">
     <End Role="company" Type="Self.company" Multiplicity="1" />
     <End Role="common_modifying" Type="Self.common_modifying" Multiplicity="*" />
@@ -1367,6 +1380,10 @@
     </AssociationSet>
     <AssociationSet Name="fk_common_feature_group_id" Association="Self.fk_common_feature_group_id">
       <End Role="group" EntitySet="group" />
+      <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_feature_people_id" Association="Self.fk_common_feature_people_id">
+      <End Role="people" EntitySet="people" />
       <End Role="common_feature" EntitySet="common_feature" />
     </AssociationSet>
     <AssociationSet Name="fk_common_modifying_company_id" Association="Self.fk_common_modifying_company_id">

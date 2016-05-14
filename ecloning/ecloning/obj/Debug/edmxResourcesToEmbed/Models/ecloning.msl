@@ -142,6 +142,7 @@
           <ScalarProperty Name="sequence" ColumnName="sequence" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="group_id" ColumnName="group_id" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

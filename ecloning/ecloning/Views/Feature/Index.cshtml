@@ -96,36 +96,42 @@
                                         {
                                             <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
                                                 <i class="fa fa-pencil-square-o text-danger"></i>
-                                                <span>Feature</span>
+                                                <span></span>
                                             </a>
-                                            <span>&nbsp;</span>
                                             <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
                                                 <i class="glyphicon glyphicon-trash text-danger"></i>
-                                                <span>Feature</span>
+                                                <span></span>
                                             </a>
                                         }
                                         else
                                         {
                                             <i class="fa fa-pencil-square-o text-muted"></i>
-                                            <span>Feature</span>
-                                            <span>&nbsp;</span>
+                                            <span></span>
                                             <i class="glyphicon glyphicon-trash text-muted"></i>
-                                            <span>Feature</span>
+                                            <span></span>
                                         }
                                     }
                                     else
                                     {
-                                        <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
-                                            <i class="fa fa-pencil-square-o text-danger"></i>
-                                            <span>Feature</span>
-                                        </a>
-                                        <span>&nbsp;</span>
-                                        <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
-                                            <i class="glyphicon glyphicon-trash text-danger"></i>
-                                            <span>Feature</span>
-                                        </a>
+                                        if (PeopelId == item.people_id)
+                                        {
+                                            <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
+                                                <i class="fa fa-pencil-square-o text-danger"></i>
+                                                <span></span>
+                                            </a>
+                                            <a href="@Url.Action("Delete", "Feature", new { id= item.id})">
+                                                <i class="glyphicon glyphicon-trash text-danger"></i>
+                                                <span></span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-pencil-square-o text-muted"></i>
+                                            <span></span>
+                                            <i class="glyphicon glyphicon-trash text-muted"></i>
+                                            <span></span>
+                                        }
                                     }
-
                                 </td>
                             </tr>
                         }

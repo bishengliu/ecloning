@@ -601,6 +601,32 @@ namespace ecloning.Controllers
         }
 
 
+        //add feature in sequence modal
+        [Authorize]
+        [HttpGet]
+        public ActionResult QuickFeature(int? plasmid_id, int? start, int? end)
+        {
+            if (plasmid_id == null|| start== null || end == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id < 9 && f.id != 4), "id", "des"); //remove orf, enzyme, primer and exac features
+            ViewBag.PlasmidId = (int)plasmid_id;
+            return View();
+        }
+        //[Authorize]
+        //[HttpPost]
+        //public ActionResult QuickFeature()
+        //{
+
+        //    return View();
+        //}
+
+
         [Authorize]
         // GET: Map/Delete/5
         public ActionResult Delete(int? plasmid_id)

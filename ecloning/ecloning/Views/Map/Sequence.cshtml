@@ -98,7 +98,7 @@
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5 hidden" id="tool-full-seq">
         <div class="pull-left">
-            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Reverse Sequence" id="full-reverse">
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Complement Sequence" id="full-reverse">
                 <i class="fa fa-caret-right text-info"></i>
                 <i class="text-info">|</i>
                 <i class="fa fa-caret-left text-danger"></i>
@@ -135,9 +135,18 @@
             <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Edit Sequence">
                 <i class="fa fa-pencil-square-o text-danger"></i>
             </a>
-            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Add Feature">
-                <i class="fa fa-bars text-danger"></i>
+            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, end=1 })" data-target="#quick_feature" id="add_feature1"> 
+                <i class="fa fa-sliders text-danger"></i>
             </a>
+            <!-- Modal -->
+            <div id="quick_feature" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+
+                    </div>
+                </div>
+            </div>
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Selection" id="fasta-selection">
                 <span class="text-danger">FASTA</span>
             </a>
@@ -206,7 +215,10 @@
     </div>
     <div class="col-xs-12 col-sm-5 hidden" id="tool-deri-seq">
         <div class="pull-right">
-            <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>            
+            <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>
+            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, end=1 })" data-target="#quick_feature" id="add_feature2">
+                <i class="fa fa-sliders text-danger"></i>
+            </a>            
             <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-dseq" id="copy-dseq" data-toggle="tooltip" title="Copy Selection">
                 <i class="fa fa-copy text-danger"></i>
             </a>
@@ -347,7 +359,7 @@
 
                 //get plasmid name
                 var pName = $('#pName').text();
-                var seqTitle = pName + " Sequence";
+                var seqTitle = pName + " Sequence (5' - 3')";
                 //display the seq in html
                 var pSeq = new Sequence(seq);
                 pSeq.render('#plasmid-seq', {
@@ -429,7 +441,13 @@
                 //====================deal with reverse/compliment seq
                 //reverse
                 $('#full-reverse').click(function () {
-                    var rSeq = Reverse(seq);
+
+                    //using ntSeq
+                    var oSeq = (new Nt.Seq()).read(seq);
+                    //get the reverse compliment
+                    var rcSeq = oSeq.complement().sequence();
+                    //reverse again to get 3' - 5'
+                    var rSeq = Reverse(rcSeq);
                     //put seq in html
                     $('#dsequence').val(rSeq);
 
@@ -438,7 +456,7 @@
                     $('#deri-seq').removeClass('hidden');
 
                     //display reverse seq
-                    var deriTitle = pName + "  Reverse Sequence";
+                    var deriTitle = pName + "  Complement Sequence (3' - 5')";
                     //display the seq in html
                     var rSeq = new Sequence(rSeq);
                     rSeq.render('#deri-seq', {
@@ -467,7 +485,10 @@
                         $('#dselectLength').text(infoText);
                         $('#tool-deri-seq').addClass('hidden');
                         $('#tool-deri-seq').removeClass('hidden');
-
+                        //remove add feature button
+                        if ($('#addFeature').hasClass('hidden')) {
+                            $('#addFeature').removeClass('hidden');
+                        }
                         //put the selected seq in html
                         $('#select-dseq').val(sSeq);
                         //console.log($('#select-seq').val());
@@ -508,7 +529,7 @@
                     $('#deri-seq').removeClass('hidden');
                     $('#deri-seq').empty();
                     //display reverse seq
-                    var deriTitle = pName + "  Reverse Complement";
+                    var deriTitle = pName + "  Reverse Complement (5' - 3')";
                     //display the seq in html
                     rcSeq.render('#deri-seq', {
                         'showLineNumbers': true,
@@ -536,7 +557,10 @@
                         $('#dselectLength').text(infoText);
                         $('#tool-deri-seq').addClass('hidden');
                         $('#tool-deri-seq').removeClass('hidden');
-
+                        //remove add feature button
+                        if (!$('#addFeature').hasClass('hidden')) {
+                            $('#addFeature').addClass('hidden');
+                        }
                         //put the selected seq in html
                         $('#select-dseq').val(sSeq);
                         //console.log($('#select-seq').val());
@@ -924,4 +948,9 @@
         });
         return array;
     }
+</script>
+
+<script>
+    //validate add feature form
+
 </script>
