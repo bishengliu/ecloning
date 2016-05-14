@@ -103,9 +103,11 @@ namespace ecloning.Models
         public string des { get; set; }
         [Required(ErrorMessage = "Required")]
         public int group_id { get; set; }
+        public Nullable<int> people_id { get; set; }
     
         public virtual plasmid_feature plasmid_feature { get; set; }
         public virtual group group { get; set; }
+        public virtual person person { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -146,7 +148,6 @@ namespace ecloning.Models
     }
 }
 
-
 namespace ecloning.Models
 {
     using System;
@@ -159,6 +160,7 @@ namespace ecloning.Models
         public person()
         {
             this.clone_group = new HashSet<clone_group>();
+            this.common_feature = new HashSet<common_feature>();
             this.group_people = new HashSet<group_people>();
             this.oligoes = new HashSet<oligo>();
             this.people_license = new HashSet<people_license>();
@@ -183,6 +185,8 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<clone_group> clone_group { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<common_feature> common_feature { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group_people> group_people { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<oligo> oligoes { get; set; }
@@ -202,6 +206,7 @@ namespace ecloning.Models
         public virtual ICollection<protocol> protocols { get; set; }
     }
 }
+
 
 /*
 //move this into the viewModel

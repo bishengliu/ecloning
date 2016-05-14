@@ -567,6 +567,16 @@
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\msa\msa.css" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="Models\ecloning.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ecloning.edmx</DependentUpon>
+      <LastGenOutput>ecloning.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\ecloning.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ecloning.edmx</DependentUpon>
+      <LastGenOutput>ecloning.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\clipboard\clipboard.js" />
@@ -763,16 +773,6 @@
     <Content Include="logo\eCloning.jpg" />
     <Content Include="logo\eCloning2.ico" />
     <Content Include="logo\lumc.png" />
-    <Content Include="Models\ecloning.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ecloning.edmx</DependentUpon>
-      <LastGenOutput>ecloning.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\ecloning.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ecloning.edmx</DependentUpon>
-      <LastGenOutput>ecloning.cs</LastGenOutput>
-    </Content>
     <Content Include="pager\first.png" />
     <Content Include="pager\last.png" />
     <Content Include="pager\next.png" />
@@ -887,13 +887,6 @@
     <Content Include="Scripts\inputs-ext\wysihtml5\bootstrap-wysihtml5-0.0.2\wysihtml5-0.3.0.js" />
     <Content Include="Scripts\inputs-ext\wysihtml5\bootstrap-wysihtml5-0.0.2\wysihtml5-0.3.0.min.js" />
     <Content Include="Scripts\inputs-ext\wysihtml5\wysihtml5.js" />
-    <EntityDeploy Include="Models\ecloning.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\ecloning.edmx.diagram">
-      <DependentUpon>ecloning.edmx</DependentUpon>
-    </Content>
     <Content Include="Scripts\d3\LICENSE" />
     <Content Include="Content\bootstrap-datepicker3.standalone.min.css.map" />
     <Content Include="Content\bootstrap-datepicker3.standalone.css.map" />
@@ -904,6 +897,13 @@
     <Content Include="Content\bootstrap-datepicker.min.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
     <Content Include="App_Data\data\msa_data.clustal" />
+    <EntityDeploy Include="Models\ecloning.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\ecloning.edmx.diagram">
+      <DependentUpon>ecloning.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />

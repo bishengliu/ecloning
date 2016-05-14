@@ -1,3 +1,4 @@
+
 namespace ecloning.Models
 {
     using System;
@@ -29,4 +30,3 @@ namespace ecloning.Models
         public virtual ICollection<modifying_company> modifying_company { get; set; }
     }
 }
-
