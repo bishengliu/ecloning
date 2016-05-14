@@ -11,6 +11,7 @@ namespace ecloning.Models
 
         public List<int> groupId = new List<int>();
         public Dictionary<int, string> groupIdName = new Dictionary<int, string>();
+        public List<int> groupPeopleId = new List<int>();
 
         public GroupInfo(int peopleId)
         {
@@ -30,8 +31,10 @@ namespace ecloning.Models
                     var groupName = db.groups.Find(gp).name;
                     groupIdName.Add(gp, groupName);
                 }
-            }
 
+                //get all the people in the group
+                groupPeopleId = db.group_people.Where(p => groupId.Contains(p.group_id)).Select(p => p.people_id).ToList();
+            }
         }
     }
 }

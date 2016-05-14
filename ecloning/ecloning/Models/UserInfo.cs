@@ -30,4 +30,29 @@ namespace ecloning.Models
             }        
         }
     }
+
+    public class PeopleInfo
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
+
+        private ecloningEntities db = new ecloningEntities();
+
+        public PeopleInfo(int people_id)
+        {
+            try
+            {
+                var person = db.people.Find(people_id);
+                this.Email = person.email;
+                this.Name = person.first_name + " " + person.last_name;
+                this.Id = people_id;
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+    }
+
 }

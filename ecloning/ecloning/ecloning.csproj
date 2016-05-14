@@ -271,6 +271,7 @@
     <Compile Include="Controllers\MiscellaneousController.cs" />
     <Compile Include="Controllers\pBundleController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
+    <Compile Include="Controllers\PrimerController.cs" />
     <Compile Include="Controllers\RActivityController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Global.asax.cs">
@@ -328,6 +329,7 @@
     <Compile Include="Models\Dam.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DateConvert.cs" />
     <Compile Include="Models\Dcm.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -335,6 +337,7 @@
     <Compile Include="Models\department.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\dPrimer.cs" />
     <Compile Include="Models\dropdownitem.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1018,6 +1021,10 @@
     <Content Include="Views\Map\Sequence.cshtml" />
     <Content Include="Views\BioTools\MASViewer.cshtml" />
     <Content Include="Views\BioTools\Align2Seq.cshtml" />
+    <Content Include="Views\Primer\Create.cshtml" />
+    <Content Include="Views\Primer\Delete.cshtml" />
+    <Content Include="Views\Primer\Edit.cshtml" />
+    <Content Include="Views\Primer\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

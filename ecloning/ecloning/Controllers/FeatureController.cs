@@ -32,9 +32,10 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
+            //appAdmin features and custom feature
             var common_feature = db.common_feature.Include(c => c.plasmid_feature).Where(g=>groupInfo.groupId.Contains(g.group_id) || g.id == adminGroupId).OrderBy(l=>l.label);
             ViewBag.Count = common_feature.Count();
-
+            ViewBag.PeopleId = userInfo.PersonId;
             ViewBag.adminGroupId = adminGroupId;
             ViewBag.UserGroupId = groupInfo.groupId; //list
             return View(common_feature.ToList());

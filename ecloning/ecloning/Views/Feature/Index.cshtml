@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int Count = (int)ViewBag.Count;
     var msg = (string)TempData["msg"];
-
+    var PeopelId = (int)ViewBag.PeopleId;
     int adminGroupId = ViewBag.adminGroupId;
     List<int> groupId = (List<int>)ViewBag.UserGroupId; //list
     bool isAppAdmin = false;

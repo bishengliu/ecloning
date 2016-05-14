@@ -122,6 +122,17 @@
                                     </ul>
                                 </li>
                                 <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-database">&ensp;</span>Resources<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="@Url.Action("Index", "Primer")" data-toggle="tooltip" title="PCR Primers">
+                                                <i class="glyphicon glyphicon-transfer"></i>
+                                                <span class="">Primers</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-wrench">&ensp;</span>Tools<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
@@ -138,12 +149,13 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li>
+
+                                @*<li>
                                     <a href="@Url.Action("Index", "BioTools")">
                                         <i class="fa fa-wrench"></i>
                                         <span class="">BioTools</span>
                                     </a>
-                                </li>
+                                </li>*@
                             }
                         </ul>
                     </div>
