@@ -196,6 +196,32 @@ namespace ecloning.Controllers
         {
             primer primer = db.primers.Find(id);
             db.primers.Remove(primer);
+            //detele all the reffered features in plasmid_map and plamsid_map backup tables
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //get all the plasmid in my group
+            var plasmidIds = db.plasmids.Where(p => groupInfo.groupPeopleId.Contains(p.people_id)).Select(i => i.id);
+            //delete all the primer feature in my group
+            var backups = db.plasmid_map_backup.Where(b=>b.feature_id==3&&b.feature == primer.name &&plasmidIds.Contains(b.plasmid_id));
+            if (backups.Count() > 0)
+            {
+                foreach (var b in backups)
+                {
+                    db.plasmid_map_backup.Remove(b);
+                }
+            }
+            //find plasmid_map
+            //delete all the primer feature in my group
+            var maps = db.plasmid_map.Where(b => b.feature_id == 3 && b.feature == primer.name && plasmidIds.Contains(b.plasmid_id));
+            if (maps.Count() > 0)
+            {
+                foreach (var m in maps)
+                {
+                    db.plasmid_map.Remove(m);
+                }
+            }
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }

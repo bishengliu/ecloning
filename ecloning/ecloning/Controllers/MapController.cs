@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ecloning.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Identity;
+using System.Transactions;
 
 namespace ecloning.Controllers
 {
@@ -604,7 +605,7 @@ namespace ecloning.Controllers
         //add feature in sequence modal
         [Authorize]
         [HttpGet]
-        public ActionResult QuickFeature(int? plasmid_id, int? start, int? end)
+        public ActionResult QuickFeature(int? plasmid_id, int? start, int? end, string tag, int clockwise)
         {
             if (plasmid_id == null|| start== null || end == null)
             {
@@ -615,17 +616,112 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             ViewBag.feature_id = new SelectList(db.plasmid_feature.Where(f => f.id < 9 && f.id != 4), "id", "des"); //remove orf, enzyme, primer and exac features
+            //get the plasmid seq
+            //find the plasmid
+            var plasmid = db.plasmids.Find(plasmid_id);
+            var partialSeq = plasmid.sequence.Substring((int)start - 1, (int)end - (int)start + 1);
+
             ViewBag.PlasmidId = (int)plasmid_id;
+            ViewBag.Start = start;
+            ViewBag.End = end;
+            ViewBag.Tag = tag;
+            ViewBag.Clockwise = clockwise;
+            ViewBag.Seq = partialSeq;
             return View();
         }
-        //[Authorize]
-        //[HttpPost]
-        //public ActionResult QuickFeature()
-        //{
+        [Authorize]
+        [HttpPost]
+        public ActionResult QuickFeature([Bind(Include = "feature_id,label,sequence,plasmid_id,start,end,tag, clockwise")] FeatureModal feature)
+        {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
 
-        //    return View();
-        //}
+            ViewBag.PlasmidId = (int)feature.plasmid_id;
+            ViewBag.Start = feature.start;
+            ViewBag.End = feature.end;
+            ViewBag.Tag = feature.tag;
+            ViewBag.Clockwise = feature.clockwise;
+            ViewBag.Seq = feature.sequence;
+            if (ModelState.IsValid)
+            {
+                //start transaction
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    try
+                    {
+                        if (feature.feature_id == 3)
+                        {
+                            //if feature id is 3, add primer to primer table
+                            var primer = new primer();
+                            primer.name = feature.label;
+                            primer.sequence = feature.sequence;
+                            primer.people_id = userInfo.PersonId;
+                            primer.dt = DateTime.Now;
+                            db.primers.Add(primer);
+                        }
+                        else
+                        {
+                            //add othe features to common_feature table
+                            var cfeature = new common_feature();
+                            cfeature.feature_id = feature.feature_id;
+                            cfeature.label = feature.label;
+                            cfeature.sequence = feature.sequence;
+                            cfeature.group_id = groupInfo.groupId.FirstOrDefault();
+                            cfeature.people_id = userInfo.PersonId;
+                            db.common_feature.Add(cfeature);
+                        }
+                        //add feature to current plasmid
+                        //add feature to plasmid map
+                        var map = new plasmid_map();
+                        map.plasmid_id = feature.plasmid_id;
+                        map.show_feature = 1;
+                        map.feature = feature.label;
+                        map.feature_id = feature.feature_id;
+                        map.start = feature.start;
+                        map.end = feature.end;
+                        map.clockwise = feature.clockwise;
+                        db.plasmid_map.Add(map);
 
+                        //save
+                        db.SaveChanges();
+
+                        //auto generate feature fir all plasmids
+                        //get the object
+                        dynamic fObject = null;
+                        if (feature.feature_id == 3)
+                        {
+                            fObject = db.primers.Where(p => p.name == feature.label && p.people_id == userInfo.PersonId).FirstOrDefault();
+                            if (fObject != null)
+                            {
+                                //find this feature in all plasmids
+                               new FindFeature().Find(fObject, groupInfo.groupPeopleId, feature.plasmid_id, "primer");
+                            }
+                        }
+                        else
+                        {
+                            fObject = db.common_feature.Where(f => f.label == feature.label && f.group_id == groupInfo.groupId.FirstOrDefault());
+                            if (fObject != null)
+                            {
+                                //find this feature in all plasmids
+                                new FindFeature().Find(fObject, groupInfo.groupPeopleId, feature.plasmid_id, "cfeature");
+                            }
+                        }
+                        scope.Complete();
+                        TempData["msg"] = "Feature added!";
+                        return RedirectToAction("Sequence", new { plasmid_id = feature.plasmid_id, tag = feature.tag });
+                    }
+                    catch (Exception)
+                    {
+                        scope.Dispose();
+                        TempData["msg"] = "Something went wrong, feature was not added, please try again later!";
+                        return RedirectToAction("Sequence", new { plasmid_id = feature.plasmid_id, tag = feature.tag });
+                    }
+                }               
+            }
+            return View(feature);
+        }
 
         [Authorize]
         // GET: Map/Delete/5

@@ -761,7 +761,8 @@ CREATE TABLE [primer]
 	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_primer_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
-	CONSTRAINT uq_primer_name UNIQUE (name)
+	CONSTRAINT uq_primer_name_people_id UNIQUE (name, people_id)
+	--CONSTRAINT uq_primer_name UNIQUE (name)
 );
 
 

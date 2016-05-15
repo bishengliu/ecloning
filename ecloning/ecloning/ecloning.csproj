@@ -362,6 +362,7 @@
     <Compile Include="Models\FeatureModal.cs" />
     <Compile Include="Models\FeatureViewModel.cs" />
     <Compile Include="Models\FileTransfer.cs" />
+    <Compile Include="Models\FindFeature.cs" />
     <Compile Include="Models\FindRestriction.cs" />
     <Compile Include="Models\FindSeq.cs" />
     <Compile Include="Models\group.cs">

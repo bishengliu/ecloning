@@ -1,7 +1,12 @@
 ﻿@model ecloning.Models.FeatureModal
 @{ 
-    var PlasmidId = (int)ViewBag.PlasmidId;
     Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+    var PlasmidId = (int)ViewBag.PlasmidId;
+    var Start =(int)ViewBag.Start;
+    var End =(int)ViewBag.End;
+    var Tag = (string)ViewBag.Tag;
+    var Clockwise = (int)ViewBag.Clockwise;
+    var Seq = ViewBag.Seq;
 }
 
         <div class="modal-header">
@@ -19,9 +24,9 @@
                         <div class="form-group required">
                             @Html.LabelFor(model => model.feature_id, "Category", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
-                                @*@Html.EditorFor(model => model.feature_id, new { htmlAttributes = new { @class = "form-control" } })*@
                                 @Html.DropDownList("feature_id", null, "-- Select --", htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.feature_id, "", new { @class = "text-danger" })
+                                <p id="error2" class="text-danger"></p>
                             </div>
                         </div>
                             <div class="form-group required">
@@ -29,13 +34,15 @@
                                 <div class="col-md-6">
                                     @Html.EditorFor(model => model.label, new { htmlAttributes = new { @class = "form-control" } })
                                     @Html.ValidationMessageFor(model => model.label, "", new { @class = "text-danger" })
+                                    <p id="error1" class="text-danger"></p>
                                 </div>
                             </div>
                             <div class="form-group required">
                                 @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
                                 <div class="col-md-6">
-                                    @Html.TextAreaFor(model => model.sequence, 4, 150, new { @class = "form-control" })
+                                    @Html.TextAreaFor(model => model.sequence, 4, 150, new { @class = "form-control", @readonly=true })                                    
                                     @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
+                                    <p id="error3" class="text-danger"></p>
                                 </div>
                             </div>                          
 
@@ -44,12 +51,47 @@
                                     <input type="submit" value="Add Feature" class="btn btn-block btn-primary" />
                                 </div>
                             </div>
+
                             <div class="form-group hidden">
                                 <div class="col-md-offset-8 col-md-2">
-                                    <input type="text" name="task_id" value=@PlasmidId />
+                                    @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control", @Value= PlasmidId } })
+                                    @Html.EditorFor(model => model.start, new { htmlAttributes = new { @class = "form-control", @Value = Start } })
+                                    @Html.EditorFor(model => model.end, new { htmlAttributes = new { @class = "form-control", @Value = End } })
+                                    @Html.EditorFor(model => model.tag, new { htmlAttributes = new { @class = "form-control", @Value = Tag } })
+                                    @Html.EditorFor(model => model.clockwise, new { htmlAttributes = new { @class = "form-control", @Value = Clockwise } })
+                                    <p id="seq">@Seq</p>
                                 </div>
                             </div>
                     </div>
                 </div>
             }
         </div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        var seq = $('#seq').text().trim();
+        //console.log(seq);
+        $('textarea#sequence').val(seq);
+        //console.log($('#sequence').val(seq));
+    });
+    //validate add feature form
+    $('form').submit(function () {
+        var label = $('#label').val();
+        var feature_id = $('#feature_id').val();
+        var seq = $('textarea#sequence').val();
+        if (!feature_id.trim()) {
+            $('#error2').text("\"Catergory\" is required!");
+            return false;
+        }
+        if (!label.trim()) {
+            $('#error1').text("\"Name\" is required!");
+            return false;
+        }
+        if (!seq.trim()) {
+            $('#error3').text("\"Sequence\" is required!");
+            return false;
+        }
+        return true;
+    });
+</script>

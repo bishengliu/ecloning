@@ -9,9 +9,11 @@ namespace ecloning.Models
     {
         //this is the modal when selecting plasmid seq to quickly add to common features or primer
         //for common feature or primer
+        public string tag { get; set; }
         public int feature_id { get; set; } //discard when primer
         public string label { get; set; } //= primer name
-        public int sequence { get; set; } //=primer seq
+        public string sequence { get; set; } //=primer seq
+        public int clockwise { get; set; }
         //public int group_id { get; set; } //not used for primer
         //public int people_id { get; set; } //also for primer
 

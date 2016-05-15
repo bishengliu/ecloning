@@ -18,7 +18,6 @@ namespace ecloning.Models
         //to get group id for group used enzymes
         public List<int> GroupId { get; set; }
 
-
         public PlasmidFeature(int id, string seq, List<int> groupId)
         {
             //**************all the classes doesn't add 1 to indexes, therefore, must add 1 to all feature starts, ends and cuts***************//
