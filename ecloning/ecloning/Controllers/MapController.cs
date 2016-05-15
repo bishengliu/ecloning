@@ -619,7 +619,7 @@ namespace ecloning.Controllers
             //get the plasmid seq
             //find the plasmid
             var plasmid = db.plasmids.Find(plasmid_id);
-            var partialSeq = plasmid.sequence.Substring((int)start - 1, (int)end - (int)start + 1);
+            var partialSeq = clockwise==1?plasmid.sequence.Substring((int)start - 1, (int)end - (int)start + 1):FindSeq.cDNA(plasmid.sequence.Substring((int)start - 1, (int)end - (int)start + 1));
 
             ViewBag.PlasmidId = (int)plasmid_id;
             ViewBag.Start = start;

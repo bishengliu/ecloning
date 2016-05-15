@@ -8,7 +8,7 @@
     var fvFeatures = ViewBag.fvFeatures;
 }
 <span id="decodeIt" class="hidden"></span>
-<span id="sequence" class="hidden"> @Plasmid.sequence </span>
+<span id="psequence" class="hidden"> @Plasmid.sequence </span>
 <span id="pName" class="hidden">@Plasmid.name</span>
 <span id="pId" class="hidden">@Plasmid.id</span>
 <span id="tag" class="hidden">@Tag</span>
@@ -140,24 +140,11 @@
             <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Edit Sequence">
                 <i class="fa fa-pencil-square-o text-danger"></i>
             </a>
-            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, clockwise=1, end=1, tag="personDispaly" })" data-target="#quick_feature" id="add_feature1"> 
+            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, clockwise=1, end=1, tag="personDispaly" })" data-target="#quick_feature1" id="add_feature1"> 
                 <i class="fa fa-sliders text-danger"></i>
             </a>
-            <!-- Modal -->
-            <div id="quick_feature" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title text-center">Add Feature</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            
             <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Selection" id="fasta-selection">
                 <span class="text-danger">FASTA</span>
             </a>
@@ -188,6 +175,23 @@
     </div>
 </div>
 <div style="clear:both;"></div>
+            <!-- Modal -->
+<div id="modal1">
+    <div id="quick_feature1" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Add Feature</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!--show plasmid seq msg-->
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-seq-msg">
@@ -227,9 +231,9 @@
     <div class="col-xs-12 col-sm-5 hidden" id="tool-deri-seq">
         <div class="pull-right">
             <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>
-            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, end=1,clockwise=0, tag="personDispaly" })" data-target="#quick_feature" id="add_feature2">
+            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, end=1,clockwise=0, tag="personDispaly" })" data-target="#quick_feature2" id="add_feature2">
                 <i class="fa fa-sliders text-danger"></i>
-            </a>            
+            </a>      
             <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-dseq" id="copy-dseq" data-toggle="tooltip" title="Copy Selection">
                 <i class="fa fa-copy text-danger"></i>
             </a>
@@ -242,6 +246,23 @@
     </div>
 </div>
 <div style="clear:both;"></div>
+<!-- Modal2 -->
+<div id="modal2">
+    <div id="quick_feature2" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Add Feature</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!--show plasmid derived seq msg-->
 <div>
     <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-deri-seq-msg">
@@ -338,7 +359,7 @@
 
         //to display the sequence in html
         //get the plasmid seq
-        var seq = $('#sequence').text().trim();
+        var seq = $('#psequence').text().trim();
         if (!seq.trim()) {
             $('seq-error').text('Unable to load plasmid sequence!, please try again later!');
         }
@@ -404,7 +425,7 @@
                     //set the blast seq
                     $('#select-seq-blast').val(sSeq);
                     //get the plasmid seq
-                    var pSeq = $('#sequence').text().trim();
+                    var pSeq = $('#psequence').text().trim();
 
 
                     //find the index and length of the selected seq and cal Tm
@@ -427,7 +448,11 @@
                     var href = "/Map/QuickFeature?plasmid_id=" + pId + "&start=" + (idx + 1) + "&end=" + (idx + sSeq.length) + "&tag=" + tag + "&clockwise=" + 1;
                     //change href
                     $('#add_feature1').attr("href", href);
-
+                    $('#modal1').empty().append(show_modal('quick_feature1', "Add Feature"));
+                    $('#modal2').empty().append(show_modal('quick_feature2', "Add Feature"));
+                    if ($('textarea#sequence').length > 0) {
+                        $('textarea#sequence').val(null);
+                    }
 
                     //copy selected seq to clipboard using using clipboard.min.js
                     var clipboard = new Clipboard('#copy-seq');
@@ -505,9 +530,10 @@
                         $('#tool-deri-seq').addClass('hidden');
                         $('#tool-deri-seq').removeClass('hidden');
                         //remove add feature button
-                        if ($('#addFeature').hasClass('hidden')) {
-                            $('#addFeature').removeClass('hidden');
+                        if ($('#add_feature2').hasClass('hidden')) {
+                            $('#add_feature2').removeClass('hidden');
                         }
+
                         //put the selected seq in html
                         $('#select-dseq').val(sSeq);
                         //console.log($('#select-seq').val());
@@ -518,6 +544,13 @@
                         var href = "/Map/QuickFeature?plasmid_id=" + pId + "&start=" + (idx + 1) + "&end=" + (idx + sSeq.length) + "&tag=" + tag + "&clockwise=" + 0;
                         //change href
                         $('#add_feature2').attr("href", href);
+                        $('#modal1').empty().append(show_modal('quick_feature1', "Add Feature"));
+                        $('#modal2').empty().append(show_modal('quick_feature2', "Add Feature"));
+                        if ($('textarea#sequence').length > 0) {
+                            $('textarea#sequence').val(null);
+                        }
+                        
+                        //$('#quick_feature2').find('modal-body').empty();
 
                         //copy selected seq to clipboard using using clipboard.min.js
                         var clipboard = new Clipboard('#copy-dseq');
@@ -584,8 +617,8 @@
                         $('#tool-deri-seq').addClass('hidden');
                         $('#tool-deri-seq').removeClass('hidden');
                         //remove add feature button
-                        if (!$('#addFeature').hasClass('hidden')) {
-                            $('#addFeature').addClass('hidden');
+                        if (!$('#add_feature2').hasClass('hidden')) {
+                            $('#add_feature2').addClass('hidden');
                         }
                         //put the selected seq in html
                         $('#select-dseq').val(sSeq);
@@ -619,7 +652,7 @@
                 $('#fasta').click(function () {
                     //put seq in html
                     $('#tool-deri-full-seq').addClass('hidden');
-                    var pSeq = $('#sequence').text().trim();
+                    var pSeq = $('#psequence').text().trim();
                     $('#dsequence').val(pSeq);
                     //format the seq
                     var fastaSeq = fasta(pSeq, pName, true);
@@ -633,7 +666,7 @@
                 $('#fasta-selection').click(function () {
                     $('#tool-deri-full-seq').addClass('hidden');
                     var sSeq = $('#select-seq').val();
-                    var pSeq = $('#sequence').text().trim();
+                    var pSeq = $('#psequence').text().trim();
                     var idx = pSeq.indexOf(sSeq);
                     var len = sSeq.length;
                     var sSeqPos = (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp';
@@ -789,13 +822,13 @@
                         pSeq.selection(+d.detail.start - 1, +d.detail.end, '#c5b0d5');
 
                         //scroll within div is not working
-                        //scrollTo('#plasmid-seq');
+                        scrollTo('#plasmid-seq');
 
                         //show tool div
                         $('#tool-fv').removeClass('hidden');
                         setTimeout(function () { $('#tool-fv').addClass('hidden') }, 60000);
                         //for copy
-                        var fvSeq = $('#sequence').text().trim().substring(+d.detail.start - 1, d.detail.end);
+                        var fvSeq = $('#psequence').text().trim().substring(+d.detail.start - 1, d.detail.end);
                         //set the blast seq
                         $('#fv-select-blast').val(fvSeq);
                         //set the copying seq
@@ -973,5 +1006,22 @@
             d.color = Color(type_id);
         });
         return array;
+    }
+    function show_modal(id, title) {
+        var html = "";
+        html = html + '<div id="'+id+'" class="modal fade" role="dialog">';
+            html = html + '<div class="modal-dialog">';
+                html = html + '<div class="modal-content">';
+                    html = html + '<div class="modal-header">';
+                        html = html + '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                        html = html + '<h4 class="modal-title text-center">'+title+'</h4>';
+                    html = html + '</div>';
+                    html = html + '<div class="modal-body">';
+                        html = html + '<p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>';
+                    html = html + '</div>';
+                html = html + '</div>';
+            html = html + '</div>';
+        html = html + '</div>';
+        return html;
     }
 </script>
