@@ -1028,6 +1028,7 @@
     <Content Include="Views\Primer\Edit.cshtml" />
     <Content Include="Views\Primer\Index.cshtml" />
     <Content Include="Views\Map\QuickFeature.cshtml" />
+    <Content Include="Views\Map\EditSequence.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
