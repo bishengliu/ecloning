@@ -53,8 +53,22 @@
 
 .axis .tick line {
   stroke: rgba(0, 0, 0, 0.1);
-  stroke-width: 2px;
+  stroke-width: .5px;
 }
+.letter{
+    font-family: monospace;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
 </style>
 
 <script>
@@ -70,7 +84,7 @@
     var margin = { top: 20, right: 40, bottom: 30, left: 40 },
         width = ($("#seq-editor").width() <= 250 ? 250 : $("#seq-editor").width()) - margin.left - margin.right;
     var padding = 1.0; //half of the step
-    var r = 16; //radius of the circle
+    var r = 10; //radius of the circle
     //using d3 rangePoints
     var step = 3 * r; //distance between 2 necleotides
     var numCol = Math.floor(width / step); //number of nucleotides per line
@@ -80,17 +94,19 @@
     //height of svg
     var height = numRow * (step); //step in vertical is half of the horizontal
 
-    //process the seq data
-    var seqObj = genSeqObj(seqArray, seq_len, numCol, numRow, step, padding);
-    console.log(seqObj);
-
+    //console.log(seqObj);
 
     var x = d3.scale.ordinal()
               .domain(arrCol)
-              .rangeRoundPoints([1, width], padding);
+              .rangePoints([1, width], padding);
     var y = d3.scale.ordinal()
               .domain(arrRow)
-              .rangeRoundPoints([1, height], padding);
+              .rangePoints([1, height], padding);
+    var xRange = x.range()[1] - x.range()[0];
+    var yRange = y.range()[1] - y.range()[0];
+    //process the seq data
+    var seqObj = genSeqObj(seqArray, seq_len, numCol, numRow, xRange, yRange);
+
     var color = d3.scale.ordinal()
                   .domain(["A", "T", "G", "C"])
                   .range(['#9ecae1', '#fdae6b', '#a1d99b', '#bcbddc']);
@@ -117,20 +133,99 @@
       .attr("class", "y axis")
       .call(yAxis);
 
+    //console.log(seqObj);
     //draw circles
-    var circles = svg.selectAll(".circle")
+    var g = svg.append("g").attr("class", "unit");
+
+
+
+    var circles = g.selectAll(".circle")
                      .data(seqObj)
                   .enter()
                      .append("circle");
     var circleAttributes = circles
                             .attr("class", "circle")
+                            .attr("class", "clickable")
                             .attr("id", function (d) { return d[1]+""})
                             .attr("cx", function (d) { return d[2]; })
                             .attr("cy", function (d) { return d[3]; })
-                            .attr("r", r )
+                            .attr("r", r)
+                            .style("stroke", function (d) { return color(d[0]); })
+                            .style("stroke-width", 1.0)
+                            .style("fill-opacity", 0.5)
+                            //.style("fill", "none");
                             .style("fill", function (d) { return color(d[0]); });
+    circleAttributes
+        .on("mouseover", function (d) {
+            var target = d3.select(this);
+            var tx = d[2] + 4 * r;
+            var ty = d[3] + 2 * r;
+
+            var arc = d3.svg.arc()
+                .outerRadius(5*r - 10)
+                .innerRadius(r).startAngle(0).endAngle(2 * Math.PI);
+
+            var pie = d3.layout.pie(function (d) { return d.v; });
+            
+            target.style("fill-opacity", 0.5)
+                .style("fill", function () { return "#d62728"; });
+
+            //add some buttons
+            var tool = d3.select("svg").append("g").datum([d]).attr("transform", "translate(" + tx + "," + ty + ")");
+            var toolcircle = tool.append("path").attr("class", "toolcircle")
+                         .attr("d", arc)
+                          .style("stroke", "#5254a3")
+                            .style("stroke-width", 1.0)
+                            .style("fill-opacity", 0.8)
+                            .style("fill", "#6b6ecf");
 
 
+            tool
+                  .append("circle")
+                            .attr("class", "ecircle")
+                            .attr("class", "clickable")
+                            .attr("id", function (d) { console.log(d);return "e-"+d[0][1]  })
+                            //.attr("cx", function (d) { return d[0][2]; })
+                            //.attr("cy", function (d) { return d[0][3]; })
+                //need to prepare a dataset to control the position of button
+                            .attr("r", r)
+                            .style("stroke", color("A"))
+                            .style("stroke-width", 1.0)
+                            .style("fill-opacity", 0.8)
+                            .style("fill", "#9467bd");
+                    
+
+        })
+        .on("mouseout", function (d) { 
+            var target = d3.select(this);
+            //console.log(d);
+            target
+                .style("fill-opacity", 0.5)
+                .style("fill", function (d) { return color(d[0]); });
+
+        });
+    //add text
+    var text = g.selectAll(".letter")
+                .data(seqObj)
+             .enter()
+                .append("text")
+                                .attr({
+                                    "alignment-baseline": "middle",
+                                    "text-anchor": "middle"
+                                })
+                               .attr("y", function (d) { return d[3]; })
+                                .attr("x", function (d) { return d[2]; })
+                                .attr("class", "letter")
+                                .attr("class", "noselect")
+                                .attr("class", "clickable")
+                                .text(function (d) { return d[0]+""});
+    text.on("mouseover", function (d) {
+        var target = d3.select(this);
+        $("#" + d[1]).css('fill', "rgb(214,39,40)");
+    })
+        .on("mouseout", function (d) {
+
+        });
 
     function genArray(num) {
         var arr = [];
@@ -140,7 +235,7 @@
         return arr;
     }
 
-    function genSeqObj(seqArray, seq_len, numCol, numRow, step, padding) {
+    function genSeqObj(seqArray, seq_len, numCol, numRow, xRange, yRange) {
         //seqArray
 
         //position array
@@ -149,12 +244,11 @@
         var cxArr = [];
         var cyArr = [];
 
-        for (y = 0; y < numRow; y++) {
-            for (x = 0; x < numCol; x++) {
+        for (y1 = 0; y1 < numRow; y1++) {
+            for (x1 = 0; x1 < numCol; x1++) {
                 //left and top padding
-                var tfPadding = step * padding / 2;
-                cxArr.push(x * step + tfPadding);
-                cyArr.push(y * step + tfPadding);
+                cxArr.push(x1 * xRange + xRange/2);
+                cyArr.push(y1 * yRange + yRange/2);
             }
         }
         //remove extra items in cxArr and cyArr
@@ -165,5 +259,5 @@
         seqObj = d3.zip(seqArray, posArray, cxArr, cyArr);
         return seqObj;
     }
-    $('.tick line').attr("stroke-dasharray", "10, 5, 5, 5");
+    $('.tick line').attr("stroke-dasharray", "6, 3, 3, 3");
 </script>
