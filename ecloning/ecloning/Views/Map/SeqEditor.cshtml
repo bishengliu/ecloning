@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Edit Plasmid Sequence";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Sequence = ViewBag.Seq;
+}
+
+<div class="row">
+    <div class="col-xs-offset-1 col-sm-offset-1 col-sm-3">
+        <h3 class="text-warning">Sequence Editor</h3>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-3">
+        <div class="pull-right">
+            <br class="hidden-xs" />
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input id="searchSeq" type="text" class="form-control" placeholder="Search sequence...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="clearText">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<span id="decodeIt" class="hidden"></span>
+
+<span id="seq" class="hidden">@Sequence</span>
+<div class="col-xs-12" id="tool">
+
+</div>
+<div class="col-xs-12">
+    <div id="seq-editor">
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/d3")
+
+
