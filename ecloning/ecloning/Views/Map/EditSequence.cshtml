@@ -6,10 +6,10 @@
 }
 
 <div class="row">
-    <div class="col-xs-offset-1 col-sm-offset-1 col-sm-3">
+    <div class="col-xs-offset-1 col-sm-offset-0 col-sm-4">
         <h3 class="text-warning">Sequence Editor</h3>
     </div>
-    <div class="col-xs-12 col-sm-4 col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-3">
+    <div class="col-xs-12 col-sm-8 col-md-offset-3 col-md-5 col-lg-offset-4 col-lg-4">
         <div class="pull-right">
             <br class="hidden-xs" />
             <div class="input-group">
@@ -23,9 +23,74 @@
             </div>
         </div>
     </div>
+</div>
+<br/>
+<div class="seqDiv">
 
+<div class="row">
+    <div class="col-xs-12">
+        <form class="form-horizontal">
+            <div class="col-xs-6 col-sm-2 col-md-1 col-lg-1" style="display: inline-block">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-plus text-danger"></i></span>
+                        <select class="form-control">
+                            <option>After</option>
+                            <option>Before</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-2 col-md-1 col-lg-1" style="display: inline-block">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="position" placeholder="Position">
+                    </div>
+                </div>
+            </div>  
+            <div class="col-xs-12 col-sm-8 col-md-10 col-lg-10" style="display: inline-block">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="" placeholder="Sequence">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="go">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>               
+        </form>
+    </div>
 </div>
 
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <div class="pull-left">
+            <form class="form-inline">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-trash-o text-danger"></i></span>
+                        <span class="input-group-addon">From</span>
+                        <input type="text" class="form-control" id="from" placeholder="Position">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">To</span>
+                        <input type="text" class="form-control" id="from" placeholder="Position">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="go">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <span id="decodeIt" class="hidden"></span>
 
 <span id="seq" class="hidden">@Sequence</span>
@@ -34,7 +99,7 @@
 
     </div>
 </div>
-
+</div>
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/d3")
 
@@ -290,8 +355,10 @@
             count.css({ "fill-opacity": 0.5 });
             count.css({ fill: "red" });
         }
+        /*
         //hide current letter
         target.attr("display", "none");
+        */
         //===========tool======================
         var tx = d[2] + 4 * r;
         var ty = d[3] + 2 * r+ 29;
@@ -302,31 +369,38 @@
             .startAngle(0);
             //.endAngle(2 * Math.PI);
 
+        
         //var pie = d3.layout.pie(function (d) { return d.v; });
 
         var tool = d3.select("svg").append("g").attr("class", "tool").datum([d]).attr("transform", "translate(" + tx + "," + ty + ")");
         var toolcircle = tool.append("path").attr("class", "toolcircle")                     
                         .style("fill-opacity", 0.5)
-                        .style("fill", "#00BCD4")
+                        .style("fill", "#FFFFFF")
                         .on("mouseover", function () {
                             //here to add events
-
-
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 0.9)
+                                .style("fill", "#FFFFFF");
+                            //highlight the tools in this circle
                         })
                         .on("mouseout", function (d) {
                             //hide tool
                             var tool = d3.selectAll(".toolcircle")
                                 .transition().delay(50).attr("transform", "scale(0)");
+                            /*
                             //hide tool letter
                             var tool = d3.selectAll(".nletter")
                                 .transition().delay(50).attr("display", "none");
+                                
                             //show original letter
                             target.attr("display", "inline");
-
+                            */
                             //mouse out event
 
 
                         });
+
+        //show the big circle
         var toolcircleShow = toolcircle
             .transition()
 	        .duration(150)
@@ -334,8 +408,8 @@
                 var i = d3.interpolate(a, 2 * Math.PI);
                 return arc.endAngle(i);
             });
-        
-
+        /*
+        //add letter to the center of the big circle
         var letter = tool.append("text").attr("class", "nletter")
                             .attr({
                                 "alignment-baseline": "middle",
@@ -344,6 +418,7 @@
                             .attr("id", function (d) { return d[0][1] + "-nletter" })
                                 .style("fill", function (d) { return color(d[0][0]); })
                                 .text(function (d) { return d[0][0]; });
+        */
         //need to add some tool buttons
 
     })
@@ -374,9 +449,7 @@
                 count.css({ "fill-opacity": 0.2 });
                 count.css({ fill: "#3b3eac" });
             }
-            //===========tool======================
-            //var tool = d3.selectAll(".toolcircle")
-            //    .transition().delay(50).attr("transform", "scale(0)");
+            
         });
 
     function genArray(num) {
