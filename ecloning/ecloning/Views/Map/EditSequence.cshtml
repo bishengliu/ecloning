@@ -26,7 +26,34 @@
 </div>
 <br/>
 <div class="seqDiv">
-
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="form-horizontal">
+                <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-trash-o text-danger"></i></span>
+                            <span class="input-group-addon">From</span>
+                            <input type="text" class="form-control" id="from" placeholder="Position">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">To</span>
+                            <input type="text" class="form-control" id="from" placeholder="Position">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="go">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 <div class="row">
     <div class="col-xs-12">
         <form class="form-horizontal">
@@ -48,7 +75,7 @@
                     </div>
                 </div>
             </div>  
-            <div class="col-xs-12 col-sm-8 col-md-10 col-lg-10" style="display: inline-block">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="display: inline-block">
                 <div class="form-group">
                     <div class="input-group">
                         <input type="text" class="form-control" id="" placeholder="Sequence">
@@ -61,34 +88,6 @@
                 </div>
             </div>               
         </form>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <div class="pull-left">
-            <form class="form-inline">
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-trash-o text-danger"></i></span>
-                        <span class="input-group-addon">From</span>
-                        <input type="text" class="form-control" id="from" placeholder="Position">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon">To</span>
-                        <input type="text" class="form-control" id="from" placeholder="Position">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" id="go">
-                                <i class="fa fa-check"></i>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 <span id="decodeIt" class="hidden"></span>
@@ -120,11 +119,17 @@
   stroke: rgba(0, 0, 0, 0.1);
   stroke-width: .5px;
 }
-.letter, .nletter{
+.letter{
     font-family: monospace;
     font-size: 13px;
     font-weight: bold;
 }
+.nletter{
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: bold;
+}
+
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -201,7 +206,7 @@
     //  .attr("class", "y axis")
     //  .call(yAxis);
 
-    //console.log(seqObj);
+ 
     //draw circles
     var g = svg.append("g").attr("class", "unit");
 
@@ -223,7 +228,7 @@
                             .style("fill", "#3b3eac");
                             //.style("fill", function (d) { return color(d[0]); });
 
-    //add seq coint
+    //add seq count
     var counts = g.selectAll(".count")
                 .data(seqObj)
              .enter()
@@ -244,75 +249,8 @@
                                 .style("fill", "#3b3eac")
                                 .text(function (d) { return d[1] + "" });
 
-    /*
-    var circles = g.selectAll(".circle")
-                     .data(seqObj)
-                  .enter()
-                     .append("circle");
-    var circleAttributes = circles
-                            .attr("class", "circle")
-                            .attr("class", "clickable")
-                            .attr("id", function (d) { return d[1]+""})
-                            .attr("cx", function (d) { return d[2]; })
-                            .attr("cy", function (d) { return d[3]; })
-                            .attr("r", r)
-                            .style("stroke", "none")
-                            //.style("stroke", function (d) { return color(d[0]); })
-                            .style("stroke-width", 1.0)
-                            .style("fill-opacity", 0.5)
-                            .style("fill", "none");
-                            //.style("fill", function (d) { return color(d[0]); });
-    circleAttributes
-        .on("mouseover", function (d) {
-            var target = d3.select(this);
-            var tx = d[2] + 4 * r;
-            var ty = d[3] + 2 * r;
 
-            var arc = d3.svg.arc()
-                .outerRadius(5*r - 10)
-                .innerRadius(r).startAngle(0).endAngle(2 * Math.PI);
-
-            var pie = d3.layout.pie(function (d) { return d.v; });
-            
-            target.style("fill-opacity", 0.5)
-                .style("fill", function () { return "#d62728"; });
-            
-            //add some buttons
-            var tool = d3.select("svg").append("g").datum([d]).attr("transform", "translate(" + tx + "," + ty + ")");
-            var toolcircle = tool.append("path").attr("class", "toolcircle")
-                         .attr("d", arc)
-                          .style("stroke", "#5254a3")
-                            .style("stroke-width", 1.0)
-                            .style("fill-opacity", 0.8)
-                            .style("fill", "#66aa00");
-
-
-            tool
-                  .append("circle")
-                            .attr("class", "ecircle")
-                            .attr("class", "clickable")
-                            .attr("id", function (d) { console.log(d);return "e-"+d[0][1]  })
-                            //.attr("cx", function (d) { return d[0][2]; })
-                            //.attr("cy", function (d) { return d[0][3]; })
-                //need to prepare a dataset to control the position of button
-                            .attr("r", r)
-                            .style("stroke", color("A"))
-                            .style("stroke-width", 1.0)
-                            .style("fill-opacity", 0.8)
-                            .style("fill", "#d62728");
-                    
-        
-        })
-        .on("mouseout", function (d) { 
-            var target = d3.select(this);
-            //console.log(d);
-            target
-                .style("fill-opacity", 0.5)
-                .style("fill", function (d) { return color(d[0]); });
-        });
-*/
-
-    //add text
+    //add neucleotide letters
     var text = g.selectAll(".letter")
                 .data(seqObj)
              .enter()
@@ -328,10 +266,16 @@
                                 .attr("class", "clickable")
                                 .attr("id", function (d) { return d[1] + "-letter" })
                                 .style("fill", function (d) { return color(d[0]); })
-                                .text(function (d) { return d[0]+""});
+                                .text(function (d) { return d[0] + "" });
+
+    //add events on letter
     text.on("mouseover", function (d) {
-        //============points and count===================
+        //get data
         var target = d3.select(this);
+        var target_data = target[0][0].__data__;
+        var curLetter = target_data[0];
+        var curPos = target_data[1];
+        //============points and count===================
         //point
         var pointId = "#" + d[1] + "-point";
         var point = $(pointId);
@@ -351,7 +295,7 @@
             //count is originally hiden, now show it
             count.css({display: "inline"});
 
-                //change color
+            //change color
             count.css({ "fill-opacity": 0.5 });
             count.css({ fill: "red" });
         }
@@ -361,65 +305,122 @@
         */
         //===========tool======================
         var tx = d[2] + 4 * r;
-        var ty = d[3] + 2 * r+ 29;
+        var ty = d[3] + 2 * r + 29;
+        //data to define the position of buttons
+        var dataLetter = [
+                            { info: "Change to \"A\"", type: "change", letter: "A", value: 0.5 },
+                            { info: "Change to \"T\"", type: "change", letter: "T", value: 0.5 },
+                            { info: "Change to \"G\"", type: "change", letter: "G", value: 0.5 },
+                            { info: "Change to \"C\"", type: "change", letter: "C", value: 0.5 },
+
+                            { info: "Insert \"A\", before", type: "before", letter: "A", value: 0.5 },
+                            { info: "Insert \"T\", before", type: "before", letter: "T", value: 0.5 },
+                            { info: "Insert \"G\", before", type: "before", letter: "G", value: 0.5 },
+                            { info: "Insert \"C\", before", type: "before", letter: "C", value: 0.5 },
+
+                            { info: "Insert \"A\", after", type: "after", letter: "A", value: 0.5 },
+                            { info: "Insert \"T\", after", type: "after", letter: "T", value: 0.5 },
+                            { info: "Insert \"G\", after", type: "after", letter: "G", value: 0.5 },
+                            { info: "Insert \"C\", after", type: "after", letter: "C", value: 0.5 },
+        ];
+        var toolcolor = d3.scale.ordinal()
+            .domain(["change", "before", "after"])
+            .range(["#0099c6", "#994499", "#66aa00"]);
+        var toolpie = d3.layout.pie()
+            .value(function (d) { return d.value; })
+            .sort(null);
 
         var arc = d3.svg.arc()
-            .outerRadius(5 * r - 10)
-            //.innerRadius(r)
-            .startAngle(0);
-            //.endAngle(2 * Math.PI);
-
+            .outerRadius(5 * r - 10);
         
         //var pie = d3.layout.pie(function (d) { return d.v; });
 
-        var tool = d3.select("svg").append("g").attr("class", "tool").datum([d]).attr("transform", "translate(" + tx + "," + ty + ")");
-        var toolcircle = tool.append("path").attr("class", "toolcircle")                     
-                        .style("fill-opacity", 0.5)
-                        .style("fill", "#FFFFFF")
+        var tool = d3.select("svg").append("g").attr("class", "tool")
+                     .on("mouseleave", function (d) {
+                        //hide tool
+                        var tool = d3.selectAll(".tool")
+                            .transition().delay(150)//.attr("transform", "scale(0)");
+                            .attr("display", "none");
+                        })
+            .datum(dataLetter).attr("transform", "translate(" + tx + "," + ty + ")");
+
+        //big toolcircle
+        var toolcircle = tool.selectAll("path")
+                      .data(toolpie)
+                       .enter();
+
+        var toolpie = toolcircle.append("path").attr("class", "toolcircle")
+                        .style("fill-opacity", 0.8)
+                        .attr("class", "clickable")
+                        .style("fill", function (d, i) { return toolcolor(d.data.type); })
                         .on("mouseover", function () {
                             //here to add events
                             var tgt = d3.select(this);
-                            tgt.style("fill-opacity", 0.9)
-                                .style("fill", "#FFFFFF");
-                            //highlight the tools in this circle
+                            tgt.style("fill-opacity", 1.0);
+                                //.style("fill", "#FFFFFF");
                         })
-                        .on("mouseout", function (d) {
-                            //hide tool
-                            var tool = d3.selectAll(".toolcircle")
-                                .transition().delay(50).attr("transform", "scale(0)");
-                            /*
-                            //hide tool letter
-                            var tool = d3.selectAll(".nletter")
-                                .transition().delay(50).attr("display", "none");
-                                
-                            //show original letter
-                            target.attr("display", "inline");
-                            */
-                            //mouse out event
-
-
+                        .on("mouseleave", function (d) {
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 0.8);
                         });
 
         //show the big circle
-        var toolcircleShow = toolcircle
+        toolpie
             .transition()
-	        .duration(150)
+	        .duration(1000)
             .attrTween("d", function (d, i, a) {
-                var i = d3.interpolate(a, 2 * Math.PI);
-                return arc.endAngle(i);
+                var i = d3.interpolate(this._current, d.data.endAngle);
+                this._current = i(0);
+                return function (t) {
+                    return arc(d);
+                };
             });
-        /*
-        //add letter to the center of the big circle
-        var letter = tool.append("text").attr("class", "nletter")
-                            .attr({
-                                "alignment-baseline": "middle",
-                                "text-anchor": "middle"
-                            })
-                            .attr("id", function (d) { return d[0][1] + "-nletter" })
-                                .style("fill", function (d) { return color(d[0][0]); })
-                                .text(function (d) { return d[0][0]; });
-        */
-        //need to add some tool buttons
+
+        //add "A", "T","G" and C on the toolcircle
+        var toolletter = toolcircle.append("text")
+                                   .attr("dy", ".35em")
+                                   .attr("class", "clickable")
+                                   .attr("text-anchor", "middle")
+                                   .attr("transform", function (d) {
+                                         d.innerRadius = 5 * r / 2 - 10; // Set Inner Coordinate
+                                         return "translate(" + arc.centroid(d) + ")rotate(" + angle(d) + ")";
+                                    })
+                                    .style("fill", "White")
+                                    .style("font", "10px Arial")
+                                    .text(function (d) { return d.data.letter; });
+
+        
+        //add inner criclefor remove function
+        var innerarc = d3.svg.arc()
+            .outerRadius(5 * r/2 - 10)
+            .startAngle(0)
+            .endAngle(Math.PI * 2);
+        var innerCircle = tool.append("path").attr("class", "innercircle")
+                        .style("fill-opacity", 0.6)
+                        .attr("class", "clickable")
+                        .style("fill", "#fd8d3c")
+                        .attr("d", innerarc)
+                        .on("mouseover", function () {
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 1.0);
+                        })
+                        .on("mouseleave", function (d) {
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 0.6);                            
+                        });
+        //add text with strike-through in the remove-inner circle      
+        var removeLetter = tool.append("text")
+                              .attr("dy", ".35em")
+                              .attr("text-anchor", "middle")
+                              .attr("class", "clickable")
+                              .style("fill", "white")
+                              .style("font", "13px Arial")
+                              .style("font-weight", "bold")
+                              .style("text-decoration", "line-through")
+                              .style("strikethrough-thickness", 4)
+                              .style("stroke", "red")
+                              .text(curLetter);
+
 
     })
         .on("mouseout", function (d) {
@@ -445,7 +446,7 @@
                 //count is originally hiden, now hidden it again
                 count.css({display: "none"});
 
-                    //change color back
+                //change color back
                 count.css({ "fill-opacity": 0.2 });
                 count.css({ fill: "#3b3eac" });
             }
@@ -489,5 +490,10 @@
         var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
         return colores_g[n % colores_g.length];
     }
+    function angle(d) {
+        var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+        return a > 90 ? a - 180 : a;
+    }
+
     $('.tick line').attr("stroke-dasharray", "6, 3, 3, 3");
 </script>
