@@ -558,3 +558,20 @@ svg text tspan{
     line-height: 1;
     font-size:80%;
 }
+
+.tooltip {
+    background: #eee;
+    box-shadow: 0 0 5px #999999;
+    color: #333;
+    position: absolute;			
+    text-align: center;			
+    width: 100px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;	
+}
+.tooltip-smallfont{
+    font-size: 10px;
+}

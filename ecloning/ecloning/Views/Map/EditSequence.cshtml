@@ -275,6 +275,10 @@
         var target_data = target[0][0].__data__;
         var curLetter = target_data[0];
         var curPos = target_data[1];
+        //preparep tooltip div
+        var tooltip = d3.select("body").append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
         //============points and count===================
         //point
         var pointId = "#" + d[1] + "-point";
@@ -308,20 +312,21 @@
         var ty = d[3] + 2 * r + 29;
         //data to define the position of buttons
         var dataLetter = [
-                            { info: "Change to \"A\"", type: "change", letter: "A", value: 0.5 },
-                            { info: "Change to \"T\"", type: "change", letter: "T", value: 0.5 },
-                            { info: "Change to \"G\"", type: "change", letter: "G", value: 0.5 },
-                            { info: "Change to \"C\"", type: "change", letter: "C", value: 0.5 },
+                            
+                            { info: "<span class=\"text-info\">Insert \"A\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "A", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"T\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "T", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"G\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "G", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"C\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "C", value: 0.5 },
 
-                            { info: "Insert \"A\", before", type: "before", letter: "A", value: 0.5 },
-                            { info: "Insert \"T\", before", type: "before", letter: "T", value: 0.5 },
-                            { info: "Insert \"G\", before", type: "before", letter: "G", value: 0.5 },
-                            { info: "Insert \"C\", before", type: "before", letter: "C", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"A\"</span>", type: "change", letter: "A", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"T\"</span>", type: "change", letter: "T", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"G\"</span>", type: "change", letter: "G", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"C\"</span>", type: "change", letter: "C", value: 0.5 },
 
-                            { info: "Insert \"A\", after", type: "after", letter: "A", value: 0.5 },
-                            { info: "Insert \"T\", after", type: "after", letter: "T", value: 0.5 },
-                            { info: "Insert \"G\", after", type: "after", letter: "G", value: 0.5 },
-                            { info: "Insert \"C\", after", type: "after", letter: "C", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"A\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "A", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"T\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "T", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"G\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "G", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"C\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "C", value: 0.5 }
         ];
         var toolcolor = d3.scale.ordinal()
             .domain(["change", "before", "after"])
@@ -353,15 +358,26 @@
                         .style("fill-opacity", 0.8)
                         .attr("class", "clickable")
                         .style("fill", function (d, i) { return toolcolor(d.data.type); })
-                        .on("mouseover", function () {
+                        .on("mouseover", function (d) {
                             //here to add events
                             var tgt = d3.select(this);
+                            var tgtdata = tgt[0][0].__data__.data;
                             tgt.style("fill-opacity", 1.0);
-                                //.style("fill", "#FFFFFF");
+                            //show tooltip
+                            tooltip.transition()
+                                    .duration(200)
+                                    .style("opacity", .9);
+                            tooltip.html(tgtdata.info)
+                                .style("left", (d3.event.pageX  + 10) + "px")
+                                .style("top", (d3.event.pageY + 30) + "px");
                         })
                         .on("mouseleave", function (d) {
                             var tgt = d3.select(this);
                             tgt.style("fill-opacity", 0.8);
+                            //hide tooptip
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
                         });
 
         //show the big circle
@@ -403,10 +419,21 @@
                         .on("mouseover", function () {
                             var tgt = d3.select(this);
                             tgt.style("fill-opacity", 1.0);
+                            //show tooltip
+                            tooltip.transition()
+                                    .duration(200)
+                                    .style("opacity", .9);
+                            tooltip.html(function (d) { return "<span class=\"text-danger\"><i class=\"fa fa-trash-o text-danger\"></i> Remove</span>"; })
+                                .style("left", (d3.event.pageX - 40) + "px")
+                                .style("top", (d3.event.pageY + 50) + "px");
                         })
                         .on("mouseleave", function (d) {
                             var tgt = d3.select(this);
-                            tgt.style("fill-opacity", 0.6);                            
+                            tgt.style("fill-opacity", 0.6);
+                            //hide tooptip
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
                         });
         //add text with strike-through in the remove-inner circle      
         var removeLetter = tool.append("text")
