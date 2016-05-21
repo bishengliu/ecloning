@@ -575,3 +575,8 @@ svg text tspan{
 .tooltip-smallfont{
     font-size: 10px;
 }
+/*.changed{
+    text-decoration-line: underline;
+    text-decoration-style:double;
+    text-decoration-color: purple !important;    
+}*/

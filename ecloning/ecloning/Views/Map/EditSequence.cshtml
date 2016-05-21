@@ -152,6 +152,10 @@
     var seq_len = seqArray.length;
     //console.log(seqArray);
     
+    //empty object to store user editing info, will be updated later
+    var EditObj = [];
+
+
     //prepare svg
     var margin = { top: 50, right: 40, bottom: 60, left: 40 },
         width = ($("#seq-editor").width() <= 250 ? 250 : $("#seq-editor").width()) - margin.left - margin.right;
@@ -207,7 +211,7 @@
     //  .call(yAxis);
 
  
-    //draw circles
+    //draw points
     var g = svg.append("g").attr("class", "unit");
 
     var points = g.selectAll(".point")
@@ -249,7 +253,6 @@
                                 .style("fill", "#3b3eac")
                                 .text(function (d) { return d[1] + "" });
 
-
     //add neucleotide letters
     var text = g.selectAll(".letter")
                 .data(seqObj)
@@ -275,6 +278,8 @@
         var target_data = target[0][0].__data__;
         var curLetter = target_data[0];
         var curPos = target_data[1];
+        var curId = "#" + curPos + "-letter";
+
         //preparep tooltip div
         var tooltip = d3.select("body").append("div")
                             .attr("class", "tooltip")
@@ -343,11 +348,13 @@
         var tool = d3.select("svg").append("g").attr("class", "tool")
                      .on("mouseleave", function (d) {
                         //hide tool
-                        var tool = d3.selectAll(".tool")
+                        d3.selectAll(".tool")
                             .transition().delay(150)//.attr("transform", "scale(0)");
                             .attr("display", "none");
+                         //delete all tooltip
+                        d3.selectAll(".tooltip").remove();
                         })
-            .datum(dataLetter).attr("transform", "translate(" + tx + "," + ty + ")");
+                     .datum(dataLetter).attr("transform", "translate(" + tx + "," + ty + ")");
 
         //big toolcircle
         var toolcircle = tool.selectAll("path")
@@ -368,18 +375,75 @@
                                     .duration(200)
                                     .style("opacity", .9);
                             tooltip.html(tgtdata.info)
-                                .style("left", (d3.event.pageX  + 10) + "px")
+                                .style("left", (d3.event.pageX + 10) + "px")
                                 .style("top", (d3.event.pageY + 30) + "px");
                         })
                         .on("mouseleave", function (d) {
                             var tgt = d3.select(this);
                             tgt.style("fill-opacity", 0.8);
-                            //hide tooptip
+                            //hide tooptip        
                             tooltip.transition()
                                 .duration(500)
                                 .style("opacity", 0);
-                        });
+                        })
+                        .on("click", function (d) {
+                            //hide tool
+                            d3.selectAll(".tool")
+                              .transition().delay(150)
+                              .attr("display", "none");
+                            //find which pie is the current tgt
+                            var ctgt = d3.select(this);
+                            var ctgtdata = ctgt[0][0].__data__.data;
+                            var ctype = ctgtdata.type;
+                            var cletter = ctgtdata.letter;
+                            //console.log(target_data);
+                            //decide what to do
+                            if (ctype == "change") {
+                                //change to cletter
+                                //hide tool
+                                d3.selectAll(".tool")
+                                  .transition().delay(150)
+                                  .attr("display", "none");
+                                $(curId).addClass("changed")
+                                    .css("text-decoration", "underline")
+                                    .css("text-decoration-style", "double")
+                                    .css("font-size", "15px")
+                                    .css("font-weight", "bold")
+                                    .css("stroke", "#756bb1")
+                                    .css("fill", function () { return color(cletter);})
+                                    .text(cletter);
+                                //add original letter below
+                                var oletter = d3.select("svg").append("text").attr("class", "oriLetter letter clickable")
+                                    .attr("y", target_data[3]+68)
+                                    .attr("x", target_data[2]+36)
+                                    //.attr("class", "letter")
+                                    //.attr("class", "clickable")
+                                    .attr("id", target_data[1] + "-oriletter")
+                                    .style("font", "10px Arial")
+                                    .style("fill", "#969696")
+                                    .text(target_data[0]);
 
+                                //update EditObj
+                                EditObj = genEditObj(curPos, curLetter, "change", null, cletter, EditObj);
+                                //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                            }
+                            if (ctype == "before") {
+                                //insert cletter before current
+                                //hide tool
+                                d3.selectAll(".tool")
+                                  .transition().delay(150)
+                                  .attr("display", "none");
+                            }
+                            if (ctype == "after") {
+                                //insert cletter after current
+                                //hide tool
+                                d3.selectAll(".tool")
+                                  .transition().delay(150)
+                                  .attr("display", "none");
+                            }
+
+                        });
         //show the big circle
         toolpie
             .transition()
@@ -403,9 +467,67 @@
                                     })
                                     .style("fill", "White")
                                     .style("font", "10px Arial")
+                                    .style("font-weight", "bold")
                                     .text(function (d) { return d.data.letter; });
+        //tool letter events
+        toolletter.on("click", function (d) {
+            //hide tool
+            d3.selectAll(".tool")
+              .transition().delay(150)
+              .attr("display", "none");
+            //find which pie is the current tgt
+            var ctgt = d3.select(this);
+            var ctgtdata = ctgt[0][0].__data__.data;
+            var ctype = ctgtdata.type;
+            var cletter = ctgtdata.letter;
+            //decide what to do
+            if (ctype == "change") {
+                //change to cletter
+                //hide tool
+                d3.selectAll(".tool")
+                  .transition().delay(150)
+                  .attr("display", "none");
+                $(curId).addClass("changed")
+                        .css("text-decoration", "underline")
+                        .css("text-decoration-style", "double")
+                        .css("font-size", "15px")
+                        .css("font-weight", "bold")
+                        .css("stroke", "#756bb1")
+                        .css("fill", function () { return color(cletter); })
+                        .text(cletter);
+                //add original letter below
+                var oletter = d3.select("svg").append("text").attr("class", "oriLetter letter clickable")
+                    .attr("y", target_data[3] + 68)
+                    .attr("x", target_data[2] + 36)
+                    //.attr("class", "letter")
+                    //.attr("class", "clickable")
+                    .attr("id", target_data[1] + "-oriletter")
+                    .style("font", "10px Arial")
+                    .style("fill", "#969696")
+                    .text(target_data[0]);
 
-        
+                //update EditObj
+                EditObj = genEditObj(curPos, curLetter, "change", null, cletter, EditObj);
+                //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+            }
+            if (ctype == "before") {
+                //insert cletter before current
+                //hide tool
+                d3.selectAll(".tool")
+                  .transition().delay(150)
+                  .attr("display", "none");
+            }
+            if (ctype == "after") {
+                //insert cletter after current
+                //hide tool
+                d3.selectAll(".tool")
+                  .transition().delay(150)
+                  .attr("display", "none");
+            }
+
+        });
+
+
         //add inner criclefor remove function
         var innerarc = d3.svg.arc()
             .outerRadius(5 * r/2 - 10)
@@ -430,7 +552,7 @@
                         .on("mouseleave", function (d) {
                             var tgt = d3.select(this);
                             tgt.style("fill-opacity", 0.6);
-                            //hide tooptip
+                            //hide tooptip$
                             tooltip.transition()
                                 .duration(500)
                                 .style("opacity", 0);
@@ -447,8 +569,35 @@
                               .style("strikethrough-thickness", 4)
                               .style("stroke", "red")
                               .text(curLetter);
-
-
+        //innercircle click event
+        innerCircle.on("click", function (d) {
+            //hide tool
+            d3.selectAll(".tool")
+              .transition().delay(150)
+              .attr("display", "none");
+            //add strikethrough on the seq neceotide and add removed class
+            $(curId).addClass("removed").css("text-decoration", "line-through")
+                              //.css("text-decoration-color", "red")
+                              .css("font-size", "15px")
+                              .css("stroke", "#000000");
+            //update EditObj
+            EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+        });
+        //innnerLetter click event
+        removeLetter.on("click", function (d) {
+            //hide tool
+            d3.selectAll(".tool")
+              .transition().delay(150)
+              .attr("display", "none");
+            //add strikethrough on the seq neceotide
+            $(curId).addClass("removed").css("text-decoration", "line-through")
+                              //.css("text-decoration-color", "red")
+                              .css("font-size", "15px")
+                              .css("stroke", "#000000");
+            //update EditObj
+            EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+        });
+        console.log(EditObj);
     })
         .on("mouseout", function (d) {
             //============points and count===================
@@ -479,6 +628,7 @@
             }
             
         });
+
 
     function genArray(num) {
         var arr = [];
@@ -522,5 +672,106 @@
         return a > 90 ? a - 180 : a;
     }
 
-    $('.tick line').attr("stroke-dasharray", "6, 3, 3, 3");
+    //update changeObj
+    function genEditObj(pos, oriLetter, action, lor, newLetter, EditObj) {        
+        //pos: -1, // original pos, allow same pos for many times
+        //oriLetter: "A", //original letter
+        //action: "delete", //including, delete, change, insert
+        //lor: "left", //left or right for insert
+        //newLetter: "T", //empty for delete, one-letter for change, one or more than one for insert
+        //timestamp: "timestamp", edit by ts
+        //EditObj is an array for keeping editing info
+        var timestamp = $.now();
+        //check action
+        if (action == "delete") {
+            var obj = {
+                "pos": pos,
+                "oriLetter": oriLetter,
+                "action": action,
+                "lor": null,
+                "newLetter": null,
+                "time": timestamp
+            };
+            EditObj.push(obj);
+        }
+        if (action == "change") {
+            var obj = {
+                "pos": pos,
+                "oriLetter": oriLetter,
+                "action": action,
+                "lor": null,
+                "newLetter": newLetter,
+                "time": timestamp
+            };
+            EditObj.push(obj);
+        }
+        if (action == "insert") {
+            var obj = {
+                "pos": pos,
+                "oriLetter": oriLetter,
+                "action": action,
+                "lor": lor,
+                "newLetter": newLetter,
+                "time": timestamp
+            };
+            EditObj.push(obj);
+        }
+        return EditObj;
+    }
+
+    //generate the final seq
+    function genFinalSeq(oriSeqArray, EditObj) {
+        //oriSeqArray, orignal seq arrray
+        //EditObj: editing info
+
+        //first generate orignal seq object
+        var oriObjArray = [];
+        //object array {"oriPos": 1+"", "oriLetter": "A"}
+        $.each(oriSeqArray, function (i, d) {
+            var obj = { oriPos: i + "", oriLetter: d };
+            oriObjArray.push(obj);
+        })
+
+        $.each(EditObj, function (i, d) {
+            //find the position in oriObjArray, since there is deletion, cannot use directly the pos-1 to find index
+            var pos = +d.pos;
+            //find the index in oriObjArray
+            var index = -1;
+            $.each(oriSeqArray, function (si, sd) {
+                if (+sd.oriPos === pos) {
+                    index = si;
+                }
+            });
+            if (index !== -1) {
+                //process this edit info
+                if (d.action == "delete") {
+                    //remove this object
+                    oriSeqArray.splice(index, 1);
+                }
+                if (d.action == "change") {
+                    var nletter = d.newLetter;
+                    //update the letter in oriObjArray
+                    oriObjArray[index].oriLetter = nletter;
+                }
+                if (d.action == "insert") {
+                    var nLetter = d.newLetter;                    
+                    if (d.lor == "left") {
+                        var nPos = d.pos + "left";
+                        var obj = { oriPos: nPos, oriLetter: nLetter };
+                        //insert at left to the index
+                        oriObjArray.splice(index, 0, obj);
+                    }
+                    if (d.lor == "right") {
+                        var nPos = d.pos + "right";
+                        var obj = { oriPos: nPos, oriLetter: nLetter };
+                        //insert at right to the index
+                        oriObjArray.splice(index+1, 0, obj);
+                    }
+                }
+            }
+        })
+
+        return oriObjArray;
+    }
+    //$('.tick line').attr("stroke-dasharray", "6, 3, 3, 3");
 </script>
