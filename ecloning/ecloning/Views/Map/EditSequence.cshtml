@@ -413,16 +413,15 @@
                                     .css("fill", function () { return color(cletter);})
                                     .text(cletter);
                                 //add original letter below
-                                var oletter = d3.select("svg").append("text").attr("class", "oriLetter letter clickable")
-                                    .attr("y", target_data[3]+68)
-                                    .attr("x", target_data[2]+36)
-                                    //.attr("class", "letter")
-                                    //.attr("class", "clickable")
-                                    .attr("id", target_data[1] + "-oriletter")
-                                    .style("font", "10px Arial")
-                                    .style("fill", "#969696")
-                                    .text(target_data[0]);
-
+                                if ($("#" + target_data[1] + "-oriletter").length == 0) {
+                                    var oletter = d3.select("svg").append("text").attr("class", "oriLetter letter clickable")
+                                                                        .attr("y", target_data[3] + 68)
+                                                                        .attr("x", target_data[2] + 36)
+                                                                        .attr("id", target_data[1] + "-oriletter")
+                                                                        .style("font", "10px Arial")
+                                                                        .style("fill", "#969696")
+                                                                        .text(target_data[0]);
+                                }                                
                                 //update EditObj
                                 EditObj = genEditObj(curPos, curLetter, "change", null, cletter, EditObj);
                                 //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
@@ -434,6 +433,97 @@
                                 d3.selectAll(".tool")
                                   .transition().delay(150)
                                   .attr("display", "none");
+                                //add insert before (left)
+                                //check whether there is  an insert already
+                                //add new letter
+                                var leftId = (target_data[1] - 1) + "-" + target_data[1] + "-insert";
+
+                                if ($("#" + leftId).length ===0) {
+                                    var leftgroup = d3.select("svg").append("g").attr("id", leftId);
+                                    var leftSlash = leftgroup.append("line")
+                                                             .style("stroke", "gray")
+                                                             .attr("x1", target_data[2] + 30)
+                                                             .attr("y1", target_data[3] + 45)
+                                                             .attr("x2", target_data[2] + 20)
+                                                             .attr("y2", target_data[3] + 30);
+                                    //apend letter
+                                    var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
+                                                            .attr("y", target_data[3] + 40)
+                                                            .attr("x", target_data[2] + 27)
+                                                            .attr("id", (target_data[1] - 1) + "-" + target_data[1] + "-letter")
+                                                            .attr("font-size", "15px")
+                                                            .attr("font-weight", "bold")
+                                                            .attr("stroke", "#756bb1")
+                                                            .style("fill", function () { return color(cletter); })
+                                                            .text(cletter);
+                                    //append line
+                                    var lineId = (target_data[1] - 1) + "-" + target_data[1] + "-line";
+                                    var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
+                                                               .style("stroke", "purple")
+                                                               .style("stroke-width", 2)
+                                                               .attr("x1", target_data[2] + 27)
+                                                               .attr("y1", target_data[3] + 35)
+                                                               .attr("x2", target_data[2] + 37)
+                                                               .attr("y2", target_data[3] + 35)
+                                                               .attr("stroke-dasharray", "2, 2, 2, 2")
+                                                               .style("opacity", 0);
+                                    //append a div in body
+                                    var divId = (target_data[1] - 1) + "-" + target_data[1] + "-div";
+                                    var insertDiv = d3.select("body").append("div")
+                                                      .attr("id", divId)
+                                                      .attr("class","seq-tooltip")
+                                                      .style("opacity", 0);
+                                    //dot line event
+                                    leftline.on("mouseover", function () {
+                                                   insertDiv.transition()
+                                                    .duration(200)
+                                                    .style("opacity", .9)
+                                                    .style("left", (d3.event.pageX - 40) + "px")
+                                                     .style("top", (d3.event.pageY - 50) + "px");
+                                                    })
+                                            .on("mouseleave", function () {
+                                                insertDiv.transition()
+                                                    .duration(200)
+                                                    .style("opacity", 0);                                                    
+                                            });
+                                    //update EditObj
+                                    EditObj = genEditObj(curPos, curLetter, "insert", "left", cletter, EditObj);
+
+                                    //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                                }
+                                else {
+                                    //check whether it is letter for a plus symbol
+                                    if ($("#" + (target_data[1] - 1) + "-" + target_data[1] + "-letter").length !== 0) {
+                                        //this is a letter
+                                        //get the nletter
+                                        var previous_letter = $("#" + (target_data[1] - 1) + "-" + target_data[1] + "-letter").text();
+                                        var nletters = previous_letter + cletter;
+                                        //find the div
+                                        var divId = (target_data[1] - 1) + "-" + target_data[1] + "-div";
+                                        //save the letter in the new div
+                                        $("#"+divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+
+                                        //remove leftLetter
+                                        $("#" + (target_data[1] - 1) + "-" + target_data[1] + "-letter").remove();
+                                        //show dash line
+                                        var lineId = (target_data[1] - 1) + "-" + target_data[1] + "-line";
+                                        $("#" + lineId).css("opacity", .9);
+                                        //update EditObj
+                                        EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                                    }
+                                    else {
+                                        //this is a plus div
+                                        var divId = (target_data[1] - 1) + "-" + target_data[1] + "-div";
+                                        var previous_letter = $("#" + divId + " span").text();
+                                        var nletters = previous_letter + cletter;
+                                        $("#" + divId).empty();
+                                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+                                        //update EditObj
+                                        EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                                    }
+                                }
+                               
                             }
                             if (ctype == "after") {
                                 //insert cletter after current
@@ -441,8 +531,118 @@
                                 d3.selectAll(".tool")
                                   .transition().delay(150)
                                   .attr("display", "none");
-                            }
 
+
+                                //add insert before (left)
+                                //check whether there is  an insert already
+                                //add new letter
+                                var posString = target_data[1] + "-" + (target_data[1] + 1);
+                                var xshift = +2 * r;
+                                var leftId = posString + "-insert";
+
+                                if ($("#" + leftId).length === 0) {
+                                    var leftgroup = d3.select("svg").append("g").attr("id", leftId);
+                                    var leftSlash = leftgroup.append("line")
+                                                             .style("stroke", "gray")
+                                                             .attr("x1", target_data[2] + 30 + xshift)
+                                                             .attr("y1", target_data[3] + 45)
+                                                             .attr("x2", target_data[2] + 20 + xshift)
+                                                             .attr("y2", target_data[3] + 30);
+                                    //apend letter
+                                    var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
+                                                            .attr("y", target_data[3] + 40)
+                                                            .attr("x", target_data[2] + 27 + xshift)
+                                                            .attr("id", posString + "-letter")
+                                                            .attr("font-size", "15px")
+                                                            .attr("font-weight", "bold")
+                                                            .attr("stroke", "#756bb1")
+                                                            .style("fill", function () { return color(cletter); })
+                                                            .text(cletter);
+                                    //append line
+                                    var lineId = posString + "-line";
+                                    var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
+                                                               .style("stroke", "purple")
+                                                               .style("stroke-width", 2)
+                                                               .attr("x1", target_data[2] + 27 + xshift)
+                                                               .attr("y1", target_data[3] + 35)
+                                                               .attr("x2", target_data[2] + 37 + xshift)
+                                                               .attr("y2", target_data[3] + 35)
+                                                               .attr("stroke-dasharray", "2, 2, 2, 2")
+                                                               .style("opacity", 0);
+                                    //append a div in body
+                                    var divId = posString + "-div";
+                                    var insertDiv = d3.select("body").append("div")
+                                                      .attr("id", divId)
+                                                      .attr("class", "seq-tooltip")
+                                                      .style("opacity", 0);
+                                    //dot line event
+                                    leftline.on("mouseover", function () {
+                                        insertDiv.transition()
+                                         .duration(200)
+                                         .style("opacity", .9)
+                                         .style("left", (d3.event.pageX - 40) + "px")
+                                          .style("top", (d3.event.pageY - 50) + "px");
+                                    })
+                                            .on("mouseleave", function () {
+                                                insertDiv.transition()
+                                                    .duration(200)
+                                                    .style("opacity", 0);
+                                            });
+                                    //update EditObj
+                                    if (curPos == seq_len) {
+                                        //length + 1************************************************************************
+                                        EditObj = genEditObj(curPos+1, curLetter, "insert", "left", cletter, EditObj);
+                                    }
+                                    else {
+                                        EditObj = genEditObj(curPos, curLetter, "insert", "left", cletter, EditObj);
+                                    }
+                                    //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                                }
+                                else {
+                                    //check whether it is letter for a plus symbol
+                                    if ($("#" + posString + "-letter").length !== 0) {
+                                        //this is a letter
+                                        //get the nletter
+                                        var previous_letter = $("#" + posString + "-letter").text();
+                                        var nletters = cletter + previous_letter;
+                                        //find the div
+                                        var divId = target_data[1] + "-" + (target_data[1] + 1) + "-div";
+                                        //save the letter in the new div
+                                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+
+                                        //remove leftLetter
+                                        $("#" + posString + "-letter").remove();
+                                        //show dash line
+                                        var lineId = posString + "-line";
+                                        $("#" + lineId).css("opacity", .9);
+                                        //update EditObj
+                                        if (curPos == seq_len) {
+                                            //length + 1************************************************************************
+                                            EditObj = genEditObj(curPos+1, curLetter, "insert", "left", nletters, EditObj);
+                                        }
+                                        else {
+                                            EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                                        }
+                                    }
+                                    else {
+                                        //this is a plus div
+                                        var divId = posString + "-div";
+                                        var previous_letter = $("#" + divId + " span").text();
+                                        var nletters = cletter + previous_letter;
+                                        $("#" + divId).empty();
+                                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+                                        //update EditObj
+                                        if (curPos == seq_len) {
+                                            //length + 1************************************************************************
+                                            EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nletters, EditObj);
+                                        }
+                                        else {
+                                            EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                                        }
+                                    }
+                                }
+                            }
                         });
         //show the big circle
         toolpie
@@ -496,17 +696,19 @@
                         .css("fill", function () { return color(cletter); })
                         .text(cletter);
                 //add original letter below
-                var oletter = d3.select("svg").append("text").attr("class", "oriLetter letter clickable")
-                    .attr("y", target_data[3] + 68)
-                    .attr("x", target_data[2] + 36)
-                    //.attr("class", "letter")
-                    //.attr("class", "clickable")
-                    .attr("id", target_data[1] + "-oriletter")
-                    .style("font", "10px Arial")
-                    .style("fill", "#969696")
-                    .text(target_data[0]);
+                if ($("#" + target_data[1] + "-oriletter").length == 0) {
+                    var oletter = d3.select("svg").append("text").attr("class", "oriLetter letter clickable")
+                                                        .attr("y", target_data[3] + 68)
+                                                        .attr("x", target_data[2] + 36)
+                                                        .attr("id", target_data[1] + "-oriletter")
+                                                        .style("font", "10px Arial")
+                                                        .style("fill", "#969696")
+                                                        .text(target_data[0]);
+                }
 
                 //update EditObj
+                //lor can only be left for every where
+
                 EditObj = genEditObj(curPos, curLetter, "change", null, cletter, EditObj);
                 //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
             }
@@ -516,6 +718,98 @@
                 d3.selectAll(".tool")
                   .transition().delay(150)
                   .attr("display", "none");
+
+                //add insert before (left)
+                //check whether there is  an insert already
+                //add new letter
+                var leftId = (target_data[1] - 1) + "-" + target_data[1] + "-insert";
+
+                if ($("#" + leftId).length === 0) {
+                    var leftgroup = d3.select("svg").append("g").attr("id", leftId);
+                    var leftSlash = leftgroup.append("line")
+                                             .style("stroke", "gray")
+                                             .attr("x1", target_data[2] + 30)
+                                             .attr("y1", target_data[3] + 45)
+                                             .attr("x2", target_data[2] + 20)
+                                             .attr("y2", target_data[3] + 30);
+                    //apend letter
+                    var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
+                                            .attr("y", target_data[3] + 40)
+                                            .attr("x", target_data[2] + 27)
+                                            .attr("id", (target_data[1] - 1) + "-" + target_data[1] + "-letter")
+                                            .attr("font-size", "15px")
+                                            .attr("font-weight", "bold")
+                                            .attr("stroke", "#756bb1")
+                                            .style("fill", function () { return color(cletter); })
+                                            .text(cletter);
+                    //append line
+                    var lineId = (target_data[1] - 1) + "-" + target_data[1] + "-line";
+                    var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
+                                               .style("stroke", "purple")
+                                               .style("stroke-width", 2)
+                                               .attr("x1", target_data[2] + 27)
+                                               .attr("y1", target_data[3] + 35)
+                                               .attr("x2", target_data[2] + 37)
+                                               .attr("y2", target_data[3] + 35)
+                                               .attr("stroke-dasharray", "2, 2, 2, 2")
+                                               .style("opacity", 0);
+                    //append a div in body
+                    var divId = (target_data[1] - 1) + "-" + target_data[1] + "-div";
+                    var insertDiv = d3.select("body").append("div")
+                                      .attr("id", divId)
+                                      .attr("class", "seq-tooltip")
+                                      .style("opacity", 0);
+                    //dot line event
+                    leftline.on("mouseover", function () {
+                        insertDiv.transition()
+                         .duration(200)
+                         .style("opacity", .9)
+                         .style("left", (d3.event.pageX - 40) + "px")
+                          .style("top", (d3.event.pageY - 50) + "px");
+                    })
+                            .on("mouseleave", function () {
+                                insertDiv.transition()
+                                    .duration(200)
+                                    .style("opacity", 0);
+                            });
+                    //update EditObj
+                    EditObj = genEditObj(curPos, curLetter, "insert", "left", cletter, EditObj);
+                    //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                }
+                else {
+                    //check whether it is letter for a plus symbol
+                    if ($("#" + (target_data[1] - 1) + "-" + target_data[1] + "-letter").length !== 0) {
+                        //this is a letter
+                        //get the nletter
+                        var previous_letter = $("#" + (target_data[1] - 1) + "-" + target_data[1] + "-letter").text();
+                        var nletters = previous_letter + cletter;
+                        //find the div
+                        var divId = (target_data[1] - 1) + "-" + target_data[1] + "-div";
+                        //save the letter in the new div
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+
+                        //remove leftLetter
+                        $("#" + (target_data[1] - 1) + "-" + target_data[1] + "-letter").remove();
+                        //show dash line
+                        var lineId = (target_data[1] - 1) + "-" + target_data[1] + "-line";
+                        $("#" + lineId).css("opacity", .9);
+                        //update EditObj
+                        EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                    }
+                    else {
+                        //this is a plus div
+                        var divId = (target_data[1] - 1) + "-" + target_data[1] + "-div";
+                        var previous_letter = $("#" + divId + " span").text();
+                        var nletters = previous_letter + cletter;
+                        $("#" + divId).empty();
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+                        //update EditObj
+                        EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                    }
+                }
+
+
             }
             if (ctype == "after") {
                 //insert cletter after current
@@ -523,6 +817,116 @@
                 d3.selectAll(".tool")
                   .transition().delay(150)
                   .attr("display", "none");
+
+                //add insert before (left)
+                //check whether there is  an insert already
+                //add new letter
+                var posString = target_data[1] + "-" + (target_data[1] + 1);
+                var xshift = +2 * r;
+                var leftId = posString + "-insert";
+
+                if ($("#" + leftId).length === 0) {
+                    var leftgroup = d3.select("svg").append("g").attr("id", leftId);
+                    var leftSlash = leftgroup.append("line")
+                                             .style("stroke", "gray")
+                                             .attr("x1", target_data[2] + 30 + xshift)
+                                             .attr("y1", target_data[3] + 45)
+                                             .attr("x2", target_data[2] + 20 + xshift)
+                                             .attr("y2", target_data[3] + 30);
+                    //apend letter
+                    var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
+                                            .attr("y", target_data[3] + 40)
+                                            .attr("x", target_data[2] + 27 + xshift)
+                                            .attr("id", posString + "-letter")
+                                            .attr("font-size", "15px")
+                                            .attr("font-weight", "bold")
+                                            .attr("stroke", "#756bb1")
+                                            .style("fill", function () { return color(cletter); })
+                                            .text(cletter);
+                    //append line
+                    var lineId = posString + "-line";
+                    var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
+                                               .style("stroke", "purple")
+                                               .style("stroke-width", 2)
+                                               .attr("x1", target_data[2] + 27 + xshift)
+                                               .attr("y1", target_data[3] + 35)
+                                               .attr("x2", target_data[2] + 37 + xshift)
+                                               .attr("y2", target_data[3] + 35)
+                                               .attr("stroke-dasharray", "2, 2, 2, 2")
+                                               .style("opacity", 0);
+                    //append a div in body
+                    var divId = posString + "-div";
+                    var insertDiv = d3.select("body").append("div")
+                                      .attr("id", divId)
+                                      .attr("class", "seq-tooltip")
+                                      .style("opacity", 0);
+                    //dot line event
+                    leftline.on("mouseover", function () {
+                        insertDiv.transition()
+                         .duration(200)
+                         .style("opacity", .9)
+                         .style("left", (d3.event.pageX - 40) + "px")
+                          .style("top", (d3.event.pageY - 50) + "px");
+                    })
+                            .on("mouseleave", function () {
+                                insertDiv.transition()
+                                    .duration(200)
+                                    .style("opacity", 0);
+                            });
+                    //update EditObj
+                    if (curPos == seq_len) {
+                        //length + 1************************************************************************
+                        EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", cletter, EditObj);
+                    }
+                    else {
+                        EditObj = genEditObj(curPos, curLetter, "insert", "left", cletter, EditObj);
+                    }
+                    //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                }
+                else {
+                    //check whether it is letter for a plus symbol
+                    if ($("#" + posString + "-letter").length !== 0) {
+                        //this is a letter
+                        //get the nletter
+                        var previous_letter = $("#" + posString + "-letter").text();
+                        var nletters = cletter + previous_letter;
+                        //find the div
+                        var divId = target_data[1] + "-" + (target_data[1] + 1) + "-div";
+                        //save the letter in the new div
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+
+                        //remove leftLetter
+                        $("#" + posString + "-letter").remove();
+                        //show dash line
+                        var lineId = posString + "-line";
+                        $("#" + lineId).css("opacity", .9);
+                        //update EditObj
+                        if (curPos == seq_len) {
+                            //length + 1************************************************************************
+                            EditObj = genEditObj(curPos+1, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                        else {
+                            EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                    }
+                    else {
+                        //this is a plus div
+                        var divId = posString + "-div";
+                        var previous_letter = $("#" + divId + " span").text();
+                        var nletters = cletter + previous_letter;
+                        $("#" + divId).empty();
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+                        //update EditObj
+                        if (curPos == seq_len) {
+                            //length + 1************************************************************************
+                            EditObj = genEditObj(curPos+1, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                        else {
+                            EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                    }
+                }
             }
 
         });
@@ -581,7 +985,9 @@
                               .css("font-size", "15px")
                               .css("stroke", "#000000");
             //update EditObj
-            EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+            if (!$(curId).hasClass("removed")) {
+                EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+            }
         });
         //innnerLetter click event
         removeLetter.on("click", function (d) {
@@ -595,7 +1001,9 @@
                               .css("font-size", "15px")
                               .css("stroke", "#000000");
             //update EditObj
-            EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+            if (!$(curId).hasClass("removed")) {
+                EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+            }
         });
         console.log(EditObj);
     })
@@ -674,10 +1082,10 @@
 
     //update changeObj
     function genEditObj(pos, oriLetter, action, lor, newLetter, EditObj) {        
-        //pos: -1, // original pos, allow same pos for many times
+        //pos: -1, // original pos, allow same pos for many times, pos max is seq length + 1
         //oriLetter: "A", //original letter
         //action: "delete", //including, delete, change, insert
-        //lor: "left", //left or right for insert
+        //lor: "left", //for the last neucleotide, we need to add 1;
         //newLetter: "T", //empty for delete, one-letter for change, one or more than one for insert
         //timestamp: "timestamp", edit by ts
         //EditObj is an array for keeping editing info
@@ -695,6 +1103,19 @@
             EditObj.push(obj);
         }
         if (action == "change") {
+            //remove possible previous changes
+            pObj = $.grep(EditObj, function (d) {
+                return (+d.pos === +pos && d.action == "change" && d.oriLetter == oriLetter);
+            })
+            if (pObj.length > 0) {
+                $.each(pObj, function (si, sd) {
+                    var index = $.inArray(sd, EditObj);
+                    if (index !== -1) {
+                        EditObj.splice(index, 1);
+                    }
+                })                
+            }
+            //add new object
             var obj = {
                 "pos": pos,
                 "oriLetter": oriLetter,
@@ -706,6 +1127,18 @@
             EditObj.push(obj);
         }
         if (action == "insert") {
+            //remove possible previous changes
+            pObj = $.grep(EditObj, function (d) {
+                return (+d.pos === +pos && d.action == "insert" && d.oriLetter == oriLetter&& d.lor==lor);
+            })
+            if (pObj.length > 0) {
+                $.each(pObj, function (si, sd) {
+                    var index = $.inArray(sd, EditObj);
+                    if (index !== -1) {
+                        EditObj.splice(index, 1);
+                    }
+                })
+            }
             var obj = {
                 "pos": pos,
                 "oriLetter": oriLetter,
