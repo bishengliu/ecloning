@@ -151,11 +151,61 @@ namespace ecloning.Controllers
         }
         [Authorize]
         [HttpGet]
-        public ActionResult SeqEditor()
+        public ActionResult SeqEditor(int? plasmid_id, int? start, int? end, string tag)
         {
-            ViewBag.Seq = "GAGGCGGGTAGGGCGGGGATTGAGGCGGGTCAAGGCGGGTAAGAGGCGGGGTACCGACTGATTAAAAAAAATAAATACGTCTCCGGCTCCGGCGGAGACGGAGACTCGATAAGGTCTTCATCACTCCTCCGAAAAAACCTCCGGATCCGAAAACGTTTTTCGAGGGCCCTCGAACATATAGGTAAAAGCCTAGACTAGTCGTGCACAACTGTTAATTAGTAGCCGTATCATATAGCCGTATCATATTATGCTGTTCCACTCCTTGATTTGGTACCGGTTCAACTGGTCACGGCAAGGCCACGAGTGGCGCGCGCTGCAGCGGCCTCGCCAGCTCAAGACCTGGCTGGCCGAGCCCAAGAGGGCCCTGAAGCACCTCCTGCTGAAGCGGCCACACCAGGCCCTGCTGCACTGGGACAAGTAGTCGCGCCAGGTCCTGGTCCACCACGGCCTGTTGTGGGACCGGACCCACACCCACGCGCCGGACCTGCTCGACATGCGGCTCACCAGCCTCCAGCACAGGTGCTTGAAGGCCCTGCGGAGGCCCGGCCGGTACTGGCTCTAGCCGCTCGTCGGCACCCCCGCCCTCAAGCGGGACGCGCTGGGCCGGCCGTTGACGCAC";
+            if (plasmid_id == null || start == null || end == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //get the plasmid seq
+            //find the plasmid
+            var plasmid = db.plasmids.Find(plasmid_id);
+            var Seq = plasmid.sequence.Substring((int)start - 1, (int)end - (int)start + 1);
+            ViewBag.PlasmidId = (int)plasmid_id;
+            ViewBag.Start = start;
+            ViewBag.End = end;
+            ViewBag.Tag = tag;
+            ViewBag.Seq = Seq;
             return View();
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SeqEditor(int plasmid_id, int start, int end, string tag, string seq)
+        {
+            //start transaction
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    //get userId
+                    var userId = User.Identity.GetUserId();
+                    var userInfo = new UserInfo(userId);
+                    var groupInfo = new GroupInfo(userInfo.PersonId);
+
+                    var plasmid = db.plasmids.Find(plasmid_id);
+                    var oSeq = plasmid.sequence;
+                    var nSeq = end < oSeq.Length?oSeq.Substring(0, start) + seq + oSeq.Substring(end): oSeq.Substring(0, start) + seq;
+                    plasmid.sequence = nSeq;
+                    db.SaveChanges();
+                    //update fatures
+                    var autoFeatures = new PlasmidFeature(plasmid_id, nSeq, groupInfo.groupId);
+
+                    scope.Complete();
+                    TempData["msg"] = "Sequence saved!";
+                    return RedirectToAction("Sequence", new { plasmid_id = plasmid_id, tag = tag });
+                }
+                catch (Exception e)
+                {
+                    var msg = e;
+                    scope.Dispose();
+                    TempData["msg"] = "Something went wrong, please try again later!";
+                    return RedirectToAction("Sequence", new { plasmid_id = plasmid_id, tag = tag });
+                }
+
+            }            
+        }
+
 
         [Authorize]
         [HttpGet]

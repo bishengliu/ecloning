@@ -237,7 +237,7 @@ namespace ecloning.Models
                             feature.feature_id = 3;
                             feature.start = index + 1;
                             feature.end = index + subSeq.Length;
-                            feature.common_id = item.id;
+                            //feature.common_id = item.id;
                             feature.clockwise = 1;
                             db.plasmid_map.Add(feature);
                         }
@@ -257,7 +257,7 @@ namespace ecloning.Models
                         f.feature_id = 3;
                         f.start = Sequence.Length - subSeq.Length + endIdx + 1; //1 + 1
                         f.end = endIdx + 1;
-                        f.common_id = item.id;
+                        //f.common_id = item.id;
                         f.clockwise = 1;
                         db.plasmid_map.Add(f);
                         result = true;
@@ -283,7 +283,7 @@ namespace ecloning.Models
                             feature.feature_id = 3;
                             feature.start = index + 1;
                             feature.end = index + subSeq.Length;
-                            feature.common_id = item.id;
+                            //feature.common_id = item.id;
                             feature.clockwise = 0;
                             db.plasmid_map.Add(feature);
                         }
@@ -303,7 +303,7 @@ namespace ecloning.Models
                         rf.feature_id = 3;
                         rf.start = Sequence.Length - subSeq.Length + endRIdx + 1;
                         rf.end = endRIdx + 1;
-                        rf.common_id = item.id;
+                        //rf.common_id = item.id;
                         rf.clockwise = 0;
                         db.plasmid_map.Add(rf);
                         result = true;
