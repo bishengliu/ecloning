@@ -152,6 +152,6 @@
 \\Mac\Home\ecloning\ecloning\ecloning\bin\dotless.Core.pdb
 \\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.pdb
 \\Mac\Home\ecloning\ecloning\ecloning\bin\System.Web.Optimization.Less.xml
-\\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache
 \\Mac\Home\ecloning\ecloning\ecloning\bin\log4net.dll
 \\Mac\Home\ecloning\ecloning\ecloning\bin\log4net.xml
+\\Mac\Home\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache

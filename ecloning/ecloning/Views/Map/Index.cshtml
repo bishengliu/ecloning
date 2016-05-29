@@ -40,9 +40,12 @@
     <div class="col-sx-12 col-sm-offset-4 col-sm-8 col-md-7 col-lg-offset-0 col-lg-3">
         <h3 class="pull-right">
                 <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
-                    <i class="fa fa-bullseye text-danger"></i>
-                    <span>Compare Plasmids</span>
-                </a>
+                    <span class="text-danger"><i class="fa fa-sun-o"></i></span>
+                    <span class="text-danger">
+                        <i style="position:relative; left:-13px;" class="fa fa-sun-o"></i>
+                    </span>
+                        <span style="position:relative; left:-13px;">Compare Plasmids</span>
+</a>
                 <a class="btn btn-default" href="@Url.Action("Sequence", "Map", new { plasmid_id = plasmidId, tag = Tag})">
                     <i class="fa fa-exchange text-danger"></i>
                     <span>Sequence</span>

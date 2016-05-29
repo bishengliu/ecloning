@@ -1,4 +1,3 @@
-
 namespace ecloning.Models
 {
     using System;
@@ -15,6 +14,7 @@ namespace ecloning.Models
             this.buffers = new HashSet<buffer>();
             this.common_modifying = new HashSet<common_modifying>();
             this.common_restriction = new HashSet<common_restriction>();
+            this.ladders = new HashSet<ladder>();
             this.modifying_company = new HashSet<modifying_company>();
             this.restriction_company = new HashSet<restriction_company>();
         }
@@ -36,6 +36,8 @@ namespace ecloning.Models
         public virtual ICollection<common_modifying> common_modifying { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<common_restriction> common_restriction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ladder> ladders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<modifying_company> modifying_company { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

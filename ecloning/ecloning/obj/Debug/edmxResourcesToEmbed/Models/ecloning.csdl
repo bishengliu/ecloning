@@ -199,6 +199,7 @@
     <NavigationProperty Name="buffers" Relationship="Self.fk_buffer_company_id" FromRole="company" ToRole="buffer" />
     <NavigationProperty Name="common_modifying" Relationship="Self.fk_common_modifying_company_id" FromRole="company" ToRole="common_modifying" />
     <NavigationProperty Name="common_restriction" Relationship="Self.fk_common_restriction_company_id" FromRole="company" ToRole="common_restriction" />
+    <NavigationProperty Name="ladders" Relationship="Self.fk_ladder_company_id" FromRole="company" ToRole="ladder" />
     <NavigationProperty Name="modifying_company" Relationship="Self.fk_modifying_company_company_id" FromRole="company" ToRole="modifying_company" />
     <NavigationProperty Name="restriction_company" Relationship="Self.fk_restriction_company_company_id" FromRole="company" ToRole="restriction_company" />
   </EntityType>
@@ -293,11 +294,15 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ladder_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="min_bp_kDa" Type="Int32" />
-    <Property Name="max_bp_kda" Type="Int32" />
-    <Property Name="company" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="min_bp_kDa" Type="Int32" Nullable="false" />
+    <Property Name="max_bp_kda" Type="Int32" Nullable="false" />
+    <Property Name="company_id" Type="Int32" Nullable="false" />
     <Property Name="orderref" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="a_values" Type="Double" />
+    <Property Name="b_value" Type="Double" />
+    <NavigationProperty Name="company" Relationship="Self.fk_ladder_company_id" FromRole="ladder" ToRole="company" />
     <NavigationProperty Name="ladder_size" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder" ToRole="ladder_size" />
   </EntityType>
   <EntityType Name="ladder_size">
@@ -308,6 +313,7 @@
     <Property Name="ladder_id" Type="Int32" Nullable="false" />
     <Property Name="size" Type="Int32" Nullable="false" />
     <Property Name="Rf" Type="Double" Nullable="false" />
+    <Property Name="mass" Type="Int32" Nullable="false" />
     <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
   </EntityType>
   <EntityType Name="letter_code">
@@ -1006,6 +1012,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_ladder_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="ladder" Type="Self.ladder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ladder">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_modifying_company_company_id">
     <End Role="company" Type="Self.company" Multiplicity="1" />
     <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
@@ -1472,6 +1490,10 @@
     <AssociationSet Name="fk_common_restriction_group_id" Association="Self.fk_common_restriction_group_id">
       <End Role="group" EntitySet="groups" />
       <End Role="common_restriction" EntitySet="common_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ladder_company_id" Association="Self.fk_ladder_company_id">
+      <End Role="company" EntitySet="companies" />
+      <End Role="ladder" EntitySet="ladders" />
     </AssociationSet>
     <AssociationSet Name="fk_modifying_company_company_id" Association="Self.fk_modifying_company_company_id">
       <End Role="company" EntitySet="companies" />

@@ -875,12 +875,16 @@ CREATE TABLE [clone_group]
 CREATE TABLE ladder
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	ladder_type NVARCHAR(50) NOT NULL, --DNA, RNA or protein
 	name NVARCHAR(100) NOT NULL,
-	min_bp_kDa INT,
-	max_bp_kda INT,
-	company NVARCHAR(100),
+	min_bp_kDa INT NOT NULL,
+	max_bp_kda INT NOT NULL,
+	company_id INT NOT NULL,
 	orderref NVARCHAR(100),
-	CONSTRAINT uq_ladder_company_name UNIQUE (company, name),
+	a_values float, --y = ax+b
+	b_value float, --y = ax+b
+	CONSTRAINT uq_ladder_company_id_name UNIQUE (company_id, name),
+	CONSTRAINT fk_ladder_company_id FOREIGN KEY (company_id) REFERENCES company(id)
 );
 --ladder size
 CREATE TABLE ladder_size
@@ -888,6 +892,7 @@ CREATE TABLE ladder_size
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	ladder_id INT NOT NULL,
 	size INT NOT NULL, --bp or kDa
+	mass INT NOT NULL,
 	Rf float NOT NULL,
 	CONSTRAINT fk_padder_size_ladder_id FOREIGN KEY (ladder_id) REFERENCES ladder(id),
 );
@@ -1210,9 +1215,12 @@ INSERT INTO dropdownitem VALUES
 ('6', '50 - 75%', 'BufferActivity'),
 ('7', '75%', 'BufferActivity'),
 ('8', '75 - 100%', 'BufferActivity'),
-('9', '100%', 'BufferActivity')
+('9', '100%', 'BufferActivity'),
 
-
+--ladder type
+('DNA Ladder', 'DNA Ladder', 'ladder'),
+('RNA Ladder', 'RNA Ladder', 'ladder'),
+('Protein Ladder', 'Protein Ladder', 'ladder')
 
 
 ;

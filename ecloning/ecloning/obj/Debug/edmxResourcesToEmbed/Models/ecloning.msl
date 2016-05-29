@@ -262,11 +262,14 @@
       <EntityTypeMapping TypeName="ecloningModel.ladder">
         <MappingFragment StoreEntitySet="ladder">
           <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ladder_type" ColumnName="ladder_type" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="min_bp_kDa" ColumnName="min_bp_kDa" />
           <ScalarProperty Name="max_bp_kda" ColumnName="max_bp_kda" />
-          <ScalarProperty Name="company" ColumnName="company" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
           <ScalarProperty Name="orderref" ColumnName="orderref" />
+          <ScalarProperty Name="a_values" ColumnName="a_values" />
+          <ScalarProperty Name="b_value" ColumnName="b_value" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -277,6 +280,7 @@
           <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
           <ScalarProperty Name="size" ColumnName="size" />
           <ScalarProperty Name="Rf" ColumnName="Rf" />
+          <ScalarProperty Name="mass" ColumnName="mass" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

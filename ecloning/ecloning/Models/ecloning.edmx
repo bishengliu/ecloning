@@ -256,11 +256,14 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ladder_type" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="min_bp_kDa" Type="int" />
-          <Property Name="max_bp_kda" Type="int" />
-          <Property Name="company" Type="nvarchar" MaxLength="100" />
+          <Property Name="min_bp_kDa" Type="int" Nullable="false" />
+          <Property Name="max_bp_kda" Type="int" Nullable="false" />
+          <Property Name="company_id" Type="int" Nullable="false" />
           <Property Name="orderref" Type="nvarchar" MaxLength="100" />
+          <Property Name="a_values" Type="float" />
+          <Property Name="b_value" Type="float" />
         </EntityType>
         <EntityType Name="ladder_size">
           <Key>
@@ -270,6 +273,7 @@
           <Property Name="ladder_id" Type="int" Nullable="false" />
           <Property Name="size" Type="int" Nullable="false" />
           <Property Name="Rf" Type="float" Nullable="false" />
+          <Property Name="mass" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="letter_code">
           <Key>
@@ -967,6 +971,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_ladder_company_id">
+          <End Role="company" Type="Self.company" Multiplicity="1" />
+          <End Role="ladder" Type="Self.ladder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="company">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ladder">
+              <PropertyRef Name="company_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_methylation_backup_plasmid_id">
           <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
           <End Role="methylation_backup" Type="Self.methylation_backup" Multiplicity="*" />
@@ -1423,6 +1439,10 @@
             <End Role="group" EntitySet="group" />
             <End Role="group_shared" EntitySet="group_shared" />
           </AssociationSet>
+          <AssociationSet Name="fk_ladder_company_id" Association="Self.fk_ladder_company_id">
+            <End Role="company" EntitySet="company" />
+            <End Role="ladder" EntitySet="ladder" />
+          </AssociationSet>
           <AssociationSet Name="fk_methylation_backup_plasmid_id" Association="Self.fk_methylation_backup_plasmid_id">
             <End Role="plasmid" EntitySet="plasmid" />
             <End Role="methylation_backup" EntitySet="methylation_backup" />
@@ -1724,6 +1744,7 @@
           <NavigationProperty Name="buffers" Relationship="Self.fk_buffer_company_id" FromRole="company" ToRole="buffer" />
           <NavigationProperty Name="common_modifying" Relationship="Self.fk_common_modifying_company_id" FromRole="company" ToRole="common_modifying" />
           <NavigationProperty Name="common_restriction" Relationship="Self.fk_common_restriction_company_id" FromRole="company" ToRole="common_restriction" />
+          <NavigationProperty Name="ladders" Relationship="Self.fk_ladder_company_id" FromRole="company" ToRole="ladder" />
           <NavigationProperty Name="modifying_company" Relationship="Self.fk_modifying_company_company_id" FromRole="company" ToRole="modifying_company" />
           <NavigationProperty Name="restriction_company" Relationship="Self.fk_restriction_company_company_id" FromRole="company" ToRole="restriction_company" />
         </EntityType>
@@ -1818,11 +1839,15 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ladder_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="min_bp_kDa" Type="Int32" />
-          <Property Name="max_bp_kda" Type="Int32" />
-          <Property Name="company" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="min_bp_kDa" Type="Int32" Nullable="false" />
+          <Property Name="max_bp_kda" Type="Int32" Nullable="false" />
+          <Property Name="company_id" Type="Int32" Nullable="false" />
           <Property Name="orderref" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="a_values" Type="Double" />
+          <Property Name="b_value" Type="Double" />
+          <NavigationProperty Name="company" Relationship="Self.fk_ladder_company_id" FromRole="ladder" ToRole="company" />
           <NavigationProperty Name="ladder_size" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder" ToRole="ladder_size" />
         </EntityType>
         <EntityType Name="ladder_size">
@@ -1833,6 +1858,7 @@
           <Property Name="ladder_id" Type="Int32" Nullable="false" />
           <Property Name="size" Type="Int32" Nullable="false" />
           <Property Name="Rf" Type="Double" Nullable="false" />
+          <Property Name="mass" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
         </EntityType>
         <EntityType Name="letter_code">
@@ -2531,6 +2557,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_ladder_company_id">
+          <End Role="company" Type="Self.company" Multiplicity="1" />
+          <End Role="ladder" Type="Self.ladder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="company">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ladder">
+              <PropertyRef Name="company_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_modifying_company_company_id">
           <End Role="company" Type="Self.company" Multiplicity="1" />
           <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
@@ -2998,6 +3036,10 @@
             <End Role="group" EntitySet="groups" />
             <End Role="common_restriction" EntitySet="common_restriction" />
           </AssociationSet>
+          <AssociationSet Name="fk_ladder_company_id" Association="Self.fk_ladder_company_id">
+            <End Role="company" EntitySet="companies" />
+            <End Role="ladder" EntitySet="ladders" />
+          </AssociationSet>
           <AssociationSet Name="fk_modifying_company_company_id" Association="Self.fk_modifying_company_company_id">
             <End Role="company" EntitySet="companies" />
             <End Role="modifying_company" EntitySet="modifying_company" />
@@ -3374,11 +3416,14 @@
             <EntityTypeMapping TypeName="ecloningModel.ladder">
               <MappingFragment StoreEntitySet="ladder">
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="ladder_type" ColumnName="ladder_type" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="min_bp_kDa" ColumnName="min_bp_kDa" />
                 <ScalarProperty Name="max_bp_kda" ColumnName="max_bp_kda" />
-                <ScalarProperty Name="company" ColumnName="company" />
+                <ScalarProperty Name="company_id" ColumnName="company_id" />
                 <ScalarProperty Name="orderref" ColumnName="orderref" />
+                <ScalarProperty Name="a_values" ColumnName="a_values" />
+                <ScalarProperty Name="b_value" ColumnName="b_value" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3389,6 +3434,7 @@
                 <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
                 <ScalarProperty Name="size" ColumnName="size" />
                 <ScalarProperty Name="Rf" ColumnName="Rf" />
+                <ScalarProperty Name="mass" ColumnName="mass" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

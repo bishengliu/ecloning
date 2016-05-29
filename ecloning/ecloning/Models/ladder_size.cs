@@ -18,6 +18,7 @@ namespace ecloning.Models
         public int ladder_id { get; set; }
         public int size { get; set; }
         public double Rf { get; set; }
+        public int mass { get; set; }
     
         public virtual ladder ladder { get; set; }
     }

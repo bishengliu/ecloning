@@ -21,12 +21,16 @@ namespace ecloning.Models
         }
     
         public int id { get; set; }
+        public string ladder_type { get; set; }
         public string name { get; set; }
-        public Nullable<int> min_bp_kDa { get; set; }
-        public Nullable<int> max_bp_kda { get; set; }
-        public string company { get; set; }
+        public int min_bp_kDa { get; set; }
+        public int max_bp_kda { get; set; }
+        public int company_id { get; set; }
         public string orderref { get; set; }
+        public Nullable<double> a_values { get; set; }
+        public Nullable<double> b_value { get; set; }
     
+        public virtual company company { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ladder_size> ladder_size { get; set; }
     }

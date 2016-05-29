@@ -255,6 +255,7 @@
     <Compile Include="Areas\Admin\Controllers\BufferController.cs" />
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LadderController.cs" />
     <Compile Include="Areas\Admin\Controllers\MActivityController.cs" />
     <Compile Include="Areas\Admin\Controllers\MEnzymeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RActivityController.cs" />
@@ -411,6 +412,7 @@
     <Compile Include="Models\minus80.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\mladder.cs" />
     <Compile Include="Models\ModalSeq.cs" />
     <Compile Include="Models\ModifyingActivity.cs" />
     <Compile Include="Models\modifying_company.cs">
@@ -905,6 +907,7 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\Ladder\Create.cshtml" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />
