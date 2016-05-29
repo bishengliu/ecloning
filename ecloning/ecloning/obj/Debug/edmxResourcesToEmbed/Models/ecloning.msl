@@ -276,6 +276,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
           <ScalarProperty Name="size" ColumnName="size" />
+          <ScalarProperty Name="Rf" ColumnName="Rf" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -389,15 +390,6 @@
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="category" ColumnName="category" />
           <ScalarProperty Name="application" ColumnName="application" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="nucleases">
-      <EntityTypeMapping TypeName="ecloningModel.nuclease">
-        <MappingFragment StoreEntitySet="nuclease">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

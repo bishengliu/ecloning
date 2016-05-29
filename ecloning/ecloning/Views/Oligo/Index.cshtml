@@ -1,0 +1,164 @@
+﻿@model IEnumerable<ecloning.Models.oligo>
+
+@{
+    ViewBag.Title = "Oligos";
+    int Count = (int)ViewBag.Count;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int PeopleId = (int)ViewBag.PersonId;
+    List<int> SharedIds = (List<int>)ViewBag.shareIds;
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3 col-md-offset-1">
+        <h3 class="text-warning">Oligos</h3>
+    </div>
+
+    <div class="col-sm-2 col-xs-4">
+        <h3>
+            <a class="btn btn-sm btn-default" href="@Url.Action("Create", "Oligo")">
+                <i class="glyphicon glyphicon-plus text-danger"></i>
+                <span>Oligo</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<p class="text-info text-center">@TempData["msg"]</p>
+
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        @if (Count == 0)
+        {
+            <br />
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <h4 class="text-info">No oligo found.</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <table id="primerTable" class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th class="no-sort">
+                            Sequence
+                        </th>
+                        <th>
+                            Modification
+                        </th>
+                        <th>
+                            Company
+                        </th>
+                        <th class="no-sort">
+                            Order#
+                        </th>
+                        <th>
+                            Location
+                        </th>
+                        <th class="no-sort">
+                            Comment
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th class="no-sort">
+                            People
+                        </th>
+                        <th class="no-sort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                {
+                    //get people info
+                    var peopleInfo = new ecloning.Models.PeopleInfo((int)item.people_id);
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.sequence)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.modification)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.company)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.orderref)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.location)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.des)
+                            </td>
+                            <td>
+                                @if (item.dt != null)
+                                {
+                                    var day = item.dt.Value.Day;
+                                    var month = item.dt.Value.Month;
+                                    var year = item.dt.Value.Year;
+                                    var dc = new ecloning.Models.DateConvert();
+                                    var outDate = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                    @outDate
+                                }
+                            </td>
+                            <td>
+                                @peopleInfo.Name
+                            </td>
+                            <td>
+                                @if (item.people_id == PeopleId && !SharedIds.Contains(item.id))
+                                {
+                                    <a href="@Url.Action("Edit", "Oligo", new { id= item.id})">
+                                        <i class="fa fa-pencil-square-o text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                    <a href="@Url.Action("Delete", "Oligo", new { id= item.id})">
+                                        <i class="glyphicon glyphicon-trash text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-pencil-square-o text-muted"></i>
+                                    <i class="glyphicon glyphicon-trash text-muted"></i>
+                                }
+                                @if (!SharedIds.Contains(item.id))
+                                {
+                                    <a href="@Url.Action("Share", "Oligo", new { id= item.id})">
+                                        <i class="fa fa-share-alt text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-share-alt text-muted"></i>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#primerTable').DataTable({
+            responsive: true,
+            columnDefs: [
+                { targets: 'no-sort', orderable: false }
+            ]
+        });
+    });
+</script>

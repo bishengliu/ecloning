@@ -1,12 +1,11 @@
-﻿@model ecloning.Models.primer
+﻿@model ecloning.Models.oligo
 
 @{
-    ViewBag.Title = "Delete Primer";
+    ViewBag.Title = "Delete Oligo";
     Layout = "~/Views/Shared/_Layout.cshtml";
     //get people info
     var peopleInfo = new ecloning.Models.PeopleInfo((int)Model.people_id);
 }
-
 
 
 <div class="row">
@@ -29,7 +28,6 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-xs-12 col-lg-offset-1 col-sm-10">
         <dl class="dl-horizontal">
@@ -51,23 +49,6 @@
             <dt>
                 Location
             </dt>
-
-            @*<dd>
-                @Html.DisplayFor(model => model.location)
-            </dd>
-
-            <dt>
-                Usage
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.usage)
-            </dd>
-
-            <dt>
-                Purity
-            </dt>*@
-
             <dd>
                 @Html.DisplayFor(model => model.purity)
             </dd>

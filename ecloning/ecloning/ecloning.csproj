@@ -269,6 +269,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\MiscellaneousController.cs" />
+    <Compile Include="Controllers\OligoController.cs" />
     <Compile Include="Controllers\pBundleController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\PrimerController.cs" />
@@ -418,6 +419,7 @@
     <Compile Include="Models\modifying_enzyme.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\mOligo.cs" />
     <Compile Include="Models\oligo.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1029,6 +1031,10 @@
     <Content Include="Views\Map\SeqEditor.cshtml" />
     <Content Include="Views\pBundle\IndexNew.cshtml" />
     <Content Include="Views\pBundle\Details.cshtml" />
+    <Content Include="Views\Oligo\Create.cshtml" />
+    <Content Include="Views\Oligo\Delete.cshtml" />
+    <Content Include="Views\Oligo\Edit.cshtml" />
+    <Content Include="Views\Oligo\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

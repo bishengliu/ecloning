@@ -144,7 +144,6 @@
     <NavigationProperty Name="oligo" Relationship="Self.fk_clone_group_oligo_id" FromRole="clone_group" ToRole="oligo" />
     <NavigationProperty Name="person" Relationship="Self.fk_clone_group_people_id" FromRole="clone_group" ToRole="people" />
     <NavigationProperty Name="plasmid" Relationship="Self.fk_clone_group_plasmid_id" FromRole="clone_group" ToRole="plasmid" />
-    <NavigationProperty Name="nuclease" Relationship="Self.fk_clone_group_pnuclease_id" FromRole="clone_group" ToRole="nuclease" />
   </EntityType>
   <EntityType Name="common_feature">
     <Key>
@@ -308,6 +307,7 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="ladder_id" Type="Int32" Nullable="false" />
     <Property Name="size" Type="Int32" Nullable="false" />
+    <Property Name="Rf" Type="Double" Nullable="false" />
     <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
   </EntityType>
   <EntityType Name="letter_code">
@@ -420,15 +420,6 @@
     <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="modifying_enzyme" ToRole="activity_modifying" />
     <NavigationProperty Name="common_modifying" Relationship="Self.fk_common_modifying_enzyme_id" FromRole="modifying_enzyme" ToRole="common_modifying" />
     <NavigationProperty Name="modifying_company" Relationship="Self.fk_modifying_company_enzyme_id" FromRole="modifying_enzyme" ToRole="modifying_company" />
-  </EntityType>
-  <EntityType Name="nuclease">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_pnuclease_id" FromRole="nuclease" ToRole="clone_group" />
   </EntityType>
   <EntityType Name="oligo">
     <Key>
@@ -880,18 +871,6 @@
       </Principal>
       <Dependent Role="clone_group">
         <PropertyRef Name="plasmid_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_clone_group_pnuclease_id">
-    <End Role="nuclease" Type="Self.nuclease" Multiplicity="0..1" />
-    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="nuclease">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="clone_group">
-        <PropertyRef Name="nuclease_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1378,7 +1357,6 @@
     <EntitySet Name="minus80" EntityType="Self.minus80" />
     <EntitySet Name="modifying_company" EntityType="Self.modifying_company" />
     <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" />
-    <EntitySet Name="nucleases" EntityType="Self.nuclease" />
     <EntitySet Name="oligoes" EntityType="Self.oligo" />
     <EntitySet Name="people" EntityType="Self.person" />
     <EntitySet Name="people_license" EntityType="Self.people_license" />
@@ -1449,10 +1427,6 @@
     </AssociationSet>
     <AssociationSet Name="fk_clone_group_plasmid_id" Association="Self.fk_clone_group_plasmid_id">
       <End Role="plasmid" EntitySet="plasmids" />
-      <End Role="clone_group" EntitySet="clone_group" />
-    </AssociationSet>
-    <AssociationSet Name="fk_clone_group_pnuclease_id" Association="Self.fk_clone_group_pnuclease_id">
-      <End Role="nuclease" EntitySet="nucleases" />
       <End Role="clone_group" EntitySet="clone_group" />
     </AssociationSet>
     <AssociationSet Name="fk_common_feature_feature_id" Association="Self.fk_common_feature_feature_id">

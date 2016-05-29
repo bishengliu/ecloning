@@ -264,6 +264,7 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ladder_id" Type="int" Nullable="false" />
     <Property Name="size" Type="int" Nullable="false" />
+    <Property Name="Rf" Type="float" Nullable="false" />
   </EntityType>
   <EntityType Name="letter_code">
     <Key>
@@ -367,14 +368,6 @@
     <Property Name="name" Type="nvarchar" MaxLength="250" Nullable="false" />
     <Property Name="category" Type="nvarchar" MaxLength="250" Nullable="false" />
     <Property Name="application" Type="text" />
-  </EntityType>
-  <EntityType Name="nuclease">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="des" Type="text" />
   </EntityType>
   <EntityType Name="oligo">
     <Key>
@@ -754,18 +747,6 @@
       </Principal>
       <Dependent Role="clone_group">
         <PropertyRef Name="plasmid_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_clone_group_pnuclease_id">
-    <End Role="nuclease" Type="Self.nuclease" Multiplicity="0..1" />
-    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="nuclease">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="clone_group">
-        <PropertyRef Name="nuclease_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1305,7 +1286,6 @@
     <EntitySet Name="minus80" EntityType="Self.minus80" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="modifying_company" EntityType="Self.modifying_company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="nuclease" EntityType="Self.nuclease" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="oligo" EntityType="Self.oligo" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="people" EntityType="Self.people" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="people_license" EntityType="Self.people_license" Schema="dbo" store:Type="Tables" />
@@ -1368,10 +1348,6 @@
     </AssociationSet>
     <AssociationSet Name="fk_clone_group_plasmid_id" Association="Self.fk_clone_group_plasmid_id">
       <End Role="plasmid" EntitySet="plasmid" />
-      <End Role="clone_group" EntitySet="clone_group" />
-    </AssociationSet>
-    <AssociationSet Name="fk_clone_group_pnuclease_id" Association="Self.fk_clone_group_pnuclease_id">
-      <End Role="nuclease" EntitySet="nuclease" />
       <End Role="clone_group" EntitySet="clone_group" />
     </AssociationSet>
     <AssociationSet Name="fk_common_feature_feature_id" Association="Self.fk_common_feature_feature_id">

@@ -1,18 +1,19 @@
-﻿@model ecloning.Models.dPrimer
+﻿@model ecloning.Models.mOligo
 
 @{
-    ViewBag.Title = "Edit Primer";
+    ViewBag.Title = "Edit Oligo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row">
     <div class="col-sm-offset-1 col-sm-3 col-xs-6">
-        <h3 class="text-warning">Edit Primer</h3>
+        <h3 class="text-warning">Edit Oligo</h3>
     </div>
     <div class="col-sm-5 col-xs-6" style="position:relative;top:15px;">
         @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
     </div>
 </div>
+
 
 
 <div class="col-xs-12 col-sm-offset-1 col-sm-10">
@@ -36,21 +37,6 @@
                     <div class="col-md-8">
                         @Html.EditorFor(model => model.sequence, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group hidden">
-                    @Html.LabelFor(model => model.usage, "Usage", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
-                        @Html.EditorFor(model => model.usage, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.usage, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group hidden">
-                    @Html.LabelFor(model => model.purity, "Purity", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
-                        @Html.EditorFor(model => model.purity, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.purity, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
@@ -97,14 +83,13 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-4 col-sm-4 col-lg-2">
-                        <input type="submit" value="Save Primer" class="btn btn-primary" id="editprimer" />
+                        <input type="submit" value="Save Oligo" class="btn btn-primary" id="editprimer" />
                     </div>
                 </div>
             </div>
         </div>
     }
 </div>
-
 
 @Scripts.Render("~/bundles/jquery")
 <script>
