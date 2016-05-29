@@ -59,7 +59,6 @@ namespace ecloning.Models
         public virtual DbSet<minus80> minus80 { get; set; }
         public virtual DbSet<modifying_company> modifying_company { get; set; }
         public virtual DbSet<modifying_enzyme> modifying_enzyme { get; set; }
-        public virtual DbSet<nuclease> nucleases { get; set; }
         public virtual DbSet<oligo> oligoes { get; set; }
         public virtual DbSet<person> people { get; set; }
         public virtual DbSet<people_license> people_license { get; set; }

@@ -418,9 +418,6 @@
     <Compile Include="Models\modifying_enzyme.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\nuclease.cs">
-      <DependentUpon>ecloning.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\oligo.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

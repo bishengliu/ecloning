@@ -34,6 +34,5 @@ namespace ecloning.Models
         public virtual oligo oligo { get; set; }
         public virtual person person { get; set; }
         public virtual plasmid plasmid { get; set; }
-        public virtual nuclease nuclease { get; set; }
     }
 }
