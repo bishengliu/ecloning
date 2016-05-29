@@ -1030,6 +1030,8 @@
     <Content Include="Views\Map\QuickFeature.cshtml" />
     <Content Include="Views\Map\EditSequence.cshtml" />
     <Content Include="Views\Map\SeqEditor.cshtml" />
+    <Content Include="Views\pBundle\IndexNew.cshtml" />
+    <Content Include="Views\pBundle\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

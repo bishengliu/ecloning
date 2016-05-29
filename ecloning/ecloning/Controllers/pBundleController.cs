@@ -21,6 +21,7 @@ namespace ecloning.Controllers
     {
         private ecloningEntities db = new ecloningEntities();
 
+        [Authorize]
         // GET: pBundle
         public ActionResult Index()
         {
@@ -61,6 +62,76 @@ namespace ecloning.Controllers
             ViewBag.AllBundleIds = JsonConvert.SerializeObject(combinedIds);
             return View(rootBundles.ToList());
         }
+
+
+        [Authorize]
+        public ActionResult IndexNew()
+        {
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //only get my bundle and group bundle
+            //get the group shared plasmid bundle id          
+            var grouppBundleIds = db.group_shared.Where(g => groupInfo.groupId.Contains(g.group_id)).Where(c => c.category == "pBundle").Select(r => r.resource_id).ToList();
+
+            ViewBag.GrouppBundleIds = grouppBundleIds;
+            //only show my bundles that are not shared with any group  
+            IQueryable<plasmid_bundle> pBundles = null;
+            if (grouppBundleIds.Count() > 0)
+            {
+                pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId).Where(b => !grouppBundleIds.Contains(b.bundle_id));
+            }
+            else
+            {
+                pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId);
+            }
+            var pBundleIds = pBundles.Select(i => i.bundle_id).ToList();
+
+            //get combined bundle ids
+            var combinedIds = pBundleIds.Concat(grouppBundleIds).Distinct().ToList();
+
+            ViewBag.BundleIds = combinedIds;
+            //get top level bundles
+            var rootBundles = db.plasmid_bundle.Where(i => combinedIds.Contains(i.bundle_id));
+            return View(rootBundles.ToList());
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Details(int? bundle_id)
+        {
+            if (bundle_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            //get all the people in the group
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            var peopleIds = db.group_people.Where(g => groupInfo.groupId.Contains(g.group_id)).Select(p => p.people_id).ToList();
+            //current bundle and plasmid id
+            var bundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id && b.people_id == userInfo.PersonId);
+            if (bundle.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+            //current plasmind ids
+            List<int> plasmidIds = bundle.Select(p => p.member_id).ToList();
+            List<int> BundleIds = new List<int>();
+            BundleIds.Add((int)bundle_id);
+            ViewBag.BundleIds = BundleIds;
+            //pass all features into json
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => plasmidIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            ViewBag.plasmidIds = JsonConvert.SerializeObject(plasmidIds.ToList());
+            ViewBag.AllBundleIds = JsonConvert.SerializeObject(BundleIds);
+
+            return View(bundle.ToList());
+        }
+
         [Authorize]
         public ActionResult Download(string fileName)
         {

@@ -1,12 +1,9 @@
 ﻿@model IEnumerable<ecloning.Models.plasmid_bundle>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Plasmid Bundles";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<int> BundleIds = (List<int>)ViewBag.BundleIds;
     var plasmid = new ecloning.Models.PlasmidInfo();
-    var Features = ViewBag.Features;
-    var PlasmidIDs = ViewBag.plasmidIds;
-    var AllBundleIds = ViewBag.AllBundleIds;
     var GroupBundleIds = (List<int>)ViewBag.GrouppBundleIds;
 }
 
@@ -19,62 +16,57 @@
             <br />
             <div class="pull-right">
                 <a class="btn btn-primary" href="@Url.Action("Select", "pBundle")">
-                        <i class="fa fa-plus-circle"></i>
-                        <span>Add Bundle</span>
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Add Bundle</span>
                 </a>
             </div>
         </div>
     </div>
     <div class="row">
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-right">
-                <div class="pull-right">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                        <input id="searchBundle" type="text" class="form-control" placeholder="Search bundle names...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" id="clearText">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </span>
-                    </div>
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-right">
+            <div class="pull-right">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input id="searchBundle" type="text" class="form-control" placeholder="Search bundle names...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="clearText">
+                            <i class="fa fa-remove"></i>
+                        </button>
+                    </span>
                 </div>
             </div>
+        </div>
     </div>
     <br class="hidden-xs" />
 </div>
 
-
-<span id="decodeIt" class="hidden"></span>
 <div>
     <p>@TempData["msg"]</p>
 </div>
-<br/>
+<br />
 <div>
     @if (BundleIds.Count() > 0)
     {
-        int x=0;
+        int x = 0;
         for (int i = 0; i < BundleIds.Count(); i++)
         {
             x++;
-            if(x-1 > 9)
+            if (x - 1 > 9)
             {
                 x = x - 10;
             }
-            string ClassName = "panel" + " " + "panel-color" + (x-1).ToString();
-
+            string ClassName = "panel" + " " + "panel-color" + (x - 1).ToString();
             //this bundle id
             var bundleId = BundleIds[i];
-            var bundle = Model.Where(b=>b.bundle_id == bundleId);
-            
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 bundleDiv">
+            var bundle = Model.Where(b => b.bundle_id == bundleId);
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 bundleDiv">
                 <div class="@ClassName">
                     <div class="panel-heading">
-                         <h3 class="panel-title text-center"><em><strong>@bundle.First().name</strong></em><span>&nbsp;</span><span class="badge">@bundle.Count()</span></h3>
-                         <span class="pull-right clickable moveup"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        <h3 class="panel-title text-center"><em><strong>@bundle.First().name</strong></em><span>&nbsp;</span><span class="badge">@bundle.Count()</span></h3>
                     </div>
-                    <div class="panel-body noPadding" style="display:none;">
+                    <div class="panel-body noPadding">
                         <div class="bundleDes">
-                            <span class="text-info"><strong>Bundle Description: </strong></span>@bundle.First().des<br/>
+                            <span class="text-info"><strong>Bundle Description: </strong></span>@bundle.First().des<br />
                             @if (!String.IsNullOrWhiteSpace(bundle.First().img_fn))
                             {
                                 <span class="text-info"><strong>Bundle Document: </strong></span>
@@ -87,87 +79,47 @@
                         </div>
                         @foreach (var item in bundle)
                         {
-                            //define the map Id and map modal id
-                            var mapId = "map-" + @bundleId + "-" + item.member_id;
-                            var mapModalId = "modal-map-" + @bundleId + "-" + item.member_id;
-                            var refModalId = "#modal-" + @bundleId + "-" + item.member_id;
-                            var modalId = "modal-" + @bundleId + "-" + item.member_id;
-                            <div class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
                                 <div class="col-xs-12">
-                                   <p class="text-center plasmidName"><em>@plasmid.PlasmidName(@item.member_id)</em></p>
+                                    <p class="text-center plasmidName"><em>@plasmid.PlasmidName(@item.member_id)</em></p>
                                 </div>
                                 <div class="col-xs-10">
                                     <span>@item.member_role</span>
                                 </div>
-                                <div class="col-xs-2">
-                                    <!-- Trigger the modal with a button -->
-
-                                    <a href="#" data-toggle="modal" data-target=@refModalId class="pull-right">
-                                        <i class="fa fa-2x fa-search-plus"></i>
-                                        <span class=""></span>
-                                    </a>
-
-                                    <!-- Modal -->
-                                    <div id=@modalId class="modal fade" role="dialog">
-                                        <div class="modal-dialog">
-
-                                            <!-- Modal content-->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title text-center">Plasmid Map</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div id=@mapModalId></div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12" id="@mapId">
-
-                                </div>
                             </div>
                         }
-                        <div class="col-xs-offset-2 col-xs-10">
+                    </div>
+                    <div class="panel-footer clearfix">
+                        <div class="pull-right">
+                            <a class="btn btn-default" target="_blank" href="@Url.Action("Details", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Bundle Details">
+                                <i class="fa fa-info"></i>
+                            </a>
                             @if (GroupBundleIds.Contains(bundleId))
                             {
                                 <a class="btn btn-default disabled" href="@Url.Action("Edit", "pBundle")">
                                     <i class="fa fa-pencil-square-o"></i>
-                                    <span>Edit Bundle</span>
                                 </a>
                                 <a class="btn btn-default disabled" href="@Url.Action("Delete", "pBundle")">
                                     <i class="fa fa-trash-o"></i>
-                                    <span>Remove Bundle</span>
                                 </a>
                                 <a class="btn btn-default disabled" href="@Url.Action("Share", "pBundle")">
                                     <i class="fa fa-share-alt"></i>
-                                    <span>Share Bundle</span>
                                 </a>
                             }
                             else
                             {
-                                <a class="btn btn-default" href="@Url.Action("Edit", "pBundle", new { bundle_id = bundleId})">
+                                <a class="btn btn-default" href="@Url.Action("Edit", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Edit Bundle">
                                     <i class="fa fa-pencil-square-o"></i>
-                                    <span>Edit Bundle</span>
                                 </a>
-                                <a class="btn btn-default" href="@Url.Action("Delete", "pBundle", new { bundle_id = bundleId})">
+                                <a class="btn btn-default" href="@Url.Action("Delete", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Delete Bundle">
                                     <i class="fa fa-trash-o"></i>
-                                    <span>Remove Bundle</span>
                                 </a>
-                                <a class="btn btn-default" href="@Url.Action("Share", "pBundle", new { bundle_id = bundleId})">
+                                <a class="btn btn-default" href="@Url.Action("Share", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Share Bundle">
                                     <i class="fa fa-share-alt"></i>
-                                    <span>Share Bundle</span>
                                 </a>
                             }
-
-                            <a class="btn btn-default" href="@Url.Action("Analysis", "pBundle", new { bundle_id = bundleId})">
+                            <a class="btn btn-default" href="@Url.Action("Analysis", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Batch Analysis">
                                 <i class="fa fa-rocket"></i>
-                                <span>Batch Analysis</span>
                             </a>
                         </div>
                     </div>
@@ -176,192 +128,13 @@
         }
     }
 </div>
-
 @Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/giraffe")
-<script src="~/Scripts/ecloning.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.panel-body').each(function (index) {
-            $(this).slideUp(0);
-            $(this).parent('div').find('.panel-heading span.clickable').addClass('panel-collapsed');
-            $(this).parent('div').find('.panel-heading span.clickable').find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        });
-    });
-
-    jQuery(function ($) {
-        $('.panel-heading span.clickable').on("click", function (e) {
-            if ($(this).hasClass('panel-collapsed')) {
-                // expand the panel
-                $(this).parents('.panel').find('.panel-body').slideDown(50);
-                $(this).removeClass('panel-collapsed');
-                $(this).find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-            }
-            else {
-                // collapse the panel
-                $(this).parents('.panel').find('.panel-body').slideUp(50);
-                $(this).addClass('panel-collapsed');
-                $(this).find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-            }
-        });
-    });
-
-
-    //draw plasmid maps
-    $(document).ready(function () {
-
-        //get plasmid ids
-        var PlasmidIDs = ("@PlasmidIDs");
-        PlasmidIDs = LoadData(PlasmidIDs);
-        //get bundle ids
-
-        var BundleIds = ("@AllBundleIds");
-        BundleIds = LoadData(BundleIds);
-
-        //get fearues
-        var Features = ("@Features");
-        Features = LoadData(Features);
-        //draw plasmid map (also in modals)
-        try {
-            Features = JSON.parse(Features);
-            PlasmidIDs = JSON.parse(PlasmidIDs);
-            BundleIds = JSON.parse(BundleIds);
-            var idArray = [];
-            $.each(BundleIds, function (i, b) {
-                $.each(PlasmidIDs, function (index, p) {
-                    idArray.push("map-" + b + "-" + p);
-                });
-            });
-
-            //draw maps
-            drawCustMaps(idArray, Features, 300, 1048);
-
-
-            //redraw maps in modal
-            $('.modal-body div div svg text tspan').click({ idArray: idArray }, redrawCustMap);
-
-
-            function drawCustMaps(idArray, Features, minWidth, modalWidth) {
-                //draw maps
-                $.each(idArray, function (index, value) {
-                    mapId = value;
-                    modalMapId = "modal-" + mapId;
-                    //get the plasmid id
-                    var pieces = mapId.split('-');
-                    var plasmidId = +pieces[pieces.length - 1];
-                    //filter featrues
-                    var currentFeatures = $.grep(Features, function (n, i) {
-                        return n.pId === plasmidId;
-                    });
-                    pName = currentFeatures[0].pName;
-                    pCount = currentFeatures[0].pSeqCount;
-                    pId = currentFeatures[0].pId;
-
-                    delete currentFeatures['pId'];
-                    delete currentFeatures['pName'];
-                    delete currentFeatures['pCount'];
-
-                    fData = [pCount, currentFeatures];
-
-                    width = ($("#" + mapId).width() <= minWidth ? minWidth : $("#" + mapId).width());
-                    if ($('#' + mapId).length != 0) {
-                        //draw the map
-                        var gd = GiraffeDraw();
-                        gd.read(fData);
-                        gd.CircularMap({
-                            'map_dom_id': mapId,
-                            'plasmid_name': pName,
-                            'map_width': width,
-                            'map_height': width
-                        });
-
-                        gd.CircularMap({
-                            'map_dom_id': modalMapId,
-                            'plasmid_name': pName,
-                            'map_width': modalWidth,
-                            'map_height': modalWidth
-                        });
-                    }
-                });
-            };
-
-            function redrawCustMap(event) {
-                var txt = $(event.target).text();
-                //find feature clicked
-                var idArray = event.data.idArray;
-                $.each(idArray, function (i, d) {
-                    mapId = d;
-                    modalMapId = "modal-" + mapId;
-                    //get the plasmid id
-                    var pieces = mapId.split('-');
-                    var plasmidId = +pieces[pieces.length - 1];
-                    //filter featrues
-                    var currentFeatures = $.grep(Features, function (n, i) {
-                        return n.pId === plasmidId;
-                    });
-                    pName = currentFeatures[0].pName;
-                    pCount = currentFeatures[0].pSeqCount;
-                    pId = currentFeatures[0].pId;
-
-                    delete currentFeatures['pId'];
-                    delete currentFeatures['pName'];
-                    delete currentFeatures['pCount'];
-
-                    fData = [pCount, currentFeatures];
-
-                    var oldStart = 0;
-                    $.each(fData[1], function (index, d) {
-                        $.each(d, function (key, value) {
-                            if (value == txt) {
-                                oldStart = d['start'];
-                            }
-                        });
-                    });
-
-                    //change the start and end
-                    $.each(fData[1], function (i, dt) {
-                        if (oldStart != 0) {
-                            if (dt['start'] >= oldStart) {
-                                dt['start'] = dt['start'] - oldStart + 1;
-                                dt['end'] = dt['end'] - oldStart + 1;
-                            }
-                            else {
-                                dt['start'] = pCount - oldStart + dt['start'] + 1;
-                                if (dt['end'] >= oldStart) {
-                                    dt['end'] = dt['end'] - oldStart + 1;
-                                }
-                                else {
-                                    dt['end'] = pCount - oldStart + dt['end'] + 1;
-                                }
-                            }
-                        }
-                    });
-                    //reorder the data
-                    fData[1].sort(sortByProperty('start'));
-                    if ($('#' + modalMapId).length != 0) {
-                        //redraw the map
-                        var gd = GiraffeDraw();
-                        gd.read(fData);
-                        gd.CircularMap({
-                            'map_dom_id': modalMapId,
-                            'plasmid_name': pName,
-                            'map_width': 1048,
-                            'map_height': 1048
-                        });
-                    }
-                });
-                //run the click-event again
-                $('svg text tspan').click({ idArray: idArray }, redrawCustMap);
-            };
-
-        }
-        catch (e) {
-            console.log(e);
-        }
-
-    });
-</script>
 <script>
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
     $(function () {
         $('#searchBundle').keyup(function () {
             var _text = $(this).val().toLowerCase();

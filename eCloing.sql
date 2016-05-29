@@ -842,15 +842,6 @@ CREATE TABLE group_shared
 );
 
 
-CREATE TABLE nuclease
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	name NVARCHAR(100) NOT NULL,
-	[des] TEXT,
-	CONSTRAINT uq_nuclease_name UNIQUE (name)
-);
-
-
 --the table below needs to be re thought !!!!--
 --create crispr group or virus group, plasmid group
 --==============need to think this again!!!!!++++++++++
@@ -875,7 +866,6 @@ CREATE TABLE [clone_group]
 	CONSTRAINT fk_clone_group_people_id FOREIGN KEY (people_id) REFERENCES people(id),	
 	CONSTRAINT fk_clone_group_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
 	CONSTRAINT fk_clone_group_oligo_id FOREIGN KEY (oligo_id) REFERENCES oligo(id),
-	CONSTRAINT fk_clone_group_pnuclease_id FOREIGN KEY (nuclease_id) REFERENCES nuclease(id),
 	CONSTRAINT uq_crispr_group_name UNIQUE (name)
 );
 
@@ -890,7 +880,7 @@ CREATE TABLE ladder
 	max_bp_kda INT,
 	company NVARCHAR(100),
 	orderref NVARCHAR(100),
-	CONSTRAINT uq_ladder_name UNIQUE (name),
+	CONSTRAINT uq_ladder_company_name UNIQUE (company, name),
 );
 --ladder size
 CREATE TABLE ladder_size
@@ -898,6 +888,7 @@ CREATE TABLE ladder_size
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	ladder_id INT NOT NULL,
 	size INT NOT NULL, --bp or kDa
+	Rf float NOT NULL,
 	CONSTRAINT fk_padder_size_ladder_id FOREIGN KEY (ladder_id) REFERENCES ladder(id),
 );
 
