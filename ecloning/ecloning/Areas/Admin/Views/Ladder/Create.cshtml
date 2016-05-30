@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Add Ladder";
     Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    var Count = (int)ViewBag.Count;
 }
 
 @Html.Partial("_BioTools")
@@ -79,35 +80,40 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="fragment-0" class="fragmentDiv">
-                                            <div class="col-xs-4">
-                                                <div class="form-group required">
-                                                    @Html.LabelFor(model => model.ladderSize[0].size, "Size(bp)", htmlAttributes: new { @class = "control-label col-md-6" })
-                                                    <div class="col-md-6">
-                                                        @Html.EditorFor(model => model.ladderSize[0].size, new { htmlAttributes = new { @class = "form-control" } })
-                                                        @Html.ValidationMessageFor(model => model.ladderSize[0].size, "", new { @class = "text-danger" })
+                                        @for (var i = 0; i < Count; i++)
+                                        {
+                                            var divId = "fragment-" + i;
+                                            <div id=@divId class="fragmentDiv">
+                                                <div class="col-xs-4">
+                                                    <div class="form-group required">
+                                                        @Html.LabelFor(model => model.ladderSize[i].size, "Size(bp)", htmlAttributes: new { @class = "control-label col-md-6" })
+                                                        <div class="col-md-6">
+                                                            @Html.EditorFor(model => model.ladderSize[i].size, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ladderSize[i].size, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <div class="form-group required">
+                                                        @Html.LabelFor(model => model.ladderSize[i].mass, "Mass", htmlAttributes: new { @class = "control-label col-md-6" })
+                                                        <div class="col-md-6">
+                                                            @Html.EditorFor(model => model.ladderSize[i].mass, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ladderSize[i].mass, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <div class="form-group required">
+                                                        @Html.LabelFor(model => model.ladderSize[i].Rf, "Rf(mm)", htmlAttributes: new { @class = "control-label col-md-6" })
+                                                        <div class="col-md-6">
+                                                            @Html.EditorFor(model => model.ladderSize[i].Rf, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ladderSize[i].Rf, "", new { @class = "text-danger" })
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-xs-4">
-                                                <div class="form-group required">
-                                                    @Html.LabelFor(model => model.ladderSize[0].mass, "Mass", htmlAttributes: new { @class = "control-label col-md-6" })
-                                                    <div class="col-md-6">
-                                                        @Html.EditorFor(model => model.ladderSize[0].mass, new { htmlAttributes = new { @class = "form-control" } })
-                                                        @Html.ValidationMessageFor(model => model.ladderSize[0].mass, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xs-4">
-                                                <div class="form-group required">
-                                                    @Html.LabelFor(model => model.ladderSize[0].Rf, "Rf(mm)", htmlAttributes: new { @class = "control-label col-md-6" })
-                                                    <div class="col-md-6">
-                                                        @Html.EditorFor(model => model.ladderSize[0].Rf, new { htmlAttributes = new { @class = "form-control" } })
-                                                        @Html.ValidationMessageFor(model => model.ladderSize[0].Rf, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        }
+
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-offset-2 col-md-10">

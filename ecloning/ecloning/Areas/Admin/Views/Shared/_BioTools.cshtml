@@ -32,20 +32,22 @@
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
+                @*<li>
+                    <a href="@Url.Action("Index", "Ladder")"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> Ladders</a>
+                </li>*@
                 <li>
                     <a href="#"><i class="fa fa-barcode fa-fw fa-rotate-270"></i> Ladders<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="@Url.Action("Index", "DNALadder")"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> DNA Ladders</a>
+                            <a href="@Url.Action("Details", "Ladder", new { type="DNA" })"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> DNA Ladders</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Index", "RNALadder")"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> RNA Ladders</a>
+                            <a href="@Url.Action("Details", "Ladder", new { type="RNA" })"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> RNA Ladders</a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Index", "ProteinLadder")"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> Protein Ladders</a>
+                            <a href="@Url.Action("Details", "Ladder", new { type="Protein" })"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> Protein Ladders</a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
                 </li>
                 <li>
                     <a href="@Url.Action("Index", "Company")"><i class="fa fa-building-o fa-fw"></i> Companies</a>

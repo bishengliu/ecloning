@@ -1218,9 +1218,9 @@ INSERT INTO dropdownitem VALUES
 ('9', '100%', 'BufferActivity'),
 
 --ladder type
-('DNA Ladder', 'DNA Ladder', 'ladder'),
-('RNA Ladder', 'RNA Ladder', 'ladder'),
-('Protein Ladder', 'Protein Ladder', 'ladder')
+('DNA', 'DNA', 'ladder'),
+('RNA', 'RNA', 'ladder'),
+('Protein', 'Protein', 'ladder')
 
 
 ;
