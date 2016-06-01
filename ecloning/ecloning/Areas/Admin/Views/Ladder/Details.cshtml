@@ -2,10 +2,13 @@
 @{
     ViewBag.Title = "Details";
     Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    var ladderSize = ViewBag.ladderSize;
+
 }
 
 @Html.Partial("_BioTools")
 <div id="page-wrapper">
+    <span id="decodeIt" class="hidden"></span>
     <div class="row">
         <div class="col-sm-10">
             <h3 class="text-primary"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> @ViewBag.Type Ladders</h3>
@@ -28,13 +31,15 @@
         {
             foreach(var item in Model)
             {
+                //prepare svg id
+                var id = "ladder-" + item.id;
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title text-center"><em><strong>@item.name</strong></em></h3>
                         </div>
                         <div class="panel-body">
-                            <div class="@item.id"></div>
+                            <div id="@id"></div>
                         </div>
                         <div class="panel-footer clearfix">
                             <div>
@@ -53,3 +58,95 @@
     </div>
 </div>
 
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/d3")
+<script>
+    //get json data
+    var ladders = ("@ladderSize");
+    document.getElementById("decodeIt").innerHTML = ladders;
+    ladders = document.getElementById("decodeIt").textContent;
+
+    try
+    {
+        ladders = JSON.parse(ladders);
+        //d3 nest by id
+        var data = d3.nest()
+                     .key(function (d) { return d.id; })
+                     .entries(ladders);
+        console.log(data);
+        $.each(data, function (i, d) {
+            var Rf = [];
+            var size = [];
+            var mass = [];
+            $.each(d.values, function (si, sd) {
+                Rf.push(sd.Rf); //Rf
+                size.push(sd.size);
+                mass.push(sd.mass);
+            })
+            //draw svg ladder
+            //find the div id
+            var id = "ladder-" + d.key;
+            drawLadder(id, Rf, size, mass, d.values);
+        })
+
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+    function drawLadder(id, Rf, size, mass, data)
+    {
+        var margin = { top: 10, right: 2, bottom: 10, left: 2 },
+            width = 60 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
+        var bandWidth = 10; // real width should be Rf*bandWidth
+
+        //get the max mass
+        var maxMass = d3.max(mass);
+        var maxStorkeWidth = 4;
+        /*
+        var color = d3.scale.ordinal()
+                      .range([""])
+                      .domain(["Nucleotide", "Protein"]);
+       */
+        //color is related to mass
+        var bgColor = "#363636";
+
+        var svg = d3.select("#" + id).append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var background = svg.append("rect")
+                .attr("x", 0 - margin.left)
+                .attr("y", 0 - margin.top)
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .attr("fill", bgColor);
+        //draw each band
+        var g = svg.append("g").attr("class", "band-label");
+
+        var band = g.selectAll(".band")
+                        .data(data)
+                     .enter()
+                        .append("line");
+        var bandAttr = band
+                            .attr("x1", width * .1)
+                            .attr("y1", function (d) { return height * d.Rf;})
+                            .attr("x2", width * .9)
+                            .attr("y2", function (d) { return height * d.Rf; })
+                            .attr("stroke-width", function (d) { return (d.mass / maxMass) * maxStorkeWidth; })
+                            .attr("stroke-linecap", "round")
+                            .attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.mass / maxMass)); })
+                            .attr("stroke", "white");
+        //draw size labels
+        //need to deal with close bands
+        var labelLine = g.selectAll(".label-line")
+                             .data(Rf)
+                         .enter()
+                             .append("line");
+        //var labelLineAttr = labelLine
+                            
+
+    }
+</script>

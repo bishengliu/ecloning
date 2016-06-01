@@ -5,6 +5,7 @@ using System.Linq;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace ecloning.Areas.Admin.Controllers
 {
@@ -24,6 +25,15 @@ namespace ecloning.Areas.Admin.Controllers
         {
             var ladder = db.ladders.Where(l=>l.ladder_type==type);
             ViewBag.Type = type;
+            //get json data
+            var ladderId = ladder.Select(i => i.id);
+            var ladderSize = db.ladder_size.Where(l => ladderId.Contains(l.ladder_id)).OrderBy(l=>l.ladder_id).OrderBy(r=>r.Rf).Select(l => new {
+                id = l.ladder_id,
+                size = l.size,
+                mass = l.mass,
+                Rf = l.Rf
+            });
+            ViewBag.ladderSize = JsonConvert.SerializeObject(ladderSize.ToList());
             return View(ladder.ToList());
         }
         [Authorize]
