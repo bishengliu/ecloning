@@ -8,6 +8,7 @@ namespace ecloning.Models
 {
     public class mladder
     {
+        public int id { get; set; }
         [Required(ErrorMessage = "Required")]
         public string ladder_type { get; set; }
         [Required(ErrorMessage = "Required")]

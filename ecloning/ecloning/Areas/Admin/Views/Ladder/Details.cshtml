@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<ecloning.Models.ladder>
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Ladders";
     Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
     var ladderSize = ViewBag.ladderSize;
-
+    var msg = TempData["msg"];
 }
 
 @Html.Partial("_BioTools")
@@ -20,6 +20,7 @@
                 <span class="">Ladder</span>
             </a>
         </div>
+        <p class="text-danger">@msg</p>
     </div>
     <div class="row">
         <hr/>
@@ -39,7 +40,7 @@
                             <h3 class="panel-title text-center"><em><strong>@item.name</strong></em></h3>
                         </div>
                         <div class="panel-body">
-                            <div id="@id"></div>
+                            <div id="@id" class="inner"></div>
                         </div>
                         <div class="panel-footer clearfix">
                             <div>
@@ -60,6 +61,7 @@
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/d3")
+<script src="~/Scripts/ecloning.js"></script>
 <script>
     //get json data
     var ladders = ("@ladderSize");
@@ -94,59 +96,5 @@
     {
         console.log(e);
     }
-    function drawLadder(id, Rf, size, mass, data)
-    {
-        var margin = { top: 10, right: 2, bottom: 10, left: 2 },
-            width = 60 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
-        var bandWidth = 10; // real width should be Rf*bandWidth
-
-        //get the max mass
-        var maxMass = d3.max(mass);
-        var maxStorkeWidth = 4;
-        /*
-        var color = d3.scale.ordinal()
-                      .range([""])
-                      .domain(["Nucleotide", "Protein"]);
-       */
-        //color is related to mass
-        var bgColor = "#363636";
-
-        var svg = d3.select("#" + id).append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var background = svg.append("rect")
-                .attr("x", 0 - margin.left)
-                .attr("y", 0 - margin.top)
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .attr("fill", bgColor);
-        //draw each band
-        var g = svg.append("g").attr("class", "band-label");
-
-        var band = g.selectAll(".band")
-                        .data(data)
-                     .enter()
-                        .append("line");
-        var bandAttr = band
-                            .attr("x1", width * .1)
-                            .attr("y1", function (d) { return height * d.Rf;})
-                            .attr("x2", width * .9)
-                            .attr("y2", function (d) { return height * d.Rf; })
-                            .attr("stroke-width", function (d) { return (d.mass / maxMass) * maxStorkeWidth; })
-                            .attr("stroke-linecap", "round")
-                            .attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.mass / maxMass)); })
-                            .attr("stroke", "white");
-        //draw size labels
-        //need to deal with close bands
-        var labelLine = g.selectAll(".label-line")
-                             .data(Rf)
-                         .enter()
-                             .append("line");
-        //var labelLineAttr = labelLine
-                            
-
-    }
+    
 </script>
