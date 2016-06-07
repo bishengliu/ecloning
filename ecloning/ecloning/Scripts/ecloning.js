@@ -483,23 +483,21 @@ function ladderSize(count) {
     return html;
 }
 
-function drawLadder(id, Rf, size, mass, data) {
+function drawLadder(id, Rf, size, mass, data, type) {
     var margin = { top: 10, right: 2, bottom: 10, left: 2 },
         width = 60 - margin.left - margin.right,
         height = 300 - margin.top - margin.bottom;
-    var bandWidth = 10; // real width should be Rf*bandWidth
-
     //get the max mass
     var maxMass = d3.max(mass);
-    var maxStorkeWidth = 4;
+    var maxStorkeWidth = type != "Protein" ? 4 : 7;
     /*
     var color = d3.scale.ordinal()
                   .range([""])
                   .domain(["Nucleotide", "Protein"]);
    */
     //color is related to mass
-    var bgColor = "#363636";
-
+    var bgColor = type != "Protein" ? "#363636" : "#F0EFF4";
+    var fgColor = type != "Protein" ? "white" : "#83A3D2";
     var svg = d3.select("#" + id).append("svg")
             .attr("width", 2 * (width + margin.left + margin.right))
             .attr("height", height + margin.top + margin.bottom)
@@ -526,7 +524,7 @@ function drawLadder(id, Rf, size, mass, data) {
                         .attr("stroke-width", function (d) { return (d.mass / maxMass) * maxStorkeWidth; })
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.mass / maxMass)); })
-                        .attr("stroke", "white");
+                        .attr("stroke", fgColor);
     //draw size labels
     //need to deal with close bands
     var labelLine = g.selectAll(".label-line")

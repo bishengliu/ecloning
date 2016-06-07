@@ -63,19 +63,19 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a href="@Url.Action("Index", "Plasmid")">
-                                                <i class="fa fa-genderless fa-lg"></i>
+                                                <i class="fa fa-genderless fa-lg text-info"></i>
                                                 <span class="">All Plasmids</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="@Url.Action("Overview", "Plasmid")">
-                                                <i class="fa fa-th"></i>
+                                                <i class="fa fa-th text-info"></i>
                                                 <span>Plasmids Overview</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="@Url.Action("Index", "pBundle")">
-                                                <i class="fa fa-object-group"></i>
+                                                <i class="fa fa-object-group text-info"></i>
                                                 <span>Plasmid Bundles</span>
                                             </a>
                                         </li>
@@ -88,14 +88,14 @@
                                         </li>
                                         <li>
                                             <a href="@Url.Action("Search", "Plasmid")">
-                                                <i class="glyphicon glyphicon-search"></i>
+                                                <i class="glyphicon glyphicon-search text-info"></i>
                                                 <span class="">Find Plasmids</span>
                                             </a>
                                         </li>
 
                                         <li>
                                             <a href="@Url.Action("Index", "Feature")">
-                                                <i class="fa fa-sliders"></i>
+                                                <i class="fa fa-sliders text-info"></i>
                                                 <span class="">Plasmid Features</span>
                                             </a>
                                         </li>
@@ -125,16 +125,39 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-database">&ensp;</span>Resources<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="@Url.Action("Index", "Primer")" data-toggle="tooltip" title="PCR Primers">
-                                                <i class="glyphicon glyphicon-transfer"></i>
+                                            <a href="@Url.Action("Index", "Primer")">
+                                                <i class="glyphicon glyphicon-transfer text-info"></i>
                                                 <span class="">Primers</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("Index", "Oligo")" data-toggle="tooltip" title="PCR Primers">
-                                                <i class="fa fa-long-arrow-right"></i>
+                                            <a href="@Url.Action("Index", "Oligo")">
+                                                <i class="fa fa-share text-info"></i>
                                                 <span class="">Oligos</span>
                                             </a>
+                                        </li>
+                                        <li class="menu-item dropdown dropdown-submenu">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><i class="fa fa-barcode fa-fw fa-rotate-270 text-info"></i> Ladders</a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <a href="@Url.Action("Index", "Ladder", new { type= "DNA"})">
+                                                        <i class="fa fa-barcode fa-fw fa-rotate-270 text-info"></i>
+                                                        <span class="">DNA Ladders</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Index", "Ladder", new { type= "RNA"})">
+                                                        <i class="fa fa-barcode fa-fw fa-rotate-270 text-info"></i>
+                                                        <span class="">RNA Ladders</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Index", "Ladder", new { type= "Protein"})">
+                                                        <i class="fa fa-barcode fa-fw fa-rotate-270 text-info"></i>
+                                                        <span class="">Protein Ladders</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </li>
                                     </ul>
                                 </li>
@@ -143,13 +166,13 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a href="@Url.Action("Align2Seq", "BioTools")" data-toggle="tooltip" title="Align 2 sequences of DNA,RNA or Protein">
-                                                <i class="fa fa-exchange"></i>
+                                                <i class="fa fa-exchange text-info"></i>
                                                 <span class="">Align 2 Sequences</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="@Url.Action("MASViewer", "BioTools")" data-toggle="tooltip" title="Multiple Sequence Alignment Viewer">
-                                                <i class="glyphicon glyphicon-barcode fa-rotate-90"></i>
+                                                <i class="glyphicon glyphicon-barcode fa-rotate-90 text-info"></i>
                                                 <span class="text-text-info">MSA Viewer</span>
                                             </a>
                                         </li>

@@ -35,6 +35,7 @@ namespace ecloning.Areas.Admin.Controllers
                 Rf = l.Rf
             });
             ViewBag.ladderSize = JsonConvert.SerializeObject(ladderSize.ToList());
+            ViewBag.Type = type;
             return View(ladder.ToList());
         }
         [Authorize]

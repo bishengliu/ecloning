@@ -46,7 +46,7 @@
         }
         else
         {
-                <table id="featureTable" class="table">
+                <table id="featureTable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>
@@ -150,6 +150,7 @@
     $(document).ready(function () {
         $('#featureTable').DataTable({
             responsive: true,
+            "iDisplayLength": 50,
             columnDefs: [
                 { targets: 'no-sort', orderable: false }
             ]

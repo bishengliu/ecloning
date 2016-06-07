@@ -38,7 +38,7 @@
         }
         else
         {
-        <table id="primerTable" class="table">
+        <table id="primerTable" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>
@@ -166,6 +166,7 @@
     $(document).ready(function () {
         $('#primerTable').DataTable({
             responsive: true,
+            "iDisplayLength": 50,
             columnDefs: [
                 { targets: 'no-sort', orderable: false }
             ]
