@@ -29,5 +29,11 @@ namespace ecloning.Controllers
         {
             return View();
         }
+
+        public ActionResult SeqEditor(string type)
+        {
+            ViewBag.Type = type;
+            return View();
+        }
     }
 }

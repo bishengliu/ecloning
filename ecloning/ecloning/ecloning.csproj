@@ -1046,6 +1046,7 @@
     <Content Include="Views\Oligo\Index.cshtml" />
     <Content Include="Views\Ladder\Index.cshtml" />
     <Content Include="Views\pBundle\Compare.cshtml" />
+    <Content Include="Views\BioTools\SeqEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Edit Plasmid Sequence";
+    ViewBag.Title = "Edit Sequence";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var Sequence = ViewBag.Seq;
     var PlasmidId = (int)ViewBag.PlasmidId;
@@ -118,47 +118,6 @@
 </div>
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/d3")
-
-<style>
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-    }
-
-    .axis text {
-        fill: #000;
-    }
-
-    .axis .tick line {
-        stroke: rgba(0, 0, 0, 0.1);
-        stroke-width: .5px;
-    }
-
-    .letter {
-        font-family: monospace;
-        font-size: 13px;
-        font-weight: bold;
-    }
-
-    .nletter {
-        font-family: monospace;
-        font-size: 13px;
-        font-weight: bold;
-    }
-
-
-    .noselect {
-        -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none; /* Chrome/Safari/Opera */
-        -khtml-user-select: none; /* Konqueror */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-        user-select: none; /* Non-prefixed version, currently
-                                  not supported by any browser */
-    }
-</style>
 
 <script>
     //this script is used to generate seq editor for ecloing project

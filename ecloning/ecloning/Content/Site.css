@@ -661,3 +661,26 @@ svg text tspan{
         fill: #2ca02c !important;
         font-weight: bold;
     }
+
+    .letter {
+        font-family: monospace;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .nletter {
+        font-family: monospace;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+
+    .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Chrome/Safari/Opera */
+        -khtml-user-select: none; /* Konqueror */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+    }
