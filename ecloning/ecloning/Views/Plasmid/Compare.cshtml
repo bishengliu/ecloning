@@ -114,14 +114,14 @@
         //append dom to show map
         $.each(idArray, function (i, d) {
             //add dom
-            var mapDiv = $("#maps").append("<div id=\"map-" + d + "\" class=\"col-xs-12 col-sm-6\"></div>");
+            var mapDiv = $("#maps").append("<div id=\"map-" + d + "\" class=\"col-xs-12 col-sm-6 col-md-4 col-lg-4\"></div>");
 
             var mapId = "map-" + d;
-            draw1Map(Features, mapId, d, 848, 648);
+            draw1Map(Features, mapId, d, 568, 648);
         });
 
         //redraw maps
-        $('svg text tspan').click({ idArray: idArray, width: 848, height: 648 }, redrawMap);
+        $('svg text tspan').click({ idArray: idArray, width: 568, height: 648 }, redrawMap);
         $('#error').text(null);
         $('#msg').text('Click the feature name to rotate the maps.');
 
@@ -142,7 +142,6 @@
         $("#features").empty();
         //filter the plasmid
         var data = $.grep(Features, function (v, i) {
-            console.log(v);
                         return $.inArray(""+v.pId, idArray) !== -1 && v.feature != "undefined";
                     });
         var margin = { top: 20, right: 200, bottom: 0, left: 20 },
@@ -150,13 +149,12 @@
         height = 650;
         var padding = 0.5;
         var labels = [];
-        $.each(data, function (i, d) {            
+        $.each(data, function (i, d) {
             var item = $.grep(fLabels, function (v, si) {
-                    return v==d.feature;
+                return v == d.feature;
             });
             labels.push(item[0]);
-            })
-
+        });
         var x = d3.scale.ordinal()
             .domain(labels)
             .rangeRoundPoints([0, width], padding);
@@ -210,16 +208,20 @@
 
     //redraw the chart when resize the window
     $(window).resize(function () {
-        $("#maps").empty();
-        $("#features").empty();
         if ($('#compare-type').text() == "features") {
+            $("#maps").empty();
+            $("#features").empty();
+
+            var idString = $('#plasmid').val();
+            //get id list and then generate maps and remove duplicates
+            var idArray = unique(idString.split(','));
+
             var margin = { top: 20, right: 200, bottom: 0, left: 20 },
             width = ($("#features").width() <= 250 ? 250 : $("#features").width()) - 20 - margin.left - margin.right;
             height = 650;
             var padding = 0.5;
 
             var data = $.grep(Features, function (v, i) {
-                console.log(v);
                 return $.inArray("" + v.pId, idArray) !== -1 && v.feature != "undefined";
             });
 
@@ -229,7 +231,7 @@
                     return v == d.feature;
                 });
                 labels.push(item[0]);
-            })
+            });
             var x = d3.scale.ordinal()
                 .domain(labels)
                 .rangeRoundPoints([0, width], padding);
@@ -237,7 +239,6 @@
             var xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("top");
-            
 
             var nData = d3.nest()
                       .key(function (d) { return d.pName; })
@@ -385,7 +386,6 @@
         var fNumber = d3.format(".10f");
         //sort nData
         nData.forEach(function (d, i) {
-
             d['values'][0]['values'].forEach(function (fd, fi) {
                 fd.order = 0;
                 if (fd['feature'] === txt) {
