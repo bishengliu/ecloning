@@ -94,6 +94,9 @@
                             <a class="btn btn-default" target="_blank" href="@Url.Action("Details", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Bundle Details">
                                 <i class="fa fa-info"></i>
                             </a>
+                            <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Compare Components">
+                                <i class="fa fa-th"></i>
+                            </a>
                             @if (GroupBundleIds.Contains(bundleId))
                             {
                                 <a class="btn btn-default disabled" href="@Url.Action("Edit", "pBundle")">

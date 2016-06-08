@@ -322,7 +322,14 @@ function sortByProperty(property) {
     };
 }
 
-
+function truncate(str, maxLength, suffix) {
+    if (str.length > maxLength) {
+        str = str.substring(0, maxLength + 1);
+        str = str.substring(0, Math.min(str.length, str.lastIndexOf(" ")));
+        str = str + suffix;
+    }
+    return str;
+}
 //==========================ladders=======================
 
 //linear regression by finding least squares

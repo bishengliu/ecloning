@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "Compare Plasmids";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Features = ViewBag.Features;
+    var fLabels = ViewBag.fLabels;
+    var PlasmidIds = (List<int>)ViewBag.PlasmidId;
+    var PlasmidId = String.Join(",", PlasmidIds);
+}
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <h3 class="text-warning">Compare Components</h3>
+            </div>
+            <div class="col-xs-3 col-sm-3">
+                <h3 class="hidden-xs">
+                    <a class="btn btn-sm btn-default topButton" href="#" id="compare-feature">
+                        <i class="fa fa-sliders"></i>
+                        <span>Compare Features</span>
+                    </a>
+                </h3>
+                <a class="btn btn-sm btn-default hidden-sm hidden-md hidden-lg topButton" href="#" id="compare-feature1">
+                    <i class="fa fa-sliders"></i>
+                    <span>Compare Features</span>
+                </a>
+            </div>
+            <div class="col-xs-3 col-sm-3">
+                <h3 class="hidden-xs">
+                    <a class="btn btn-sm btn-default topButton" href="#" id="compare">
+                        <i class="fa fa-genderless fa-lg"></i>
+                        <span>Compare Maps</span>
+                    </a>
+                </h3>
+                <a class="btn btn-sm btn-default hidden-sm hidden-md hidden-lg topButton" href="#" id="compare1">
+                    <i class="fa fa-genderless fa-lg"></i>
+                    <span>Compare Maps</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<span id="compare-type" class="hidden"></span>
+<input id="plasmid" class="hidden" value="@PlasmidId">
+<div class="row">
+    <div class="col-xs-12 col-lg-11 col-lg-offset-1" id="maps">
+
+    </div>
+    <div class="col-xs-12 col-lg-11 col-lg-offset-1" id="features">
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+<script src="~/Scripts/ecloning.js"></script>
+<script src="~/Scripts/ecloning-compare.js"></script>
+
+<script>
+    
+    var Features = ("@Features");
+    Features = LoadData(Features);
+
+    var fLabels = ("@fLabels");
+    fLabels = LoadData(fLabels);
+
+    try {
+        Features = JSON.parse(Features);
+        fLabels = JSON.parse(fLabels);
+
+        $(document).ready(function () {
+            //default compare maps
+            compareMaps();
+            //submit form to compare maps
+            $('#compare').click(compare);
+            $('#compare1').click(compare);
+            //submit form to compare features
+            $('#compare-feature').click(compareFeature);
+            $('#compare-feature1').click(compareFeature);
+            //redraw the chart when resize the window
+            $(window).resize(function () {
+                if ($('#compare-type').text() == "features") {
+                    $("#maps").empty();
+                    $("#features").empty();
+
+                    var idString = $('#plasmid').val();
+                    //get id list and then generate maps and remove duplicates
+                    var idArray = unique(idString.split(','));
+                    drawFeatures(idArray, Features, fLabels);
+                }
+            });
+        });
+    } catch (e) {
+        console.log(e);
+        $('#error').text("Unable to load plasmid data, please try again later!");
+        $("#compare").addClass("disabled");
+        $("#compare-feature").addClass("disabled");
+    }
+</script>
