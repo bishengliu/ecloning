@@ -162,12 +162,13 @@ else
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/d3")
 <script>
+    var EditObj = [];
+    var seqObj = [];
     $(document).ready(function () {
         //get the type
         var type = $("#type").text().trim();
         //empty object to store user editing info, will be updated later
-        var EditObj = [];
-        var seqObj = [];
+
         //remove all non letter in the seqeuce input
         $('#seq').change(function () {
             var type = $("#type").text().trim();
@@ -183,6 +184,7 @@ else
             }
             $('#seq').val(after);
         });
+
         //capture seq and show editor
         $("#showEditor").on("click", function (e) {
             e.preventDefault();
@@ -193,20 +195,19 @@ else
                     $("#capture_seq").addClass("hidden");
                 }
                 //prepare the editor
-                seqEditor(seq, "#seq-editor", type, EditObj, seqObj);
+                seqEditor(seq, "#seq-editor", type);
                 if ($("#editor").hasClass("hidden")) {
                     $("#editor").removeClass("hidden");
                 }
                 //show the finish button
-                if ($("#finish").hasClass("hidden")) {
-                    $("#finish").removeClass("hidden");
+                if ($("#finish-button").hasClass("hidden")) {
+                    $("#finish-button").removeClass("hidden");
                 }
             }
             else {
                 console.log('form validation failed!');
             }
         });
-
         //button events of seq-editor
         $("#delete_seq").on("click", function (e) {
             var seq = $('#seq').val().trim();
@@ -233,7 +234,6 @@ else
                                       .css("font-size", "15px")
                                       .css("stroke", "#000000");
                 //update EditObj
-                console.log(EditObj);
                 EditObj = genEditObj(i, seqArray[i - 1], "delete", null, null, EditObj);
             }
             //console.log(EditObj);
@@ -255,14 +255,287 @@ else
             $('#insert_seq').val(after);
         });
         $("#insert").on("click", function (e) {
-            insertSeq(e, EditObj, seqObj);
-        });//insert letters
+            var seq = $('#seq').val().trim();
+            var seqArray = seq.split('');
+            var seq_len = seqArray.length;
+            var r = 10;
+            var type = $("#type").text().trim();
+            if (type == "DNA") {
+                var color = d3.scale.ordinal()
+                      .domain(["A", "T", "G", "C"])
+                      .range(["#3366cc", "#dc3912", "#ff9900", "#109618"]);
+            } else {
+                //RNA
+                var color = d3.scale.ordinal()
+                      .domain(["A", "U", "G", "C"])
+                      .range(["#3366cc", "#dc3912", "#ff9900", "#109618"]);
+            }
+            //select option value
+            var aob = $("#aob").val();
 
+            $("#insert_msg").text(null);
+            e.preventDefault();
+            if (!$('#insert_pos').val().trim()) {
+                $("#insert_msg").text("position is required!");
+                return false;
+            }
+            if ($('#insert_pos').val().trim() < 1 || $('#insert_pos').val().trim() > seq_len) {
+                $("#insert_msg").text("Invalid position!");
+                return false;
+            }
+
+            if (!$('#insert_seq').val().trim()) {
+                $("#insert_msg").text("Sequence is required!");
+                return false;
+            }
+            //get leftId
+            var posString = null;
+            var leftId = "-insert";
+            var divId = "-div";
+            if (aob == "After") {
+                posString = $('#insert_pos').val().trim() + "-" + (+$('#insert_pos').val().trim() + 1);
+                leftId = posString + leftId;
+                divId = posString + divId;
+            }
+            else {
+                posString = (+$('#insert_pos').val().trim() - 1) + "-" + $('#insert_pos').val().trim();
+                leftId = posString + leftId;
+                divId = posString + divId;
+            }
+            var curPos = +$('#insert_pos').val().trim();
+            //get the x, y position in the SeqObj
+            curObj = $.grep(seqObj, function (d) {
+                return (+d[1] === +curPos);
+            });
+            var curLetter = curObj[0][0];
+            var xPos = curObj[0][2];
+            var yPos = curObj[0][3];
+            var nLetters = $('#insert_seq').val().trim();
+
+            //update svg
+            if (aob == "Before") {
+                if ($("#" + leftId).length == 0) {
+                    //there is no insert here yet
+                    var leftgroup = d3.select("svg").append("g")
+                                                .attr("id", leftId)
+                                                .attr("class", "clickable")
+                                                .on("dblclick", function () {
+                                                    //delete this
+                                                    d3.select(this).remove();
+                                                    //hide seq-tooltip
+                                                    $("#" + divId).css("opacity", 0);
+                                                    //delete data object
+                                                    removeEditObj("insert", leftId, EditObj);
+                                                });
+                    var leftSlash = leftgroup.append("line")
+                                                     .style("stroke", "gray")
+                                                     .attr("x1", xPos + 30)
+                                                     .attr("y1", yPos + 45)
+                                                     .attr("x2", xPos + 20)
+                                                     .attr("y2", yPos + 30);
+                    //apend letter
+
+                    var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
+                                                            .attr("y", yPos + 40)
+                                                            .attr("x", xPos + 27)
+                                                            .attr("id", posString + "-letter")
+                                                            .attr("font-size", "15px")
+                                                            .attr("font-weight", "bold")
+                                                            .attr("stroke", "#756bb1")
+                                                            .style("fill", function () { return color(nLetters); })
+                                                            .style("opacity", nLetters.length == 1 ? 0.9 : 0)
+                                                            .text(nLetters);
+
+                    //append line
+                    var lineId = posString + "-line";
+                    var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
+                                               .style("stroke", "purple")
+                                               .style("stroke-width", 2)
+                                               .attr("x1", xPos + 27)
+                                               .attr("y1", yPos + 35)
+                                               .attr("x2", xPos + 37)
+                                               .attr("y2", yPos + 35)
+                                               .attr("stroke-dasharray", "2, 2, 2, 2")
+                                               .style("opacity", nLetters.length == 1 ? 0 : 0.9);
+                    //append a div in body
+                    var insertDiv = d3.select("body").append("div")
+                                      .attr("id", divId)
+                                      .attr("class", "seq-tooltip")
+                                      .style("opacity", 0);
+                    $("#" + divId).html("<span class=\"text-info\">" + nLetters + "</span>");
+                    //dot line event
+                    leftline.on("mouseover", function () {
+                        insertDiv.transition()
+                         .duration(200)
+                         .style("opacity", .9)
+                         .style("left", (d3.event.pageX - 40) + "px")
+                          .style("top", (d3.event.pageY - 50) + "px");
+                    })
+                            .on("mouseleave", function () {
+                                insertDiv.transition()
+                                    .duration(200)
+                                    .style("opacity", 0);
+                            });
+                    //update EditObj
+                    EditObj = genEditObj(curPos, curLetter, "insert", "left", nLetters, EditObj);
+                    //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                }
+                else {
+                    //check whether it is letter for a plus symbol
+                    if ($("#" + leftId).length !== 0) {
+                        //this is a letter
+                        //get the nletter
+                        var previous_letter = $("#" + posString + "-letter").text();
+                        var nletters = previous_letter + nLetters;
+                        //find the div
+                        //save the letter in the new div
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+
+                        //remove leftLetter
+                        $("#" + posString + "-letter").remove();
+                        //show dash line
+                        var lineId = posString + "-line";
+                        $("#" + lineId).css("opacity", .9);
+                        //update EditObj
+                        EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                    }
+                    else {
+                        //this is a plus div
+                        var divId = posString + "-div";
+                        var previous_letter = $("#" + divId + " span").text();
+                        var nletters = previous_letter + nLetters;
+                        $("#" + divId).empty();
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+                        //update EditObj
+                        EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
+                    }
+                }
+            }
+            else {
+                var xshift = +2 * r;
+                if ($("#" + leftId).length === 0) {
+                    var leftgroup = d3.select("svg").append("g")
+                                        .attr("id", leftId)
+                                        .attr("class", "clickable")
+                                        .on("dblclick", function () {
+                                            //delete this
+                                            d3.select(this).remove();
+                                            //hide seq-tooltip
+                                            $("#" + divId).css("opacity", 0);
+                                            //delete data object
+                                            removeEditObj("insert", leftId, EditObj);
+                                        });
+                    var leftSlash = leftgroup.append("line")
+                                             .style("stroke", "gray")
+                                             .attr("x1", xPos + 30 + xshift)
+                                             .attr("y1", yPos + 45)
+                                             .attr("x2", xPos + 20 + xshift)
+                                             .attr("y2", yPos + 30);
+                    //apend letter
+
+                    var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
+                                                                .attr("y", yPos + 40)
+                                                                .attr("x", xPos + 27 + xshift)
+                                                                .attr("id", posString + "-letter")
+                                                                .attr("font-size", "15px")
+                                                                .attr("font-weight", "bold")
+                                                                .attr("stroke", "#756bb1")
+                                                                .style("fill", function () { return color(nLetters); })
+                                                                .style("opacity", nLetters.length == 1 ? 0.9 : 0)
+                                                                .text(nLetters);
+
+                    //append line
+                    var lineId = posString + "-line";
+                    var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
+                                               .style("stroke", "purple")
+                                               .style("stroke-width", 2)
+                                               .attr("x1", xPos + 27 + xshift)
+                                               .attr("y1", yPos + 35)
+                                               .attr("x2", xPos + 37 + xshift)
+                                               .attr("y2", yPos + 35)
+                                               .attr("stroke-dasharray", "2, 2, 2, 2")
+                                               .style("opacity", nLetters.length == 1 ? 0 : 0.9);
+                    //append a div in body
+                    var divId = posString + "-div";
+                    var insertDiv = d3.select("body").append("div")
+                                      .attr("id", divId)
+                                      .attr("class", "seq-tooltip")
+                                      .style("opacity", 0);
+                    $("#" + divId).html("<span class=\"text-info\">" + nLetters + "</span>");
+
+                    //dot line event
+                    leftline.on("mouseover", function () {
+                        insertDiv.transition()
+                         .duration(200)
+                         .style("opacity", .9)
+                         .style("left", (d3.event.pageX - 40) + "px")
+                          .style("top", (d3.event.pageY - 50) + "px");
+                    })
+                            .on("mouseleave", function () {
+                                insertDiv.transition()
+                                    .duration(200)
+                                    .style("opacity", 0);
+                            });
+                    //update EditObj
+                    if (curPos == seq_len) {
+                        //length + 1************************************************************************
+                        EditObj = genEditObj(curPos + 2, curLetter, "insert", "left", nLetters, EditObj);
+                    }
+                    else {
+                        EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nLetters, EditObj);
+                    }
+                    //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
+
+                }
+                else {
+                    //check whether it is letter for a plus symbol
+                    if ($("#" + posString + "-letter").length !== 0) {
+                        //this is a letter
+                        //get the nletter
+                        var previous_letter = $("#" + posString + "-letter").text();
+                        var nletters = nLetters + previous_letter;
+                        //find the div
+                        //save the letter in the new div
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+
+                        //remove leftLetter
+                        $("#" + posString + "-letter").remove();
+                        //show dash line
+                        var lineId = posString + "-line";
+                        $("#" + lineId).css("opacity", .9);
+                        //update EditObj
+                        if (curPos == seq_len) {
+                            //length + 1************************************************************************
+                            EditObj = genEditObj(curPos + 2, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                        else {
+                            EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                    }
+                    else {
+                        //this is a plus div
+                        var previous_letter = $("#" + divId + " span").text();
+                        var nletters = nLetters + previous_letter;
+                        $("#" + divId).empty();
+                        $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
+                        //update EditObj
+                        if (curPos == seq_len) {
+                            //length + 1************************************************************************
+                            EditObj = genEditObj(curPos + 2, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                        else {
+                            EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nletters, EditObj);
+                        }
+                    }
+                }
+            }
+        });//insert letters
         //when click finish button
-        $("#finish").on("click", function (e) {
+        $("#finish-button").on("click", function (e) {
             //hide finish button
-            if (!$("#finish").hasClass("hidden")) {
-                $("#finish").addClass("hidden");
+            if (!$("#finish-button").hasClass("hidden")) {
+                $("#finish-button").addClass("hidden");
             }
             //hide the editor
             if (!$("#editor").hasClass("hidden")) {
@@ -271,7 +544,23 @@ else
             //remove the editor-seq
             $("#seq-editor").empty();
             //generate the final seq
-
+            $("#msg").text(null);
+            //check whether user edit or not
+            if (EditObj.length == 0) {
+                $("#new_seq").val("You haven't edited anything!");
+            }
+            else {
+                //generate final seq array
+                var seq = $('#seq').val().trim();
+                var seqArray = seq.split('');
+                var finalSeqArray = genFinalSeq(seqArray, EditObj);
+                //final seq
+                var finalSeq = finalSeqArray.join('');
+                $("#new_seq").val(finalSeq);
+            }
+            if ($("#result_seq").hasClass("hidden")) {
+                $("#result_seq").removeClass("hidden");
+            }
         });
     });
 
@@ -284,14 +573,11 @@ else
         }        
         return true;
     };
-
-    function seqEditor(seq, id, type, EditObj, seqObj) {
+    function seqEditor(seq, id, type) {
         //convert the seq to arary
         var seqArray = seq.split('');
         var seq_len = seqArray.length;
 
-        ////empty object to store user editing info, will be updated later
-        //var EditObj = [];
         //prepare svg
         var margin = { top: 50, right: 40, bottom: 60, left: 40 },
             width = ($(id).width() <= 250 ? 250 : $(id).width()) - margin.left - margin.right;
@@ -1222,273 +1508,6 @@ else
                 }
 
             });
-    }
-
-    function insertSeq(e, EditObj, seqObj) {
-        var seq = $('#seq').val().trim();
-        var seqArray = seq.split('');
-        var seq_len = seqArray.length;
-        //select option value
-        var aob = $("#aob").val();
-        $("#insert_msg").text(null);
-        e.preventDefault();
-        if (!$('#insert_pos').val().trim()) {
-            $("#insert_msg").text("position is required!");
-            return false;
-        }
-        if ($('#insert_pos').val().trim() < 1 || $('#insert_pos').val().trim() > seq_len) {
-            $("#insert_msg").text("Invalid position!");
-            return false;
-        }
-
-        if (!$('#insert_seq').val().trim()) {
-            $("#insert_msg").text("Sequence is required!");
-            return false;
-        }
-        //get leftId
-        var posString = null;
-        var leftId = "-insert";
-        var divId = "-div";
-        if (aob == "After") {
-            posString = $('#insert_pos').val().trim() + "-" + (+$('#insert_pos').val().trim() + 1);
-            leftId = posString + leftId;
-            divId = posString + divId;
-        }
-        else {
-            posString = (+$('#insert_pos').val().trim() - 1) + "-" + $('#insert_pos').val().trim();
-            leftId = posString + leftId;
-            divId = posString + divId;
-        }
-        var curPos = +$('#insert_pos').val().trim();
-        //get the x, y position in the SeqObj
-        console.log(EditObj);
-        console.log(seqObj);
-        curObj = $.grep(seqObj, function (d) {
-            return (+d[1] === +curPos);
-        });
-        var curLetter = curObj[0][0];
-        var xPos = curObj[0][2];
-        var yPos = curObj[0][3];
-        var nLetters = $('#insert_seq').val().trim();
-
-        //update svg
-        if (aob == "Before") {
-            if ($("#" + leftId).length == 0) {
-                //there is no insert here yet
-                var leftgroup = d3.select("svg").append("g")
-                                            .attr("id", leftId)
-                                            .attr("class", "clickable")
-                                            .on("dblclick", function () {
-                                                //delete this
-                                                d3.select(this).remove();
-                                                //hide seq-tooltip
-                                                $("#" + divId).css("opacity", 0);
-                                                //delete data object
-                                                removeEditObj("insert", leftId, EditObj);
-                                            });
-                var leftSlash = leftgroup.append("line")
-                                                 .style("stroke", "gray")
-                                                 .attr("x1", xPos + 30)
-                                                 .attr("y1", yPos + 45)
-                                                 .attr("x2", xPos + 20)
-                                                 .attr("y2", yPos + 30);
-                //apend letter
-
-                var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
-                                                        .attr("y", yPos + 40)
-                                                        .attr("x", xPos + 27)
-                                                        .attr("id", posString + "-letter")
-                                                        .attr("font-size", "15px")
-                                                        .attr("font-weight", "bold")
-                                                        .attr("stroke", "#756bb1")
-                                                        .style("fill", function () { return color(nLetters); })
-                                                        .style("opacity", nLetters.length == 1 ? 0.9 : 0)
-                                                        .text(nLetters);
-
-                //append line
-                var lineId = posString + "-line";
-                var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
-                                           .style("stroke", "purple")
-                                           .style("stroke-width", 2)
-                                           .attr("x1", xPos + 27)
-                                           .attr("y1", yPos + 35)
-                                           .attr("x2", xPos + 37)
-                                           .attr("y2", yPos + 35)
-                                           .attr("stroke-dasharray", "2, 2, 2, 2")
-                                           .style("opacity", nLetters.length == 1 ? 0 : 0.9);
-                //append a div in body
-                var insertDiv = d3.select("body").append("div")
-                                  .attr("id", divId)
-                                  .attr("class", "seq-tooltip")
-                                  .style("opacity", 0);
-                $("#" + divId).html("<span class=\"text-info\">" + nLetters + "</span>");
-                //dot line event
-                leftline.on("mouseover", function () {
-                    insertDiv.transition()
-                     .duration(200)
-                     .style("opacity", .9)
-                     .style("left", (d3.event.pageX - 40) + "px")
-                      .style("top", (d3.event.pageY - 50) + "px");
-                })
-                        .on("mouseleave", function () {
-                            insertDiv.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                        });
-                //update EditObj
-                EditObj = genEditObj(curPos, curLetter, "insert", "left", nLetters, EditObj);
-                //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
-
-            }
-            else {
-                //check whether it is letter for a plus symbol
-                if ($("#" + leftId).length !== 0) {
-                    //this is a letter
-                    //get the nletter
-                    var previous_letter = $("#" + posString + "-letter").text();
-                    var nletters = previous_letter + nLetters;
-                    //find the div
-                    //save the letter in the new div
-                    $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
-
-                    //remove leftLetter
-                    $("#" + posString + "-letter").remove();
-                    //show dash line
-                    var lineId = posString + "-line";
-                    $("#" + lineId).css("opacity", .9);
-                    //update EditObj
-                    EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
-                }
-                else {
-                    //this is a plus div
-                    var divId = posString + "-div";
-                    var previous_letter = $("#" + divId + " span").text();
-                    var nletters = previous_letter + nLetters;
-                    $("#" + divId).empty();
-                    $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
-                    //update EditObj
-                    EditObj = genEditObj(curPos, curLetter, "insert", "left", nletters, EditObj);
-                }
-            }
-        }
-        else {
-            var xshift = +2 * r;
-            if ($("#" + leftId).length === 0) {
-                var leftgroup = d3.select("svg").append("g")
-                                    .attr("id", leftId)
-                                    .attr("class", "clickable")
-                                    .on("dblclick", function () {
-                                        //delete this
-                                        d3.select(this).remove();
-                                        //hide seq-tooltip
-                                        $("#" + divId).css("opacity", 0);
-                                        //delete data object
-                                        removeEditObj("insert", leftId, EditObj);
-                                    });
-                var leftSlash = leftgroup.append("line")
-                                         .style("stroke", "gray")
-                                         .attr("x1", xPos + 30 + xshift)
-                                         .attr("y1", yPos + 45)
-                                         .attr("x2", xPos + 20 + xshift)
-                                         .attr("y2", yPos + 30);
-                //apend letter
-
-                var leftLetter = leftgroup.append("text").attr("class", "leftLetter letter clickable")
-                                                            .attr("y", yPos + 40)
-                                                            .attr("x", xPos + 27 + xshift)
-                                                            .attr("id", posString + "-letter")
-                                                            .attr("font-size", "15px")
-                                                            .attr("font-weight", "bold")
-                                                            .attr("stroke", "#756bb1")
-                                                            .style("fill", function () { return color(nLetters); })
-                                                            .style("opacity", nLetters.length == 1 ? 0.9 : 0)
-                                                            .text(nLetters);
-
-                //append line
-                var lineId = posString + "-line";
-                var leftline = leftgroup.append("line").attr("id", lineId).attr("class", "clickable")
-                                           .style("stroke", "purple")
-                                           .style("stroke-width", 2)
-                                           .attr("x1", xPos + 27 + xshift)
-                                           .attr("y1", yPos + 35)
-                                           .attr("x2", xPos + 37 + xshift)
-                                           .attr("y2", yPos + 35)
-                                           .attr("stroke-dasharray", "2, 2, 2, 2")
-                                           .style("opacity", nLetters.length == 1 ? 0 : 0.9);
-                //append a div in body
-                var divId = posString + "-div";
-                var insertDiv = d3.select("body").append("div")
-                                  .attr("id", divId)
-                                  .attr("class", "seq-tooltip")
-                                  .style("opacity", 0);
-                $("#" + divId).html("<span class=\"text-info\">" + nLetters + "</span>");
-
-                //dot line event
-                leftline.on("mouseover", function () {
-                    insertDiv.transition()
-                     .duration(200)
-                     .style("opacity", .9)
-                     .style("left", (d3.event.pageX - 40) + "px")
-                      .style("top", (d3.event.pageY - 50) + "px");
-                })
-                        .on("mouseleave", function () {
-                            insertDiv.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                        });
-                //update EditObj
-                if (curPos == seq_len) {
-                    //length + 1************************************************************************
-                    EditObj = genEditObj(curPos + 2, curLetter, "insert", "left", nLetters, EditObj);
-                }
-                else {
-                    EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nLetters, EditObj);
-                }
-                //genEditObj(pos, oriLetter, action, lor, newLetter, EditObj)
-
-            }
-            else {
-                //check whether it is letter for a plus symbol
-                if ($("#" + posString + "-letter").length !== 0) {
-                    //this is a letter
-                    //get the nletter
-                    var previous_letter = $("#" + posString + "-letter").text();
-                    var nletters = nLetters + previous_letter;
-                    //find the div
-                    //save the letter in the new div
-                    $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
-
-                    //remove leftLetter
-                    $("#" + posString + "-letter").remove();
-                    //show dash line
-                    var lineId = posString + "-line";
-                    $("#" + lineId).css("opacity", .9);
-                    //update EditObj
-                    if (curPos == seq_len) {
-                        //length + 1************************************************************************
-                        EditObj = genEditObj(curPos + 2, curLetter, "insert", "left", nletters, EditObj);
-                    }
-                    else {
-                        EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nletters, EditObj);
-                    }
-                }
-                else {
-                    //this is a plus div
-                    var previous_letter = $("#" + divId + " span").text();
-                    var nletters = nLetters + previous_letter;
-                    $("#" + divId).empty();
-                    $("#" + divId).html(function (d) { return "<span class=\"text-info\">" + nletters + "</span>"; });
-                    //update EditObj
-                    if (curPos == seq_len) {
-                        //length + 1************************************************************************
-                        EditObj = genEditObj(curPos + 2, curLetter, "insert", "left", nletters, EditObj);
-                    }
-                    else {
-                        EditObj = genEditObj(curPos + 1, curLetter, "insert", "left", nletters, EditObj);
-                    }
-                }
-            }
-        }
     }
     function genArray(num) {
         var arr = [];
