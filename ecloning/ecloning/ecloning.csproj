@@ -727,6 +727,7 @@
     <Content Include="Scripts\msa\src\views\Stage.js" />
     <Content Include="Scripts\needleman-Wunsch.js" />
     <Content Include="Scripts\ntseq\ntseq.js" />
+    <Content Include="Scripts\ecloning-seqeditor.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.bundle.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.js" />
     <Content Include="Content\themes\base\accordion.css" />
