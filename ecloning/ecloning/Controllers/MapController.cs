@@ -95,20 +95,31 @@ namespace ecloning.Controllers
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
             //pass json
-            //display all enzyme cuts of the current plasmid
-            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
-            var Enzymes = plasmid_map.Where(f=>f.feature_id == 4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
-            ViewBag.Enzymes = JsonConvert.SerializeObject(Enzymes.ToList());
-
             //all the methylation
             var methylation = db.methylations.Where(m => m.plasmid_id == plasmid_id);
-            var Methylation = methylation.OrderBy(n => n.name).Select(m => new { name = m.name, cut = m.cut, clockwise = m.clockwise, dam_cm = m.dam_complete, dam_ip = m.dam_impaired, dcm_cm = m.dcm_complete, dcm_ip = m.dcm_impaired});
+            var Methylation = methylation.OrderBy(n => n.name).Select(m => new { pId = m.plasmid_id, name = m.name, cut = m.cut, clockwise = m.clockwise, dam_cm = m.dam_complete, dam_ip = m.dam_impaired, dcm_cm = m.dcm_complete, dcm_ip = m.dcm_impaired });
             ViewBag.Methylation = JsonConvert.SerializeObject(Methylation.ToList());
+            //display all enzyme cuts of the current plasmid
+            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
+            var Enzymes = plasmid_map.Where(f=>f.feature_id == 4).OrderBy(n => n.common_feature != null ? n.common_feature.label : n.feature).OrderBy(s => s.start).Select(f => 
+                new {
+                    pId = f.plasmid_id,
+                    name = f.common_feature != null ? f.common_feature.label : f.feature,
+                    start = f.start,
+                    end = f.end,
+                    cut = f.cut,
+                    clockwise = f.clockwise == 1 ? true : false,
+                    methylation = methylation.Where(m=>m.name==(f.common_feature != null ? f.common_feature.label : f.feature)&& m.cut==f.cut&&m.clockwise==f.clockwise).Count()>0? true : false 
+                });
+            ViewBag.Enzymes = JsonConvert.SerializeObject(Enzymes.ToList());
 
             //all other features
             //pass json
             var features = plasmid_map.Where(f => f.feature_id != 4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            //pass json for feature viewers
+            var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x = f.feature_id == 4 ? f.cut : f.start, y = f.feature_id == 4 ? f.cut : f.end, description = f.common_feature != null ? f.common_feature.label : f.feature, id = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
+            ViewBag.fvFeatures = JsonConvert.SerializeObject(fvFeatures.ToList());
             return View();
         }
         [Authorize]

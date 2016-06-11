@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Digest";
+    ViewBag.Title = "Digestion";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string Name = (string)ViewBag.Name;
     int plasmidId = (int)ViewBag.PlasmidId;
@@ -10,6 +10,7 @@
     var methylation = ViewBag.Methylation;
     var enzymes = ViewBag.Enzymes;
     var Tag = (string)ViewBag.Tag;
+    var fvFeatures = ViewBag.fvFeatures;
 }
 
 <div class="row">
@@ -18,7 +19,7 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
         <h3 class="text-warning text-center">
-            Plasmid <em>@Name</em> Restriciton Digest&nbsp;
+            Plasmid <em>@Name</em> Restriction Digestion&nbsp;
         </h3>
     </div>
     <div class="col-sx-12 col-sm-12 col-md-3 col-lg-2">
@@ -29,65 +30,140 @@
             </a>
             <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Map", new { id = plasmidId, tag = Tag })">
                 <i class="fa fa-sun-o text-danger"></i>
-                <span>Map</span>
+                <span>Plasmid Map</span>
             </a>
         </h3>
     </div>
 </div>
 <span id="decodeIt" class="hidden"></span>
-<span id="sequence" class="hidden">@seqCount</span>
+<span id="seqCount" class="hidden">@seqCount</span>
+<span id="sequence" class="hidden">@Sequence</span>
 <span id="name" class="hidden">@Name</span>
+<span id="plasmidId" class="hidden">@plasmidId</span>
 
 
-
+<!--feature viewer-->
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-8" id="giraffe-map">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
+</div>
+<!--digesiton div-->
+<div  class="row">
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="digestion">
+            <div id="enzyme-list" class="col-xs-6 col-sm-4 col-md-1">
+                <h4 class="text-primary">Enzymes</h4>
+            </div>
+            <div id="result" class="col-xs-6 col-sm-8 col-md-11 hidden">
+                <!--emzyme info panel-->
+                <div id="enzyme-info" class="col-xs-12 col-md-6">
 
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-4">
+                </div>
+                <div id="activity-info" class="col-xs-12 col-md-6">
 
+                </div>
+                <br />
+                <!--bands-->
+                <div id="gel" class="col-xs-12 col-md-6"></div>
+                <div id="gel-info" class="col-xs-12 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">Band Info</div>
+                        <div class="panel-body">
+                            <div id="band-feature" class="col-xs-12"></div>
+                            <div id="band-end" class="col-xs-12"></div>
+                        </div>
+                        <div class="panel-footer clearfix" id="band-button">
+                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                                <i class="fa fa-floppy-o"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 
 
-
-
+<!--show linear plasmid map-->
+@*<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8" id="giraffe-map"></div>
+    <div class="col-xs-12 col-sm-12 col-md-4"></div>
+</div>*@
 
 
 @Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/giraffe2")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
 
+@*seq viewer*@
+<script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
+@*feature viewer*@
+<script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
+
+<script src="~/Scripts/ecloning-digestion.js"></script>
 <script>
-    //get plasmid feature json data
-    var features = ("@features");
-    document.getElementById("decodeIt").innerHTML = features;
-    features = document.getElementById("decodeIt").textContent;
+    //define a global array for selected enzyme list
+    var enzyArray = [];
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
 
-    //get full sequence
-    seqCount = document.getElementById("sequence").textContent;
-    seqCount = parseInt(seqCount)
-    //get plasmid name
-    name = document.getElementById("name").textContent;
+        //get full sequence
+        sequence = $('#sequence').text().trim();
+        seqCount = parseInt($('#seqCount').text().trim())
+        //get plasmid name
+        name = $('#name').text().trim();
+        //get plasmid id
+        pId = +$("#plasmidId").text().trim();
 
-    try
-    {
-        features = JSON.parse(features);
-        //console.log(features);
-        data = [seqCount, features];
-        //console.log(data);
-        var gd = GiraffeDraw();
-        gd.read(data);
 
-        gd.LinearMap({
-            'map_dom_id': 'giraffe-map',
-            'plasmid_name': name,
-            'map_width': 848
-            //'map_height': 324  
-        })
-    }
-    catch(e)
-    {
-        //alert(e);
-    }
+        //get plasmid feature json data for plasmid map
+        var features = ("@features");
+        features = LoadData(features);
+
+        //get the feature for feature viwerer
+        var fvFeatures = ("@fvFeatures");
+        fvFeatures = LoadData(fvFeatures);
+        //get enzymes
+        var enzymes = ("@enzymes");
+        enzymes = LoadData(enzymes);
+        //get methylation
+        var methylation = ("@methylation");
+        methylation = LoadData(methylation);
+        try {
+            //draw linear map
+            //features = JSON.parse(features);
+            //giraffeData = [seqCount, features];
+            //drawMap(giraffeData, 'giraffe-map', name, 848);
+
+            //draw features on top
+            fvFeatures = JSON.parse(fvFeatures);
+            drawFeatures(fvFeatures, sequence, 'plasmid-feature');
+            //display enzyme checkbox
+            enzymes = JSON.parse(enzymes);
+            methylation = JSON.parse(methylation);
+            //console.log(enzymes);
+            //console.log(methylation);
+            displayEnzymeList(enzymes, "enzyme-list");
+
+            //capture user selection of enzyme
+            $(":checkbox").change(function () {
+                if (this.checked) {
+                    //add enzyme to enzyArray
+                    enzyArray = updateArray($(this).val(), enzyArray, "add");
+                }
+                else {
+                    //remove enzyme to enzyArray
+                    enzyArray = updateArray($(this).val(), enzyArray, "remove");
+                }
+                console.log(enzyArray);
+
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    });
+
 </script>
