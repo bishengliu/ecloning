@@ -829,13 +829,59 @@ CREATE TABLE plasmid_bundle
 );
 
 
+
+
+--this table keep the used save fragement of a plasmid, not the real clone fragment
+--plasmid fragment will be wiped away when the seq of the plasmid is changed
+--this table will store all the info about 1) how the fragment is genereated from a plasmid;
+CREATE TABLE fragment
+(
+    id INT NOT NULL PRIMARY KEY IDENTITY(100,1),
+    name NVARCHAR(200) NOT NULL, -- the name of the fragment, follow: plasmid id-enzyme-start-end position
+
+    --info about how the fragment is generated
+    plasmid_id INT, --from plasmids
+    fragment_id INT, --from fragments
+    parantal BIT NOT NULL, -- if the fragment has parental plasmid or fragment   
+    enzyme_id NVARCHAR(100), --what enzymes are used, 1 or 2 enzyme in most cases. it should be a "," seperated string of enzyme ids
+    company_id NVARCHAR(100), --the same order as enzyme, it should be a "," seperated string of company ids
+    buffer_id NVARCHAR(100), --the same order as enzyme, it should be a "," seperated string of buffer ids
+
+    --info about the fragment itself
+    --fill below if the fragment is generated from a known plasmid or fragment
+    forward_start INT,
+    forward_end INT,
+    --keep this info if the fragment is added manually without parental plasmid or fragment
+    forward_size INT,
+    forward_seq TEXT,
+    --fill below if the fragment is generated from a known plasmid or fragment or fragment
+    rc_start INT, --reverse complement
+    rc_end INT,
+    --keep this info if the fragment is added manually without parental plasmid or fragment
+    rc_size INT, --reverse complement
+    rc_seq TEXT,
+    rc_left_overhand INT  --set the first letter of forward seq to be 1 and the "rc_left_overhand" is a number relative to 1: -1 means one letter to left and 1 means one letter to the right, 0 means no overhang
+    rc_right_overhand INT,
+
+
+    ladder_id INT, -- to restore the digest setting
+    people_id INT NOT NULL, --name + people_id shoud be unique
+    dt DATETIME NOT NULL DEFAULT GETDATE(),
+    [des] TEXT,
+    CONSTRAINT fk_plasmid_fragment_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
+    CONSTRAINT fk_plasmid_fragment_people_id FOREIGN KEY (people_id) REFERENCES people(id),
+    CONSTRAINT uq_plasmid_fragment_name_people_id UNIQUE (name, people_id)
+)
+
+
+
 --table for group sharing
 CREATE TABLE group_shared
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	group_id INT NOT NULL,
 	resource_id INT NOT NULL, --plasmid, oligo, primer etc, anything that can be shared
-	category NVARCHAR(50), --plasmid, primer, oligo, probe etc
+	category NVARCHAR(50), --plasmid, primer, oligo, probe. fragment etc
 	sratus NVARCHAR(50), --submitted, appproved
 	CONSTRAINT fk_group_shared_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT uq_group_id_resource_id_category UNIQUE (group_id, resource_id, category)
