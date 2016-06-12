@@ -14,7 +14,7 @@ namespace ecloning.Models
             string symbol = null;
             if (starActivity)
             {
-                symbol = "<span class=\" fa-stack fa-lg\"><i class=\"fa fa-circle-thin fa-stack-2x\"></i><i class=\"fa fa-star fa-stack-1x text-danger\"></i></span>";
+                symbol = "<span class='fa-stack fa-lg'><i class='fa fa-circle-thin fa-stack-2x'></i><i class='fa fa-star fa-stack-1x text-danger'></i></span>";
             }
             return symbol;
         }
@@ -24,7 +24,7 @@ namespace ecloning.Models
             string symbol = null;
             if (dam)
             {
-                symbol = "<button type=\"button\" class=\"btn btn-danger btn-circle disabled\">Dam</button>";
+                symbol = "<button type='button' class='btn btn-danger btn-circle disabled'>Dam</button>";
             }
             return symbol;
         }
@@ -34,7 +34,7 @@ namespace ecloning.Models
             string symbol = null;
             if (dcm)
             {
-                symbol = "<button type=\"button\" class=\"btn btn-primary btn-circle disabled\">Dcm</button>";
+                symbol = "<button type='button' class='btn btn-primary btn-circle disabled'>Dcm</button>";
             }
             return symbol;
         }
@@ -44,7 +44,7 @@ namespace ecloning.Models
             string symbol = null;
             if (cpg)
             {
-                symbol = "<button type=\"button\" class=\"btn btn-info btn-circle disabled\">CpG</button>";
+                symbol = "<button type='button' class='btn btn-info btn-circle disabled'>CpG</button>";
             }
             return symbol;
         }
@@ -55,16 +55,16 @@ namespace ecloning.Models
             if (inactivation == 1)
             {
                 //650C
-                symbol = "<button type=\"button\" class=\"btn btn-success btn-circle disabled\">65&deg;C</button>";
+                symbol = "<button type='button' class='btn btn-success btn-circle disabled'>65&deg;C</button>";
             }
             else if(inactivation == 2)
             {
                 //850C
-                symbol = "<button type=\"button\" class=\"btn btn-success btn-circle disabled\">80&deg;C</button>";
+                symbol = "<button type='button' class='btn btn-success btn-circle disabled'>80&deg;C</button>";
             }
             else
             {
-                symbol = "<span class=\" fa-stack fa-lg\"><i class=\"fa fa-fire fa-stack-1x\"></i><i class=\"fa fa-ban fa-stack-2x text-danger\"></i></span>";
+                symbol = "<span class='fa-stack fa-lg'><i class='fa fa-fire fa-stack-1x'></i><i class='fa fa-ban fa-stack-2x text-danger'></i></span>";
             }
             return symbol;
         }
@@ -235,7 +235,7 @@ namespace ecloning.Models
                 //if there is non-N letter code, show only single straind
                 string front = newSeq.Substring(0, newFCut);
                 string end = newSeq.Substring(newFCut, (totalLengen - newFCut));
-                prototype = "<pre><span class=\"seqFont\">5' - <strong>" + front + "</strong><span class=\"verticalLine\"></span><strong>" + end + "</strong> - 3'</span></pre>";
+                prototype = "<pre><span class='seqFont'>5' - <strong>" + front + "</strong><span class='verticalLine'></span><strong>" + end + "</strong> - 3'</span></pre>";
 
             }
             else
@@ -249,13 +249,13 @@ namespace ecloning.Models
                     string front12 = newSeq.Substring(newRCut, (newFCut - newRCut));
 
                     string end1 = newSeq.Substring(newFCut, (totalLengen - newFCut));
-                    string forward = "<pre><span class=\"seqFont\">5' - <strong>" + front1 + "</strong><span class=\"horizontalLine\"><strong>" + front12 + "</strong></span><span class=\"verticalLine\"></span><strong>" + end1 + "</strong> - 3'</span>";
+                    string forward = "<pre><span class='seqFont'>5' - <strong>" + front1 + "</strong><span class='horizontalLine'><strong>" + front12 + "</strong></span><span class='verticalLine'></span><strong>" + end1 + "</strong> - 3'</span>";
 
                     //reverse seq
                     string cSeq = FindSeq.cDNA(newSeq);
                     string front2 = cSeq.Substring(0, newRCut);
                     string end2 = cSeq.Substring(newRCut, (totalLengen - newRCut));
-                    prototype = forward + "<br/><span class=\"seqFont\">3' - <strong>" + front2 + "</strong><span class=\"verticalLine\"></span><strong>" + end2 + "</strong> - 5'</span></pre>";
+                    prototype = forward + "<br/><span class='seqFont'>3' - <strong>" + front2 + "</strong><span class='verticalLine'></span><strong>" + end2 + "</strong> - 5'</span></pre>";
                 }
                 else
                 {
@@ -265,13 +265,13 @@ namespace ecloning.Models
                     string end1 = newSeq.Substring(newFCut, (newRCut - newFCut));
                     string end12 = newSeq.Substring(newRCut, (totalLengen - newRCut));
 
-                    string forward = "<pre><span class=\"seqFont\">5' - <strong>" + front1 + "</strong><span class=\"verticalLine\"></span><span class=\"horizontalLine\"><strong>" + end1+ "</strong></span><strong>" + end12 + "</strong> - 3'</span>";
+                    string forward = "<pre><span class='seqFont'>5' - <strong>" + front1 + "</strong><span class='verticalLine'></span><span class='horizontalLine'><strong>" + end1+ "</strong></span><strong>" + end12 + "</strong> - 3'</span>";
 
                     //reverse seq
                     string cSeq = FindSeq.cDNA(newSeq);
                     string front2 = cSeq.Substring(0, newRCut);
                     string end2 = cSeq.Substring(newRCut, (totalLengen - newRCut));
-                    prototype = forward + "<br/><span class=\"seqFont\">3' - <strong>" + front2 + "</strong><span class=\"verticalLine\"></span><strong>" + end2 + "</strong> - 5'</span></pre>";
+                    prototype = forward + "<br/><span class='seqFont'>3' - <strong>" + front2 + "</strong><span class='verticalLine'></span><strong>" + end2 + "</strong> - 5'</span></pre>";
                 }
                 
             }
@@ -338,7 +338,7 @@ namespace ecloning.Models
                 string front = newSeq.Substring(0, newLeftFCut);
                 string middle = newSeq.Substring(newLeftFCut, (newRightFCut - newLeftFCut));
                 string end = newSeq.Substring(newRightFCut, (totalLengen - newRightFCut));
-                prototype = "<pre><span class=\"seqFont\">5' - <strong>" + front + "</strong><span class=\"verticalLine\"></span><strong>" + middle + "</strong><span class=\"verticalLine\"></span><strong>" + end + "</strong> - 3'</span></pre>";
+                prototype = "<pre><span class='seqFont'>5' - <strong>" + front + "</strong><span class='verticalLine'></span><strong>" + middle + "</strong><span class='verticalLine'></span><strong>" + end + "</strong> - 3'</span></pre>";
 
             }
             else
@@ -371,13 +371,13 @@ namespace ecloning.Models
                         middle3F = newSeq.Substring(newRightRCut, (newRightFCut - newRightRCut));
                         endF = newSeq.Substring(newRightFCut, (totalLengen  - newRightFCut));
 
-                        string forward = "<pre><span class=\"seqFont\">5' - <strong>" + frontF + "</strong><span class=\"horizontalLine\"><strong>" + middle1F + "</strong></span><span class=\"verticalLine\"></span><strong>" + middle2F + "</strong><span class=\"horizontalLine\"><strong>" + middle3F + "</strong></span><span class=\"verticalLine\"></span><strong>" + endF + "</strong> - 3'</span>";
+                        string forward = "<pre><span class='seqFont'>5' - <strong>" + frontF + "</strong><span class='horizontalLine'><strong>" + middle1F + "</strong></span><span class='verticalLine'></span><strong>" + middle2F + "</strong><span class='horizontalLine'><strong>" + middle3F + "</strong></span><span class='verticalLine'></span><strong>" + endF + "</strong> - 3'</span>";
                         
                         //reverse seq
                         middle2R = cSeq.Substring(newLeftFCut, (newRightRCut - newLeftFCut));
                         middle3R = cSeq.Substring(newRightRCut, (newRightFCut - newRightRCut));
                         endR = cSeq.Substring(newRightFCut, (totalLengen - newRightFCut));
-                        prototype = forward + "<br/><span class=\"seqFont\">3' - <strong>" + frontR + "</strong><span class=\"verticalLine\"></span><strong>" + middle1R + "</strong><strong>" + middle2R + "</strong><span class=\"verticalLine\"></span><strong>" + middle3R + "</strong><strong>" + endF + "</strong> - 5'</span></pre>";
+                        prototype = forward + "<br/><span class='seqFont'>3' - <strong>" + frontR + "</strong><span class='verticalLine'></span><strong>" + middle1R + "</strong><strong>" + middle2R + "</strong><span class='verticalLine'></span><strong>" + middle3R + "</strong><strong>" + endF + "</strong> - 5'</span></pre>";
 
                     }
                     else
@@ -387,14 +387,14 @@ namespace ecloning.Models
                         middle3F = newSeq.Substring(newRightFCut, (newRightRCut - newRightFCut));
                         endF = newSeq.Substring(newRightRCut, (totalLengen - newRightRCut));
 
-                        string forward = "<pre><span class=\"seqFont\">5' - <strong>" + frontF + "</strong><span class=\"horizontalLine\"><strong>" + middle1F + "</strong></span><span class=\"verticalLine\"></span><strong>" + middle2F + "</strong><span class=\"verticalLine\"></span><span class=\"horizontalLine\"><strong>" + middle3F + "</strong></span><strong>" + endF + "</strong> - 3'</span>";
+                        string forward = "<pre><span class='seqFont'>5' - <strong>" + frontF + "</strong><span class='horizontalLine'><strong>" + middle1F + "</strong></span><span class='verticalLine'></span><strong>" + middle2F + "</strong><span class='verticalLine'></span><span class='horizontalLine'><strong>" + middle3F + "</strong></span><strong>" + endF + "</strong> - 3'</span>";
 
 
                         //reverse_cut seq
                         middle2R = cSeq.Substring(newLeftFCut, (newRightFCut - newLeftFCut));
                         middle3R = cSeq.Substring(newRightFCut, (newRightRCut - newRightFCut));
                         endR = cSeq.Substring(newRightRCut, (totalLengen - newRightRCut));
-                        prototype = forward + "<br/><span class=\"seqFont\">3' - <strong>" + frontR + "</strong><span class=\"verticalLine\"></span><strong>" + middle1R + "</strong><strong>" + middle2R + "</strong><strong>" + middle3R + "</strong><span class=\"verticalLine\"></span><strong>" + endF + "</strong> - 5'</span></pre>";
+                        prototype = forward + "<br/><span class='seqFont'>3' - <strong>" + frontR + "</strong><span class='verticalLine'></span><strong>" + middle1R + "</strong><strong>" + middle2R + "</strong><strong>" + middle3R + "</strong><span class='verticalLine'></span><strong>" + endF + "</strong> - 5'</span></pre>";
 
                     }
 
@@ -422,13 +422,13 @@ namespace ecloning.Models
                         middle3F = newSeq.Substring(newRightRCut, (newRightFCut - newRightRCut));
                         endF = newSeq.Substring(newRightFCut, (totalLengen - newRightFCut));
 
-                        string forward = "<pre><span class=\"seqFont\">5' - <strong>" + frontF + "</strong><span class=\"verticalLine\"></span><span class=\"horizontalLine\"><strong>" + middle1F + "</strong></span><strong>" + middle2F + "</strong><span class=\"horizontalLine\"><strong>" + middle3F + "</strong></span><span class=\"verticalLine\"></span><strong>" + endF + "</strong> - 3'</span>";
+                        string forward = "<pre><span class='seqFont'>5' - <strong>" + frontF + "</strong><span class='verticalLine'></span><span class='horizontalLine'><strong>" + middle1F + "</strong></span><strong>" + middle2F + "</strong><span class='horizontalLine'><strong>" + middle3F + "</strong></span><span class='verticalLine'></span><strong>" + endF + "</strong> - 3'</span>";
 
                         //reverse seq
                         middle2R = cSeq.Substring(newLeftRCut, (newRightRCut - newLeftRCut));
                         middle3R = cSeq.Substring(newRightRCut, (newRightFCut - newRightRCut));
                         endR = cSeq.Substring(newRightFCut, (totalLengen - newRightFCut));
-                        prototype = forward + "<br/><span class=\"seqFont\">3' - <strong>" + frontR + "</strong><strong>" + middle1R + "</strong><span class=\"verticalLine\"></span><strong>" + middle2R + "</strong><span class=\"verticalLine\"></span><strong>" + middle3R + "</strong><strong>" + endF + "</strong> - 5'</span></pre>";
+                        prototype = forward + "<br/><span class='seqFont'>3' - <strong>" + frontR + "</strong><strong>" + middle1R + "</strong><span class='verticalLine'></span><strong>" + middle2R + "</strong><span class='verticalLine'></span><strong>" + middle3R + "</strong><strong>" + endF + "</strong> - 5'</span></pre>";
 
                     }
                     else
@@ -438,14 +438,14 @@ namespace ecloning.Models
                         middle3F = newSeq.Substring(newRightFCut, (newRightRCut - newRightFCut));
                         endF = newSeq.Substring(newRightRCut, (totalLengen - newRightRCut));
 
-                        string forward = "<pre><span class=\"seqFont\">5' - <strong>" + frontF + "</strong><span class=\"verticalLine\"></span><span class=\"horizontalLine\"><strong>" + middle1F + "</strong></span><strong>" + middle2F + "</strong><span class=\"verticalLine\"></span><span class=\"horizontalLine\"><strong>" + middle3F + "</strong></span><strong>" + endF + "</strong> - 3'</span>";
+                        string forward = "<pre><span class='seqFont'>5' - <strong>" + frontF + "</strong><span class='verticalLine'></span><span class='horizontalLine'><strong>" + middle1F + "</strong></span><strong>" + middle2F + "</strong><span class='verticalLine'></span><span class='horizontalLine'><strong>" + middle3F + "</strong></span><strong>" + endF + "</strong> - 3'</span>";
 
 
                         //reverse_cut seq
                         middle2R = cSeq.Substring(newLeftRCut, (newRightFCut - newLeftRCut));
                         middle3R = cSeq.Substring(newRightFCut, (newRightRCut - newRightFCut));
                         endR = cSeq.Substring(newRightRCut, (totalLengen - newRightRCut));
-                        prototype = forward + "<br/><span class=\"seqFont\">3' - <strong>" + frontR + "</strong><strong>" + middle1R + "</strong><span class=\"verticalLine\"></span><strong>" + middle2R + "</strong><strong>" + middle3R + "</strong><span class=\"verticalLine\"></span><strong>" + endF + "</strong> - 5'</span></pre>";
+                        prototype = forward + "<br/><span class='seqFont'>3' - <strong>" + frontR + "</strong><strong>" + middle1R + "</strong><span class='verticalLine'></span><strong>" + middle2R + "</strong><strong>" + middle3R + "</strong><span class='verticalLine'></span><strong>" + endF + "</strong> - 5'</span></pre>";
 
                     }
 

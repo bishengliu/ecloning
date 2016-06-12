@@ -11,6 +11,8 @@
     var enzymes = ViewBag.Enzymes;
     var Tag = (string)ViewBag.Tag;
     var fvFeatures = ViewBag.fvFeatures;
+    //var restricProperty = (List<ecloning.Models.RestrictionObject>)ViewBag.restric_property;
+    var restricProperty = ViewBag.restric_property;
 }
 
 <div class="row">
@@ -51,23 +53,23 @@
 <div  class="row">
     <div class="row">
         <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="digestion">
-            <div class="panel panel-color1">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
                     <h3 class="panel-title text-center"><em><strong>Select one or more enzymes to start</strong></em></h3>
                 </div>
             </div>
             @*<hr class="black-line" />*@
-            <div id="enzyme-list" class="col-xs-4 col-sm-4 col-md-1">
+            <div id="enzyme-list" class="col-xs-4 col-sm-3 col-md-2 col-lg-1">
                 <h4 class="text-primary">Enzymes</h4>
             </div>
-            <div id="result" class="col-xs-8 col-sm-8 col-md-11 hidden">
+            <div id="result" class="col-xs-8 col-sm-9 col-md-10 col-lg-11 hidden">
                 <!--emzyme info panel-->
                 <div id="enzyme-info" class="col-xs-12 col-md-6"></div>
                 <div id="activity-info" class="col-xs-12 col-md-6"></div>
                 <br />
                 <!--bands-->
                 <div id="gel" class="col-xs-12 col-md-6"></div>
-                <div id="gel-info" class="col-xs-12 col-md-6">
+                <div id="gel-info" class="col-xs-12 col-md-6 hidden">
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Band Info</div>
                         <div class="panel-body">
@@ -126,6 +128,11 @@
         //get methylation
         var methylation = ("@methylation");
         methylation = LoadData(methylation);
+
+        //get restrcition property and prototype
+        var restricProperty = ("@restricProperty");
+        restricProperty = LoadData(restricProperty);
+
         try {
             //draw linear map
             features = JSON.parse(features);
@@ -139,6 +146,9 @@
             //console.log(enzymes);
             //console.log(methylation);
             displayEnzymeList(enzymes, "enzyme-list");
+            //parse json for restricProperty
+            restricProperty = JSON.parse(restricProperty);
+            console.log(restricProperty);
 
             //capture user selection of enzyme
             $(":checkbox").change(function () {
@@ -152,25 +162,17 @@
                 }
 
                 //show cut info with tabs
+                //=============================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
- 
+                    //=============
                 //genCutMap using giraffe
-                //genCut array
-                var cutArray = [];
-                //find the max of the cuts
-                var maxCuts = findMaxCuts(enzymes);
-                cutArray = genArray(maxCuts);
-                //draw cut map
-                $.each(enzyArray, function (i, v) {
-                    var width = 350;
-                    //fiter features
-                    var ftdata = $.grep(features, function (d) {
-                        return d.feature == v;
-                    });
-                    var giraffeData = [seqCount, ftdata];
-                    id = v + "-cut-map";
-                    drawMap(giraffeData, id, name + ': ' + v, width, cutArray);
-                });
+                drawCutMap(enzymes, enzyArray, features, seqCount, name);
+
+                    //==============
+                //show cut prototype and property
+                
+
+
 
                 if (enzyArray.length > 0) {
                     //show the result panel

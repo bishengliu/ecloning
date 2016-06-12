@@ -120,6 +120,28 @@ namespace ecloning.Controllers
             //pass json for feature viewers
             var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x = f.feature_id == 4 ? f.cut : f.start, y = f.feature_id == 4 ? f.cut : f.end, description = f.common_feature != null ? f.common_feature.label : f.feature, id = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
             ViewBag.fvFeatures = JsonConvert.SerializeObject(fvFeatures.ToList());
+
+            //pass cut prototype and cut properties
+            string symbol = "<span></span>";
+            var enzymeSybol = new RestrictionEnzyme();
+
+            var restric_property = db.restri_enzyme.OrderBy(n => n.name);
+            List<RestrictionObject> restrictons = new List<RestrictionObject>();
+            foreach(var item in restric_property)
+            {
+                var rObject = new RestrictionObject();
+                rObject.name = item.name;
+                rObject.prototype = (item.forward_cut2 != null && item.reverse_cut2 != null) ? (enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2)) : enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut);
+                rObject.startActivity = item.staractitivity == true ? enzymeSybol.StarActivitySymbol((bool)item.staractitivity) : symbol;
+                rObject.heatInactivation = item.inactivation != null ? enzymeSybol.InactivationSymbol((int)item.inactivation) : enzymeSybol.InactivationSymbol(0);
+                rObject.dam = item.dam == true ? enzymeSybol.DamSymbol((bool)item.dam) : symbol;
+                rObject.dcm = item.dcm == true ? enzymeSybol.DcmSymbol((bool)item.dcm) : symbol;
+                rObject.cpg = item.cpg == true ? enzymeSybol.CpGSymbol((bool)item.cpg) : symbol;
+
+                restrictons.Add(rObject);
+            }
+            //ViewBag.restric_property = restric_property.ToList();
+            ViewBag.restric_property = JsonConvert.SerializeObject(restrictons.ToList());
             return View();
         }
         [Authorize]

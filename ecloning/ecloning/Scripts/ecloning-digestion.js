@@ -266,7 +266,6 @@ function genEnzymeTabs(enzyArray, id) {
     if (enzyArray.length > 0) {
         $("#" + id).empty();
         var html = createEnzymeTabs(enzyArray, id);
-        console.log(html);
         $("#" + id).append(html);
         activeTab(enzyArray, 'enzyme-info-tab');
     } else {
@@ -287,19 +286,19 @@ function createEnzymeTabs(enzyArray, id) {
         //div
         var htmlsubdiv = '<div id="' + v + '" class="tab-pane fade">';
         htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-'+v+ '">'
-                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-default">';
+                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
                             htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
                             htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '1">'+v+' Property</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
                         htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse in">';
-                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="cut-property">this the property</div>';
+                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-property"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
 
                     
-                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-default">';
+                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
                             htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
                                 htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '2">' + v + ' Cuts</a>';
@@ -330,6 +329,24 @@ function activeTab(enzyArray, id){
 //display cut property
 
 //draw cut map
+function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
+    //genCut array
+    var cutArray = [];
+    //find the max of the cuts
+    var maxCuts = findMaxCuts(enzymes);
+    cutArray = genArray(maxCuts);
+    //draw cut map
+    $.each(enzyArray, function (i, v) {
+        var width = 350;
+        //fiter features
+        var ftdata = $.grep(features, function (d) {
+            return d.feature == v;
+        });
+        var giraffeData = [seqCount, ftdata];
+        id = v + "-cut-map";
+        drawMap(giraffeData, id, name + ': ' + v, width, cutArray);
+    });
+}
 function genArray(maxCuts) {
     var array = [];
     for (var i = 1; i <= maxCuts; i++) {
