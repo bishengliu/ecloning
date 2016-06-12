@@ -271,7 +271,6 @@ function genEnzymeTabs(enzyArray, id) {
     } else {
         $("#" + id).empty();
     }
-
 }
 function createEnzymeTabs(enzyArray, id) {
     //generate ul
@@ -292,7 +291,7 @@ function createEnzymeTabs(enzyArray, id) {
                             htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '1">'+v+' Property</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse in">';
+                        htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse">';
                             htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-property"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
@@ -304,7 +303,7 @@ function createEnzymeTabs(enzyArray, id) {
                                 htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '2">' + v + ' Cuts</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse">';
+                        htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse in">';
                             htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-map'+'"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';
                    htmlsubdiv = htmlsubdiv + '</div>';
@@ -321,11 +320,10 @@ function createEnzymeTabs(enzyArray, id) {
 }
 function activeTab(enzyArray, id){
     //find the fist tab
-    var tab = enzyArray[0];
+    var tab = enzyArray[enzyArray.length-1];
     $('#'+id+' a[href="#' + tab + '"]').tab('show');
 }
 
-//display cut property
 
 //draw cut map
 function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
@@ -363,7 +361,7 @@ function findMaxCuts(enzymes) {
     });
     return maxCuts;
 }
-
+//display cut property
 //show restriction property
 function showRestricProperty(enzyArray, restricProperty) {
     $.each(enzyArray, function (i, v) {
@@ -374,13 +372,79 @@ function showRestricProperty(enzyArray, restricProperty) {
         $("#" + id).append("<h4 class='text-danger'>Prototype</h4><div>" + data[0].prototype + "</div>");
         //append list group
         var listGroup = "<br/><h4 class='text-danger'>Properties</h4>";
-        listGroup = listGroup + '<div><ul class="list-group">';
-            listGroup = listGroup + '<li class="list-group-item"><span class="fa fa-star text-primary"></span>: ' + data[0].startActivity + '</li>';
-            listGroup = listGroup + '<li class="list-group-item"><span class="glyphicon glyphicon-fire text-primary"></span>: ' + data[0].heatInactivation + '</li>';
-            listGroup = listGroup + '<li class="list-group-item"><span class="text-primary">Dam</span>: ' + data[0].dam + '</li>';
-            listGroup = listGroup + '<li class="list-group-item"><span class="text-primary">Dcm</span>: ' + data[0].dcm + '</li>';
-            listGroup = listGroup + '<li class="list-group-item"><span class="text-primary">CpG</span>: ' + data[0].cpg + '</li>';
-        listGroup = listGroup + '</ul></div>';
+        listGroup = listGroup + '<div class="table-responsive">';
+            listGroup = listGroup + '<table class="table table-condensed">';
+                listGroup = listGroup + '<tr>';
+                    listGroup = listGroup + '<th><span class="fa fa-star text-primary"></span></th>';
+                    listGroup = listGroup + '<th><span class="glyphicon glyphicon-fire text-primary"></span></th>';
+                    listGroup = listGroup + '<th><span class="text-primary">Dam</span></th>';
+                    listGroup = listGroup + '<th><span class="text-primary">Dcm</span></th>';
+                    listGroup = listGroup + '<th><span class="text-primary">CpG</span></th>';
+                listGroup = listGroup + '</tr>';
+                listGroup = listGroup + '<tr>';
+                    listGroup = listGroup + '<td>' + data[0].startActivity + '</td>';
+                    listGroup = listGroup + '<td>' + data[0].heatInactivation + '</td>';
+                    listGroup = listGroup + '<td>' + data[0].dam + '</td>';
+                    listGroup = listGroup + '<td>' + data[0].dcm + '</td>';
+                    listGroup = listGroup + '<td>' + data[0].cpg + '</td>';
+                listGroup = listGroup + '</tr>';
+            listGroup = listGroup + '</table>';
+        listGroup = listGroup + '</div>';
         $("#" + id).append(listGroup);
     })
+}
+
+//gen avtivity info tab
+function genActivityTab(enzyArray, id, company){
+    if (enzyArray.length > 0) {
+        $("#" + id).empty();
+        var html = createActivityTabs(enzyArray, id, company);
+        $("#" + id).append(html);
+        activeActivityTab(enzyArray, 'activity-info-tab');
+    } else {
+        $("#" + id).empty();
+    }
+}
+
+function activeActivityTab(enzyArray, id) {
+    //find the fist tab
+    var tab = enzyArray[enzyArray.length - 1];
+    $('#' + id + ' a[href="#activity-' + tab + '"]').tab('show');
+}
+
+function createActivityTabs(enzyArray, id, company) {
+    //generate ul
+    var htmlul = '<ul class="nav nav-tabs" id="activity-info-tab">';
+    //generate tab-content
+    var htmldiv = '<div class="tab-content">';
+
+    $.each(enzyArray, function (i, v) {
+        //ul
+        var htmlli = '<li><a data-toggle="tab" href="#activity-' + v + '">' + v + '</a></li>';
+        htmlul = htmlul + htmlli;
+        //div
+        var htmlsubdiv = '<div id="activity-' + v + '" class="tab-pane fade">';
+        htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-activity-' + v + '">'
+            
+        $.each(company, function (si, sv) {
+                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
+                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
+                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + v + '" href="#activity-' + v + '-'+ sv + '">' + sv + '</a>';
+                            htmlsubdiv = htmlsubdiv + '</h4>';
+                        htmlsubdiv = htmlsubdiv + '</div>';
+                        htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + sv + '" class="panel-collapse collapse">';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + v + '-' + sv + '"></div>';
+                        htmlsubdiv = htmlsubdiv + '</div>';                        
+                    htmlsubdiv = htmlsubdiv + '</div>';
+        })
+
+               htmlsubdiv = htmlsubdiv + '</div>';
+           htmlsubdiv = htmlsubdiv + '</div>';
+        htmldiv = htmldiv + htmlsubdiv;
+    });
+
+    htmlul = htmlul + '</ul>';
+    htmldiv = htmldiv + '</div>';
+    return htmlul + htmldiv;
 }

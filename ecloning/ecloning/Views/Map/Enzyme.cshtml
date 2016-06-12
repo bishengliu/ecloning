@@ -148,8 +148,6 @@
             displayEnzymeList(enzymes, "enzyme-list");
             //parse json for restricProperty
             restricProperty = JSON.parse(restricProperty);
-            console.log(restricProperty);
-
             //capture user selection of enzyme
             $(":checkbox").change(function () {
                 if (this.checked) {
@@ -171,6 +169,15 @@
                 //show cut prototype and property
                 showRestricProperty(enzyArray, restricProperty);
 
+
+
+                //show enzyme companies and activities
+                //get company list
+
+                //show activity tabs
+                genActivityTab(enzyArray, 'activity-info', ["NEB", "BioLab"]);
+
+                //show enzyme activities
 
 
                 if (enzyArray.length > 0) {
