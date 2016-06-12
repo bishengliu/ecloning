@@ -5,14 +5,16 @@ function LoadData(data) {
     return outPut;
 }
 //show the plasmid features
-function drawMap(giraffeData, id, name, width) {
+function drawMap(giraffeData, id, name, width, cutArray) {
     var gd = GiraffeDraw();
     gd.read(giraffeData);
     //draw linear
-    gd.LinearMap({
+    gd.CircularMap({
         'map_dom_id': id,
         'plasmid_name': name,
-        'map_width': width
+        'map_width': width,
+        'map_height': width,
+        'cutters': cutArray
         //'map_height': 324  
     });
 }
@@ -257,4 +259,91 @@ function removeElement(array, value) {
         return v != value;
     })
     return array;
+}
+
+//display enzyme tabs
+function genEnzymeTabs(enzyArray, id) {
+    if (enzyArray.length > 0) {
+        $("#" + id).empty();
+        var html = createEnzymeTabs(enzyArray, id);
+        console.log(html);
+        $("#" + id).append(html);
+        activeTab(enzyArray, 'enzyme-info-tab');
+    } else {
+        $("#" + id).empty();
+    }
+
+}
+function createEnzymeTabs(enzyArray, id) {
+    //generate ul
+    var htmlul = '<ul class="nav nav-tabs" id="enzyme-info-tab">';
+    //generate tab-content
+    var htmldiv = '<div class="tab-content">';
+
+    $.each(enzyArray, function (i, v) {
+        //ul
+        var htmlli = '<li><a data-toggle="tab" href="#' + v + '">' + v + '</a></li>';
+        htmlul = htmlul + htmlli;
+        //div
+        var htmlsubdiv = '<div id="' + v + '" class="tab-pane fade">';
+        htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-'+v+ '">'
+                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-default">';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
+                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
+                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '1">'+v+' Property</a>';
+                            htmlsubdiv = htmlsubdiv + '</h4>';
+                        htmlsubdiv = htmlsubdiv + '</div>';
+                        htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse in">';
+                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="cut-property">this the property</div>';
+                        htmlsubdiv = htmlsubdiv + '</div>';                        
+                    htmlsubdiv = htmlsubdiv + '</div>';
+
+                    
+                    htmlsubdiv = htmlsubdiv + '<div class="panel panel-default">';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
+                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
+                                htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '2">' + v + ' Cuts</a>';
+                            htmlsubdiv = htmlsubdiv + '</h4>';
+                        htmlsubdiv = htmlsubdiv + '</div>';
+                        htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse">';
+                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-map'+'"></div>';
+                        htmlsubdiv = htmlsubdiv + '</div>';
+                   htmlsubdiv = htmlsubdiv + '</div>';
+
+               htmlsubdiv = htmlsubdiv + '</div>';
+           htmlsubdiv = htmlsubdiv + '</div>';
+
+        htmldiv = htmldiv + htmlsubdiv;
+    });
+
+    htmlul = htmlul + '</ul>';
+    htmldiv = htmldiv + '</div>';
+    return htmlul + htmldiv;
+}
+
+function activeTab(enzyArray, id){
+    //find the fist tab
+    var tab = enzyArray[0];
+    $('#'+id+' a[href="#' + tab + '"]').tab('show');
+}
+
+//display cut property
+
+//draw cut map
+function genArray(maxCuts) {
+    var array = [];
+    for (var i = 1; i <= maxCuts; i++) {
+        array.push(i);
+    }
+    return array;
+}
+function findMaxCuts(enzymes) {
+    //process the enzymes
+    var enzymeData = d3.nest()
+                       .key(function (d) { return d.name; })
+                       .entries(enzymes);
+    var maxCuts = d3.max(enzymeData, function (d) {
+        return d.values.length;
+    });
+    return maxCuts;
 }

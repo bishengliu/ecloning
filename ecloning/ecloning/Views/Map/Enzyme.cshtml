@@ -46,21 +46,24 @@
 <div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
 </div>
+<br/>
 <!--digesiton div-->
 <div  class="row">
     <div class="row">
         <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="digestion">
-            <div id="enzyme-list" class="col-xs-6 col-sm-4 col-md-1">
+            <div class="panel panel-color1">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center"><em><strong>Select one or more enzymes to start</strong></em></h3>
+                </div>
+            </div>
+            @*<hr class="black-line" />*@
+            <div id="enzyme-list" class="col-xs-4 col-sm-4 col-md-1">
                 <h4 class="text-primary">Enzymes</h4>
             </div>
-            <div id="result" class="col-xs-6 col-sm-8 col-md-11 hidden">
+            <div id="result" class="col-xs-8 col-sm-8 col-md-11 hidden">
                 <!--emzyme info panel-->
-                <div id="enzyme-info" class="col-xs-12 col-md-6">
-
-                </div>
-                <div id="activity-info" class="col-xs-12 col-md-6">
-
-                </div>
+                <div id="enzyme-info" class="col-xs-12 col-md-6"></div>
+                <div id="activity-info" class="col-xs-12 col-md-6"></div>
                 <br />
                 <!--bands-->
                 <div id="gel" class="col-xs-12 col-md-6"></div>
@@ -82,14 +85,6 @@
         </div>
     </div>
 </div>
-
-
-
-<!--show linear plasmid map-->
-@*<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-8" id="giraffe-map"></div>
-    <div class="col-xs-12 col-sm-12 col-md-4"></div>
-</div>*@
 
 
 @Scripts.Render("~/bundles/jquery")
@@ -133,10 +128,8 @@
         methylation = LoadData(methylation);
         try {
             //draw linear map
-            //features = JSON.parse(features);
-            //giraffeData = [seqCount, features];
-            //drawMap(giraffeData, 'giraffe-map', name, 848);
-
+            features = JSON.parse(features);
+            
             //draw features on top
             fvFeatures = JSON.parse(fvFeatures);
             drawFeatures(fvFeatures, sequence, 'plasmid-feature');
@@ -157,8 +150,40 @@
                     //remove enzyme to enzyArray
                     enzyArray = updateArray($(this).val(), enzyArray, "remove");
                 }
-                console.log(enzyArray);
 
+                //show cut info with tabs
+                genEnzymeTabs(enzyArray, 'enzyme-info');
+ 
+                //genCutMap using giraffe
+                //genCut array
+                var cutArray = [];
+                //find the max of the cuts
+                var maxCuts = findMaxCuts(enzymes);
+                cutArray = genArray(maxCuts);
+                //draw cut map
+                $.each(enzyArray, function (i, v) {
+                    var width = 350;
+                    //fiter features
+                    var ftdata = $.grep(features, function (d) {
+                        return d.feature == v;
+                    });
+                    var giraffeData = [seqCount, ftdata];
+                    id = v + "-cut-map";
+                    drawMap(giraffeData, id, name + ': ' + v, width, cutArray);
+                });
+
+                if (enzyArray.length > 0) {
+                    //show the result panel
+                    if ($("#result").hasClass("hidden")) {
+                        $("#result").removeClass("hidden");
+                    };                   
+                }
+                else {
+                    //hide the result panel
+                    if (!$("#result").hasClass("hidden")) {
+                        $("#result").addClass("hidden");
+                    }
+                }
             });
         }
         catch (e) {

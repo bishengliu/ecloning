@@ -684,3 +684,12 @@ svg text tspan{
         user-select: none; /* Non-prefixed version, currently
                                   not supported by any browser */
     }
+    .black-line{
+        border-color:rgba(0,0,0,0.2);
+    }
+    #enzyme-list{
+        border-right: solid;
+        border-left: solid;
+        border-width: 1px;
+        border-color:rgba(0,0,0,0.2);
+    }
