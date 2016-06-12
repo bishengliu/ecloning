@@ -319,7 +319,6 @@ function createEnzymeTabs(enzyArray, id) {
     htmldiv = htmldiv + '</div>';
     return htmlul + htmldiv;
 }
-
 function activeTab(enzyArray, id){
     //find the fist tab
     var tab = enzyArray[0];
@@ -363,4 +362,25 @@ function findMaxCuts(enzymes) {
         return d.values.length;
     });
     return maxCuts;
+}
+
+//show restriction property
+function showRestricProperty(enzyArray, restricProperty) {
+    $.each(enzyArray, function (i, v) {
+        var id = v + "-cut-property";
+        var data = $.grep(restricProperty, function (value, index) {
+            return value.name === v;
+        })
+        $("#" + id).append("<h4 class='text-danger'>Prototype</h4><div>" + data[0].prototype + "</div>");
+        //append list group
+        var listGroup = "<br/><h4 class='text-danger'>Properties</h4>";
+        listGroup = listGroup + '<div><ul class="list-group">';
+            listGroup = listGroup + '<li class="list-group-item"><span class="fa fa-star text-primary"></span>: ' + data[0].startActivity + '</li>';
+            listGroup = listGroup + '<li class="list-group-item"><span class="glyphicon glyphicon-fire text-primary"></span>: ' + data[0].heatInactivation + '</li>';
+            listGroup = listGroup + '<li class="list-group-item"><span class="text-primary">Dam</span>: ' + data[0].dam + '</li>';
+            listGroup = listGroup + '<li class="list-group-item"><span class="text-primary">Dcm</span>: ' + data[0].dcm + '</li>';
+            listGroup = listGroup + '<li class="list-group-item"><span class="text-primary">CpG</span>: ' + data[0].cpg + '</li>';
+        listGroup = listGroup + '</ul></div>';
+        $("#" + id).append(listGroup);
+    })
 }
