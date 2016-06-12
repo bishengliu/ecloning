@@ -430,11 +430,11 @@ function createActivityTabs(enzyArray, id, company) {
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
                             htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
-                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + v + '" href="#activity-' + v + '-'+ sv + '">' + sv + '</a>';
+                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + v + '" href="#activity-' + v + '-'+ si + '">' + sv + '</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + sv + '" class="panel-collapse collapse">';
-                        htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + v + '-' + sv + '"></div>';
+                        htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + si + '" class="panel-collapse collapse">';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + v + '-' + si + '"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
         })
@@ -448,3 +448,107 @@ function createActivityTabs(enzyArray, id, company) {
     htmldiv = htmldiv + '</div>';
     return htmlul + htmldiv;
 }
+
+function FormatActivity(activity) {
+    //format activity
+    $.each(activity, function (i, v) {
+        v.activity = convertActivity(+v.activity);
+    })
+    var nestData = d3.nest()
+                     .key(function (d) { return d.company; })
+                     .key(function (d) { return d.name; })
+                     .entries(activity);
+    return nestData;
+}
+
+function findCompany(activity) {
+    var company = [];
+    $.each(activity, function (i, v) {
+        company.push(v.key);
+    })
+    return company;
+}
+
+function convertActivity(num) {
+    var text = "<span></span>";
+    if (num == 0) {
+        text = "<span><10%</span>";
+    } else if (num == 1) {
+        text = "<span>10%</span>";
+    }
+    else if (num == 2) {
+        text = "<span>10-25%</span>";
+    }
+    else if (num == 3) {
+        text = "<span>25%</span>";
+    }
+    else if (num == 4) {
+        text = "<span>25-50%</span>";
+    }
+    else if (num == 5) {
+        text = "<span>50%</span>";
+    }
+    else if (num == 6) {
+        text = "<span>50-75%</span>";
+    }
+    else if (num == 7) {
+        text = "<span>75%</span>";
+    }
+    else if (num == 9) {
+        text = "<span>100%</span>";
+    }
+    return text;
+}
+
+function showActivity(enzyArray, activity, company) {
+    //loop enzymeArray
+    $.each(enzyArray, function (ei, ev) {
+        var idArray = [];
+        //loop company
+        $.each(company, function (ci, cv) {
+            var id = 'company-' + ev + '-' + ci;
+            idArray.push(id);
+            var data1 = $.grep(activity, function (d, i) {
+                return d.key === cv;
+            });
+            if (data1.length > 0) {
+                var data2 = $.grep(data1[0].values, function (d, i) {
+                    return d.key == ev;
+                });
+            }
+            else{
+                data2 = [];
+            }
+            //generate activity
+            dispatchActivity(data2, id);
+        })
+    })   
+}
+
+function dispatchActivity(data, id) {
+    var html = "";
+    if (data.length > 0) {
+        html = html + '<h4 class="text-danger">Enzyme Activity (' + data[0].values[0].temprature + '&deg;C)</h4>';
+        html = html + '<div class="table-responsive">';
+            html = html + '<table class="table table-condensed">';
+                html = html + '<tr>';
+                    $.each(data[0].values, function (i, v) {
+                        html = html + '<th><span class="text-primary">'+v.buffer+'</span></th>';
+                    })
+                html = html + '</tr>';
+                html = html + '<tr>';
+                    $.each(data[0].values, function (i, v) {
+                        html = html + '<td><span class="">' + v.activity + '</span></td>';
+                    })
+                html = html + '</tr>';
+            html = html + '</table>';
+        html = html + '</div>';
+    }
+    else {
+        html = "<p class='text-danger'>Not found!</p>";
+    }
+
+    $("#" + id).append(html);
+}
+
+

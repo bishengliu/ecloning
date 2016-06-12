@@ -11,8 +11,8 @@
     var enzymes = ViewBag.Enzymes;
     var Tag = (string)ViewBag.Tag;
     var fvFeatures = ViewBag.fvFeatures;
-    //var restricProperty = (List<ecloning.Models.RestrictionObject>)ViewBag.restric_property;
     var restricProperty = ViewBag.restric_property;
+    var activity = ViewBag.activity;
 }
 
 <div class="row">
@@ -132,7 +132,10 @@
         //get restrcition property and prototype
         var restricProperty = ("@restricProperty");
         restricProperty = LoadData(restricProperty);
-
+        
+        //get enzyme activity
+        var activity = ("@activity");
+        activity = LoadData(activity);
         try {
             //draw linear map
             features = JSON.parse(features);
@@ -148,6 +151,13 @@
             displayEnzymeList(enzymes, "enzyme-list");
             //parse json for restricProperty
             restricProperty = JSON.parse(restricProperty);
+            //parse json for enzyme activity
+            activity = JSON.parse(activity);
+            //show enzyme companies and activities
+            activity = FormatActivity(activity);
+            //get company list
+            var companies = findCompany(activity);
+
             //capture user selection of enzyme
             $(":checkbox").change(function () {
                 if (this.checked) {
@@ -162,23 +172,35 @@
                 //show cut info with tabs
                 //=============================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
-                    //=============
                 //genCutMap using giraffe
                 drawCutMap(enzymes, enzyArray, features, seqCount, name);
-                    //==============
                 //show cut prototype and property
                 showRestricProperty(enzyArray, restricProperty);
 
-
-
-                //show enzyme companies and activities
-                //get company list
-
+                //=============================================
                 //show activity tabs
-                genActivityTab(enzyArray, 'activity-info', ["NEB", "BioLab"]);
+                genActivityTab(enzyArray, 'activity-info', companies);
 
                 //show enzyme activities
+                showActivity(enzyArray, activity, companies);
 
+                //match enzyme-info and activity-info
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    var target = $(e.target).attr("href") // activated tab
+                    if (target.length > 9 && target.substring(0, 9) == "#activity") {
+                        //this is the activity tab
+                        var tab = target.substring(10, target.length);
+                        if (tab != "" || tab != "undefined") {
+                            $('a[href="#' + tab + '"]').tab('show');
+                        }
+                    }
+                    else {
+                        var tab = target.substring(1, target.length);
+                        if (tab != "" || tab != "undefined") {
+                            $('a[href="#activity-' + tab + '"]').tab('show');
+                        }
+                    }
+                });
 
                 if (enzyArray.length > 0) {
                     //show the result panel
@@ -198,5 +220,8 @@
             console.log(e);
         }
     });
+
+
+
 
 </script>

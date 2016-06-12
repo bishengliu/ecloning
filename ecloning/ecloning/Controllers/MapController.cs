@@ -142,6 +142,17 @@ namespace ecloning.Controllers
             }
             //ViewBag.restric_property = restric_property.ToList();
             ViewBag.restric_property = JsonConvert.SerializeObject(restrictons.ToList());
+
+            //get the enzyms activities
+            var activity = db.activity_restriction.Include(c => c.company).Include(b => b.buffer).Select(a => new {
+                name = a.restri_enzyme.name,
+                company = a.company.shortName,
+                companyFN = a.company.fullName,
+                buffer = a.buffer.name,
+                activity = a.activity,
+                temprature = a.temprature
+            });
+            ViewBag.activity = JsonConvert.SerializeObject(activity.ToList());
             return View();
         }
         [Authorize]
