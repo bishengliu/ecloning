@@ -311,9 +311,7 @@ CREATE TABLE plasmid
 	addgene INT, --cite addgene plasmid# like, 12260
 	d DATETIME,
 	people_id INT NOT NULL, --the person who add this plasmid
-	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
+	linear BIT, -- the plasmid is linear?	
 	[des] TEXT,
 	CONSTRAINT fk_plasmid_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_plasmid_name_people_id UNIQUE (name,people_id)

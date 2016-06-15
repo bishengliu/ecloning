@@ -45,6 +45,7 @@ namespace ecloning.Models
         public string des { get; set; }
         public string insert_species { get; set; }
         public Nullable<int> seq_length { get; set; }
+        public Nullable<bool> linear { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<clone_group> clone_group { get; set; }

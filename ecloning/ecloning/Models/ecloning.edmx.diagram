@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f1ad222101384b1a92e01ae5a1082fe8" Name="Diagram1">
+      <Diagram DiagramId="6f613d7f7a27449f8af4f35e63db721a" Name="Diagram1">
         <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.activity_modifying" Width="1.5" PointX="15.25" PointY="15.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.activity_restriction" Width="1.5" PointX="18.25" PointY="15.875" IsExpanded="true" />
