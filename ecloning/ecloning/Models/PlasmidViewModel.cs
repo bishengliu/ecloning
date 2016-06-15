@@ -10,7 +10,6 @@ namespace ecloning.Models
     {
         public PlasmidViewModel()
         {
-            this.clone_group = new HashSet<clone_group>();
             this.plasmid_map = new HashSet<plasmid_map>();
         }
         public int id { get; set; }
@@ -42,7 +41,6 @@ namespace ecloning.Models
         public string des { get; set; }
         public string insert_species { get; set; }
 
-        public virtual ICollection<clone_group> clone_group { get; set; }
         public virtual person person { get; set; }
         public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }

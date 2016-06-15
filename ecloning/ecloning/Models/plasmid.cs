@@ -17,7 +17,7 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public plasmid()
         {
-            this.clone_group = new HashSet<clone_group>();
+            this.fragments = new HashSet<fragment>();
             this.methylations = new HashSet<methylation>();
             this.methylation_backup = new HashSet<methylation_backup>();
             this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
@@ -47,7 +47,7 @@ namespace ecloning.Models
         public Nullable<int> seq_length { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<clone_group> clone_group { get; set; }
+        public virtual ICollection<fragment> fragments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<methylation> methylations { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

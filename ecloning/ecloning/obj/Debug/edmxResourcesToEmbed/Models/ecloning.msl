@@ -111,28 +111,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="clone_group">
-      <EntityTypeMapping TypeName="ecloningModel.clone_group">
-        <MappingFragment StoreEntitySet="clone_group">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="group_type" ColumnName="group_type" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="version" ColumnName="version" />
-          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
-          <ScalarProperty Name="oligo_id" ColumnName="oligo_id" />
-          <ScalarProperty Name="primer_id" ColumnName="primer_id" />
-          <ScalarProperty Name="nuclease_id" ColumnName="nuclease_id" />
-          <ScalarProperty Name="refgroup" ColumnName="refgroup" />
-          <ScalarProperty Name="img_fn" ColumnName="img_fn" />
-          <ScalarProperty Name="dt" ColumnName="dt" />
-          <ScalarProperty Name="des" ColumnName="des" />
-          <ScalarProperty Name="people_id" ColumnName="people_id" />
-          <ScalarProperty Name="submitted_to_group" ColumnName="submitted_to_group" />
-          <ScalarProperty Name="shared_with_group" ColumnName="shared_with_group" />
-          <ScalarProperty Name="shared_with_people" ColumnName="shared_with_people" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="common_feature">
       <EntityTypeMapping TypeName="ecloningModel.common_feature">
         <MappingFragment StoreEntitySet="common_feature">
@@ -224,6 +202,67 @@
           <ScalarProperty Name="value" ColumnName="value" />
           <ScalarProperty Name="text" ColumnName="text" />
           <ScalarProperty Name="category" ColumnName="category" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="fragments">
+      <EntityTypeMapping TypeName="ecloningModel.fragment">
+        <MappingFragment StoreEntitySet="fragment">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
+          <ScalarProperty Name="fragment_id" ColumnName="fragment_id" />
+          <ScalarProperty Name="parantal" ColumnName="parantal" />
+          <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
+          <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
+          <ScalarProperty Name="forward_start" ColumnName="forward_start" />
+          <ScalarProperty Name="forward_end" ColumnName="forward_end" />
+          <ScalarProperty Name="forward_size" ColumnName="forward_size" />
+          <ScalarProperty Name="forward_seq" ColumnName="forward_seq" />
+          <ScalarProperty Name="rc_start" ColumnName="rc_start" />
+          <ScalarProperty Name="rc_end" ColumnName="rc_end" />
+          <ScalarProperty Name="rc_size" ColumnName="rc_size" />
+          <ScalarProperty Name="rc_seq" ColumnName="rc_seq" />
+          <ScalarProperty Name="rc_left_overhand" ColumnName="rc_left_overhand" />
+          <ScalarProperty Name="rc_right_overhand" ColumnName="rc_right_overhand" />
+          <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="fragment_map">
+      <EntityTypeMapping TypeName="ecloningModel.fragment_map">
+        <MappingFragment StoreEntitySet="fragment_map">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="fragment_id" ColumnName="fragment_id" />
+          <ScalarProperty Name="show_feature" ColumnName="show_feature" />
+          <ScalarProperty Name="feature" ColumnName="feature" />
+          <ScalarProperty Name="feature_id" ColumnName="feature_id" />
+          <ScalarProperty Name="start" ColumnName="start" />
+          <ScalarProperty Name="end" ColumnName="end" />
+          <ScalarProperty Name="cut" ColumnName="cut" />
+          <ScalarProperty Name="common_id" ColumnName="common_id" />
+          <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+          <ScalarProperty Name="locked" ColumnName="locked" />
+          <ScalarProperty Name="des" ColumnName="des" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="fragment_methylation">
+      <EntityTypeMapping TypeName="ecloningModel.fragment_methylation">
+        <MappingFragment StoreEntitySet="fragment_methylation">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="fragment_id" ColumnName="fragment_id" />
+          <ScalarProperty Name="cut" ColumnName="cut" />
+          <ScalarProperty Name="clockwise" ColumnName="clockwise" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="dam_complete" ColumnName="dam_complete" />
+          <ScalarProperty Name="dam_impaired" ColumnName="dam_impaired" />
+          <ScalarProperty Name="dcm_complete" ColumnName="dcm_complete" />
+          <ScalarProperty Name="dcm_impaired" ColumnName="dcm_impaired" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

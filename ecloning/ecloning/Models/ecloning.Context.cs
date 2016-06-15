@@ -34,7 +34,6 @@ namespace ecloning.Models
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<buffer> buffers { get; set; }
-        public virtual DbSet<clone_group> clone_group { get; set; }
         public virtual DbSet<common_feature> common_feature { get; set; }
         public virtual DbSet<common_modifying> common_modifying { get; set; }
         public virtual DbSet<common_restriction> common_restriction { get; set; }
@@ -44,6 +43,9 @@ namespace ecloning.Models
         public virtual DbSet<Dcm> Dcms { get; set; }
         public virtual DbSet<department> departments { get; set; }
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }
+        public virtual DbSet<fragment> fragments { get; set; }
+        public virtual DbSet<fragment_map> fragment_map { get; set; }
+        public virtual DbSet<fragment_methylation> fragment_methylation { get; set; }
         public virtual DbSet<group> groups { get; set; }
         public virtual DbSet<group_people> group_people { get; set; }
         public virtual DbSet<group_shared> group_shared { get; set; }

@@ -308,9 +308,6 @@
     <Compile Include="Models\buffer.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\clone_group.cs">
-      <DependentUpon>ecloning.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\common_feature.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -368,6 +365,15 @@
     <Compile Include="Models\FindFeature.cs" />
     <Compile Include="Models\FindRestriction.cs" />
     <Compile Include="Models\FindSeq.cs" />
+    <Compile Include="Models\fragment.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fragment_map.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fragment_methylation.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\group.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

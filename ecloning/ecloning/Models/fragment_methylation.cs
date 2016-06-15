@@ -12,21 +12,18 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class oligo
+    public partial class fragment_methylation
     {
         public int id { get; set; }
+        public int fragment_id { get; set; }
+        public int cut { get; set; }
+        public int clockwise { get; set; }
         public string name { get; set; }
-        public string sequence { get; set; }
-        public string company { get; set; }
-        public string orderref { get; set; }
-        public string location { get; set; }
-        public string usage { get; set; }
-        public string purity { get; set; }
-        public string modification { get; set; }
-        public Nullable<int> people_id { get; set; }
-        public string des { get; set; }
-        public Nullable<System.DateTime> dt { get; set; }
+        public bool dam_complete { get; set; }
+        public bool dam_impaired { get; set; }
+        public bool dcm_complete { get; set; }
+        public bool dcm_impaired { get; set; }
     
-        public virtual person person { get; set; }
+        public virtual fragment fragment { get; set; }
     }
 }

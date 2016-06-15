@@ -112,27 +112,6 @@
     <Property Name="show_activity" Type="bit" />
     <Property Name="show_activity2" Type="bit" />
   </EntityType>
-  <EntityType Name="clone_group">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="group_type" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="version" Type="int" Nullable="false" />
-    <Property Name="plasmid_id" Type="int" Nullable="false" />
-    <Property Name="oligo_id" Type="int" />
-    <Property Name="primer_id" Type="int" />
-    <Property Name="nuclease_id" Type="int" />
-    <Property Name="refgroup" Type="int" />
-    <Property Name="img_fn" Type="nvarchar" MaxLength="100" />
-    <Property Name="dt" Type="datetime" />
-    <Property Name="des" Type="text" />
-    <Property Name="people_id" Type="int" />
-    <Property Name="submitted_to_group" Type="bit" />
-    <Property Name="shared_with_group" Type="bit" />
-    <Property Name="shared_with_people" Type="nvarchar" MaxLength="100" />
-  </EntityType>
   <EntityType Name="common_feature">
     <Key>
       <PropertyRef Name="id" />
@@ -217,6 +196,64 @@
     <Property Name="value" Type="nvarchar" MaxLength="100" />
     <Property Name="text" Type="nvarchar" MaxLength="100" />
     <Property Name="category" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="fragment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="plasmid_id" Type="int" />
+    <Property Name="fragment_id" Type="int" />
+    <Property Name="parantal" Type="bit" Nullable="false" />
+    <Property Name="enzyme_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="company_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="buffer_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="forward_start" Type="int" />
+    <Property Name="forward_end" Type="int" />
+    <Property Name="forward_size" Type="int" />
+    <Property Name="forward_seq" Type="text" />
+    <Property Name="rc_start" Type="int" />
+    <Property Name="rc_end" Type="int" />
+    <Property Name="rc_size" Type="int" />
+    <Property Name="rc_seq" Type="text" />
+    <Property Name="rc_left_overhand" Type="int" />
+    <Property Name="rc_right_overhand" Type="int" />
+    <Property Name="ladder_id" Type="int" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="dt" Type="datetime" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="fragment_map">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fragment_id" Type="int" Nullable="false" />
+    <Property Name="show_feature" Type="int" Nullable="false" />
+    <Property Name="feature" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="feature_id" Type="int" Nullable="false" />
+    <Property Name="start" Type="int" Nullable="false" />
+    <Property Name="end" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" />
+    <Property Name="common_id" Type="int" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="locked" Type="int" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="fragment_methylation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fragment_id" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" Nullable="false" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="dam_complete" Type="bit" Nullable="false" />
+    <Property Name="dam_impaired" Type="bit" Nullable="false" />
+    <Property Name="dcm_complete" Type="bit" Nullable="false" />
+    <Property Name="dcm_impaired" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="group">
     <Key>
@@ -718,42 +755,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_clone_group_oligo_id">
-    <End Role="oligo" Type="Self.oligo" Multiplicity="0..1" />
-    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="oligo">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="clone_group">
-        <PropertyRef Name="oligo_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_clone_group_people_id">
-    <End Role="people" Type="Self.people" Multiplicity="0..1" />
-    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="people">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="clone_group">
-        <PropertyRef Name="people_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_clone_group_plasmid_id">
-    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
-    <End Role="clone_group" Type="Self.clone_group" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="plasmid">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="clone_group">
-        <PropertyRef Name="plasmid_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_common_feature_feature_id">
     <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
     <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
@@ -915,6 +916,54 @@
       </Principal>
       <Dependent Role="AspNetUserRoles">
         <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_map_common_id">
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
+    <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="common_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_map">
+        <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_map_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_map">
+        <PropertyRef Name="feature_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_map_fragment_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="1" />
+    <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_map">
+        <PropertyRef Name="fragment_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_methylation_fragment_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="1" />
+    <End Role="fragment_methylation" Type="Self.fragment_methylation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_methylation">
+        <PropertyRef Name="fragment_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1083,6 +1132,30 @@
       </Principal>
       <Dependent Role="plasmid_bundle">
         <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_fragment_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="fragment" Type="Self.fragment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_fragment_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="0..1" />
+    <End Role="fragment" Type="Self.fragment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment">
+        <PropertyRef Name="plasmid_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1277,7 +1350,6 @@
     <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="buffer" EntityType="Self.buffer" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="clone_group" EntityType="Self.clone_group" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_feature" EntityType="Self.common_feature" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_modifying" EntityType="Self.common_modifying" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
@@ -1287,6 +1359,9 @@
     <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fragment" EntityType="Self.fragment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fragment_map" EntityType="Self.fragment_map" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fragment_methylation" EntityType="Self.fragment_methylation" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="group_people" EntityType="Self.group_people" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="group_shared" EntityType="Self.group_shared" Schema="dbo" store:Type="Tables" />
@@ -1354,18 +1429,6 @@
       <End Role="company" EntitySet="company" />
       <End Role="buffer" EntitySet="buffer" />
     </AssociationSet>
-    <AssociationSet Name="fk_clone_group_oligo_id" Association="Self.fk_clone_group_oligo_id">
-      <End Role="oligo" EntitySet="oligo" />
-      <End Role="clone_group" EntitySet="clone_group" />
-    </AssociationSet>
-    <AssociationSet Name="fk_clone_group_people_id" Association="Self.fk_clone_group_people_id">
-      <End Role="people" EntitySet="people" />
-      <End Role="clone_group" EntitySet="clone_group" />
-    </AssociationSet>
-    <AssociationSet Name="fk_clone_group_plasmid_id" Association="Self.fk_clone_group_plasmid_id">
-      <End Role="plasmid" EntitySet="plasmid" />
-      <End Role="clone_group" EntitySet="clone_group" />
-    </AssociationSet>
     <AssociationSet Name="fk_common_feature_feature_id" Association="Self.fk_common_feature_feature_id">
       <End Role="plasmid_feature" EntitySet="plasmid_feature" />
       <End Role="common_feature" EntitySet="common_feature" />
@@ -1417,6 +1480,22 @@
     <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_map_common_id" Association="Self.fk_fragment_map_common_id">
+      <End Role="common_feature" EntitySet="common_feature" />
+      <End Role="fragment_map" EntitySet="fragment_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_map_feature_id" Association="Self.fk_fragment_map_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="fragment_map" EntitySet="fragment_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_map_fragment_id" Association="Self.fk_fragment_map_fragment_id">
+      <End Role="fragment" EntitySet="fragment" />
+      <End Role="fragment_map" EntitySet="fragment_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_methylation_fragment_id" Association="Self.fk_fragment_methylation_fragment_id">
+      <End Role="fragment" EntitySet="fragment" />
+      <End Role="fragment_methylation" EntitySet="fragment_methylation" />
     </AssociationSet>
     <AssociationSet Name="fk_group_depart_id" Association="Self.fk_group_depart_id">
       <End Role="department" EntitySet="department" />
@@ -1473,6 +1552,14 @@
     <AssociationSet Name="fk_plasmid_bundle_people_id" Association="Self.fk_plasmid_bundle_people_id">
       <End Role="people" EntitySet="people" />
       <End Role="plasmid_bundle" EntitySet="plasmid_bundle" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_fragment_people_id" Association="Self.fk_plasmid_fragment_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="fragment" EntitySet="fragment" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_fragment_plasmid_id" Association="Self.fk_plasmid_fragment_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="fragment" EntitySet="fragment" />
     </AssociationSet>
     <AssociationSet Name="fk_plasmid_map_backup_ccommon_id" Association="Self.fk_plasmid_map_backup_ccommon_id">
       <End Role="common_feature" EntitySet="common_feature" />

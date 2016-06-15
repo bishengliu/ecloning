@@ -31,6 +31,7 @@ namespace ecloning.Models
         public virtual company company { get; set; }
     }
 }
+
 namespace ecloning.Models
 {
     using System;
@@ -77,8 +78,6 @@ namespace ecloning.Models
         public virtual ICollection<restriction_company> restriction_company { get; set; }
     }
 }
-
-
 namespace ecloning.Models
 {
     using System;
@@ -90,6 +89,7 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public common_feature()
         {
+            this.fragment_map = new HashSet<fragment_map>();
             this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
             this.plasmid_map = new HashSet<plasmid_map>();
         }
@@ -111,12 +111,13 @@ namespace ecloning.Models
         public virtual group group { get; set; }
         public virtual person person { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<fragment_map> fragment_map { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<plasmid_map> plasmid_map { get; set; }
     }
 }
-
 
 namespace ecloning.Models
 {
@@ -161,8 +162,8 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public person()
         {
-            this.clone_group = new HashSet<clone_group>();
             this.common_feature = new HashSet<common_feature>();
+            this.fragments = new HashSet<fragment>();
             this.group_people = new HashSet<group_people>();
             this.oligoes = new HashSet<oligo>();
             this.people_license = new HashSet<people_license>();
@@ -185,9 +186,9 @@ namespace ecloning.Models
         public Nullable<bool> active { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<clone_group> clone_group { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<common_feature> common_feature { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<fragment> fragments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group_people> group_people { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -208,70 +209,3 @@ namespace ecloning.Models
         public virtual ICollection<protocol> protocols { get; set; }
     }
 }
-
-
-/*
-//move this into the viewModel
-
-namespace ecloning.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class plasmid
-    {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public plasmid()
-        {
-            this.clone_group = new HashSet<clone_group>();
-            this.methylations = new HashSet<methylation>();
-            this.methylation_backup = new HashSet<methylation_backup>();
-            this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
-            this.plasmid_map = new HashSet<plasmid_map>();
-        }
-    
-        public int id { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string name { get; set; }
-		[RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
-        public string sequence { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string expression_system { get; set; }
-        public string expression_subsystem { get; set; }
-        public string promotor { get; set; }
-        public string polyA { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string resistance { get; set; }
-        public string reporter { get; set; }
-        public string selection { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string insert { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public string usage { get; set; }
-        public string plasmid_type { get; set; }
-        public string ref_plasmid { get; set; }
-        public string img_fn { get; set; }
-        public Nullable<int> addgene { get; set; }
-        public Nullable<System.DateTime> d { get; set; }
-        public int people_id { get; set; }
-        public string des { get; set; }
-        public string insert_species { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public Nullable<int> seq_length { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<clone_group> clone_group { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<methylation> methylations { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<methylation_backup> methylation_backup { get; set; }
-        public virtual person person { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<plasmid_map_backup> plasmid_map_backup { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<plasmid_map> plasmid_map { get; set; }
-    }
-}
-
-*/

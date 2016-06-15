@@ -754,9 +754,6 @@ CREATE TABLE [primer]
 	modification NVARCHAR(100), --Non (default), phosphorylated
 	people_id INT,
 	[des] TEXT,
-	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_primer_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_primer_name_people_id UNIQUE (name, people_id)
@@ -777,9 +774,6 @@ CREATE TABLE [oligo]
 	modification NVARCHAR(100), --Non (default), phosphorylated
 	people_id INT,
 	[des] TEXT,
-	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_oligo_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_oligo_name UNIQUE (name)
@@ -798,9 +792,6 @@ CREATE TABLE [probe] --pcr probe
 	location NVARCHAR(100),
 	people_id INT,
 	[des] TEXT,
-	--submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	--shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	--shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
 	dt DATETIME DEFAULT GETDATE(),
 	CONSTRAINT fk_probe_tech_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_probe_forward_primer FOREIGN KEY (forward_primer) REFERENCES primer(id),
@@ -825,9 +816,6 @@ CREATE TABLE plasmid_bundle
 	CONSTRAINT fk_plasmid_bundle_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	--CONSTRAINT uq_plasmid_bundle_name_people_id UNIQUE (name, people_id) -- in the same group it is allowed with the same bundle name
 );
-
-
-
 
 --------------------------------------------------------
 --this table keep the used save fragement of a plasmid, not the real clone fragment
@@ -921,36 +909,6 @@ CREATE TABLE group_shared
 	CONSTRAINT fk_group_shared_group_id FOREIGN KEY (group_id) REFERENCES [group](id),
 	CONSTRAINT uq_group_id_resource_id_category UNIQUE (group_id, resource_id, category)
 );
-
-/*
---the table below needs to be re thought !!!!--
---create crispr group or virus group, plasmid group
---==============need to think this again!!!!!++++++++++
-CREATE TABLE [clone_group]
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	group_type NVARCHAR(100) NOT NULL, 
-	name NVARCHAR(100) NOT NULL,
-	version INT NOT NULL, --default to be 1 
-	plasmid_id INT NOT NULL,
-	oligo_id INT, 
-	primer_id INT,
-	nuclease_id INT, --enzyme or nuclease
-	refgroup INT, -- for ref to another crispr group
-	img_fn NVARCHAR(100), --for upload img scheme
-	dt DATETIME DEFAULT GETDATE(),
-	[des] TEXT,
-	people_id INT,
-	submitted_to_group BIT, --for submitted to general stock and prevent changes 
-	shared_with_group BIT, --after approval changed to true and shared by all people in the same group 
-	shared_with_people NVARCHAR(100), --shared with people id, not with the whole group, can be people from any group in the same institute, example 1-2-3
-	CONSTRAINT fk_clone_group_people_id FOREIGN KEY (people_id) REFERENCES people(id),	
-	CONSTRAINT fk_clone_group_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
-	CONSTRAINT fk_clone_group_oligo_id FOREIGN KEY (oligo_id) REFERENCES oligo(id),
-	CONSTRAINT uq_crispr_group_name UNIQUE (name)
-);
-
-*/
 
 --ladder, for both DNA and protein
 CREATE TABLE ladder
