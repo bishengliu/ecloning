@@ -441,7 +441,6 @@
           <Property Name="des" Type="text" />
           <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
           <Property Name="seq_length" Type="int" />
-          <Property Name="linear" Type="bit" />
         </EntityType>
         <EntityType Name="plasmid_bundle">
           <Key>
@@ -2051,7 +2050,6 @@
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="seq_length" Type="Int32" />
-          <Property Name="linear" Type="Boolean" />
           <NavigationProperty Name="clone_group" Relationship="Self.fk_clone_group_plasmid_id" FromRole="plasmid" ToRole="clone_group" />
           <NavigationProperty Name="methylations" Relationship="Self.fk_methylation_plasmid_id" FromRole="plasmid" ToRole="methylation" />
           <NavigationProperty Name="methylation_backup" Relationship="Self.fk_methylation_backup_plasmid_id" FromRole="plasmid" ToRole="methylation_backup" />
@@ -3618,7 +3616,6 @@
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="insert_species" ColumnName="insert_species" />
                 <ScalarProperty Name="seq_length" ColumnName="seq_length" />
-                <ScalarProperty Name="linear" ColumnName="linear" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
