@@ -829,6 +829,7 @@ CREATE TABLE plasmid_bundle
 
 
 
+--------------------------------------------------------
 --this table keep the used save fragement of a plasmid, not the real clone fragment
 --plasmid fragment will be wiped away when the seq of the plasmid is changed
 --this table will store all the info about 1) how the fragment is genereated from a plasmid;
@@ -858,9 +859,8 @@ CREATE TABLE fragment
     --keep this info if the fragment is added manually without parental plasmid or fragment
     rc_size INT, --reverse complement
     rc_seq TEXT,
-    rc_left_overhand INT  --set the first letter of forward seq to be 1 and the "rc_left_overhand" is a number relative to 1: -1 means one letter to left and 1 means one letter to the right, 0 means no overhang
+    rc_left_overhand INT,  --set the first letter of forward seq to be 1 and the "rc_left_overhand" is a number relative to 1: -1 means one letter to left and 1 means one letter to the right, 0 means no overhang
     rc_right_overhand INT,
-
 
     ladder_id INT, -- to restore the digest setting
     people_id INT NOT NULL, --name + people_id shoud be unique
@@ -869,8 +869,45 @@ CREATE TABLE fragment
     CONSTRAINT fk_plasmid_fragment_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
     CONSTRAINT fk_plasmid_fragment_people_id FOREIGN KEY (people_id) REFERENCES people(id),
     CONSTRAINT uq_plasmid_fragment_name_people_id UNIQUE (name, people_id)
-)
+);
 
+
+--only for manually added fragments
+--need use addgene giraffe
+CREATE TABLE fragment_map
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	fragment_id INT NOT NULL,
+	--type_id INT, --linear or circlular
+	show_feature INT NOT NULL, -- 1 or 0
+	feature NVARCHAR(200) NOT NULL,
+	feature_id INT NOT NULL,
+	start INT NOT NULL,
+	[end] INT NOT NULL,
+	cut INT, --enzyme cut only clude unique and 2 cuts
+	common_id INT, --ref to common_feature id;
+	clockwise INT NOT NULL, -- 1 or 0
+	locked INT, -- 1 or 0
+	[des] TEXT,
+	CONSTRAINT fk_fragment_map_fragment_id FOREIGN KEY (fragment_id) REFERENCES fragment(id),
+	CONSTRAINT fk_fragment_map_common_id FOREIGN KEY (common_id) REFERENCES common_feature(id),
+	CONSTRAINT fk_fragment_map_feature_id FOREIGN KEY (feature_id) REFERENCES plasmid_feature(id)
+);
+--table to keep the dam and dcm on fragment map
+CREATE TABLE fragment_methylation
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	fragment_id INT NOT NULL,
+	cut INT NOT NULL,
+	clockwise INT NOT NULL,
+	name NVARCHAR(100) NOT NULL,
+	dam_complete BIT NOT NULL,
+	dam_impaired BIT NOT NULL,
+	dcm_complete BIT NOT NULL,
+	dcm_impaired BIT NOT NULL,
+	CONSTRAINT fk_fragment_methylation_fragment_id FOREIGN KEY (fragment_id) REFERENCES fragment(id)
+);
+-----------------------------------------------
 
 
 --table for group sharing
@@ -885,7 +922,7 @@ CREATE TABLE group_shared
 	CONSTRAINT uq_group_id_resource_id_category UNIQUE (group_id, resource_id, category)
 );
 
-
+/*
 --the table below needs to be re thought !!!!--
 --create crispr group or virus group, plasmid group
 --==============need to think this again!!!!!++++++++++
@@ -913,7 +950,7 @@ CREATE TABLE [clone_group]
 	CONSTRAINT uq_crispr_group_name UNIQUE (name)
 );
 
-
+*/
 
 --ladder, for both DNA and protein
 CREATE TABLE ladder

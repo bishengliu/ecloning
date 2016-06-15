@@ -57,12 +57,11 @@ namespace ecloning.Models
                     db.plasmid_map_backup.Add(b);
                     db.plasmid_map.Remove(c);
                 }
-
-                //backup current methylation
-
             }
 
-            //remove current mehtylation info
+            //backup current methylation
+
+            //remove previous mehtylation backup info
             var previousMethylation = db.methylation_backup.Where(p => p.plasmid_id == PlasmidId);
             if (previousMethylation.Count() > 0)
             {
@@ -71,7 +70,7 @@ namespace ecloning.Models
                     db.methylation_backup.Remove(m);
                 }
 
-                //remove current methylation
+                //backup and remove current methylation
                 var currentMethylation = db.methylations.Where(p => p.plasmid_id == PlasmidId);
                 foreach(var c in currentMethylation)
                 {
@@ -88,8 +87,6 @@ namespace ecloning.Models
                     db.methylations.Remove(c);
                 }
             }
-
-
 
             //========================================================================
             //========================================================================
@@ -134,7 +131,8 @@ namespace ecloning.Models
                         result = true;
                     }
 
-                    //deal with the right end
+                    //deal with the right end 
+                    //only for circular plasmid
                     var endSeq = Sequence.Substring(Sequence.Length - subSeq.Length + 1, subSeq.Length - 1) + Sequence.Substring(0, subSeq.Length - 1);  // 2 * (subSeq.Length -1)
                     var endIdx = endSeq.IndexOf(subSeq);
                     if (endIdx != -1)
@@ -180,7 +178,8 @@ namespace ecloning.Models
                         result = true;
                     }
 
-                    //deal with the left end
+                    //deal with the left end 
+                    //only for curclular plasmid
                     var endcSeq = cSequence.Substring(cSequence.Length - reversesubSeq.Length + 1, subSeq.Length - 1) + cSequence.Substring(0, reversesubSeq.Length - 1);  // 2 * (subSeq.Length -1)
                     var endRIdx = endcSeq.IndexOf(reversesubSeq);
                     if (endRIdx != -1)
@@ -245,6 +244,7 @@ namespace ecloning.Models
                     }
 
                     //deal with the right end
+                    //only for circular plasmids
                     var endSeq = Sequence.Substring(Sequence.Length - subSeq.Length + 1, subSeq.Length - 1) + Sequence.Substring(0, subSeq.Length - 1);  // 2 * (subSeq.Length -1)
                     var endIdx = endSeq.IndexOf(subSeq);
                     if (endIdx != -1)
@@ -291,6 +291,7 @@ namespace ecloning.Models
                     }
 
                     //deal with the left end
+                    //only for circular plasmids
                     var endcSeq = cSequence.Substring(cSequence.Length - reversesubSeq.Length + 1, subSeq.Length - 1) + cSequence.Substring(0, reversesubSeq.Length - 1);  // 2 * (subSeq.Length -1)
                     var endRIdx = endcSeq.IndexOf(reversesubSeq);
                     if (endRIdx != -1)
@@ -311,8 +312,6 @@ namespace ecloning.Models
                 }
 
             }
-
-
 
             //========================================================================
             //========================================================================
