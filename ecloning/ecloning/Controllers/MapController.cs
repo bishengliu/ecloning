@@ -101,7 +101,7 @@ namespace ecloning.Controllers
             ViewBag.Methylation = JsonConvert.SerializeObject(Methylation.ToList());
             //display all enzyme cuts of the current plasmid
             var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p => p.plasmid_id == plasmid_id);
-            var Enzymes = plasmid_map.Where(f=>f.feature_id == 4).OrderBy(n => n.common_feature != null ? n.common_feature.label : n.feature).OrderBy(s => s.start).Select(f => 
+            var Enzymes = plasmid_map.Where(f=>f.feature_id == 4).OrderBy(n => n.common_feature != null ? n.common_feature.label : n.feature).OrderBy(s => s.cut).Select(f => 
                 new {
                     pId = f.plasmid_id,
                     name = f.common_feature != null ? f.common_feature.label : f.feature,
@@ -115,7 +115,7 @@ namespace ecloning.Controllers
 
             //all other features
             //pass json
-            var features = plasmid_map.Where(f => f.feature_id == 4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
+            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             //pass json for feature viewers
             var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x = f.feature_id == 4 ? f.cut : f.start, y = f.feature_id == 4 ? f.cut : f.end, description = f.common_feature != null ? f.common_feature.label : f.feature, id = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
@@ -153,6 +153,20 @@ namespace ecloning.Controllers
                 temprature = a.temprature
             });
             ViewBag.activity = JsonConvert.SerializeObject(activity.ToList());
+
+            //get the DNA ladders
+            var ladder = db.ladders.Where(l => l.ladder_type == "DNA");
+            //get json data
+            var ladderId = ladder.Select(i => i.id);
+            var ladderSize = db.ladder_size.Where(l => ladderId.Contains(l.ladder_id)).OrderBy(l => l.ladder_id).OrderBy(r => r.Rf).Select(l => new {
+                id = l.ladder_id,
+                size = l.size,
+                mass = l.mass,
+                Rf = l.Rf,
+                name = l.ladder.name
+            });
+            ViewBag.ladders= JsonConvert.SerializeObject(ladderSize.ToList());
+
             return View();
         }
         [Authorize]

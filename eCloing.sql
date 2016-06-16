@@ -816,7 +816,7 @@ CREATE TABLE plasmid_bundle
 	CONSTRAINT fk_plasmid_bundle_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	--CONSTRAINT uq_plasmid_bundle_name_people_id UNIQUE (name, people_id) -- in the same group it is allowed with the same bundle name
 );
-
+--=======================================================================================================================================
 --------------------------------------------------------
 --this table keep the used save fragement of a plasmid, not the real clone fragment
 --plasmid fragment will be wiped away when the seq of the plasmid is changed
@@ -896,7 +896,7 @@ CREATE TABLE fragment_methylation
 	CONSTRAINT fk_fragment_methylation_fragment_id FOREIGN KEY (fragment_id) REFERENCES fragment(id)
 );
 -----------------------------------------------
-
+--=======================================================================================================================================
 
 --table for group sharing
 CREATE TABLE group_shared

@@ -12,10 +12,11 @@ function drawMap(giraffeData, id, name, width, cutArray) {
     gd.CircularMap({
         'map_dom_id': id,
         'plasmid_name': name,
+        'label_offset': 5,
+        'digest': true,
         'map_width': width,
         'map_height': width,
-        'cutters': cutArray
-        //'map_height': 324  
+        'cutters': cutArray        
     });
 }
 
@@ -337,7 +338,7 @@ function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
         var width = 350;
         //fiter features
         var ftdata = $.grep(features, function (d) {
-            return d.feature == v;
+            return d.type_id != 4 || (d.type_id == 4 && d.feature == v);
         });
         var giraffeData = [seqCount, ftdata];
         id = v + "-cut-map";
@@ -552,3 +553,108 @@ function dispatchActivity(data, id) {
 }
 
 
+//gen gel
+//ladder
+function formatLadder(ladders) {
+    //d3 nest by id
+    var data = d3.nest()
+                 .key(function (d) { return d.id; })
+                 .entries(ladders);
+    $.each(data, function (i, d) {
+        var Rf = [];
+        var size = [];
+        var mass = [];
+        var logSize = [];
+        $.each(d.values, function (si, sd) {
+            Rf.push(sd.Rf); //Rf ~ log(size)
+            size.push(sd.size); 
+            mass.push(sd.mass);
+            logSize.push(+Math.log10(sd.size).toFixed(3));
+        })
+        d.type = "ladder";
+        d.Rf = Rf;
+        d.Size = size;
+        d.Mass = mass;
+        d.logSize = logSize;
+        d.lr = linearRegression(logSize, Rf); //return [m, b]
+    })
+    return data;
+}
+//linear regression by finding least squares
+function linearRegression(y, x) {
+    var lr = {};
+    var n = y.length;
+    var sum_x = 0;
+    var sum_y = 0;
+    var sum_xy = 0;
+    var sum_xx = 0;
+    var sum_yy = 0;
+
+    for (var i = 0; i < y.length; i++) {
+
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += (x[i] * y[i]);
+        sum_xx += (x[i] * x[i]);
+        sum_yy += (y[i] * y[i]);
+    }
+
+    lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x); //m
+    lr['intercept'] = (sum_y - lr.slope * sum_x) / n; //b
+    lr['r2'] = Math.pow((n * sum_xy - sum_x * sum_y) / Math.sqrt((n * sum_xx - sum_x * sum_x) * (n * sum_yy - sum_y * sum_y)), 2);
+
+    return lr;
+}
+
+//generate bands and deal with methylation
+function genBands(enzyArray, enzymes, methylation, seqCount) {
+    var bands = [];
+    $.each(enzyArray, function (i, d) {
+        var cuts = $.grep(enzymes, function (sd, si) {
+            return sd.name === d;
+        })
+        console.log(cuts);
+        var methylation = false;
+        if (cuts.length > 0) {
+            var curBands = [];
+            for (var i = 0; i < cuts.length; i++) {
+                if (cuts[i].methylation == true) {
+                    //tag this to add an extra lane on gel
+                    methylation == true;
+                }
+                var obj = {};
+                obj.name = d;
+                obj.type = "cut";
+                if (i == cuts.length - 1) {
+                    obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
+                    obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
+                    obj.Mass = 100;
+                }
+                else {
+                    obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
+                    obj.Size = cuts[i + 1].cut - cuts[i].cut;
+                    obj.Mass = 100;
+                }
+                obj.logSize = +Math.log10(obj.Size).toFixed(3);
+                obj.methylation = false;
+                curBands.push(obj);
+            }
+            if (curBands.length > 0) {
+                bands.push(curBands);
+            }
+        }
+         //add extra lane if methylation is true   
+        if (methylation) {
+            var methyBands = [];
+            for (var i = 0; i < cuts.length; i++) {
+                //if impaired, mass is 50 and add two bands: completely cut, half cuts
+
+                //if completely blocked
+                //only one band not cut
+
+            }
+        }
+    })
+
+    return bands;
+}

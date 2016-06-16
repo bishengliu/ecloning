@@ -15,7 +15,6 @@ namespace ecloning.Controllers
         public ActionResult Index(string type)
         {
             var ladder = db.ladders.Where(l => l.ladder_type == type);
-            ViewBag.Type = type;
             //get json data
             var ladderId = ladder.Select(i => i.id);
             var ladderSize = db.ladder_size.Where(l => ladderId.Contains(l.ladder_id)).OrderBy(l => l.ladder_id).OrderBy(r => r.Rf).Select(l => new {

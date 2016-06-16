@@ -13,6 +13,7 @@
     var fvFeatures = ViewBag.fvFeatures;
     var restricProperty = ViewBag.restric_property;
     var activity = ViewBag.activity;
+    var ladders = ViewBag.ladders;
 }
 
 <div class="row">
@@ -132,14 +133,17 @@
         //get restrcition property and prototype
         var restricProperty = ("@restricProperty");
         restricProperty = LoadData(restricProperty);
-        
+
         //get enzyme activity
         var activity = ("@activity");
         activity = LoadData(activity);
+
+        //get ladders
+        var ladders = ("@ladders");
+        ladders = LoadData(ladders);
         try {
             //draw linear map
             features = JSON.parse(features);
-            
             //draw features on top
             fvFeatures = JSON.parse(fvFeatures);
             drawFeatures(fvFeatures, sequence, 'plasmid-feature');
@@ -157,7 +161,10 @@
             activity = FormatActivity(activity);
             //get company list
             var companies = findCompany(activity);
-
+            //parse ladders
+            ladders = JSON.parse(ladders);
+            //format ladder data
+            ladders = formatLadder(ladders);
             //capture user selection of enzyme
             $(":checkbox").change(function () {
                 if (this.checked) {
@@ -184,6 +191,7 @@
                 //show enzyme activities
                 showActivity(enzyArray, activity, companies);
 
+                //===============================
                 //match enzyme-info and activity-info
                 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                     var target = $(e.target).attr("href") // activated tab
@@ -202,11 +210,23 @@
                     }
                 });
 
+
+                //==============================
+                //draw gel
+                //define the gel length
+                var gel_length = 250;
+                //get ladders
+                console.log(ladders);
+                //cal the bands
+                console.log(enzyArray);
+                var bands = genBands(enzyArray, enzymes, methylation, seqCount);
+                console.log(bands);
+                //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel
                     if ($("#result").hasClass("hidden")) {
                         $("#result").removeClass("hidden");
-                    };                   
+                    };
                 }
                 else {
                     //hide the result panel
