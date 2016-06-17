@@ -571,6 +571,7 @@ function formatLadder(ladders) {
             mass.push(sd.mass);
             logSize.push(+Math.log10(sd.size).toFixed(3));
         })
+        d.name = d.values[0].name;
         d.type = "ladder";
         d.Rf = Rf;
         d.Size = size;
@@ -613,14 +614,15 @@ function genBands(enzyArray, enzymes, methylation, seqCount) {
         var cuts = $.grep(enzymes, function (sd, si) {
             return sd.name === d;
         })
-        console.log(cuts);
-        var methylation = false;
+        cuts.sort(sortByProperty('cut'));
+        //don't conside the dcm or dam
+        var hasMethylation = false;
         if (cuts.length > 0) {
             var curBands = [];
             for (var i = 0; i < cuts.length; i++) {
                 if (cuts[i].methylation == true) {
                     //tag this to add an extra lane on gel
-                    methylation == true;
+                    hasMethylation = true;
                 }
                 var obj = {};
                 obj.name = d;
@@ -636,25 +638,91 @@ function genBands(enzyArray, enzymes, methylation, seqCount) {
                     obj.Mass = 100;
                 }
                 obj.logSize = +Math.log10(obj.Size).toFixed(3);
-                obj.methylation = false;
                 curBands.push(obj);
-            }
+            } //end of for loop
             if (curBands.length > 0) {
                 bands.push(curBands);
             }
-        }
-         //add extra lane if methylation is true   
-        if (methylation) {
-            var methyBands = [];
-            for (var i = 0; i < cuts.length; i++) {
-                //if impaired, mass is 50 and add two bands: completely cut, half cuts
 
-                //if completely blocked
-                //only one band not cut
+            //deal with dam or dcm
+            //add extra lane if methylation is true
+            if (hasMethylation) {
+                //grep the cur enzyme related methylation
+                var methy = $.grep(methylation, function (d, i) {
+                    return d.name === cuts[0].name;
+                })
+                if (methy.length > 0) {
+                    var methyBands = []; //final return array
 
-            }
-        }
+                    var cutsCopy = []; //temp array, for removing completely blocked
+                    //remove the completely block digestion
+                    for (var i = 0; i < methy.length; i++) {
+                        //assume completely blocked
+                        if (methylation[i].dam_cm || methylation[i].dcm_cm || methylation[i].dam_ip || methylation[i].dcm_ip) {
+                            //remove the cut that have the same cut position
+                            cutsCopy = $.grep(cuts, function (d, i) {
+                                return +d.cut !== +methylation[i].cut;
+                            })
+                        }
+                    }
+                    if (cutsCopy.length === 0) {
+                        //nothing left, generate the circular plasmid
+                        var obj = {};
+                        obj.name = cuts[0].name;
+                        obj.type = "cut";
+                        obj.bandRange = "0-0"; //if "0-0", then it is circular
+                        obj.Size = seqCount;
+                        obj.Mass = 100;
+                        obj.logSize = +Math.log10(obj.Size).toFixed(3);
+                        methyBands.push(obj);
+                    }
+                    else {
+                        //assume always completely cut
+                        for (var i = 0; i < cutsCopy.length; i++){
+                            var obj = {};
+                            obj.name = cutsCopy[i].name;
+                            obj.type = "cut";
+                            if (i == cuts.length - 1) {
+                                obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
+                                obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
+                                obj.Mass = 100;
+                            }
+                            else {
+                                obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
+                                obj.Size = cuts[i + 1].cut - cuts[i].cut;
+                                obj.Mass = 100;
+                            }
+                            obj.logSize = +Math.log10(obj.Size).toFixed(3);
+                            methyBands.push(obj);
+                        }
+                    }
+
+                    if (methyBands.length > 0) {
+                        bands.push(methyBands);
+                    }
+                } //end of methy.length > 0
+
+            } //end of hasMethylation
+
+        } //end of cuts.length
+
+
     })
 
     return bands;
+}
+
+//sort array
+//array.sort(sortByProperty(property))
+function sortByProperty(property) {
+    'use strict';
+    return function (a, b) {
+        var sortStatus = 0;
+        if (a[property] < b[property]) {
+            sortStatus = -1;
+        } else if (a[property] > b[property]) {
+            sortStatus = 1;
+        }
+        return sortStatus;
+    };
 }
