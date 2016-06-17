@@ -250,6 +250,26 @@ function updateArray(value, enzyArray, type)
     }
     return enzyArray;
 }
+
+
+function updateDigest(value, digestArray, type) {
+    if (type == "add") {
+        digestArray.push([value]);
+    }
+    if (type == "remove") {
+        digestArray = rmDigestion(digestArray, value);
+    }
+    return digestArray;
+}
+
+function rmDigestion(digestArray, value) {
+    array = $.grep(digestArray, function (v) {
+        return v.length != 1 || (v.length == 1 && v[0] != value);
+    })
+    return array;
+}
+
+
 function unique(array) {
     return $.grep(array, function (el, index) {
         return index === $.inArray(el, array);
@@ -725,4 +745,14 @@ function sortByProperty(property) {
         }
         return sortStatus;
     };
+}
+
+
+//convert each enzyme in the list into an array and prepare for mutiple enzyme digestion
+function convertArray(enzyArray) {
+    var digestArray = [];
+    $.each(enzyArray, function (i, d) {
+        digestArray.push([d]);
+    })
+    return digestArray;
 }
