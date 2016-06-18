@@ -1,4 +1,9 @@
-﻿//load the data from js SerializeObject
+﻿function scrollTo(id) {
+    $('html, body').animate({
+        scrollTop: $(id).offset().top
+    }, 1000);
+}
+//load the data from js SerializeObject
 function LoadData(data) {
     document.getElementById("decodeIt").innerHTML = data;
     outPut = document.getElementById("decodeIt").innerText;
@@ -325,7 +330,10 @@ function createEnzymeTabs(enzyArray, id) {
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
                         htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse in">';
-                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-map'+'"></div>';
+                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" >';
+                                htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-map' + '"></div>';
+                                htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-info' + '"></div>'; //add cut position and methylation info
+                            htmlsubdiv = htmlsubdiv + '</div>';
                         htmlsubdiv = htmlsubdiv + '</div>';
                    htmlsubdiv = htmlsubdiv + '</div>';
 
@@ -339,6 +347,8 @@ function createEnzymeTabs(enzyArray, id) {
     htmldiv = htmldiv + '</div>';
     return htmlul + htmldiv;
 }
+
+
 function activeTab(enzyArray, id){
     //find the fist tab
     var tab = enzyArray[enzyArray.length-1];
@@ -414,6 +424,52 @@ function showRestricProperty(enzyArray, restricProperty) {
         $("#" + id).append(listGroup);
     })
 }
+
+//add cut positions
+function showDigestInfo(enzymes, enzyArray, methylation) {
+    $.each(enzyArray, function (i, v) {
+        var cuts = [];
+        cuts = $.grep(enzymes, function (d, si) {
+            return d.name === v;
+        });
+        
+        if (cuts.length > 0) {
+            var html = "<br/><h4 class='text-primary'>Digestion:</h4>";
+            var pos = [];
+            //sort cuts
+            cuts.sort(sortByProperty('cut'));
+            $.each(cuts, function (ci, cd) {
+                if (cd.methylation) {
+                    var posString = "" + cd.cut;
+                    //get the methlation info
+                    var methy = $.grep(methylation, function (md, mi) {
+                        return md.cut === cd.cut && md.name === cd.name;
+                    })
+                    if (methy.length > 0) {
+                        if (methy[0].dam_cm || methy[0].dam_ip) {
+                            posString = '<span class="text-danger">' + posString + " (Dam)" + "</span>";
+                        }
+                        if (methy[0].dcm_cm || methy[0].dcm_ip) {
+                            posString = '<span class="text-danger">' + posString + " (Dcm)" + "</span>";
+                        }
+                    }
+                    pos.push(posString);
+                }
+                else {
+                    pos.push("" + cd.cut);
+                }
+            });
+            //convert pos array to string
+            html = html + "<br/><p>";
+            html = html + pos.join(", ");
+            html = html + "</p>";
+            //append html
+            $("#" + v + '-cut-info').append(html);
+        }            
+    })
+}
+
+
 
 //gen avtivity info tab
 function genActivityTab(enzyArray, id, company){
@@ -827,8 +883,6 @@ function genDigestBands(digestArray, enzymes, seqCount) {
 
     return bands;
 }
-
-
 
 
 //sort array

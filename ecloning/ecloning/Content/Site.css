@@ -687,6 +687,7 @@ svg text tspan{
     .black-line{
         border-color:rgba(0,0,0,0.2);
     }
+
     #enzyme-list{
         border-right: solid;
         border-left: solid;

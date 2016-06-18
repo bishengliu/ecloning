@@ -60,16 +60,32 @@
                 </div>
             </div>
             @*<hr class="black-line" />*@
-            <div id="enzyme-list" class="col-xs-4 col-sm-3 col-md-2 col-lg-1">
+            <div id="enzyme-list" class="col-xs-4 col-sm-3 col-md-2 col-lg-2">
                 <h4 class="text-primary">Enzymes</h4>
             </div>
-            <div id="result" class="col-xs-8 col-sm-9 col-md-10 col-lg-11 hidden">
-                <!--emzyme info panel-->
-                <div id="enzyme-info" class="col-xs-12 col-md-6"></div>
-                <div id="activity-info" class="col-xs-12 col-md-6"></div>
-                <br />
+            <div id="result" class="col-xs-8 col-sm-9 col-md-10 col-lg-10 hidden">
+                <!--header-->
+                <div class="col-xs-12" id="middle-result">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Stimulations</h3>
+                            </div>                           
+                        </div>
+                    </div>
+                </div>
                 <!--bands-->
-                <div id="gel" class="col-xs-12 col-md-6"></div>
+                <div id="gel-panel" class="col-xs-12 col-md-6">
+                    <div class="panel-group">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Gel Electrophoresis</h3>
+                            </div>
+                            <div class="panel-body"  id="gel">Panel Content</div>
+                            <div class="panel-footer clearfix">Panel footer</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="gel-info" class="col-xs-12 col-md-6 hidden">
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Band Info</div>
@@ -84,6 +100,20 @@
                         </div>
                     </div>
                 </div>
+
+                <!--header-->
+                <div class="col-xs-12" id="middle-result">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Enzyme and Activity</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--emzyme info panel-->
+                <div id="enzyme-info" class="col-xs-12 col-md-6"></div>
+                <div id="activity-info" class="col-xs-12 col-md-6"></div>
             </div>
         </div>
     </div>
@@ -184,14 +214,17 @@
                 }
 
                 //show cut info with tabs
-                //=============================================
+                //==========================================================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
+
                 //genCutMap using giraffe
                 drawCutMap(enzymes, enzyArray, features, seqCount, name);
+                //show cut positions and methylation info in panel-body
+                showDigestInfo(enzymes, enzyArray, methylation);
                 //show cut prototype and property
                 showRestricProperty(enzyArray, restricProperty);
 
-                //=============================================
+                //=========================================================================
                 //show activity tabs
                 genActivityTab(enzyArray, 'activity-info', companies);
 
@@ -218,7 +251,7 @@
                 });
 
 
-                //==============================
+                //===========================================================================
                 //draw gel
                 //define the gel length
                 var gel_length = 250;
@@ -229,6 +262,14 @@
                 //console.log(digestArray);
                 var bands = genDigestBands(digestArray, enzymes, seqCount);
                 //console.log(bands);
+
+                
+
+
+
+
+                //based on the length of digestArray to cal the grid of bootstrap of gel stimulation and gel-info panels
+
                 //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel
