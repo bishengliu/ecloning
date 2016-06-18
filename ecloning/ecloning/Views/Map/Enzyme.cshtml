@@ -105,6 +105,7 @@
     var enzyArray = [];
     //define a global array of arrays of enzyme; for digestion
     var digestArray = [];
+    digestArray = [['Bful', 'AatII']];
     $(document).ready(function () {
         //initiate tooltip from bootstrap
         $('[data-toggle="tooltip"]').tooltip();
@@ -223,19 +224,11 @@
                 var gel_length = 250;
                 //get ladders
                 //console.log(ladders);
-                //cal the bands
-
-                //deal with only with single enzyme digestion
-                var bands = genBands(enzyArray, enzymes, methylation, seqCount);
+                
+                //deal with more that one digestion                
+                //console.log(digestArray);
+                var bands = genDigestBands(digestArray, enzymes, seqCount);
                 //console.log(bands);
-
-                //deal with more that one digestion
-                //=====================================================================================
-                // work generate bands in cases of mutilple enzyme digestion
-                //=====================================================================================
-                console.log(digestArray);
-
-
                 //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel

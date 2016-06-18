@@ -627,7 +627,7 @@ function linearRegression(y, x) {
     return lr;
 }
 
-//generate bands and deal with methylation
+//generate bands for only one digest enzyme
 function genBands(enzyArray, enzymes, methylation, seqCount) {
     var bands = [];
     $.each(enzyArray, function (i, d) {
@@ -732,6 +732,105 @@ function genBands(enzyArray, enzymes, methylation, seqCount) {
     return bands;
 }
 
+//generate digest bands from an enyzme array of arrays, allow multiple enzyme digestion
+function genDigestBands(digestArray, enzymes, seqCount) {
+    var bands = [];
+    //loop the digestArray
+    $.each(digestArray, function (i, d) {
+        
+        //enzymes are all the cuts for the current plasmid
+        var cuts = $.grep(enzymes, function (sd, si) {
+            //return all the cuts in d, array of digesiton enzymes
+            return $.inArray(sd.name, d) != -1;
+        })
+        //sort cuts by the cut position from small to big
+        cuts.sort(sortByProperty('cut'));
+        //console.log(cuts);
+
+        
+        var hasMethylation = false; //tag for methylation later on
+        if (cuts.length > 0) {
+            //-------------------------first ignore the methylation
+            var curBands = [];
+            for (var i = 0; i < cuts.length; i++) {
+                if (cuts[i].methylation == true) {
+                    //tag this to add an extra lane on gel
+                    hasMethylation = true;
+                }
+                var obj = {};
+                obj.name = d.join("-");
+                obj.type = "cut";
+                if (i == cuts.length - 1) {
+                    obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
+                    obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
+                    obj.Mass = 100;
+                }
+                else {
+                    obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
+                    obj.Size = cuts[i + 1].cut - cuts[i].cut;
+                    obj.Mass = 100;
+                }
+                obj.logSize = +Math.log10(obj.Size).toFixed(3);
+                curBands.push(obj);
+            }//end of for loop
+            if (curBands.length > 0) {
+                bands.push(curBands);
+            }
+
+            //---------------------------- deal with methylation
+            if (hasMethylation) {
+                var methyBands = []; //final return array
+                //remove all the cuts in cuts that has methylation ==true
+                var cutsCopy = []; //temp array, for removing completely blocked
+                cutsCopy = $.grep(cuts, function (v) {
+                    return v.methylation != true;
+                });
+
+                if (cutsCopy.length === 0) {
+                    //nothing left, generate the circular plasmid
+                    var obj = {};
+                    obj.name = d.join("-");
+                    obj.type = "cut";
+                    obj.bandRange = "0-0"; //if "0-0", then it is circular
+                    obj.Size = seqCount;
+                    obj.Mass = 100;
+                    obj.logSize = +Math.log10(obj.Size).toFixed(3);
+                    methyBands.push(obj);
+                }
+                else {
+                    //assume always completely cut
+                    for (var i = 0; i < cutsCopy.length; i++) {
+                        var obj = {};
+                        obj.name = d.join("-");
+                        obj.type = "cut";
+                        if (i == cuts.length - 1) {
+                            obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
+                            obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
+                            obj.Mass = 100;
+                        }
+                        else {
+                            obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
+                            obj.Size = cuts[i + 1].cut - cuts[i].cut;
+                            obj.Mass = 100;
+                        }
+                        obj.logSize = +Math.log10(obj.Size).toFixed(3);
+                        methyBands.push(obj);
+                    }
+                }//end of cutsCopy.length
+                if (methyBands.length > 0) {
+                    bands.push(methyBands);
+                }
+
+            }//end of hasMethylation
+        } //end of cuts.length
+    }) // end of looping digestarray
+
+    return bands;
+}
+
+
+
+
 //sort array
 //array.sort(sortByProperty(property))
 function sortByProperty(property) {
@@ -746,7 +845,6 @@ function sortByProperty(property) {
         return sortStatus;
     };
 }
-
 
 //convert each enzyme in the list into an array and prepare for mutiple enzyme digestion
 function convertArray(enzyArray) {
