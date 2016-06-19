@@ -209,18 +209,23 @@ function drawFeatures(fvFeatures, seq, id){
         });
     }
 }
-
+//=========================================================
 //display enzyme list
 function displayEnzymeList(enzymes, id) {
     if (enzymes.length == 0) {
         $("#enzyme-list").append('<p class="text-danger">No restriction cuts found!</p>');
     }
-    else {
+    else {       
         //process the enzymes
         var enzymeData = d3.nest()
                            .key(function (d) { return d.name; })
                            .entries(enzymes);
-        //console.log(enzymeData);
+        //cal the num of cuts for sorting
+        $.each(enzymeData, function (i, d) {
+            d.numCuts = d.values.length;
+        })
+        //sort data by num of cuts
+        enzymeData.sort(sortByProperty('numCuts'));
         //append checkbox
         $.each(enzymeData, function (i, v) {
             //find methylation 
@@ -244,6 +249,9 @@ function CheckBox(name, count,methylation) {
     html = html + '</div>';
     return html;
 }
+
+//==========================================================
+//update enzyme array
 function updateArray(value, enzyArray, type)
 {
     if (type == "add") {
@@ -255,7 +263,6 @@ function updateArray(value, enzyArray, type)
     }
     return enzyArray;
 }
-
 
 function updateDigest(value, digestArray, type) {
     if (type == "add") {
@@ -286,7 +293,31 @@ function removeElement(array, value) {
     })
     return array;
 }
+//==============================================================
+//draw cut-overview
+//generate cut overview panel title
+function genCutTitle(id, enzyArray) {
+    var title = enzyArray.join(' + ');
+    $("#" + id).text(title);
+}
+//draw cut map for multiple enzymes
+function drawCuts(id, enzymes, enzyArray, features, seqCount, name) {
+    //genCut array
+    var cutArray = [];
+    //find the max of the cuts
+    var maxCuts = findMaxCuts(enzymes);
+    cutArray = genArray(maxCuts);
 
+    //map width
+    var width = 350;
+    //fiter features
+    var ftdata = $.grep(features, function (d) {
+        return d.type_id != 4 || (d.type_id == 4 && $.inArray(d.feature, enzyArray) !==-1);
+    });
+    var giraffeData = [seqCount, ftdata];
+    drawMap(giraffeData, id, name, width, cutArray);
+}
+//================================================================
 //display enzyme tabs
 function genEnzymeTabs(enzyArray, id) {
     if (enzyArray.length > 0) {
@@ -313,11 +344,11 @@ function createEnzymeTabs(enzyArray, id) {
         htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-'+v+ '">'
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
-                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
+                        htmlsubdiv = htmlsubdiv + '<h4 class="panel-title text-center">';
                             htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '1">'+v+' Property</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse">';
+                        htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse in">';
                             htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-property"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
@@ -325,11 +356,11 @@ function createEnzymeTabs(enzyArray, id) {
                     
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
-                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
+                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title text-center">';
                                 htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '2">' + v + ' Cuts</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse in">';
+                        htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse">';
                             htmlsubdiv = htmlsubdiv + '<div class="panel-body" >';
                                 htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-map' + '"></div>';
                                 htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-info' + '"></div>'; //add cut position and methylation info
@@ -348,15 +379,13 @@ function createEnzymeTabs(enzyArray, id) {
     return htmlul + htmldiv;
 }
 
-
 function activeTab(enzyArray, id){
     //find the fist tab
     var tab = enzyArray[enzyArray.length-1];
     $('#'+id+' a[href="#' + tab + '"]').tab('show');
 }
 
-
-//draw cut map
+//draw cut map in tabs for each enzyme
 function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
     //genCut array
     var cutArray = [];
@@ -402,7 +431,7 @@ function showRestricProperty(enzyArray, restricProperty) {
         })
         $("#" + id).append("<h4 class='text-danger'>Prototype</h4><div>" + data[0].prototype + "</div>");
         //append list group
-        var listGroup = "<br/><h4 class='text-danger'>Properties</h4>";
+        var listGroup = "<h4 class='text-danger'>Properties</h4>";
         listGroup = listGroup + '<div class="table-responsive">';
             listGroup = listGroup + '<table class="table table-condensed">';
                 listGroup = listGroup + '<tr>';
@@ -434,7 +463,7 @@ function showDigestInfo(enzymes, enzyArray, methylation) {
         });
         
         if (cuts.length > 0) {
-            var html = "<br/><h4 class='text-primary'>Digestion:</h4>";
+            var html = "<h4 class='text-primary'>Postion(s):</h4>";
             var pos = [];
             //sort cuts
             cuts.sort(sortByProperty('cut'));
@@ -460,7 +489,7 @@ function showDigestInfo(enzymes, enzyArray, methylation) {
                 }
             });
             //convert pos array to string
-            html = html + "<br/><p>";
+            html = html + "<p>";
             html = html + pos.join(", ");
             html = html + "</p>";
             //append html
@@ -469,8 +498,7 @@ function showDigestInfo(enzymes, enzyArray, methylation) {
     })
 }
 
-
-
+//===============================================================
 //gen avtivity info tab
 function genActivityTab(enzyArray, id, company){
     if (enzyArray.length > 0) {
@@ -506,11 +534,15 @@ function createActivityTabs(enzyArray, id, company) {
         $.each(company, function (si, sv) {
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
-                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title">';
-                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + v + '" href="#activity-' + v + '-'+ si + '">' + sv + '</a>';
+                            htmlsubdiv = htmlsubdiv + '<h4 class="panel-title text-center">';
+                                htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + v + '" href="#activity-' + v + '-'+ si + '">' + sv + '</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + si + '" class="panel-collapse collapse">';
+                        if (si == 0) {
+                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + si + '" class="panel-collapse collapse in">';
+                        } else {
+                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + si + '" class="panel-collapse collapse">';
+                        }
                         htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + v + '-' + si + '"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
@@ -628,8 +660,8 @@ function dispatchActivity(data, id) {
     $("#" + id).append(html);
 }
 
-
 //gen gel
+//=====================================================================
 //ladder
 function formatLadder(ladders) {
     //d3 nest by id
@@ -647,6 +679,7 @@ function formatLadder(ladders) {
             mass.push(sd.mass);
             logSize.push(+Math.log10(sd.size).toFixed(3));
         })
+        d.id = d.values[0].id
         d.name = d.values[0].name;
         d.type = "ladder";
         d.Rf = Rf;
@@ -683,8 +716,11 @@ function linearRegression(y, x) {
     return lr;
 }
 
+
+//======================================================================
 //generate bands for only one digest enzyme
-function genBands(enzyArray, enzymes, methylation, seqCount) {
+//SE==single enzyme digestion
+function genSEBands(enzyArray, enzymes, methylation, seqCount) {
     var bands = [];
     $.each(enzyArray, function (i, d) {
         var cuts = $.grep(enzymes, function (sd, si) {
@@ -788,12 +824,39 @@ function genBands(enzyArray, enzymes, methylation, seqCount) {
     return bands;
 }
 
+//generate all possible enzyme combination for mutiple enzyme digestion
+function genMEDigestion(enzyArray) {
+    //max emzymes == 3
+    var array = [];
+
+    //at least have 2 enzymes
+    if (enzyArray.length > 1) {
+            if (enzyArray.length == 2) {
+                array.push([enzyArray[0], enzyArray[1]]);
+            }
+            else {
+                //3 enzymes
+                //combine all enzymes into the first array
+                    var firstArray = [];
+                    $.each(enzyArray, function (i, e) {
+                        firstArray.push(e);
+                    });
+                    array.push(firstArray);
+                //2 emzymes combination
+                    array.push([enzyArray[0], enzyArray[1]]);
+                    array.push([enzyArray[0], enzyArray[2]]);
+                    array.push([enzyArray[1], enzyArray[2]]);
+            }    
+    }
+    
+    return array;
+}
+
 //generate digest bands from an enyzme array of arrays, allow multiple enzyme digestion
-function genDigestBands(digestArray, enzymes, seqCount) {
+function genMEBands(digestArray, enzymes, seqCount) {
     var bands = [];
     //loop the digestArray
     $.each(digestArray, function (i, d) {
-        
         //enzymes are all the cuts for the current plasmid
         var cuts = $.grep(enzymes, function (sd, si) {
             //return all the cuts in d, array of digesiton enzymes
@@ -801,9 +864,7 @@ function genDigestBands(digestArray, enzymes, seqCount) {
         })
         //sort cuts by the cut position from small to big
         cuts.sort(sortByProperty('cut'));
-        //console.log(cuts);
-
-        
+     
         var hasMethylation = false; //tag for methylation later on
         if (cuts.length > 0) {
             //-------------------------first ignore the methylation
@@ -883,6 +944,49 @@ function genDigestBands(digestArray, enzymes, seqCount) {
 
     return bands;
 }
+
+//choose ladders
+function chooseLadder(bands, ladders) {
+    var array = [];
+    //gen bandMix/ladderMix, bandMax/ladderMax array for each band
+    $.each(bands, function (bi, bd) {
+        var rangeArray = d3.extent(bd.map(function (d) { return +d.Size; }));
+        var minSize = rangeArray[0] < 50 ? 100 : rangeArray[0];
+        var maxSize = rangeArray[1];
+        $.each(ladders, function (li, ld) {
+            var ldRange = d3.extent(ld.Size);
+            ldMin = ldRange[0];
+            ldMax = ldRange[1];
+            var obj = { id: ld.id, sizeMin : minSize - ldMin, sizeMax : maxSize - ldMax};
+            array.push(obj);
+        });
+    });
+
+    //find the best ladder
+    var ladder = 0;
+    //get the Math.abs of the minSize - ldMin
+    if (array.length > 0) {
+        $.each(array, function (i, d) {
+            d.maxAbs = Math.abs(d.sizeMax);
+            d.minAbs = Math.abs(d.sizeMin);
+            d.minus = Math.abs(d.maxAbs - d.minAbs);
+            d.plus = Math.abs(d.maxAbs + d.minAbs);
+            d.min = d.minus * d.minus + d.plus * d.plus;
+        })
+        ladder = array.length == 1 ? array[0].id : findMin(array);
+    }
+    return ladder;
+}
+
+function findMin(data) {
+    //find min 
+    var minValue = d3.min(data.map(function (d) { return d.min; }));
+    var ladder = $.grep(data, function (d) {
+        return d.min === minValue;
+    })
+    return ladder[0].id;
+}
+
 
 
 //sort array

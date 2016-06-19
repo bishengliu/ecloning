@@ -65,44 +65,7 @@
             </div>
             <div id="result" class="col-xs-8 col-sm-9 col-md-10 col-lg-10 hidden">
                 <!--header-->
-                <div class="col-xs-12" id="middle-result">
-                    <div class="panel-group">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title text-center">Gel Stimulations</h3>
-                            </div>                           
-                        </div>
-                    </div>
-                </div>
-                <!--bands-->
-                <div id="gel-panel" class="col-xs-12 col-md-6">
-                    <div class="panel-group">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Gel Electrophoresis</h3>
-                            </div>
-                            <div class="panel-body"  id="gel">Panel Content</div>
-                            <div class="panel-footer clearfix">Panel footer</div>
-                        </div>
-                    </div>
-                </div>
-                <div id="gel-info" class="col-xs-12 col-md-6 hidden">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading text-center">Band Info</div>
-                        <div class="panel-body">
-                            <div id="band-feature" class="col-xs-12"></div>
-                            <div id="band-end" class="col-xs-12"></div>
-                        </div>
-                        <div class="panel-footer clearfix" id="band-button">
-                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
-                                <i class="fa fa-floppy-o"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!--header-->
-                <div class="col-xs-12" id="middle-result">
+                <div class="col-xs-12" id="top-result">
                     <div class="panel-group">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -112,13 +75,93 @@
                     </div>
                 </div>
                 <!--emzyme info panel-->
-                <div id="enzyme-info" class="col-xs-12 col-md-6"></div>
-                <div id="activity-info" class="col-xs-12 col-md-6"></div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="panel-group">
+                        <div class="panel panel-color1">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center" id="cut-title"></h3>
+                            </div>
+                            <div class="panel-body" id="cut-map"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="enzyme-info" class="col-xs-12 col-md-4"></div>
+                <div id="activity-info" class="col-xs-12 col-md-4"></div>
+
+
+                <!--header-->
+                <div class="col-xs-12" id="middle-result">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Stimulations</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--bands for single enzyme-->
+                <div id="gel-panel-single" class="col-xs-12 col-md-6">
+                    <div class="panel-group">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Electrophoresis</h3>
+                            </div>
+                            <div class="panel-body" id="gel-single">Panel Content</div>
+                            <div class="panel-footer clearfix">Panel footer</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="gel-info-single" class="col-xs-12 col-md-6 hidden">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">Band Info</div>
+                        <div class="panel-body">
+                            <div id="band-feature-single" class="col-xs-12"></div>
+                            <div id="band-ends-single" class="col-xs-12"></div>
+                        </div>
+                        <div class="panel-footer clearfix" id="band-button">
+                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                                <i class="fa fa-floppy-o"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!--bands for multiple enzymes-->
+                <div style="clear:both;"></div>
+                <div id="gel-panel-multiple" class="col-xs-12 col-md-6 hidden">
+                    <div class="panel-group">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Electrophoresis</h3>
+                            </div>
+                            <div class="panel-body" id="gel-multiple">Panel Content</div>
+                            <div class="panel-footer clearfix">Panel footer</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="gel-info-multiple" class="col-xs-12 col-md-6 hidden">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">Band Info</div>
+                        <div class="panel-body">
+                            <div id="band-feature-multiple" class="col-xs-12"></div>
+                            <div id="band-ends-multiple" class="col-xs-12"></div>
+                        </div>
+                        <div class="panel-footer clearfix" id="band-button">
+                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                                <i class="fa fa-floppy-o"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
+<div class="alert alert-danger navbar-fixed-bottom" id="success-alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close"><span style="font-size:80%;">&times;</span></a>
+    <span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Too many enzymes! You are only allowed to select no more than 3 emzymes.
+</div>
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
@@ -131,11 +174,12 @@
 
 <script src="~/Scripts/ecloning-digestion.js"></script>
 <script>
+    //hide the alert
+    $("#success-alert").hide();
     //define a global array for selected enzyme list
     var enzyArray = [];
     //define a global array of arrays of enzyme; for digestion
-    var digestArray = [];
-    digestArray = [['Bful', 'AatII']];
+    //var digestArray = [];
     $(document).ready(function () {
         //initiate tooltip from bootstrap
         $('[data-toggle="tooltip"]').tooltip();
@@ -200,24 +244,44 @@
             ladders = formatLadder(ladders);
             //capture user selection of enzyme
             $(":checkbox").change(function () {
+                //allow max 3 selection
+                var maxSelection = 3;
+                if ($('input[type=checkbox]:checked').length > maxSelection) {
+                    $(this).prop('checked', false);
+                    //show msg
+                    $("#success-alert").show();
+                }
+                else {
+                    $("#success-alert").hide();
+                }
+                
+
+                //update enzymeArray
                 if (this.checked) {
                     //add enzyme to enzyArray
                     enzyArray = updateArray($(this).val(), enzyArray, "add");
                     //add digesiton enzyme array
-                    digestArray = updateDigest($(this).val(), digestArray, "add");
+                    //digestArray = updateDigest($(this).val(), digestArray, "add");
                 }
                 else {
                     //remove enzyme to enzyArray
                     enzyArray = updateArray($(this).val(), enzyArray, "remove");
                     //add digesiton enzyme array
-                    digestArray = updateDigest($(this).val(), digestArray, "remove");
+                    //digestArray = updateDigest($(this).val(), digestArray, "remove");
                 }
+                //=======================================================================
+                //show cut overview for multiple enzymes
+                //show panel title
+                genCutTitle("cut-title", enzyArray);
+                //generate plasmid cut-map overview using giraffe
+                drawCuts("cut-map", enzymes, enzyArray, features, seqCount, name);
 
                 //show cut info with tabs
                 //==========================================================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
+                
 
-                //genCutMap using giraffe
+                //genCutMap for each enzyme using giraffe
                 drawCutMap(enzymes, enzyArray, features, seqCount, name);
                 //show cut positions and methylation info in panel-body
                 showDigestInfo(enzymes, enzyArray, methylation);
@@ -257,19 +321,26 @@
                 var gel_length = 250;
                 //get ladders
                 //console.log(ladders);
-                
-                //deal with more that one digestion                
-                //console.log(digestArray);
-                var bands = genDigestBands(digestArray, enzymes, seqCount);
-                //console.log(bands);
+
+                //generate single enzyme digestion bands
+                var SEbands = enzyArray.length >0 ? genSEBands(enzyArray, enzymes, methylation, seqCount): [];
+                //console.log(SEbands);
+                //choose ladder based on the band sizes
+                var SEladder = chooseLadder(SEbands, ladders);
+
+
+                //deal with multiple enzyme digestion
+                //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
+                var MEDigestArray = genMEDigestion(enzyArray);
+
+                var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
+                if (MEbands.length > 0) {
+                    $("#gel-panel-multiple").removeClass("hidden");
+                }
+                var MEladder = chooseLadder(MEbands, ladders);
+                //console.log(MEbands);
 
                 
-
-
-
-
-                //based on the length of digestArray to cal the grid of bootstrap of gel stimulation and gel-info panels
-
                 //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel
