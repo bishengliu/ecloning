@@ -963,7 +963,8 @@ function chooseLadder(bands, ladders) {
     });
 
     //find the best ladder
-    var ladder = 0;
+    var ladder = [];
+    var ladderId = 0;
     //get the Math.abs of the minSize - ldMin
     if (array.length > 0) {
         $.each(array, function (i, d) {
@@ -973,8 +974,14 @@ function chooseLadder(bands, ladders) {
             d.plus = Math.abs(d.maxAbs + d.minAbs);
             d.min = d.minus * d.minus + d.plus * d.plus;
         })
-        ladder = array.length == 1 ? array[0].id : findMin(array);
+        ladderId = array.length == 1 ? array[0].id : findMin(array);
+
+        //return the best ladder obj
+        ladder = $.grep(ladders, function (d, i) {
+            return d.id === ladderId;
+        })
     }
+    
     return ladder;
 }
 
@@ -987,6 +994,47 @@ function findMin(data) {
     return ladder[0].id;
 }
 
+//draw gel stimulation svg
+function drawGel(id, ladder, bands)
+{
+    var margin = { top: 50, right: 2, bottom: 10, left: 2 },
+        width = 60 - margin.left - margin.right//* 8, //max 6 bands plus ladder (2x)
+        height = 360 - margin.top - margin.bottom;
+
+        //get the max mass of ladder
+        var maxMass = d3.max(ladder[0].Mass);
+        var maxStorkeWidth = 4;
+
+        var bgColor = "#363636";
+        var fgColor = "white";
+        var svg = d3.select(id).append("svg")
+                .attr("width", 8 * (width + margin.left + margin.right))
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var background = svg.append("rect")
+                .attr("x", width + margin.left)
+                .attr("y", 0)
+                .attr("width", 7*(width + margin.left + margin.right))
+                .attr("height", height + margin.bottom)
+                .attr("fill", bgColor);
+    //ladder
+        var g = svg.append("g").attr("class", "ladder");
+        var ldBand = g.selectAll(".band")
+                       .data(ladder[0].values)
+                    .enter()
+                       .append("line");
+        var bandAttr = ldBand
+                        .attr("x1", width + margin.left + margin.right + width * .1)
+                        .attr("y1", function (d) { return height * d.Rf; })
+                        .attr("x2", width + margin.left + margin.right+ width * .9)
+                        .attr("y2", function (d) { return height * d.Rf; })
+                        .attr("stroke-width", function (d) { return (d.mass / maxMass) * maxStorkeWidth; })
+                        .attr("stroke-linecap", "round")
+                        .attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.mass / maxMass)); })
+                        .attr("stroke", fgColor);
+
+}
 
 
 //sort array

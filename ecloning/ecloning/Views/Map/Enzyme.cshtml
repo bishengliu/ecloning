@@ -107,8 +107,8 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title text-center">Gel Electrophoresis</h3>
                             </div>
-                            <div class="panel-body" id="gel-single">Panel Content</div>
-                            <div class="panel-footer clearfix">Panel footer</div>
+                            <div class="panel-body" id="gel-single"></div>
+                            <div class="panel-footer clearfix"></div>
                         </div>
                     </div>
                 </div>
@@ -135,8 +135,8 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title text-center">Gel Electrophoresis</h3>
                             </div>
-                            <div class="panel-body" id="gel-multiple">Panel Content</div>
-                            <div class="panel-footer clearfix">Panel footer</div>
+                            <div class="panel-body" id="gel-multiple"></div>
+                            <div class="panel-footer clearfix" id="gel-multiple-footer"></div>
                         </div>
                     </div>
                 </div>
@@ -255,6 +255,18 @@
                     $("#success-alert").hide();
                 }
                 
+                //change some div setting                
+                $("#gel-single").empty();
+                $("#band-feature-single").empty();
+                $("#band-ends-single").empty();
+                $("#gel-info-single").addClass("hidden");
+
+
+                $("#gel-multiple").empty();
+                $("#gel-panel-multiple").addClass("hidden");
+                $("#band-feature-multiple").empty();
+                $("#band-ends-multiple").empty();
+                $("#gel-info-multiple").addClass("hidden");
 
                 //update enzymeArray
                 if (this.checked) {
@@ -317,8 +329,6 @@
 
                 //===========================================================================
                 //draw gel
-                //define the gel length
-                var gel_length = 250;
                 //get ladders
                 //console.log(ladders);
 
@@ -327,7 +337,10 @@
                 //console.log(SEbands);
                 //choose ladder based on the band sizes
                 var SEladder = chooseLadder(SEbands, ladders);
-
+                console.log(SEladder);
+                console.log(SEbands);
+                //draw gel stimulation
+                drawGel("#gel-single", SEladder, SEbands);
 
                 //deal with multiple enzyme digestion
                 //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
@@ -336,11 +349,12 @@
                 var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
                 if (MEbands.length > 0) {
                     $("#gel-panel-multiple").removeClass("hidden");
+                    var MEladder = chooseLadder(MEbands, ladders);
+                    //draw gel stimulation
+                    drawGel("#gel-multiple", MEladder, MEbands);
                 }
-                var MEladder = chooseLadder(MEbands, ladders);
-                //console.log(MEbands);
-
                 
+
                 //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel
