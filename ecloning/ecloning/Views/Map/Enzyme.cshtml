@@ -227,8 +227,6 @@
             //display enzyme checkbox
             enzymes = JSON.parse(enzymes);
             methylation = JSON.parse(methylation);
-            //console.log(enzymes);
-            //console.log(methylation);
             displayEnzymeList(enzymes, "enzyme-list");
             //parse json for restricProperty
             restricProperty = JSON.parse(restricProperty);
@@ -329,23 +327,18 @@
 
                 //===========================================================================
                 //draw gel
-                //get ladders
-                //console.log(ladders);
-
                 //generate single enzyme digestion bands
                 var SEbands = enzyArray.length >0 ? genSEBands(enzyArray, enzymes, methylation, seqCount): [];
-                //console.log(SEbands);
-                //choose ladder based on the band sizes
-                var SEladder = chooseLadder(SEbands, ladders);
-                console.log(SEladder);
-                console.log(SEbands);
                 //draw gel stimulation
-                drawGel("#gel-single", SEladder, SEbands);
+                if (SEbands.length > 0) {
+                    //choose ladder based on the band sizes
+                    var SEladder = chooseLadder(SEbands, ladders);
+                    drawGel("#gel-single", SEladder, SEbands);
+                }
 
                 //deal with multiple enzyme digestion
                 //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
                 var MEDigestArray = genMEDigestion(enzyArray);
-
                 var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
                 if (MEbands.length > 0) {
                     $("#gel-panel-multiple").removeClass("hidden");

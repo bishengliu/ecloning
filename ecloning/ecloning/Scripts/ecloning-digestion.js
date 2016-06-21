@@ -780,7 +780,7 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                     if (cutsCopy.length === 0) {
                         //nothing left, generate the circular plasmid
                         var obj = {};
-                        obj.name = cuts[0].name;
+                        obj.name = cuts[0].name + ':' + 'methy';
                         obj.type = "cut";
                         obj.bandRange = "0-0"; //if "0-0", then it is circular
                         obj.Size = seqCount;
@@ -792,7 +792,7 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                         //assume always completely cut
                         for (var i = 0; i < cutsCopy.length; i++){
                             var obj = {};
-                            obj.name = cutsCopy[i].name;
+                            obj.name = cutsCopy[i].name + ':' + 'methy';
                             obj.type = "cut";
                             if (i == cuts.length - 1) {
                                 obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
@@ -906,7 +906,7 @@ function genMEBands(digestArray, enzymes, seqCount) {
                 if (cutsCopy.length === 0) {
                     //nothing left, generate the circular plasmid
                     var obj = {};
-                    obj.name = d.join("-");
+                    obj.name = d.join("-") + ':' + 'methy';
                     obj.type = "cut";
                     obj.bandRange = "0-0"; //if "0-0", then it is circular
                     obj.Size = seqCount;
@@ -918,7 +918,7 @@ function genMEBands(digestArray, enzymes, seqCount) {
                     //assume always completely cut
                     for (var i = 0; i < cutsCopy.length; i++) {
                         var obj = {};
-                        obj.name = d.join("-");
+                        obj.name = d.join("-") + ':' + 'methy';
                         obj.type = "cut";
                         if (i == cuts.length - 1) {
                             obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
@@ -1004,27 +1004,53 @@ function drawGel(id, ladder, bands)
         //get the max mass of ladder
         var maxMass = d3.max(ladder[0].Mass);
         var maxStorkeWidth = 4;
-
+        
+        //get the top legend
+        var topLegends = [];
+        topLegends.push("Ladder"); //first is the ladder
+        $.each(bands, function (i, d) {
+            topLegends.push(d[0].name);
+        })
+        console.log(topLegends);
+        //cal the Rf for each band based on ladder lr
+        //get lr
+        var lr = ladder[0].lr;
+        $.each(bands, function (i, b) {
+            //loop each digestion
+            $.each(b, function (si, sb) {
+                //loop each band
+                //get the Rf
+                var rf = (sb.logSize - lr.intercept) / lr.slope;
+                sb.Rf = rf;
+            })
+        })
+        //console.log(topLegends);
         var bgColor = "#363636";
         var fgColor = "white";
         var svg = d3.select(id).append("svg")
-                .attr("width", 8 * (width + margin.left + margin.right))
-                .attr("height", height + margin.top + margin.bottom)
+                .attr("width", (topLegends.length+1) * (width + margin.left + margin.right))
+                .attr("height", height + margin.top + margin.bottom);
+        var background = svg.append("rect")
+                    .attr("x", width + margin.left)
+                    .attr("y", margin.top-10)
+                    .attr("width", topLegends.length * (width + margin.left + margin.right))
+                    .attr("height", height + margin.bottom+10)
+                    .attr("fill", bgColor);
+        var tg = svg
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")");
+        var g = svg
             .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var background = svg.append("rect")
-                .attr("x", width + margin.left)
-                .attr("y", 0)
-                .attr("width", 7*(width + margin.left + margin.right))
-                .attr("height", height + margin.bottom)
-                .attr("fill", bgColor);
+        
     //ladder
-        var g = svg.append("g").attr("class", "ladder");
-        var ldBand = g.selectAll(".band")
+        var lg = g.append("g").attr("class", "ladder");
+        var ldBand = lg.selectAll(".ladder-band")
                        .data(ladder[0].values)
                     .enter()
                        .append("line");
         var bandAttr = ldBand
+                        .attr("class", "laddder-band")
                         .attr("x1", width + margin.left + margin.right + width * .1)
                         .attr("y1", function (d) { return height * d.Rf; })
                         .attr("x2", width + margin.left + margin.right+ width * .9)
@@ -1033,7 +1059,83 @@ function drawGel(id, ladder, bands)
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.mass / maxMass)); })
                         .attr("stroke", fgColor);
+    //draw size labels
+    //need to deal with close bands
+        var labelLine = lg.selectAll(".label-line")
+                             .data(ladder[0].Rf)
+                         .enter()
+                             .append("line");
+    //var labelLineAttr = labelLine
+        var labelLineAttr = labelLine
+                            .attr("x2", width * .9)
+                            .attr("y2", function (d) { return height * d; })
+                            .attr("x1", width * .75)
+                            .attr("y1", function (d, i) { return gentYpos(ladder[0].Rf, i, height); })
+                            .attr("stroke-width", 1)
+                            .attr("stroke", "black");
+    //add label text
+        var labelText = lg.selectAll(".label-text")
+                             .data(ladder[0].Size)
+                         .enter()
+                             .append("text");
+    //text attr
+        var labelTextAttr = labelText
+                            .attr({
+                                "alignment-baseline": "middle",
+                                "text-anchor": "middle"
+                            })
+                            .attr("x", width * .3)
+                            .attr("y", function (d, i) { return gentYpos(ladder[0].Rf, i, height); })
+                            .attr("font-size", "10px")
+                            .attr("font-family", "monospace")
+                            .style("fill", "black")
+                            .text(function (d) { return d + "bp" });
 
+    //draw enzyme bands
+        var cg = g.append("g").attr("class", "cut-bands");
+        for (var i = 0; i < bands.length; i++) {
+            var cBands = cg.selectAll(".cBand"+i)
+                                   .data(bands[i])
+                                .enter()
+                                    .append("line");
+            var cBandAttr = cBands
+                        .attr("class", "cBand"+i)
+                        .attr("x1", (2+i)*(width + margin.left + margin.right) + width * .1)
+                        .attr("y1", function (d) { return d.Rf < 0? -5 : height * d.Rf; })
+                        .attr("x2", (2 + i) * (width + margin.left + margin.right) + width * .9)
+                        .attr("y2", function (d) { return d.Rf < 0 ? -5 : height * d.Rf; })
+                        //.attr("stroke-width", function (d) { return (d.Mass / maxMass) * maxStorkeWidth; })
+                        .attr("stroke-linecap", "round")
+                        //.attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.Mass / maxMass)); })
+                        .attr("stroke", fgColor);
+        }
+    //need to add mouse event call back
+
+    //add top legends
+        for (var i = 0; i < topLegends.length; i++) {
+            //top legend
+            var topLegend = cg.datum(topLegends[i]).append("text");
+            //text attr
+            var topLegendAttr = topLegend
+                                .attr({
+                                    "alignment-baseline": "middle",
+                                    "text-anchor": "middle"
+                                })
+                                .attr("font-size", "10px")
+                                .attr("font-family", "monospace")
+                                .style("fill", function (d, i) { return d.indexOf('methy') != -1 ? "red" : "black" });
+
+            var nameArray = parseLengend(topLegends[i]);
+
+            topLegendAttr.selectAll(".tspan-text"+i)
+                        .data(nameArray)
+                     .enter()
+                        .append("tspan")
+                        .attr("x", (1 + i) * (width + margin.left + margin.right) + width * .5)
+                        .attr("y", function (d, si) { return -15 - 10 * si; })
+                        .attr("class", "tspan-text" + i)
+                        .text(function (d) { return d; });
+        }
 }
 
 
@@ -1059,4 +1161,51 @@ function convertArray(enzyArray) {
         digestArray.push([d]);
     })
     return digestArray;
+}
+
+//check whether there is enough space between ladder bands
+function gentYpos(data, index, height) {
+    var shift = 5;
+    if (index === 0) {
+        if ((data[1] - data[0]) * height < shift) {
+            return data[0] * height - shift;
+        }
+        else {
+            return data[index] * height;
+        }
+    }
+    else if (index === data.length - 1) {
+        if ((data[index] - data[index - 1]) * height < shift) {
+            return data[index] * height + shift;
+        }
+        else {
+            return data[index] * height;
+        }
+    }
+    else {
+        if ((data[index] - data[index - 1]) * height >= height && (data[index + 1] - data[index]) * height >= height) {
+            return data[index] * height;
+        }
+        else if ((data[index] - data[index - 1]) * height < height && (data[index + 1] - data[index]) * height >= height) {
+            return data[index] * height + shift;
+        }
+        else if ((data[index] - data[index - 1]) * height >= height && (data[index + 1] - data[index]) * height < height) {
+            return data[index] * height - shift;
+        }
+        else {
+            return data[index] * height;
+        }
+    }
+}
+
+function parseLengend(name)
+{
+    if (name.indexOf("methy") !== -1) {
+        var nName = name.split(":")[0];
+        var nameArray = nName.split("-");
+    }
+    else {
+        var nameArray = name.split("-");
+    }
+    return nameArray;
 }
