@@ -572,6 +572,19 @@ svg text tspan{
     border-radius: 8px;			
     pointer-events: none;	
 }
+
+.tooltip1 {	
+    position: absolute;			
+    width: 180px;					
+    height: 20px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+
+
 .tooltip-smallfont{
     font-size: 10px;
 }
@@ -673,7 +686,6 @@ svg text tspan{
         font-size: 13px;
         font-weight: bold;
     }
-
 
     .noselect {
         -webkit-touch-callout: none; /* iOS Safari */

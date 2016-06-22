@@ -44,7 +44,6 @@
 <span id="name" class="hidden">@Name</span>
 <span id="plasmidId" class="hidden">@plasmidId</span>
 
-
 <!--feature viewer-->
 <div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
@@ -121,10 +120,7 @@
                         </div>
                         <div class="panel-footer clearfix" id="band-button">
                             <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
-                                <i class="fa fa-floppy-o"></i>
-                            </a>
-                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Close" id="close-panel-single">
-                                <i class="fa fa-times text-danger"></i>
+                                <i class="fa fa-heart-o"></i>
                             </a>
                         </div>
                     </div>
@@ -152,10 +148,7 @@
                         </div>
                         <div class="panel-footer clearfix" id="band-button">
                             <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
-                                <i class="fa fa-floppy-o"></i>
-                            </a>
-                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Close" id="close-panel-multiple">
-                                <i class="fa fa-times text-danger"></i>
+                                <i class="fa fa-heart-o"></i>
                             </a>
                         </div>
                     </div>
@@ -194,7 +187,9 @@
     //define a global array for selected enzyme list
     var enzyArray = [];
     //define a global array of arrays of enzyme; for digestion
-    //var digestArray = [];
+    var MEDigestArray = [];
+    //global features
+    var allFeatures = [];
     $(document).ready(function () {
         //initiate tooltip from bootstrap
         $('[data-toggle="tooltip"]').tooltip();
@@ -207,11 +202,9 @@
         //get plasmid id
         pId = +$("#plasmidId").text().trim();
 
-
         //get plasmid feature json data for plasmid map
         var features = ("@features");
         features = LoadData(features);
-
         //get the feature for feature viwerer
         var fvFeatures = ("@fvFeatures");
         fvFeatures = LoadData(fvFeatures);
@@ -236,6 +229,7 @@
         try {
             //draw linear map
             features = JSON.parse(features);
+            allFeatures = features;
             //draw features on top
             fvFeatures = JSON.parse(fvFeatures);
             drawFeatures(fvFeatures, sequence, 'plasmid-feature');

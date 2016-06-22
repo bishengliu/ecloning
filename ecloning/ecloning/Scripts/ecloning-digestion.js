@@ -662,6 +662,22 @@ function dispatchActivity(data, id) {
 
 //gen gel
 //=====================================================================
+//draw linear feature map
+function drawLinearMap(features, id, name, size, width) {
+    var gd = GiraffeDraw();
+    var data = [size, features];
+    gd.read(data);
+    //draw linear
+    gd.LinearMap({
+        'map_dom_id': id,
+        'plasmid_name': name,
+        //'label_offset': 5,
+        'digest': true,
+        'map_width': width,
+        //'map_height': width,
+        'cutters': [1,2,3]
+    });
+}
 //ladder
 function formatLadder(ladders) {
     //d3 nest by id
@@ -1023,6 +1039,11 @@ function drawGel(id, ladder, bands)
                 sb.Rf = rf;
             })
         })
+    // Define the div for the tooltip
+        var tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip1")
+                        .style("opacity", 0);
+
         var bgColor = "#363636";
         var fgColor = "white";
         var ladderSpace = 20;
@@ -1100,9 +1121,9 @@ function drawGel(id, ladder, bands)
             var cBandAttr = cBands
                         .attr("class", "clickable cBand"+i)
                         .attr("x1", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .1)
-                        .attr("y1", function (d) { return d.Rf < 0? -5 : height * d.Rf; })
+                        .attr("y1", function (d) { return d.Rf < 0 ? -5 * height * d.Rf : height * d.Rf; })
                         .attr("x2", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .9)
-                        .attr("y2", function (d) { return d.Rf < 0 ? -5 : height * d.Rf; })
+                        .attr("y2", function (d) { return d.Rf < 0 ? -5 * height * d.Rf : height * d.Rf; })
                         .attr("stroke-width", function (d) { return maxStorkeWidth / 2; })
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", function (d) { return d.Rf <0 ?.5:1.0; })
@@ -1111,24 +1132,56 @@ function drawGel(id, ladder, bands)
             cBandAttr.on("mouseover", function (d) {
                         var target = d3.select(this);
                         target.attr("stroke-width", maxStorkeWidth * 1.5).attr("stroke", "#d62728");
+
+                        //tooltip
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(genHtml(d.name, d.Size, d.bandRange))
+                               .style("left", (d3.event.pageX + 28) + "px")
+                               .style("top", (d3.event.pageY - 28) + "px");
                       })
                      .on("mouseout", function (d) {
                          var target = d3.select(this);
                          target.attr("stroke-width", maxStorkeWidth / 2).attr("stroke", fgColor);
+                         //tooltip
+                         tooltip.transition()
+                             .duration(500)
+                             .style("opacity", 0);
                      })
                     .on("click", function (d) {
                         var target = d3.select(this);
-                        console.log(d);
+                        //for band-info
+                        //get the range
+                        var bandRange = parseRange(d.bandRange);
+                        var bandStart = +bandRange[0];
+                        var bandEnd = +bandRange[1];
+                        var featureArray = $.grep(allFeatures, function (d, i) {
+                            return d.start >= bandStart && d.end <= bandEnd;
+                        })
+
+                        featureArray = resetFeature(featureArray, bandStart, bandEnd);
+                        featureArray.sort(sortByProperty('start'));
                         var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
                         if (cutType == "single") {
                             $("#band-feature-single").empty();
                             $("#band-ends-single").empty();
+                            //band-feature-single
+                            var name = d.name + ' (' + d.bandRange + ')';
+                            drawLinearMap(featureArray, "band-feature-single", name, +d.Size, 600);
+                            //band-ends-single
+
                             $("#gel-info-single").removeClass("hidden");
                         }
                         else {
                             //multiple
                             $("#band-feature-multiple").empty();
                             $("#band-ends-multiple").empty();
+                            //band-feature-multiple
+                            var name = d.name + ' (' + d.bandRange + ')';
+                            drawLinearMap(featureArray, "band-feature-multiple", name, +d.Size, 600);
+                            //band-ends-multiple
+
                             $("#gel-info-multiple").removeClass("hidden");
                         }
                     });
@@ -1160,6 +1213,48 @@ function drawGel(id, ladder, bands)
                         .attr("class", "tspan-text" + i)
                         .text(function (d) { return d; });
         }
+}
+
+
+//reset features for fragment for bandStart > bandEnd
+function resetFeature(Array, bandStart, bandEnd)
+{
+    if (bandStart > bandEnd) {
+        //get total seq
+            var seqCount = parseInt($('#seqCount').text().trim());
+            //split array
+            var bArray = $.grep(Array, function (d, i) {
+                return d.start >= bandStart;
+            })
+            $.each(bArray, function (i, d) {
+                d.start = d.start - bandStart + 1;
+                d.end = d.end - bandStart + 1;
+                d.cut = d.cut == null? null: d.cut - bandStart + 1;
+            })
+
+            var sArray = $.grep(Array, function (d, i) {
+                return d.end <= bandEnd;
+            })
+
+            var count = seqCount - bandStart;
+            $.each(sArray, function (i, d) {
+                d.start = d.start + count;
+                d.end = d.end + count;
+                d.cut = d.cut == null ? null : d.cut + count;
+            })
+
+            var result = $.merge(bArray, sArray);
+            //result.sort(sortByProperty('start'));
+            return result;
+    }
+    else {
+        var result = $.each(Array, function (i, d) {
+            d.start = d.start - bandStart + 1;
+            d.end = d.end - bandStart + 1;
+            d.cut = d.cut == null ? null : d.cut - bandStart + 1;
+        })
+    }
+    return result;
 }
 
 //sort array
@@ -1231,4 +1326,22 @@ function parseLengend(name)
         var nameArray = name.split("-");
     }
     return nameArray;
+}
+
+function genHtml(name, size, bandRange)
+{
+    var html = '<div class="panel panel-color0">';
+            html = html +'<div class="panel-heading text-center">'+ name +'</div>';
+            html = html + '<div class="panel-body">';
+                html = html +'<p><span class="text-danger"><strong>Range: </strong></span>'+bandRange+'bp</p>';
+                html = html +'<p><span class="text-danger"><strong>Size: </strong></span>'+size+'bp</p>';
+            html = html +'</div>';
+    html = html + '</div>';
+    return html;
+}
+
+function parseRange(bandRange)
+{
+    var array = bandRange.split("-");
+    return array;
 }
