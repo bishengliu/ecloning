@@ -998,7 +998,7 @@ function findMin(data) {
 function drawGel(id, ladder, bands)
 {
     var margin = { top: 50, right: 2, bottom: 10, left: 2 },
-        width = 60 - margin.left - margin.right//* 8, //max 6 bands plus ladder (2x)
+        width = 45 - margin.left - margin.right//* 8, //max 6 bands plus ladder (2x)
         height = 360 - margin.top - margin.bottom;
 
         //get the max mass of ladder
@@ -1011,7 +1011,6 @@ function drawGel(id, ladder, bands)
         $.each(bands, function (i, d) {
             topLegends.push(d[0].name);
         })
-        console.log(topLegends);
         //cal the Rf for each band based on ladder lr
         //get lr
         var lr = ladder[0].lr;
@@ -1024,14 +1023,14 @@ function drawGel(id, ladder, bands)
                 sb.Rf = rf;
             })
         })
-        //console.log(topLegends);
         var bgColor = "#363636";
         var fgColor = "white";
+        var ladderSpace = 20;
         var svg = d3.select(id).append("svg")
-                .attr("width", (topLegends.length+1) * (width + margin.left + margin.right))
+                .attr("width", (topLegends.length + 1) * (width + margin.left + margin.right) + ladderSpace)
                 .attr("height", height + margin.top + margin.bottom);
         var background = svg.append("rect")
-                    .attr("x", width + margin.left)
+                    .attr("x", width + margin.left + ladderSpace)
                     .attr("y", margin.top-10)
                     .attr("width", topLegends.length * (width + margin.left + margin.right))
                     .attr("height", height + margin.bottom+10)
@@ -1051,9 +1050,9 @@ function drawGel(id, ladder, bands)
                        .append("line");
         var bandAttr = ldBand
                         .attr("class", "laddder-band")
-                        .attr("x1", width + margin.left + margin.right + width * .1)
+                        .attr("x1", ladderSpace + width + margin.left + margin.right + width * .1)
                         .attr("y1", function (d) { return height * d.Rf; })
-                        .attr("x2", width + margin.left + margin.right+ width * .9)
+                        .attr("x2", ladderSpace + width + margin.left + margin.right + width * .9)
                         .attr("y2", function (d) { return height * d.Rf; })
                         .attr("stroke-width", function (d) { return (d.mass / maxMass) * maxStorkeWidth; })
                         .attr("stroke-linecap", "round")
@@ -1067,9 +1066,9 @@ function drawGel(id, ladder, bands)
                              .append("line");
     //var labelLineAttr = labelLine
         var labelLineAttr = labelLine
-                            .attr("x2", width * .9)
+                            .attr("x2", (width+ladderSpace) * .9)
                             .attr("y2", function (d) { return height * d; })
-                            .attr("x1", width * .75)
+                            .attr("x1", (width+ladderSpace) * .8)
                             .attr("y1", function (d, i) { return gentYpos(ladder[0].Rf, i, height); })
                             .attr("stroke-width", 1)
                             .attr("stroke", "black");
@@ -1084,12 +1083,12 @@ function drawGel(id, ladder, bands)
                                 "alignment-baseline": "middle",
                                 "text-anchor": "middle"
                             })
-                            .attr("x", width * .3)
+                            .attr("x", (width+ladderSpace) * .35)
                             .attr("y", function (d, i) { return gentYpos(ladder[0].Rf, i, height); })
                             .attr("font-size", "10px")
                             .attr("font-family", "monospace")
                             .style("fill", "black")
-                            .text(function (d) { return d + "bp" });
+                            .text(function (d) { return d + "bp"; });
 
     //draw enzyme bands
         var cg = g.append("g").attr("class", "cut-bands");
@@ -1099,15 +1098,40 @@ function drawGel(id, ladder, bands)
                                 .enter()
                                     .append("line");
             var cBandAttr = cBands
-                        .attr("class", "cBand"+i)
-                        .attr("x1", (2+i)*(width + margin.left + margin.right) + width * .1)
+                        .attr("class", "clickable cBand"+i)
+                        .attr("x1", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .1)
                         .attr("y1", function (d) { return d.Rf < 0? -5 : height * d.Rf; })
-                        .attr("x2", (2 + i) * (width + margin.left + margin.right) + width * .9)
+                        .attr("x2", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .9)
                         .attr("y2", function (d) { return d.Rf < 0 ? -5 : height * d.Rf; })
-                        //.attr("stroke-width", function (d) { return (d.Mass / maxMass) * maxStorkeWidth; })
+                        .attr("stroke-width", function (d) { return maxStorkeWidth / 2; })
                         .attr("stroke-linecap", "round")
-                        //.attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.Mass / maxMass)); })
+                        .attr("stroke-opacity", function (d) { return d.Rf <0 ?.5:1.0; })
                         .attr("stroke", fgColor);
+            //mouse events
+            cBandAttr.on("mouseover", function (d) {
+                        var target = d3.select(this);
+                        target.attr("stroke-width", maxStorkeWidth * 1.5).attr("stroke", "#d62728");
+                      })
+                     .on("mouseout", function (d) {
+                         var target = d3.select(this);
+                         target.attr("stroke-width", maxStorkeWidth / 2).attr("stroke", fgColor);
+                     })
+                    .on("click", function (d) {
+                        var target = d3.select(this);
+                        console.log(d);
+                        var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
+                        if (cutType == "single") {
+                            $("#band-feature-single").empty();
+                            $("#band-ends-single").empty();
+                            $("#gel-info-single").removeClass("hidden");
+                        }
+                        else {
+                            //multiple
+                            $("#band-feature-multiple").empty();
+                            $("#band-ends-multiple").empty();
+                            $("#gel-info-multiple").removeClass("hidden");
+                        }
+                    });
         }
     //need to add mouse event call back
 
@@ -1131,13 +1155,12 @@ function drawGel(id, ladder, bands)
                         .data(nameArray)
                      .enter()
                         .append("tspan")
-                        .attr("x", (1 + i) * (width + margin.left + margin.right) + width * .5)
+                        .attr("x", ladderSpace+(1 + i) * (width + margin.left + margin.right) + width * .5)
                         .attr("y", function (d, si) { return -15 - 10 * si; })
                         .attr("class", "tspan-text" + i)
                         .text(function (d) { return d; });
         }
 }
-
 
 //sort array
 //array.sort(sortByProperty(property))
