@@ -115,7 +115,7 @@ namespace ecloning.Controllers
 
             //all other features
             //pass json
-            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
+            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, cut = f.cut, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             //pass json for feature viewers
             var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x = f.feature_id == 4 ? f.cut : f.start, y = f.feature_id == 4 ? f.cut : f.end, description = f.common_feature != null ? f.common_feature.label : f.feature, id = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
