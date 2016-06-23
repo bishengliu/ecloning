@@ -18,6 +18,7 @@ function drawMap(giraffeData, id, name, width, cutArray) {
         'map_dom_id': id,
         'plasmid_name': name,
         'label_offset': 5,
+        'digest_fade_factor': 0.7,
         'digest': true,
         'map_width': width,
         'map_height': width,
@@ -671,11 +672,12 @@ function drawLinearMap(features, id, name, size, width) {
     gd.LinearMap({
         'map_dom_id': id,
         'plasmid_name': name,
-        //'label_offset': 5,
-        'digest': true,
+        //'label_offset': 15,
+        //'region_start_offset': offset,
+        'digest': false,
         'map_width': width,
-        //'map_height': width,
-        'cutters': [1,2,3]
+        'map_height': width,
+        'cutters': [1]
     });
 }
 //ladder
@@ -1121,9 +1123,9 @@ function drawGel(id, ladder, bands)
             var cBandAttr = cBands
                         .attr("class", "clickable cBand"+i)
                         .attr("x1", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .1)
-                        .attr("y1", function (d) { return d.Rf < 0 ? -5 * height * d.Rf : height * d.Rf; })
+                        .attr("y1", function (d) { return d.Rf < 0 ? -d.Rf : height * d.Rf; })
                         .attr("x2", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .9)
-                        .attr("y2", function (d) { return d.Rf < 0 ? -5 * height * d.Rf : height * d.Rf; })
+                        .attr("y2", function (d) { return d.Rf < 0 ? -d.Rf : height * d.Rf; })
                         .attr("stroke-width", function (d) { return maxStorkeWidth / 2; })
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", function (d) { return d.Rf <0 ?.5:1.0; })
@@ -1151,16 +1153,40 @@ function drawGel(id, ladder, bands)
                      })
                     .on("click", function (d) {
                         var target = d3.select(this);
+                        var seqCount = parseInt($('#seqCount').text().trim());
+                        //filter the features
+                        var data = $.grep(allFeatures, function (d, i) {
+                            return d.type_id != 4; // there is an error when adding cuts, need to solve this later.
+                        })
+                        console.log(data);
                         //for band-info
                         //get the range
                         var bandRange = parseRange(d.bandRange);
                         var bandStart = +bandRange[0];
                         var bandEnd = +bandRange[1];
-                        var featureArray = $.grep(allFeatures, function (d, i) {
-                            return d.start >= bandStart && d.end <= bandEnd;
-                        })
-
-                        featureArray = resetFeature(featureArray, bandStart, bandEnd);
+                        console.log([bandStart, bandEnd]);
+                        var featureArray = [];
+                        if (bandStart == bandEnd && bandStart == 0) {
+                            featureArray = data;
+                        }
+                        else if (bandStart == bandEnd && bandStart !==0) {
+                            featureArray = $.grep(data, function (d, i) {
+                                return !((Math.min(d.start, d.end) < bandStart && Math.max(d.start, d.end) > bandEnd) || (d.cut != null && (Math.min(d.start, d.cut, d.end) < bandStart && Math.max(d.start, d.cut, d.end) > bandEnd)));
+                            })
+                            var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                        }
+                        else if(bandStart < bandEnd) {
+                            featureArray = $.grep(data, function (d, i) {
+                                return (Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < bandEnd) || (d.cut != null && (Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < bandEnd));
+                            })
+                            var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                        }
+                        else {
+                            featureArray = $.grep(data, function (d, i) {
+                                return ((Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < seqCount) || (Math.min(d.start, d.end) > 1 && Math.max(d.start, d.end) < bandEnd)) || (d.cut != null && ((Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < seqCount) || (Math.min(d.start, d.cut, d.end) > 1 && Math.max(d.start, d.cut, d.end) < bandEnd)));
+                            })
+                            var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                        }
                         featureArray.sort(sortByProperty('start'));
                         var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
                         if (cutType == "single") {
@@ -1168,9 +1194,8 @@ function drawGel(id, ladder, bands)
                             $("#band-ends-single").empty();
                             //band-feature-single
                             var name = d.name + ' (' + d.bandRange + ')';
-                            drawLinearMap(featureArray, "band-feature-single", name, +d.Size, 600);
+                            drawLinearMap(resultArray, "band-feature-single", name, +d.Size, 600);
                             //band-ends-single
-
                             $("#gel-info-single").removeClass("hidden");
                         }
                         else {
@@ -1179,11 +1204,12 @@ function drawGel(id, ladder, bands)
                             $("#band-ends-multiple").empty();
                             //band-feature-multiple
                             var name = d.name + ' (' + d.bandRange + ')';
-                            drawLinearMap(featureArray, "band-feature-multiple", name, +d.Size, 600);
+                            drawLinearMap(resultArray, "band-feature-multiple", name, +d.Size, 600);
                             //band-ends-multiple
-
                             $("#gel-info-multiple").removeClass("hidden");
                         }
+                        //empty array of the fragment
+                        featureArray = [];
                     });
         }
     //need to add mouse event call back
@@ -1219,42 +1245,59 @@ function drawGel(id, ladder, bands)
 //reset features for fragment for bandStart > bandEnd
 function resetFeature(Array, bandStart, bandEnd)
 {
+    //sort array
+    Array.sort(sortByProperty('start'));
+    var data = [];
+    var seqCount = parseInt($('#seqCount').text().trim());
+
     if (bandStart > bandEnd) {
-        //get total seq
-            var seqCount = parseInt($('#seqCount').text().trim());
             //split array
-            var bArray = $.grep(Array, function (d, i) {
-                return d.start >= bandStart;
+        var bArray = $.grep(Array, function (d, i) {
+                return (d.cut == null && d.start > bandStart) || (d.cut != null && Math.min(d.cut, d.start > bandStart));
             })
             $.each(bArray, function (i, d) {
-                d.start = d.start - bandStart + 1;
-                d.end = d.end - bandStart + 1;
-                d.cut = d.cut == null? null: d.cut - bandStart + 1;
-            })
+                var obj = {};
+                obj.clockwise = d.clockwise;
+                obj.feature = d.feature;
+                obj.show_feature = d.show_feature;
+                obj.type_id = d.type_id;
+                obj.start = d.start - bandStart + 1;
+                obj.cut = d.cut == null? null: d.cut - bandStart + 1;
+                obj.end = d.end - bandStart + 1;
+                data.push(obj);
+                })
 
             var sArray = $.grep(Array, function (d, i) {
-                return d.end <= bandEnd;
+                return (d.cut == null && d.end < bandEnd) || (d.cut != null && Math.max(d.cut, d.end) < bandEnd);
             })
 
             var count = seqCount - bandStart;
             $.each(sArray, function (i, d) {
-                d.start = d.start + count;
-                d.end = d.end + count;
-                d.cut = d.cut == null ? null : d.cut + count;
+                var obj = {};
+                obj.clockwise = d.clockwise;
+                obj.feature = d.feature;
+                obj.show_feature = d.show_feature;
+                obj.type_id = d.type_id;
+                obj.start = d.start + count;
+                obj.cut = d.cut == null ? null : d.cut + count;
+                obj.end = d.end + count;
+                data.push(obj);
             })
-
-            var result = $.merge(bArray, sArray);
-            //result.sort(sortByProperty('start'));
-            return result;
     }
     else {
-        var result = $.each(Array, function (i, d) {
-            d.start = d.start - bandStart + 1;
-            d.end = d.end - bandStart + 1;
-            d.cut = d.cut == null ? null : d.cut - bandStart + 1;
+        $.each(Array, function (i, d) {
+            var obj = {};
+            obj.clockwise = d.clockwise;
+            obj.feature = d.feature;
+            obj.show_feature = d.show_feature;
+            obj.type_id = d.type_id;
+            obj.start = d.start - bandStart + 1;
+            obj.cut = d.cut == null ? null : d.cut - bandStart + 1;
+            obj.end = d.end - bandStart + 1;
+            data.push(obj);
         })
     }
-    return result;
+    return data;
 }
 
 //sort array
