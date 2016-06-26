@@ -117,12 +117,23 @@
                         <div class="panel-heading text-center">Band Info</div>
                         <div class="panel-body">
                             <div id="band-feature-single" class="col-xs-12"></div>
+                            <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                <input id="band-single-fseq" value="" />
+                                <input id="band-single-cseq" value="" />
+                            </div>
                             <div id="band-ends-single" class="col-xs-12"></div>
                         </div>
                         <div class="panel-footer clearfix" >
                             <a id="band-button-single" class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
                                 <i class="fa fa-heart-o"></i>
                             </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-fseq" id="copy-band-single-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
+                                <i class="fa fa-copy text-danger"></i>
+                            </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-cseq" id="copy-band-single-cseq" data-toggle="tooltip" title="Copy Complement Sequence">
+                                <i class="fa fa-copy text-primary"></i>
+                            </a>
+                            <p id="band-single-msg" class="text-info"></p>
                         </div>
                     </div>
                 </div>
@@ -145,12 +156,24 @@
                         <div class="panel-heading text-center">Band Info</div>
                         <div class="panel-body">
                             <div id="band-feature-multiple" class="col-xs-12"></div>
+                            <br/>
+                            <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                <input id="band-multiple-fseq" value="" />
+                                <input id="band-multiple-cseq" value="" />
+                            </div>
                             <div id="band-ends-multiple" class="col-xs-12"></div>
                         </div>
                         <div class="panel-footer clearfix">
                             <a id="band-button-multiple" class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
                                 <i class="fa fa-heart-o"></i>
                             </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-fseq" id="copy-band-multiple-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
+                                <i class="fa fa-copy text-danger"></i>
+                            </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-cseq" id="copy-band-multiple-cseq" data-toggle="tooltip" title="Copy Complement Sequence">
+                                <i class="fa fa-copy text-primary"></i>
+                            </a>
+                            <p id="band-multiple-msg" class="text-info"></p>
                         </div>
                     </div>
                 </div>
@@ -171,20 +194,14 @@
 <script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
 @*feature viewer*@
 <script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
 
 <script src="~/Scripts/ecloning-digestion.js"></script>
 <script>
     //hide the alert
     $("#success-alert").hide();
-    //click to close band info
-    $("#close-panel-single").on("click", function () {
-        $("#gel-info-single").addClass("hidden");
-        scrollTo("#gel-panel-single");
-    })
-    $("#close-panel-multiple").on("click", function () {
-        $("#gel-info-multiple").addClass("hidden");
-        scrollTo("#gel-panel-multiple");
-    })
+
     //define a global array for selected enzyme list
     var enzyArray = [];
     //define a global array of arrays of enzyme; for digestion
@@ -198,6 +215,42 @@
     $(document).ready(function () {
         //initiate tooltip from bootstrap
         $('[data-toggle="tooltip"]').tooltip();
+
+        //for copy fragment seq
+        //copy full seq using clipboard.min.js
+        //copy single-cut
+        var clipboard = new Clipboard('#copy-band-single-fseq');
+        clipboard.on('success', function (e) {
+            $('#band-single-msg').text("Sequence Copied!");
+            console.info('Action:', e.action);
+            e.clearSelection();
+            setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+        });
+
+        var clipboard = new Clipboard('#copy-band-single-cseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-single-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+        });
+
+        //copy multiple-cut
+        var clipboard = new Clipboard('#copy-band-multiple-fseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-multiple-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+        });
+
+        var clipboard = new Clipboard('#copy-band-multiple-cseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-multiple-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+        });
 
         //get full sequence
         sequence = $('#sequence').text().trim();
@@ -267,14 +320,12 @@
                 }
                 else {
                     $("#success-alert").hide();
-                }
-                
+                }                
                 //change some div setting                
                 $("#gel-single").empty();
                 $("#band-feature-single").empty();
                 $("#band-ends-single").empty();
                 $("#gel-info-single").addClass("hidden");
-
 
                 $("#gel-multiple").empty();
                 $("#gel-panel-multiple").addClass("hidden");
@@ -306,7 +357,6 @@
                 //==========================================================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
                 
-
                 //genCutMap for each enzyme using giraffe
                 drawCutMap(enzymes, enzyArray, features, seqCount, name);
                 //show cut positions and methylation info in panel-body
@@ -340,7 +390,6 @@
                     }
                 });
 
-
                 //===========================================================================
                 //draw gel
                 //generate single enzyme digestion bands
@@ -363,7 +412,6 @@
                     drawGel("#gel-multiple", MEladder, MEbands);
                 }
                 
-
                 //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel

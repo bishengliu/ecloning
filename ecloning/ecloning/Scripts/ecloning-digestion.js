@@ -1257,8 +1257,9 @@ function drawGel(id, ladder, bands)
                                 drawLinearMap(resultArray, "band-feature-single", name, +d.Size, 600);
                                 //band-ends-single
                                 //show fragment ends seq
-                                showFragmentEnds("band-ends-single", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
+                                showFragmentEnds("band-ends-single", "band-single-fseq", "band-single-cseq", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
                                 //update save fragment a href
+                                //update copy buttons
                                 $("#gel-info-single").removeClass("hidden");
                             }
                             else {
@@ -1271,14 +1272,14 @@ function drawGel(id, ladder, bands)
                                 drawLinearMap(resultArray, "band-feature-multiple", name, +d.Size, 600);
                                 //band-ends-multiple
                                 //show fragment ends seq
-                                showFragmentEnds("band-ends-single", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
+                                showFragmentEnds("band-ends-multiple", "band-multiple-fseq", "band-multiple-cseq", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
                                 //update save fragment a href
+                                //update copy buttons
                                 $("#gel-info-multiple").removeClass("hidden");
                             }
                             //empty array of the fragment
                             featureArray = [];
-                        }
-                        
+                        }                        
                     });
         }
     //need to add mouse event call back
@@ -1309,7 +1310,6 @@ function drawGel(id, ladder, bands)
                         .text(function (d) { return d; });
         }
 }
-
 
 //reset features for fragment for bandStart > bandEnd
 function resetFeature(Array, bandStart, bandEnd)
@@ -1398,7 +1398,7 @@ function resetFeature(Array, bandStart, bandEnd)
 
 //============ show fragment ends seq===================
 //show fragment seq ends
-function showFragmentEnds(id, bandStart, bandEnd, name, clockwise, seqCount, sequence, cSequence, restricProperty, cutType)
+function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwise, seqCount, sequence, cSequence, restricProperty, cutType)
 {
     //find the name
     var nameArray = name2Array(name, cutType);
@@ -1417,10 +1417,83 @@ function showFragmentEnds(id, bandStart, bandEnd, name, clockwise, seqCount, seq
     //get cSeq range
     var cSeqRange = [bandStart + overHangs[0], bandEnd + overHangs[1]];
     var cSeq = cSequence.substring(cSeqRange[0] - 1, cSeqRange[1]);
+
+    //put fSeq and cSeq into inputs
+    $("#" + fSeqId).val(fSeq);
+    $("#" + cSeqId).val(cSeq);
+
+    //update save href
+
     //draw ends seq
-    //drawEndSeq(fSeq, cSeq, overhangs)
+    drawEndSeq(id, fSeq, cSeq, overHangs, 10);
 }
 
+//draw fragment end
+function drawEndSeq(id, fSeq, cSeq, overhangs, numLetter) {
+    //numLetter is the max letter display on both end
+    
+    //left end seqs
+    var leftfSeq, leftcSeq, leftSpace;
+    if (overhangs[0] > 0) {
+        leftfSeq = fSeq.substring(0, numLetter - overhangs[0]);
+        leftcSeq = cSeq.substring(0, numLetter);
+        leftSpace = genSpace(overhangs[0]);
+    }
+    else {
+        leftfSeq = fSeq.substring(0, numLetter);
+        leftcSeq = cSeq.substring(0, numLetter + overhangs[0]);
+        leftSpace = genSpace(-overhangs[0]);
+    }
+
+    //right end seqs
+    var fSeqCount = fSeq.length;
+    var cSeqCount = cSeq.length;
+    var rightfSeq, rightcSeq, rightSpace;
+    if (overhangs[1] > 0) {
+        rightfSeq = fSeq.substring(fSeqCount - (numLetter - overhangs[1]) - 1, fSeqCount - overhangs[1]+1);
+        rightcSeq = cSeq.substring(cSeqCount - numLetter - 1, fSeqCount+1);
+        rightSpace = genSpace(overhangs[1]);
+    }
+    else {
+        rightfSeq = fSeq.substring(fSeqCount - numLetter - 1, fSeqCount+1);
+        rightcSeq = cSeq.substring(cSeqCount - (numLetter + overhangs[1]) - 1, fSeqCount + overhangs[1]+1);
+        rightSpace = genSpace(-overhangs[1]);
+    }
+    //display end in pre
+    var html = "";
+    var middleDots = "  ......  ";
+    var forward = "";
+    var complementary = "";
+    if (overhangs[0] > 0) {
+        forward = "<pre><span class='seqFont'>5' - " + leftSpace + leftfSeq + "</span>" + middleDots;
+        complementary = "<span class='seqFont'>3' - " + leftcSeq + "</span>" + middleDots;
+    }
+    else {
+        forward = "<pre><span class='seqFont'>5' - " + leftfSeq + "</span>" + middleDots;
+        complementary = "<span class='seqFont'>3' - " + leftSpace + leftcSeq + "</span>" + middleDots;
+    }
+
+
+    if (overhangs[1] > 0) {
+        forward = forward + "<span class='seqFont'>" + rightfSeq + rightSpace +" - 3'</span>";
+        complementary = complementary + "<span class='seqFont'>" + rightcSeq  + " - 5'</span></pre>";
+    }
+    else {
+        forward = forward + "<span class='seqFont'>" + rightfSeq  + " - 3'</span>";
+        complementary = complementary + "<span class='seqFont'>" + rightcSeq + rightSpace + " - 5'</span></pre>";
+    }
+
+    html = forward + "<br/>" + complementary;
+    $("#" + id).html(html);
+}
+
+function genSpace(num){
+    var space = "";
+    for (var i = 0; i < num; i++) {
+        space = space + " ";
+    }
+    return space;
+}
 function name2Array(name, cutType) {
     var array = [];
     if (cutType == "single") {
@@ -1460,17 +1533,52 @@ function getEynzymeAttr(restricProperty, nameArray) {
 function getOverhangs(enzymeAttr, clockwiseArray) {
     //total 2 elements
     //get the cut length
-    var leftLength = calLength(enzymeAttr[0]), rightLength = calLength(enzymeAttr[1]);
-    var left = calOverhangLenth(clockwiseArray[0], enzymeAttr[0], leftLength);
-    var right = calOverhangLenth(clockwiseArray[1], enzymeAttr[1], rightLength);
+    var leftLength = calLength(enzymeAttr[0], "left"), rightLength = calLength(enzymeAttr[1], "right");
+    var left = calOverhangLenth(clockwiseArray[0], enzymeAttr[0], leftLength, "left");
+    var right = calOverhangLenth(clockwiseArray[1], enzymeAttr[1], rightLength, "right");
     return [left, right]
 }
 
 //get enzyme cut enzyme length
-function calLength(enzymeAttr) {
+function calLength(enzymeAttr, end) {
     var Length;
-    if (enzymeAttr.fc != null && enzymeAttr.fc2 == null) {
-        //single-cut
+    if (end == "left") {
+        if (enzymeAttr.fc != null && enzymeAttr.fc2 == null) {
+            //single-cut
+            //total 3 different cases
+            if (enzymeAttr.fc > 0 && enzymeAttr.rc > 0) {
+                //both postive
+                Length = Math.max(enzymeAttr.fc, enzymeAttr.rc) - Math.min(enzymeAttr.fc, enzymeAttr.rc);
+            }
+            else if (enzymeAttr.fc < 0 && enzymeAttr.rc < 0) {
+                //both negative
+                Length = Math.abs(Math.min(enzymeAttr.fc, enzymeAttr.rc)) - Math.abs(Math.max(enzymeAttr.fc, enzymeAttr.rc));
+            }
+            else {
+                //span both side
+                Length = Math.abs(enzymeAttr.fc) + Math.abs(enzymeAttr.rc);
+            }
+        }
+        if (enzymeAttr.fc != null && enzymeAttr.fc2 != null) {
+            //mutiple-cut
+            //total 3 different cases
+            if (enzymeAttr.fc2 > 0 && enzymeAttr.rc2 > 0) {
+                //both postive
+                Length = Math.max(enzymeAttr.fc2, enzymeAttr.rc2) - Math.min(enzymeAttr.fc2, enzymeAttr.rc2);
+            }
+            else if (enzymeAttr.fc2 < 0 && enzymeAttr.rc2 < 0) {
+                //both negative
+                Length = Math.abs(Math.min(enzymeAttr.fc2, enzymeAttr.rc2)) - Math.abs(Math.max(enzymeAttr.fc2, enzymeAttr.rc2));
+            }
+            else {
+                //span both side
+                Length = Math.abs(enzymeAttr.fc2) + Math.abs(enzymeAttr.rc2);
+            }
+        }
+    }
+    else {
+        //right al take the most left cut
+        //single-cut and multiple-cut
         //total 3 different cases
         if (enzymeAttr.fc > 0 && enzymeAttr.rc > 0) {
             //both postive
@@ -1485,52 +1593,61 @@ function calLength(enzymeAttr) {
             Length = Math.abs(enzymeAttr.fc) + Math.abs(enzymeAttr.rc);
         }
     }
-    if (enzymeAttr.fc != null && enzymeAttr.fc2 != null) {
-        //mutiple-cut
-        //total 3 different cases
-        if (enzymeAttr.fc2 > 0 && enzymeAttr.rc2 > 0) {
-            //both postive
-            Length = Math.max(enzymeAttr.fc2, enzymeAttr.rc2) - Math.min(enzymeAttr.fc2, enzymeAttr.rc2);
-        }
-        else if (enzymeAttr.fc2 < 0 && enzymeAttr.rc2 < 0) {
-            //both negative
-            Length = Math.abs(Math.min(enzymeAttr.fc2, enzymeAttr.rc2)) - Math.abs(Math.max(enzymeAttr.fc2, enzymeAttr.rc2));
-        }
-        else {
-            //span both side
-            Length = Math.abs(enzymeAttr.fc2) + Math.abs(enzymeAttr.rc2);
-        }
-    }
     return Length;
 }
 
-function calOverhangLenth(clockwise, enzymeAttr, cutLength) {
+function calOverhangLenth(clockwise, enzymeAttr, cutLength, end) {
     var length;
-    if (clockwise=="true") {
-        //clickwise
-        if (enzymeAttr.rc != null && enzymeAttr.rc2 == null) {
-            //single
-            if (enzymeAttr.rc > enzymeAttr.fc) {
-                length = -cutLength;
+    if (end == "left") {
+        if (clockwise == "true") {
+            //clickwise
+            if (enzymeAttr.rc != null && enzymeAttr.rc2 == null) {
+                //single
+                if (enzymeAttr.rc > enzymeAttr.fc) {
+                    length = -cutLength;
+                }
+                else {
+                    length = cutLength;
+                }
             }
-            else {
-                length = cutLength;
+            if (enzymeAttr.rc != null && enzymeAttr.rc2 != null) {
+                //multiple
+                if (enzymeAttr.rc2 > enzymeAttr.fc2) {
+                    length = -cutLength;
+                }
+                else {
+                    length = cutLength;
+                }
             }
         }
-        if (enzymeAttr.rc != null && enzymeAttr.rc2 != null) {
-            //multiple
-            if (enzymeAttr.rc2 > enzymeAttr.fc2) {
-                length = -cutLength;
+        else {
+            //anticlockwise
+            if (enzymeAttr.rc != null && enzymeAttr.rc2 == null) {
+                //single
+                if (enzymeAttr.rc > enzymeAttr.fc) {
+                    length = cutLength;
+                }
+                else {
+                    length = -cutLength;
+                }
             }
-            else {
-                length = cutLength;
+            if (enzymeAttr.rc != null && enzymeAttr.rc2 != null) {
+                //multiple
+                if (enzymeAttr.rc2 > enzymeAttr.fc2) {
+                    length = cutLength;
+                }
+                else {
+                    length = -cutLength;
+                }
             }
         }
     }
     else {
-        //anticlockwise
-        if (enzymeAttr.rc != null && enzymeAttr.rc2 == null) {
-            //single
+        //right end
+        //single- and multiple-cut are the same
+        if (clockwise == "true") {
+            //clockwise
+            //single- and mutiple-cut
             if (enzymeAttr.rc > enzymeAttr.fc) {
                 length = cutLength;
             }
@@ -1538,16 +1655,17 @@ function calOverhangLenth(clockwise, enzymeAttr, cutLength) {
                 length = -cutLength;
             }
         }
-        if (enzymeAttr.rc != null && enzymeAttr.rc2 != null) {
-            //multiple
-            if (enzymeAttr.rc2 > enzymeAttr.fc2) {
-                length = cutLength;
+        else {
+            //anticlockwise
+            if (enzymeAttr.rc > enzymeAttr.fc) {
+                length = -cutLength;
             }
             else {
-                length = -cutLength;
+                length = cutLength;
             }
         }
     }
+    
     return length;
 }
 
