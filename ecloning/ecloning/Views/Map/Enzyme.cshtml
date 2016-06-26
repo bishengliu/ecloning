@@ -81,6 +81,7 @@
                                 <h3 class="panel-title text-center" id="cut-title"></h3>
                             </div>
                             <div class="panel-body" id="cut-map"></div>
+                            <div class="panel-footer clearfix"></div>
                         </div>
                     </div>
                 </div>
@@ -107,7 +108,7 @@
                                 <h3 class="panel-title text-center">Gel Electrophoresis</h3>
                             </div>
                             <div class="panel-body" id="gel-single"></div>
-                            <div class="panel-footer clearfix"></div>
+                            <div class="panel-footer clearfix text-info"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
                         </div>
                     </div>
                 </div>
@@ -118,8 +119,8 @@
                             <div id="band-feature-single" class="col-xs-12"></div>
                             <div id="band-ends-single" class="col-xs-12"></div>
                         </div>
-                        <div class="panel-footer clearfix" id="band-button">
-                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                        <div class="panel-footer clearfix" >
+                            <a id="band-button-single" class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
                                 <i class="fa fa-heart-o"></i>
                             </a>
                         </div>
@@ -135,7 +136,7 @@
                                 <h3 class="panel-title text-center">Gel Electrophoresis</h3>
                             </div>
                             <div class="panel-body" id="gel-multiple"></div>
-                            <div class="panel-footer clearfix" id="gel-multiple-footer"></div>
+                            <div class="panel-footer clearfix text-info" id="gel-multiple-footer"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
                         </div>
                     </div>
                 </div>
@@ -146,8 +147,8 @@
                             <div id="band-feature-multiple" class="col-xs-12"></div>
                             <div id="band-ends-multiple" class="col-xs-12"></div>
                         </div>
-                        <div class="panel-footer clearfix" id="band-button">
-                            <a class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                        <div class="panel-footer clearfix">
+                            <a id="band-button-multiple" class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
                                 <i class="fa fa-heart-o"></i>
                             </a>
                         </div>
@@ -190,12 +191,18 @@
     var MEDigestArray = [];
     //global features
     var allFeatures = [];
+    var sequence = null;
+    var cSequence = null;
+    var seqCount = null;
+    var restricProperty = null;
     $(document).ready(function () {
         //initiate tooltip from bootstrap
         $('[data-toggle="tooltip"]').tooltip();
 
         //get full sequence
         sequence = $('#sequence').text().trim();
+        //get complementary seq
+        cSequence = gencSeq(sequence);
         seqCount = parseInt($('#seqCount').text().trim())
         //get plasmid name
         name = $('#name').text().trim();
@@ -216,7 +223,7 @@
         methylation = LoadData(methylation);
 
         //get restrcition property and prototype
-        var restricProperty = ("@restricProperty");
+        restricProperty = ("@restricProperty");
         restricProperty = LoadData(restricProperty);
 
         //get enzyme activity

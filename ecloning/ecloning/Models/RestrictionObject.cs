@@ -14,5 +14,9 @@ namespace ecloning.Models
         public string dam { get; set; }
         public string dcm { get; set; }
         public string cpg { get; set; }
+        public int forward_cut { get; set; }
+        public int reverse_cut { get; set; }
+        public int? forward_cut2 { get; set; }
+        public int? reverse_cut2 { get; set; }
     }
 }

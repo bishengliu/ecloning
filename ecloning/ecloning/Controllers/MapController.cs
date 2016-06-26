@@ -137,7 +137,10 @@ namespace ecloning.Controllers
                 rObject.dam = item.dam == true ? enzymeSybol.DamSymbol((bool)item.dam) : symbol;
                 rObject.dcm = item.dcm == true ? enzymeSybol.DcmSymbol((bool)item.dcm) : symbol;
                 rObject.cpg = item.cpg == true ? enzymeSybol.CpGSymbol((bool)item.cpg) : symbol;
-
+                rObject.forward_cut = item.forward_cut;
+                rObject.reverse_cut = item.reverse_cut;
+                rObject.forward_cut2 = item.forward_cut2;
+                rObject.reverse_cut2 = item.reverse_cut2;
                 restrictons.Add(rObject);
             }
             //ViewBag.restric_property = restric_property.ToList();

@@ -310,7 +310,7 @@ function drawCuts(id, enzymes, enzyArray, features, seqCount, name) {
     cutArray = genArray(maxCuts);
 
     //map width
-    var width = 350;
+    var width = 450;
     //fiter features
     var ftdata = $.grep(features, function (d) {
         return d.type_id != 4 || (d.type_id == 4 && $.inArray(d.feature, enzyArray) !==-1);
@@ -461,8 +461,7 @@ function showDigestInfo(enzymes, enzyArray, methylation) {
         var cuts = [];
         cuts = $.grep(enzymes, function (d, si) {
             return d.name === v;
-        });
-        
+        });        
         if (cuts.length > 0) {
             var html = "<h4 class='text-primary'>Postion(s):</h4>";
             var pos = [];
@@ -663,7 +662,7 @@ function dispatchActivity(data, id) {
 
 //gen gel
 //=====================================================================
-//draw linear feature map
+//draw linear feature map of fragment
 function drawLinearMap(features, id, name, size, width) {
     var gd = GiraffeDraw();
     var data = [size, features];
@@ -673,6 +672,23 @@ function drawLinearMap(features, id, name, size, width) {
         'map_dom_id': id,
         'plasmid_name': name,
         //'label_offset': 15,
+        //'region_start_offset': offset,
+        'digest': false,
+        'map_width': width,
+        'map_height': width,
+        'cutters': [1]
+    });
+}
+//draw circular map of fragment, not ct
+function drawCircularMap(features, id, name, size, width) {
+    var gd = GiraffeDraw();
+    var data = [size, features];
+    gd.read(data);
+    //draw linear
+    gd.CircularMap({
+        'map_dom_id': id,
+        'plasmid_name': name,
+        'label_offset': 5,
         //'region_start_offset': offset,
         'digest': false,
         'map_width': width,
@@ -758,11 +774,13 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                 obj.name = d;
                 obj.type = "cut";
                 if (i == cuts.length - 1) {
+                    obj.clockwise = cuts[cuts.length - 1].clockwise + '-' + cuts[0].clockwise;
                     obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
                     obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
                     obj.Mass = 100;
                 }
                 else {
+                    obj.clockwise = cuts[i].clockwise + '-' + cuts[i + 1].clockwise;
                     obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
                     obj.Size = cuts[i + 1].cut - cuts[i].cut;
                     obj.Mass = 100;
@@ -798,7 +816,8 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                     if (cutsCopy.length === 0) {
                         //nothing left, generate the circular plasmid
                         var obj = {};
-                        obj.name = cuts[0].name + ':' + 'methy';
+                        obj.clockwise = null;
+                        obj.name = d + ':' + 'methy';
                         obj.type = "cut";
                         obj.bandRange = "0-0"; //if "0-0", then it is circular
                         obj.Size = seqCount;
@@ -810,16 +829,19 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                         //assume always completely cut
                         for (var i = 0; i < cutsCopy.length; i++){
                             var obj = {};
-                            obj.name = cutsCopy[i].name + ':' + 'methy';
+                            obj.clockwise = cutsCopy[i].clockwise;
+                            obj.name = d + ':' + 'methy';
                             obj.type = "cut";
-                            if (i == cuts.length - 1) {
-                                obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
-                                obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
+                            if (i == cutsCopy.length - 1) {
+                                obj.clockwise = cutsCopy[cutsCopy.length - 1].clockwise + '-' + cutsCopy[0].clockwise;
+                                obj.bandRange = cutsCopy[cutsCopy.length - 1].cut == seqCount ? '1-' + cutsCopy[0].cut : cutsCopy[cutsCopy.length - 1].cut + '-' + cutsCopy[0].cut;
+                                obj.Size = cutsCopy[cutsCopy.length - 1].cut == seqCount ? cutsCopy[0].cut : (seqCount - cutsCopy[cutsCopy.length - 1].cut + cutsCopy[0].cut);
                                 obj.Mass = 100;
                             }
                             else {
-                                obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
-                                obj.Size = cuts[i + 1].cut - cuts[i].cut;
+                                obj.clockwise = cutsCopy[i].clockwise + '-' + cutsCopy[i + 1].clockwise;
+                                obj.bandRange = cutsCopy[i].cut + '-' + cutsCopy[i + 1].cut;
+                                obj.Size = cutsCopy[i + 1].cut - cutsCopy[i].cut;
                                 obj.Mass = 100;
                             }
                             obj.logSize = +Math.log10(obj.Size).toFixed(3);
@@ -896,11 +918,13 @@ function genMEBands(digestArray, enzymes, seqCount) {
                 obj.name = d.join("-");
                 obj.type = "cut";
                 if (i == cuts.length - 1) {
+                    obj.clockwise = cuts[cuts.length - 1].clockwise + '-' + cuts[0].clockwise;
                     obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
                     obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
                     obj.Mass = 100;
                 }
                 else {
+                    obj.clockwise = cuts[i].clockwise + '-' + cuts[i+1].clockwise;
                     obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
                     obj.Size = cuts[i + 1].cut - cuts[i].cut;
                     obj.Mass = 100;
@@ -924,6 +948,7 @@ function genMEBands(digestArray, enzymes, seqCount) {
                 if (cutsCopy.length === 0) {
                     //nothing left, generate the circular plasmid
                     var obj = {};
+                    obj.clockwise = null;
                     obj.name = d.join("-") + ':' + 'methy';
                     obj.type = "cut";
                     obj.bandRange = "0-0"; //if "0-0", then it is circular
@@ -936,16 +961,19 @@ function genMEBands(digestArray, enzymes, seqCount) {
                     //assume always completely cut
                     for (var i = 0; i < cutsCopy.length; i++) {
                         var obj = {};
+                        obj.clockwise = cutsCopy[i].clockwise;
                         obj.name = d.join("-") + ':' + 'methy';
                         obj.type = "cut";
-                        if (i == cuts.length - 1) {
-                            obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
-                            obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
+                        if (i == cutsCopy.length - 1) {
+                            obj.clockwise = cuts[cuts.length - 1].clockwise + '-' + cuts[0].clockwise;
+                            obj.bandRange = cutsCopy[cutsCopy.length - 1].cut == seqCount ? '1-' + cutsCopy[0].cut : cutsCopy[cutsCopy.length - 1].cut + '-' + cutsCopy[0].cut;
+                            obj.Size = cutsCopy[cutsCopy.length - 1].cut == seqCount ? cutsCopy[0].cut : (seqCount - cutsCopy[cutsCopy.length - 1].cut + cutsCopy[0].cut);
                             obj.Mass = 100;
                         }
                         else {
-                            obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
-                            obj.Size = cuts[i + 1].cut - cuts[i].cut;
+                            obj.clockwise = cuts[i].clockwise + '-' + cuts[i + 1].clockwise;
+                            obj.bandRange = cutsCopy[i].cut + '-' + cutsCopy[i + 1].cut;
+                            obj.Size = cutsCopy[i + 1].cut - cutsCopy[i].cut;
                             obj.Mass = 100;
                         }
                         obj.logSize = +Math.log10(obj.Size).toFixed(3);
@@ -1152,64 +1180,105 @@ function drawGel(id, ladder, bands)
                              .style("opacity", 0);
                      })
                     .on("click", function (d) {
+                        //console.log(d);
                         var target = d3.select(this);
                         var seqCount = parseInt($('#seqCount').text().trim());
                         //filter the features
                         var data = $.grep(allFeatures, function (d, i) {
                             return d.type_id != 4; // there is an error when adding cuts, need to solve this later.
                         })
-                        console.log(data);
                         //for band-info
                         //get the range
                         var bandRange = parseRange(d.bandRange);
                         var bandStart = +bandRange[0];
                         var bandEnd = +bandRange[1];
-                        console.log([bandStart, bandEnd]);
                         var featureArray = [];
                         if (bandStart == bandEnd && bandStart == 0) {
                             featureArray = data;
+                            //no cut draw circular map
+                            featureArray.sort(sortByProperty('start'));
+                            var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
+                            if (cutType == "single") {
+                                $("#band-feature-single").empty();
+                                $("#band-ends-single").empty();
+                                //band-feature-single
+                                //show fragement linear map
+                                var name = d.name + ' (' + 1 + "-" + seqCount + ')';
+                                drawCircularMap(featureArray, "band-feature-single", name, +d.Size, 345);
+                                //disable the save band button
+                                $("#band-button-single").addClass("disabled");
+                                $("#gel-info-single").removeClass("hidden");
+                            }
+                            else {
+                                //multiple
+                                $("#band-feature-multiple").empty();
+                                $("#band-ends-multiple").empty();
+                                //band-feature-multiple
+                                //show fragement linear map
+                                var name = d.name + ' (' + 1 + "-" + seqCount + ')';
+                                drawCircularMap(featureArray, "band-feature-multiple", name, +d.Size, 345);
+                                //band-ends-multiple
+                                //disable the save band button
+                                $("#band-button-multiple").addClass("disabled");
+                                $("#gel-info-multiple").removeClass("hidden");
+                            }
+                            //disable the save band button
+
+                            featureArray = [];
                         }
-                        else if (bandStart == bandEnd && bandStart !==0) {
-                            featureArray = $.grep(data, function (d, i) {
-                                return !((Math.min(d.start, d.end) < bandStart && Math.max(d.start, d.end) > bandEnd) || (d.cut != null && (Math.min(d.start, d.cut, d.end) < bandStart && Math.max(d.start, d.cut, d.end) > bandEnd)));
-                            })
-                            var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                        else
+                        {
+                            if (bandStart == bandEnd && bandStart !==0) {
+                                featureArray = $.grep(data, function (d, i) {
+                                    return !((Math.min(d.start, d.end) < bandStart && Math.max(d.start, d.end) > bandStart) || (d.cut != null && (Math.min(d.start, d.cut, d.end) < bandStart && Math.max(d.start, d.cut, d.end) > bandEnd)));
+                                })
+                                var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                            }
+                            else if(bandStart < bandEnd) {
+                                featureArray = $.grep(data, function (d, i) {
+                                    return (Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < bandEnd) || (d.cut != null && (Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < bandEnd));
+                                })
+                                var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                            }
+                            else {
+                                featureArray = $.grep(data, function (d, i) {
+                                    return ((Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < seqCount) || (Math.min(d.start, d.end) > 1 && Math.max(d.start, d.end) < bandEnd)) || (d.cut != null && ((Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < seqCount) || (Math.min(d.start, d.cut, d.end) > 1 && Math.max(d.start, d.cut, d.end) < bandEnd)));
+                                })
+                                var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                            }
+                            featureArray.sort(sortByProperty('start'));
+                            var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
+                            if (cutType == "single") {
+                                $("#band-feature-single").empty();
+                                $("#band-ends-single").empty();
+                                //band-feature-single
+                                //show fragement linear map
+                                var name = d.name + ' (' + d.bandRange + ')';
+                                drawLinearMap(resultArray, "band-feature-single", name, +d.Size, 600);
+                                //band-ends-single
+                                //show fragment ends seq
+                                showFragmentEnds("band-ends-single", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
+                                //update save fragment a href
+                                $("#gel-info-single").removeClass("hidden");
+                            }
+                            else {
+                                //multiple
+                                $("#band-feature-multiple").empty();
+                                $("#band-ends-multiple").empty();
+                                //band-feature-multiple
+                                //show fragement linear map
+                                var name = d.name + ' (' + d.bandRange + ')';
+                                drawLinearMap(resultArray, "band-feature-multiple", name, +d.Size, 600);
+                                //band-ends-multiple
+                                //show fragment ends seq
+                                showFragmentEnds("band-ends-single", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
+                                //update save fragment a href
+                                $("#gel-info-multiple").removeClass("hidden");
+                            }
+                            //empty array of the fragment
+                            featureArray = [];
                         }
-                        else if(bandStart < bandEnd) {
-                            featureArray = $.grep(data, function (d, i) {
-                                return (Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < bandEnd) || (d.cut != null && (Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < bandEnd));
-                            })
-                            var resultArray = resetFeature(featureArray, bandStart, bandEnd);
-                        }
-                        else {
-                            featureArray = $.grep(data, function (d, i) {
-                                return ((Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < seqCount) || (Math.min(d.start, d.end) > 1 && Math.max(d.start, d.end) < bandEnd)) || (d.cut != null && ((Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < seqCount) || (Math.min(d.start, d.cut, d.end) > 1 && Math.max(d.start, d.cut, d.end) < bandEnd)));
-                            })
-                            var resultArray = resetFeature(featureArray, bandStart, bandEnd);
-                        }
-                        featureArray.sort(sortByProperty('start'));
-                        var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
-                        if (cutType == "single") {
-                            $("#band-feature-single").empty();
-                            $("#band-ends-single").empty();
-                            //band-feature-single
-                            var name = d.name + ' (' + d.bandRange + ')';
-                            drawLinearMap(resultArray, "band-feature-single", name, +d.Size, 600);
-                            //band-ends-single
-                            $("#gel-info-single").removeClass("hidden");
-                        }
-                        else {
-                            //multiple
-                            $("#band-feature-multiple").empty();
-                            $("#band-ends-multiple").empty();
-                            //band-feature-multiple
-                            var name = d.name + ' (' + d.bandRange + ')';
-                            drawLinearMap(resultArray, "band-feature-multiple", name, +d.Size, 600);
-                            //band-ends-multiple
-                            $("#gel-info-multiple").removeClass("hidden");
-                        }
-                        //empty array of the fragment
-                        featureArray = [];
+                        
                     });
         }
     //need to add mouse event call back
@@ -1284,7 +1353,7 @@ function resetFeature(Array, bandStart, bandEnd)
                 data.push(obj);
             })
     }
-    else {
+    else if (bandStart < bandEnd) {
         $.each(Array, function (i, d) {
             var obj = {};
             obj.clockwise = d.clockwise;
@@ -1297,9 +1366,210 @@ function resetFeature(Array, bandStart, bandEnd)
             data.push(obj);
         })
     }
+    else {
+        //bandStart == bandEnd
+        //ignore cut
+        //change the start and end
+        $.each(Array, function (i, dt) {
+            var obj = {};
+            obj.clockwise = dt.clockwise;
+            obj.feature = dt.feature;
+            obj.show_feature = dt.show_feature;
+            obj.type_id = dt.type_id;
+
+            if (dt['start'] >= bandStart) {
+                obj.start = dt['start'] - bandStart + 1;
+                obj.end = dt['end'] - bandStart + 1;
+            }
+            else {
+                obj.start = seqCount - bandStart + dt['start'] + 1;
+                if (dt['end'] >= bandStart) {
+                    obj.end = dt['end'] - bandStart + 1;
+                }
+                else {
+                    obj.end = seqCount - bandStart + dt['end'] + 1;
+                }
+            }
+            data.push(obj);
+        });
+    }
     return data;
 }
 
+//============ show fragment ends seq===================
+//show fragment seq ends
+function showFragmentEnds(id, bandStart, bandEnd, name, clockwise, seqCount, sequence, cSequence, restricProperty, cutType)
+{
+    //find the name
+    var nameArray = name2Array(name, cutType);
+    var clockwiseArray = clockwise2Array(clockwise);
+    //get forward seq 
+    var fSeq = sequence.substring(bandStart - 1, bandEnd);
+
+    //get end obj [left, right]
+    //[{ 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}, { 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}]
+    //var enzymeAttr = [{ 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}, { 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}];
+    var enzymeAttr = getEynzymeAttr(restricProperty, nameArray);
+
+    //get overhangs [left, right]
+    var overHangs = getOverhangs(enzymeAttr, clockwiseArray);
+    //get complement seq
+    //get cSeq range
+    var cSeqRange = [bandStart + overHangs[0], bandEnd + overHangs[1]];
+    var cSeq = cSequence.substring(cSeqRange[0] - 1, cSeqRange[1]);
+    //draw ends seq
+    //drawEndSeq(fSeq, cSeq, overhangs)
+}
+
+function name2Array(name, cutType) {
+    var array = [];
+    if (cutType == "single") {
+        //single digesiton
+        array.push(name);
+        array.push(name);
+    }
+    else {
+        //multiple digestion
+        array = name.split('-');
+    }
+    return array;
+}
+function clockwise2Array(clockwise) {
+    var array = clockwise.split('-');
+    return array;
+}
+//get the enzyme attr
+function getEynzymeAttr(restricProperty, nameArray) {
+    var array = [];
+    $.each(nameArray, function (i, e) {
+        var restric = $.grep(restricProperty, function (d, si) {
+            return d.name === e;
+        })
+        var obj = {};
+        obj.name = e;
+        obj.fc = restric[0].forward_cut; //left cut, alway not null
+        obj.fc2 = restric[0].forward_cut2; //right cut, null for single-cut enzyme
+        obj.rc = restric[0].reverse_cut;
+        obj.rc2 = restric[0].reverse_cut2;
+        array.push(obj);
+    })
+    return array;
+}
+//get the overhangs
+
+function getOverhangs(enzymeAttr, clockwiseArray) {
+    //total 2 elements
+    //get the cut length
+    var leftLength = calLength(enzymeAttr[0]), rightLength = calLength(enzymeAttr[1]);
+    var left = calOverhangLenth(clockwiseArray[0], enzymeAttr[0], leftLength);
+    var right = calOverhangLenth(clockwiseArray[1], enzymeAttr[1], rightLength);
+    return [left, right]
+}
+
+//get enzyme cut enzyme length
+function calLength(enzymeAttr) {
+    var Length;
+    if (enzymeAttr.fc != null && enzymeAttr.fc2 == null) {
+        //single-cut
+        //total 3 different cases
+        if (enzymeAttr.fc > 0 && enzymeAttr.rc > 0) {
+            //both postive
+            Length = Math.max(enzymeAttr.fc, enzymeAttr.rc) - Math.min(enzymeAttr.fc, enzymeAttr.rc);
+        }
+        else if (enzymeAttr.fc < 0 && enzymeAttr.rc < 0) {
+            //both negative
+            Length = Math.abs(Math.min(enzymeAttr.fc, enzymeAttr.rc)) - Math.abs(Math.max(enzymeAttr.fc, enzymeAttr.rc));
+        }
+        else {
+            //span both side
+            Length = Math.abs(enzymeAttr.fc) + Math.abs(enzymeAttr.rc);
+        }
+    }
+    if (enzymeAttr.fc != null && enzymeAttr.fc2 != null) {
+        //mutiple-cut
+        //total 3 different cases
+        if (enzymeAttr.fc2 > 0 && enzymeAttr.rc2 > 0) {
+            //both postive
+            Length = Math.max(enzymeAttr.fc2, enzymeAttr.rc2) - Math.min(enzymeAttr.fc2, enzymeAttr.rc2);
+        }
+        else if (enzymeAttr.fc2 < 0 && enzymeAttr.rc2 < 0) {
+            //both negative
+            Length = Math.abs(Math.min(enzymeAttr.fc2, enzymeAttr.rc2)) - Math.abs(Math.max(enzymeAttr.fc2, enzymeAttr.rc2));
+        }
+        else {
+            //span both side
+            Length = Math.abs(enzymeAttr.fc2) + Math.abs(enzymeAttr.rc2);
+        }
+    }
+    return Length;
+}
+
+function calOverhangLenth(clockwise, enzymeAttr, cutLength) {
+    var length;
+    if (clockwise=="true") {
+        //clickwise
+        if (enzymeAttr.rc != null && enzymeAttr.rc2 == null) {
+            //single
+            if (enzymeAttr.rc > enzymeAttr.fc) {
+                length = -cutLength;
+            }
+            else {
+                length = cutLength;
+            }
+        }
+        if (enzymeAttr.rc != null && enzymeAttr.rc2 != null) {
+            //multiple
+            if (enzymeAttr.rc2 > enzymeAttr.fc2) {
+                length = -cutLength;
+            }
+            else {
+                length = cutLength;
+            }
+        }
+    }
+    else {
+        //anticlockwise
+        if (enzymeAttr.rc != null && enzymeAttr.rc2 == null) {
+            //single
+            if (enzymeAttr.rc > enzymeAttr.fc) {
+                length = cutLength;
+            }
+            else {
+                length = -cutLength;
+            }
+        }
+        if (enzymeAttr.rc != null && enzymeAttr.rc2 != null) {
+            //multiple
+            if (enzymeAttr.rc2 > enzymeAttr.fc2) {
+                length = cutLength;
+            }
+            else {
+                length = -cutLength;
+            }
+        }
+    }
+    return length;
+}
+
+//generate complementary seq
+function gencSeq(seq){
+    var seqArray = seq.split('');
+    var cseqArray = [];
+    $.each(seqArray, function (i, d) {
+        var letter;
+        if (d == "A") {
+            letter = "T";
+        } else if(d=="T") {
+            letter = "A";
+        } else if (d == "G") {
+            letter = "C";
+        } else {
+            letter = "G";
+        }
+        cseqArray.push(letter);        
+    })
+    return cseqArray.join('');
+}
 //sort array
 //array.sort(sortByProperty(property))
 function sortByProperty(property) {
