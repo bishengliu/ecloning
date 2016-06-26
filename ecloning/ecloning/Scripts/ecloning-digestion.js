@@ -1026,8 +1026,7 @@ function chooseLadder(bands, ladders) {
         ladder = $.grep(ladders, function (d, i) {
             return d.id === ladderId;
         })
-    }
-    
+    }    
     return ladder;
 }
 
@@ -1422,8 +1421,17 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
     $("#" + fSeqId).val(fSeq);
     $("#" + cSeqId).val(cSeq);
 
-    //update save href
-
+    //update data for ajax post
+    singleData = [];
+    multipleData = [];
+    if (cutType == "single") {
+        singleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq , 'ladder_id' : sLadderId };
+    }
+    else {
+        multipleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq, 'ladder_id': mLadderId };
+    }
+    console.log(singleData);
+    console.log(multipleData);
     //draw ends seq
     drawEndSeq(id, fSeq, cSeq, overHangs, 10);
 }

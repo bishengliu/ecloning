@@ -206,6 +206,19 @@
     var enzyArray = [];
     //define a global array of arrays of enzyme; for digestion
     var MEDigestArray = [];
+    //global save band ajax data
+    var singleData = {};
+    //global save band ajax data
+    var multipleData = {};
+    //global plasmid id
+    var plasmidId = +$("#plasmidId").text().trim();
+
+    //global single ladder id
+    var sLadderId = null;
+    //global multiple ladder id
+    var mLadderId = null;
+
+
     //global features
     var allFeatures = [];
     var sequence = null;
@@ -320,8 +333,8 @@
                 }
                 else {
                     $("#success-alert").hide();
-                }                
-                //change some div setting                
+                }
+                //change some div setting
                 $("#gel-single").empty();
                 $("#band-feature-single").empty();
                 $("#band-ends-single").empty();
@@ -356,7 +369,7 @@
                 //show cut info with tabs
                 //==========================================================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
-                
+
                 //genCutMap for each enzyme using giraffe
                 drawCutMap(enzymes, enzyArray, features, seqCount, name);
                 //show cut positions and methylation info in panel-body
@@ -398,6 +411,8 @@
                 if (SEbands.length > 0) {
                     //choose ladder based on the band sizes
                     var SEladder = chooseLadder(SEbands, ladders);
+                    //set global ladderId
+                    sLadderId = +SEladder[0].id;
                     drawGel("#gel-single", SEladder, SEbands);
                 }
 
@@ -408,10 +423,12 @@
                 if (MEbands.length > 0) {
                     $("#gel-panel-multiple").removeClass("hidden");
                     var MEladder = chooseLadder(MEbands, ladders);
+                    //set global ladderId
+                    mLadderId = +MEladder[0].id;
                     //draw gel stimulation
                     drawGel("#gel-multiple", MEladder, MEbands);
                 }
-                
+
                 //show the result div
                 if (enzyArray.length > 0) {
                     //show the result panel
@@ -430,5 +447,27 @@
         catch (e) {
             console.log(e);
         }
+
+        //save fragment
+        $('#band-button-single').on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveFragment", "Map")',
+                contentType: "application/json; charset=utf-8",
+                data: singleData,
+                dataType: "json",
+                success: function () { $('#band-single-msg').text("Fragment Saved!"); }
+            });
+        });
+        $('#band-button-multiple').on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveFragment", "Map")',
+                contentType: "application/json; charset=utf-8",
+                data: multipleData,
+                dataType: "json",
+                success: function () { $('#band-multiple-msg').text("Fragment Saved!"); }
+            });
+        });
     });
 </script>
