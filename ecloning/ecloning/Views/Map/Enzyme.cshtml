@@ -14,6 +14,7 @@
     var restricProperty = ViewBag.restric_property;
     var activity = ViewBag.activity;
     var ladders = ViewBag.ladders;
+    var saveBands = ViewBag.SavedBands;
 }
 
 <div class="row">
@@ -216,12 +217,17 @@
     //global plasmid id
     var plasmidId = +$("#plasmidId").text().trim();
 
+    //all ladders [{"name": name, "id": id}]
+    var allLadders = [];
     //global single ladder id
     var sLadderId = null;
     //global multiple ladder id
     var mLadderId = null;
 
+    //curent saved bands [name]
+    var savedBands = [];
 
+    //all restricition enzymes
     //global features
     var allFeatures = [];
     var sequence = null;
@@ -302,6 +308,11 @@
         //get ladders
         var ladders = ("@ladders");
         ladders = LoadData(ladders);
+
+        //get saved bands
+        var sBands = ("@saveBands");
+        sBands = LoadData(sBands);
+
         try {
             //draw linear map
             features = JSON.parse(features);
@@ -325,6 +336,8 @@
             ladders = JSON.parse(ladders);
             //format ladder data
             ladders = formatLadder(ladders);
+            //parse saved bands
+            savedBands = JSON.parse(sBands);
             //capture user selection of enzyme
             $(":checkbox").change(function () {
                 //allow max 3 selection
@@ -461,13 +474,18 @@
                 {
                     if (data.result == true)
                     {
+                        savedBands.push(data.band);
+                        $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                        $('#band-button-single').addClass('disabled');
+                        scrollTo('#band-single-msg');
                         $('#band-single-msg').text("Fragment Saved!");
-                        setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+                        setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
                     }
                     else
                     {
+                        scrollTo('#band-single-msg');
                         $('#band-single-msg').text("Fragment NOT Saved!");
-                        setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+                        setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
                     }
                 }
             });
@@ -481,12 +499,17 @@
                 {
                     if (data.result == true)
                     {
+                        savedBands.push(data.band);
+                        $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                        $('#band-button-multiple').addClass("disabled");
+                        scrollTo('#band-multiple-msg');
                         $('#band-multiple-msg').text("Fragment Saved!");
-                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
                     } else
                     {
+                        scrollTo('#band-multiple-msg');
                         $('#band-multiple-msg').text("Fragment NOT Saved!");
-                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
                     }
                 }
             });

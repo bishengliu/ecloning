@@ -115,7 +115,7 @@ namespace ecloning.Controllers
 
             //all other features
             //pass json
-            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, cut = f.cut, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
+            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, cut = f.cut, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, common_id = f.common_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             //pass json for feature viewers
             var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x = f.feature_id == 4 ? f.cut : f.start, y = f.feature_id == 4 ? f.cut : f.end, description = f.common_feature != null ? f.common_feature.label : f.feature, id = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
@@ -131,6 +131,7 @@ namespace ecloning.Controllers
             {
                 var rObject = new RestrictionObject();
                 rObject.name = item.name;
+                rObject.Id = item.id;
                 rObject.prototype = (item.forward_cut2 != null && item.reverse_cut2 != null) ? (enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2)) : enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut);
                 rObject.startActivity = item.staractitivity == true ? enzymeSybol.StarActivitySymbol((bool)item.staractitivity) : symbol;
                 rObject.heatInactivation = item.inactivation != null ? enzymeSybol.InactivationSymbol((int)item.inactivation) : enzymeSybol.InactivationSymbol(0);
@@ -170,6 +171,9 @@ namespace ecloning.Controllers
             });
             ViewBag.ladders= JsonConvert.SerializeObject(ladderSize.ToList());
 
+            //get the previous saved bands
+            var bands = db.fragments.Where(p => p.plasmid_id == (int)plasmid_id).Select(n => n.name);
+            ViewBag.SavedBands = JsonConvert.SerializeObject(bands.ToList());
             return View();
         }
 
@@ -182,8 +186,66 @@ namespace ecloning.Controllers
                 {
                     var data = JsonConvert.DeserializeObject<fragmentJson>(band);
                     //save band to database
-                    scope.Complete();
-                    return Json(new { result = true });
+                    //find people id
+                    //get userId
+                    var userId = User.Identity.GetUserId();
+                    var userInfo = new UserInfo(userId);
+                    //get the emzymen id comma-sep string
+                    var eString = "";
+                    foreach(var e in data.enzymes)
+                    {
+                        //find enzyme by name
+                        var enzyme = db.restri_enzyme.Where(n => n.name == e);
+                        if (enzyme.Count() > 0)
+                        {
+                            eString = eString + enzyme.FirstOrDefault().id.ToString() + ",";
+                        }
+                    }
+                    eString = eString.Substring(0, eString.Length - 1);
+                    var fName = data.plasmid_id.ToString() + "-" + eString + "-" + data.bandStart.ToString() + "-" + data.bandEnd.ToString();
+                    //check whether the band is already saved before
+                    var fg = db.fragments.Where(n => n.name == fName);
+                    if (fg.Count() == 0)
+                    {
+                        var fragment = new fragment();
+                        fragment.name = fName;
+                        fragment.plasmid_id = data.plasmid_id;
+                        fragment.parantal = data.parental;
+                        fragment.enzyme_id = eString;
+                        fragment.forward_start = data.bandStart;
+                        fragment.forward_end = data.bandEnd;
+                        fragment.forward_seq = data.fSeq;
+                        fragment.rc_seq = data.cSeq;
+                        fragment.rc_left_overhand = data.overhangs[0];
+                        fragment.rc_right_overhand = data.overhangs[0];
+                        fragment.ladder_id = data.ladder_id;
+                        fragment.people_id = userInfo.PersonId;
+                        fragment.dt = DateTime.Now;
+                        db.fragments.Add(fragment);
+                        db.SaveChanges();
+
+                        //get fragment id just saved
+                        var fragment_id = fragment.id;
+                        //add to fragment features
+                        foreach (var item in data.featureArray)
+                        {
+                            var feature = new fragment_map();
+                            feature.fragment_id = fragment_id;
+                            feature.show_feature = item.show_feature;
+                            feature.feature = item.feature;
+                            feature.feature_id = item.type_id;
+                            feature.start = item.start;
+                            feature.end = item.end;
+                            feature.cut = item.cut;
+                            feature.common_id = item.common_id;
+                            db.fragment_map.Add(feature);
+                            db.SaveChanges();
+                        }
+                        
+                        scope.Complete();
+                        return Json(new { result = true, band= fName });
+                    }
+                    throw new DivideByZeroException();
                 }
                 catch (Exception)
                 {

@@ -750,7 +750,6 @@ function linearRegression(y, x) {
     return lr;
 }
 
-
 //======================================================================
 //generate bands for only one digest enzyme
 //SE==single enzyme digestion
@@ -1191,6 +1190,8 @@ function drawGel(id, ladder, bands)
                         var bandRange = parseRange(d.bandRange);
                         var bandStart = +bandRange[0];
                         var bandEnd = +bandRange[1];
+                        //generate band name
+                        var bName = genBandName(plasmidId, restricProperty, d.name, bandStart, bandEnd);
                         //var featureArray = [];
                         if (bandStart == bandEnd && bandStart == 0) {
                             featureArray = data;
@@ -1257,9 +1258,17 @@ function drawGel(id, ladder, bands)
                                 //band-ends-single
                                 //show fragment ends seq
                                 showFragmentEnds("band-ends-single", "band-single-fseq", "band-single-cseq", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
-                                //update save fragment a href
                                 //update copy buttons
                                 $("#gel-info-single").removeClass("hidden");
+                                //update save band button
+                                //first initiate the button status
+                                $('#band-button-single i').removeClass('text-danger fa-heart fa-heart-o').addClass("fa-heart-o");
+                                $('#band-button-single').removeClass('disabled');
+                                if (savedBands.indexOf(bName) !==-1) {
+                                    //saved before
+                                    $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                                    $('#band-button-single').addClass('disabled');
+                                }
                             }
                             else {
                                 //multiple
@@ -1272,9 +1281,17 @@ function drawGel(id, ladder, bands)
                                 //band-ends-multiple
                                 //show fragment ends seq
                                 showFragmentEnds("band-ends-multiple", "band-multiple-fseq", "band-multiple-cseq", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
-                                //update save fragment a href
                                 //update copy buttons
                                 $("#gel-info-multiple").removeClass("hidden");
+                                //update save band button
+                                //first initiate the button status
+                                $('#band-button-multiple i').removeClass('text-danger fa-heart fa-heart-o').addClass("fa-heart-o");
+                                $('#band-button-multiple').removeClass('disabled');
+                                if (savedBands.indexOf(bName) !== -1) {
+                                    //saved before
+                                    $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                                    $('#band-button-multiple').addClass("disabled");
+                                }
                             }
                             //empty array of the fragment
                             featureArray = [];
@@ -1395,6 +1412,30 @@ function resetFeature(Array, bandStart, bandEnd)
     return data;
 }
 
+//generate band name upon clicking
+function genBandName(plasmidId, restricProperty, name, bandStart, bandEnd) {
+    var eName;
+    
+    var nameArray = name.split('-');
+    if (nameArray.length == 1) {
+        var enzyme = $.grep(restricProperty, function (d, i) {
+            return d.name === nameArray[0];
+        })
+        eName = enzyme[0].Id + ',' + enzyme[0].Id;
+    }
+    if (nameArray.length == 2) {
+        var enzyme1 = $.grep(restricProperty, function (d, i) {
+            return d.name === nameArray[0];
+        })
+        var enzyme2 = $.grep(restricProperty, function (d, i) {
+            return d.name === nameArray[1];
+        })
+        eName = enzyme1[0].Id + ',' + enzyme2[0].Id;
+    }
+
+    return plasmidId + "-" + eName + "-" + bandStart + "-" + bandEnd;
+}
+
 //============ show fragment ends seq===================
 //show fragment seq ends
 function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwise, seqCount, sequence, cSequence, restricProperty, cutType)
@@ -1434,8 +1475,6 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
         //fragment feature
         multipleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq, 'ladder_id': mLadderId, 'featureArray': featureArray };
     }
-    console.log(singleData);
-    console.log(multipleData);
     //draw ends seq
     drawEndSeq(id, fSeq, cSeq, overHangs, 10);
 }

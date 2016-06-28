@@ -8,6 +8,7 @@ namespace ecloning.Models
     public class RestrictionObject
     {
         public string name { get; set; }
+        public int Id { get; set; } //enzyme id
         public string prototype { get; set; }
         public string startActivity { get; set; }
         public string heatInactivation { get; set; }
