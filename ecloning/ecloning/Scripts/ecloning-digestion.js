@@ -724,6 +724,18 @@ function formatLadder(ladders) {
     })
     return data;
 }
+//get ladder name and id array
+function getLadderNameId(ladders) {
+    var array = [];
+    $.each(ladders, function (i, d) {
+        var obj = {};
+        obj.name = d.name;
+        obj.id = d.id;
+        array.push(obj);
+    })
+    return array;
+}
+
 //linear regression by finding least squares
 function linearRegression(y, x) {
     var lr = {};
@@ -1039,12 +1051,12 @@ function findMin(data) {
 }
 
 //draw gel stimulation svg
-function drawGel(id, ladder, bands)
+function drawGel(id, ladder, bands, gelHeight)
 {
     var margin = { top: 50, right: 2, bottom: 10, left: 2 },
         width = 45 - margin.left - margin.right//* 8, //max 6 bands plus ladder (2x)
         height = 360 - margin.top - margin.bottom;
-
+        var gelHeight = height;
         //get the max mass of ladder
         var maxMass = d3.max(ladder[0].Mass);
         var maxStorkeWidth = 4;
@@ -1100,9 +1112,9 @@ function drawGel(id, ladder, bands)
         var bandAttr = ldBand
                         .attr("class", "laddder-band")
                         .attr("x1", ladderSpace + width + margin.left + margin.right + width * .1)
-                        .attr("y1", function (d) { return height * d.Rf; })
+                        .attr("y1", function (d) { return gelHeight * d.Rf; })
                         .attr("x2", ladderSpace + width + margin.left + margin.right + width * .9)
-                        .attr("y2", function (d) { return height * d.Rf; })
+                        .attr("y2", function (d) { return gelHeight * d.Rf; })
                         .attr("stroke-width", function (d) { return (d.mass / maxMass) * maxStorkeWidth; })
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", function (d) { return (1 - d.Rf * (1 - d.mass / maxMass)); })
@@ -1116,9 +1128,9 @@ function drawGel(id, ladder, bands)
     //var labelLineAttr = labelLine
         var labelLineAttr = labelLine
                             .attr("x2", (width+ladderSpace) * .9)
-                            .attr("y2", function (d) { return height * d; })
+                            .attr("y2", function (d) { return gelHeight * d; })
                             .attr("x1", (width+ladderSpace) * .8)
-                            .attr("y1", function (d, i) { return gentYpos(ladder[0].Rf, i, height); })
+                            .attr("y1", function (d, i) { return gentYpos(ladder[0].Rf, i, gelHeight); })
                             .attr("stroke-width", 1)
                             .attr("stroke", "black");
     //add label text
@@ -1133,7 +1145,7 @@ function drawGel(id, ladder, bands)
                                 "text-anchor": "middle"
                             })
                             .attr("x", (width+ladderSpace) * .35)
-                            .attr("y", function (d, i) { return gentYpos(ladder[0].Rf, i, height); })
+                            .attr("y", function (d, i) { return gentYpos(ladder[0].Rf, i, gelHeight); })
                             .attr("font-size", "10px")
                             .attr("font-family", "monospace")
                             .style("fill", "black")
@@ -1149,9 +1161,9 @@ function drawGel(id, ladder, bands)
             var cBandAttr = cBands
                         .attr("class", "clickable cBand"+i)
                         .attr("x1", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .1)
-                        .attr("y1", function (d) { return d.Rf < 0 ? -d.Rf : height * d.Rf; })
+                        .attr("y1", function (d) { return d.Rf < 0 ? -d.Rf : gelHeight * d.Rf; })
                         .attr("x2", ladderSpace+(2 + i) * (width + margin.left + margin.right) + width * .9)
-                        .attr("y2", function (d) { return d.Rf < 0 ? -d.Rf : height * d.Rf; })
+                        .attr("y2", function (d) { return d.Rf < 0 ? -d.Rf : gelHeight * d.Rf; })
                         .attr("stroke-width", function (d) { return maxStorkeWidth / 2; })
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", function (d) { return d.Rf <0 ?.5:1.0; })

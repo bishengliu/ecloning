@@ -108,7 +108,9 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title text-center">Gel Electrophoresis</h3>
                             </div>
-                            <div class="panel-body" id="gel-single"></div>
+                            <div class="panel-body">
+                                <div id="gel-single"></div>
+                            </div>
                             <div class="panel-footer clearfix text-info"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
                         </div>
                     </div>
@@ -147,7 +149,9 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title text-center">Gel Electrophoresis</h3>
                             </div>
-                            <div class="panel-body" id="gel-multiple"></div>
+                            <div class="panel-body" >
+                                <div id="gel-multiple"></div>
+                            </div>
                             <div class="panel-footer clearfix text-info" id="gel-multiple-footer"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
                         </div>
                     </div>
@@ -336,6 +340,8 @@
             ladders = JSON.parse(ladders);
             //format ladder data
             ladders = formatLadder(ladders);
+            //update global ladder name and is array
+            allLadders = getLadderNameId(ladders);
             //parse saved bands
             savedBands = JSON.parse(sBands);
             //capture user selection of enzyme
@@ -429,9 +435,8 @@
                     var SEladder = chooseLadder(SEbands, ladders);
                     //set global ladderId
                     sLadderId = +SEladder[0].id;
-                    drawGel("#gel-single", SEladder, SEbands);
+                    drawGel("#gel-single", SEladder, SEbands, 300); //change 300 to change the gel height == runing lognger
                 }
-
                 //deal with multiple enzyme digestion
                 //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
                 var MEDigestArray = genMEDigestion(enzyArray);
@@ -442,7 +447,7 @@
                     //set global ladderId
                     mLadderId = +MEladder[0].id;
                     //draw gel stimulation
-                    drawGel("#gel-multiple", MEladder, MEbands);
+                    drawGel("#gel-multiple", MEladder, MEbands, 300); //change 300 to change the gel height == runing lognger
                 }
 
                 //show the result div
