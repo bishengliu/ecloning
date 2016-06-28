@@ -172,6 +172,28 @@ namespace ecloning.Controllers
 
             return View();
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SaveFragment(string band) {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    var data = JsonConvert.DeserializeObject<fragmentJson>(band);
+                    //save band to database
+                    scope.Complete();
+                    return Json(new { result = true });
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return Json(new { result = false });
+
+                }
+            }
+        }
+
         [Authorize]
         [HttpGet]
         public ActionResult Sequence(int? plasmid_id, string tag)
@@ -201,7 +223,6 @@ namespace ecloning.Controllers
 
             return View();
         }
-
 
         [Authorize]
         [HttpGet]

@@ -1191,7 +1191,7 @@ function drawGel(id, ladder, bands)
                         var bandRange = parseRange(d.bandRange);
                         var bandStart = +bandRange[0];
                         var bandEnd = +bandRange[1];
-                        var featureArray = [];
+                        //var featureArray = [];
                         if (bandStart == bandEnd && bandStart == 0) {
                             featureArray = data;
                             //no cut draw circular map
@@ -1425,10 +1425,14 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
     singleData = [];
     multipleData = [];
     if (cutType == "single") {
-        singleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq , 'ladder_id' : sLadderId };
+        //fragment info
+        //fragment feature
+        singleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq, 'ladder_id': sLadderId, 'featureArray': featureArray };
     }
     else {
-        multipleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq, 'ladder_id': mLadderId };
+        //fragment info
+        //fragment feature
+        multipleData = { 'plasmid_id': plasmidId, 'parantal': true, 'enzymes': nameArray, 'bandStart': bandStart, 'bandEnd': bandEnd, 'overhangs': overHangs, 'fSeq': fSeq, 'cSeq': cSeq, 'ladder_id': mLadderId, 'featureArray': featureArray };
     }
     console.log(singleData);
     console.log(multipleData);

@@ -368,6 +368,7 @@
     <Compile Include="Models\fragment.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\fragmentFeatures.cs" />
     <Compile Include="Models\fragment_map.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>

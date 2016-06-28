@@ -210,6 +210,9 @@
     var singleData = {};
     //global save band ajax data
     var multipleData = {};
+    //fragment features
+    var featureArray = [];
+
     //global plasmid id
     var plasmidId = +$("#plasmidId").text().trim();
 
@@ -453,20 +456,39 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("SaveFragment", "Map")',
-                contentType: "application/json; charset=utf-8",
-                data: singleData,
-                dataType: "json",
-                success: function () { $('#band-single-msg').text("Fragment Saved!"); }
+                data: { 'band': JSON.stringify(singleData) },
+                success: function (data)
+                {
+                    if (data.result == true)
+                    {
+                        $('#band-single-msg').text("Fragment Saved!");
+                        setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+                    }
+                    else
+                    {
+                        $('#band-single-msg').text("Fragment NOT Saved!");
+                        setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+                    }
+                }
             });
         });
         $('#band-button-multiple').on("click", function () {
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("SaveFragment", "Map")',
-                contentType: "application/json; charset=utf-8",
-                data: multipleData,
-                dataType: "json",
-                success: function () { $('#band-multiple-msg').text("Fragment Saved!"); }
+                data: { 'band': JSON.stringify(multipleData) },
+                success: function (data)
+                {
+                    if (data.result == true)
+                    {
+                        $('#band-multiple-msg').text("Fragment Saved!");
+                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+                    } else
+                    {
+                        $('#band-multiple-msg').text("Fragment NOT Saved!");
+                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+                    }
+                }
             });
         });
     });
