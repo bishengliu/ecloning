@@ -1050,6 +1050,24 @@ function findMin(data) {
     return ladder[0].id;
 }
 
+//make the selection box
+function LadderSelection(id, ladderId, allLadders) {
+    $('#' + id).empty();
+    var html='<form class="form-inline"><div class="form-group">';
+    html = html + '<label for="' + id + '-selection">Ladders: &nbsp;</label>';
+    html = html + '<select class="form-control" id="' + id + '-selection">';
+    $.each(allLadders, function (i, d) {
+        if (+d.id === +ladderId) {
+            html = html + '<option selected="selected" value="'+d.id+'">' + d.name + '</option>';
+        }
+        else {
+            html = html + '<option value="' + d.id + '">' + d.name + '</option>';
+        }
+    })
+    html = html + '</select></div></form>';
+    $('#' + id).append(html);
+}
+
 //draw gel stimulation svg
 function drawGel(id, ladder, bands, gelHeight)
 {
