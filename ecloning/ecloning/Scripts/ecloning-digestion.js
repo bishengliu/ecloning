@@ -1074,7 +1074,6 @@ function drawGel(id, ladder, bands, gelHeight)
     var margin = { top: 50, right: 2, bottom: 10, left: 2 },
         width = 45 - margin.left - margin.right//* 8, //max 6 bands plus ladder (2x)
         height = 360 - margin.top - margin.bottom;
-        var gelHeight = height;
         //get the max mass of ladder
         var maxMass = d3.max(ladder[0].Mass);
         var maxStorkeWidth = 4;

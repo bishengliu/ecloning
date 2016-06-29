@@ -111,8 +111,10 @@
                             <div class="panel-body">
                                 <div id="gel-single-tools" class="row">
                                     <div id="gel-running-single" class="col-xs-offset-1 col-xs-4 col-sm-offset-1 col-sm-4 col-lg-offset-1 col-lg-3">
-                                        <button id="increase-single" class="btn btn-sm btn-circle btn-default" type="button"><i class="fa fa-plus"></i></button>
-                                        <button id="decrease-single" class="btn btn-sm btn-circle btn-default"  type="button"><i class="fa fa-minus"></i></button>
+                                        <button id="increase-single" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Increase Band Separation"><i class="fa fa-plus"></i></button>
+                                        <button id="decrease-single" class="btn btn-sm btn-circle btn-danger"  type="button" data-toggle="tooltip" title="Decrease Band Separation"><i class="fa fa-minus"></i></button>
+                                        <button id="default-single" class="btn btn-sm btn-circle btn-default" type="button" data-toggle="tooltip" title="Default Band Separation"><i class="fa fa-road"></i></button>
+
                                     </div>
                                     <div id="ladder-selection-single" class="col-xs-7 col-lg-8"></div>                                    
                                 </div>
@@ -159,8 +161,9 @@
                             <div class="panel-body" >
                                 <div id="gel-multiple-tools" class="row">
                                     <div id="gel-running-multiple" class="col-xs-offset-1 col-xs-4 col-sm-offset-1 col-sm-4 col-lg-offset-1 col-lg-3">
-                                        <button id="increase-multiple" class="btn btn-sm btn-circle btn-default" type="button"><i class="fa fa-plus"></i></button>
-                                        <button id="decrease-multiple" class="btn btn-sm btn-circle btn-default" type="button"><i class="fa fa-minus"></i></button>
+                                        <button id="increase-multiple" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Increase Band Separation"><i class="fa fa-plus"></i></button>
+                                        <button id="decrease-multiple" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Decrease Band Separation"><i class="fa fa-minus"></i></button>
+                                        <button id="default-multiple" class="btn btn-sm btn-circle btn-default" type="button" data-toggle="tooltip" title="Default Band Separation"><i class="fa fa-road"></i></button>
                                     </div>
                                     <div id="ladder-selection-multiple" class="col-xs-7 col-lg-8"></div>
                                 </div>
@@ -245,6 +248,11 @@
     //curent saved bands [name]
     var savedBands = [];
 
+    //global gel height
+    var defaultHeight = 300;
+    var gelHeightSingle = defaultHeight;
+    var gelHeightMultiple = defaultHeight;
+    var stepHeight = 25;
     //all restricition enzymes
     //global features
     var allFeatures = [];
@@ -441,7 +449,7 @@
 
                 //===========================================================================
                 //draw gel
-                //generate single enzyme digestion bands
+                //generate single enzyme digestion bands======******************==============
                 var SEbands = enzyArray.length >0 ? genSEBands(enzyArray, enzymes, methylation, seqCount): [];
                 //draw gel stimulation
                 if (SEbands.length > 0) {
@@ -452,21 +460,51 @@
                     //add selection box
                     LadderSelection("ladder-selection-single", sLadderId, allLadders);
                     //draw gel stimulation
-                    var gelHeight = 300;
-                    drawGel("#gel-single", SEladder, SEbands, gelHeight); //change 300 to change the gel height == runing lognger
+                    drawGel("#gel-single", SEladder, SEbands, gelHeightSingle); //change 300 to change the gel height == runing lognger
 
-                    //ladder selection box change
+                    //ladder selection box change========================================
                     $('#ladder-selection-single-selection').change(function () {
-                        var newLadderId = +$(this).val();
+                        //change the sLadderId
+                        var sLadderId = +$(this).val();
                         var newLadder = $.grep(ladders, function (d, i) {
-                            return d.id === newLadderId;
+                            return d.id === sLadderId;
                         })
                         //redraw gel stimulation
                         $("#gel-single").empty();
-                        drawGel("#gel-single", newLadder, SEbands, gelHeight);
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    });
+                    //plus/minus button====================================================
+                    $('#increase-single').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightSingle = gelHeightSingle + stepHeight;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    })
+                    $('#decrease-single').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightSingle = gelHeightSingle - stepHeight>0?gelHeightSingle - stepHeight:0;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    })
+                    $('#default-single').click(function () {
+                        gelHeightSingle = defaultHeight; //default value
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
                     });
                 }
-                //deal with multiple enzyme digestion
+                //deal with multiple enzyme digestion==================***************============
                 //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
                 var MEDigestArray = genMEDigestion(enzyArray);
                 var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
@@ -477,19 +515,48 @@
                     mLadderId = +MEladder[0].id;
                     //add selection box
                     LadderSelection("ladder-selection-multiple", mLadderId, allLadders);
-                    //draw gel stimulation
-                    var gelHeight = 300;
-                    drawGel("#gel-multiple", MEladder, MEbands, gelHeight); //change 300 to change the gel height == runing lognger
+                    //draw gel stimulation                    
+                    drawGel("#gel-multiple", MEladder, MEbands, gelHeightMultiple); //change 300 to change the gel height == runing lognger
 
-                    //ladder selection box change
+                    //ladder selection box change==================================================
                     $('#ladder-selection-multiple-selection').change(function () {
-                        var newLadderId = +$(this).val();
+                        var mLadderId = +$(this).val();
                         var newLadder = $.grep(ladders, function (d, i) {
-                            return d.id === newLadderId;
+                            return d.id === mLadderId;
                         })
                         //redraw gel stimulation
                         $("#gel-multiple").empty();
-                        drawGel("#gel-multiple", newLadder, MEbands, gelHeight);
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    });
+                    //plus/minus button====================================================
+                    $('#increase-multiple').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightMultiple = gelHeightMultiple + stepHeight;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    })
+                    $('#decrease-multiple').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightMultiple = gelHeightMultiple - stepHeight > 0 ? gelHeightMultiple - stepHeight : 0;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    })
+                    $('#default-multiple').click(function () {
+                        gelHeightMultiple = defaultHeight; //default value
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
                     });
                 }
 
