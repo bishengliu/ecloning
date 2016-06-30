@@ -14,7 +14,7 @@ namespace ecloning.Models
         public string feature { get; set; }
         public int show_feature { get; set; }
         public int type_id { get; set; }
-        public int common_id { get; set; }
+        public int? common_id { get; set; }
     }
 
     public class fragmentJson

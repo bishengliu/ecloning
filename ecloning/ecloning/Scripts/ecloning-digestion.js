@@ -1258,22 +1258,22 @@ function drawGel(id, ladder, bands, gelHeight)
                         else
                         {
                             if (bandStart == bandEnd && bandStart !==0) {
-                                featureArray = $.grep(data, function (d, i) {
+                                var resultArray = $.grep(data, function (d, i) {
                                     return !((Math.min(d.start, d.end) < bandStart && Math.max(d.start, d.end) > bandStart) || (d.cut != null && (Math.min(d.start, d.cut, d.end) < bandStart && Math.max(d.start, d.cut, d.end) > bandEnd)));
                                 })
-                                var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                                featureArray = resetFeature(resultArray, bandStart, bandEnd);
                             }
                             else if(bandStart < bandEnd) {
-                                featureArray = $.grep(data, function (d, i) {
+                                var resultArray = $.grep(data, function (d, i) {
                                     return (Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < bandEnd) || (d.cut != null && (Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < bandEnd));
                                 })
-                                var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                                featureArray = resetFeature(resultArray, bandStart, bandEnd);
                             }
                             else {
-                                featureArray = $.grep(data, function (d, i) {
+                                var resultArray = $.grep(data, function (d, i) {
                                     return ((Math.min(d.start, d.end) > bandStart && Math.max(d.start, d.end) < seqCount) || (Math.min(d.start, d.end) > 1 && Math.max(d.start, d.end) < bandEnd)) || (d.cut != null && ((Math.min(d.start, d.cut, d.end) > bandStart && Math.max(d.start, d.cut, d.end) < seqCount) || (Math.min(d.start, d.cut, d.end) > 1 && Math.max(d.start, d.cut, d.end) < bandEnd)));
                                 })
-                                var resultArray = resetFeature(featureArray, bandStart, bandEnd);
+                                featureArray = resetFeature(resultArray, bandStart, bandEnd);
                             }
                             featureArray.sort(sortByProperty('start'));
                             var cutType = d.name.indexOf("-") !== -1 ? "multiple" : "single";
@@ -1283,7 +1283,7 @@ function drawGel(id, ladder, bands, gelHeight)
                                 //band-feature-single
                                 //show fragement linear map
                                 var name = d.name + ' (' + d.bandRange + ')';
-                                drawLinearMap(resultArray, "band-feature-single", name, +d.Size, 600);
+                                drawLinearMap(featureArray, "band-feature-single", name, +d.Size, 600);
                                 //band-ends-single
                                 //show fragment ends seq
                                 showFragmentEnds("band-ends-single", "band-single-fseq", "band-single-cseq", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);
@@ -1306,7 +1306,7 @@ function drawGel(id, ladder, bands, gelHeight)
                                 //band-feature-multiple
                                 //show fragement linear map
                                 var name = d.name + ' (' + d.bandRange + ')';
-                                drawLinearMap(resultArray, "band-feature-multiple", name, +d.Size, 600);
+                                drawLinearMap(featureArray, "band-feature-multiple", name, +d.Size, 600);
                                 //band-ends-multiple
                                 //show fragment ends seq
                                 showFragmentEnds("band-ends-multiple", "band-multiple-fseq", "band-multiple-cseq", bandStart, bandEnd, d.name, d.clockwise, seqCount, sequence, cSequence, restricProperty, cutType);

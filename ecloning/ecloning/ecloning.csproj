@@ -265,6 +265,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BioToolsController.cs" />
     <Compile Include="Controllers\FeatureController.cs" />
+    <Compile Include="Controllers\FragmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LadderController.cs" />
     <Compile Include="Controllers\MActivityController.cs" />
@@ -369,6 +370,7 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fragmentFeatures.cs" />
+    <Compile Include="Models\FragmentViewModel.cs" />
     <Compile Include="Models\fragment_map.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1057,6 +1059,7 @@
     <Content Include="Views\Ladder\Index.cshtml" />
     <Content Include="Views\pBundle\Compare.cshtml" />
     <Content Include="Views\BioTools\SeqEditor.cshtml" />
+    <Content Include="Views\Fragment\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

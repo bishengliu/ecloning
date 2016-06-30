@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Fragments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Tag = ViewBag.Tag;
+    var Id = ViewBag.Id;
+    var plasmidName = ViewBag.plasmidName;
+    var FragmentIds = (List<int>)ViewBag.FragmentIds;
+    var Sequence = ViewBag.Sequence;
+    var Fragments = ViewBag.Fragments;
+}
+
+<div class="row">
+    <div class="col-sx-12 hidden-sm hidden-xs col-sm-12 col-md-3 col-lg-2">
+        &nbsp;
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-7">
+        <h3 class="text-warning text-center">
+            Plasmid <em>@plasmidName</em> Fragments&nbsp;
+        </h3>
+    </div>
+    <div class="col-sx-12 col-sm-12 col-md-4 col-lg-3">
+        <h3>
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Sequence", "Map", new { plasmid_id = Id })">
+                <i class="fa fa-exchange text-danger"></i>
+                <span>Sequence</span>
+            </a>
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Map", new { id = Id, tag = Tag })">
+                <i class="fa fa-sun-o text-danger"></i>
+                <span>Plasmid Map</span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = Id, tag = Tag})">
+                <i class="fa fa-scissors text-danger"></i>
+                <span>Digestion</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<span id="sequence" class="hidden">@Sequence</span>
+<span id="name" class="hidden">@plasmidName</span>
+<span id="plasmidId" class="hidden">@Id</span>
+<div class="row">
+    <div class="col-xs-12 col-md-offset-1 col-md-10">
+        @foreach (var item in FragmentIds)
+        {
+            var id = "fragment-" + item;
+            var mapId = "fragment-map-"+ item;
+            var endId = "fragment-end-" + item;
+
+            var fId = "fragment-fSeq-" + item;
+            var cId = "fragment-cSeq-" + item;
+
+            var fIdRef = "#fragment-fSeq-" + item;
+            var cIdRef = "#fragment-cSeq-" + item;
+
+            var fIdCopy = "copy-fragment-fSeq-" + item;
+            var cIdCopy = "copy-fragment-cSeq-" + item;
+
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                
+                <div class="panel panel-primary" id="@id">
+                    <div class="panel-heading text-center"></div>
+                    <div class="panel-body">
+                        <pre>
+                            <div id="@mapId" class="col-xs-12"></div>
+                        </pre>
+                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                            <input id="@fId" value="" />
+                            <input id="@cId" value="" />
+                        </div>
+                        <div id="@endId" class="col-xs-12"></div>
+                    </div>
+                    <div class="panel-footer clearfix">
+                        <a class="btn btn-default" href="@Url.Action("Delete", "Fragment", new { id = item })" data-toggle="tooltip" title="Remove Band">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                            <i class="fa fa-copy text-danger"></i>
+                        </a>
+                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                            <i class="fa fa-copy text-primary"></i>
+                        </a>
+                        <p id="band-multiple-msg" class="text-info"></p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>   
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+
+<script>
+    //get full sequence
+    var sequence = $('#sequence').text().trim();
+    var seqCount = sequence.length;
+    //get plasmid name
+    name = $('#name').text().trim();
+    //get plasmid id
+    pId = +$("#plasmidId").text().trim();
+
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var fragments = ("@Fragments");
+        fragments = LoadData(fragments);
+
+        try {
+            fragments = JSON.parse(fragments);
+            console.log(fragments);
+            $.each(fragments, function (i, d) {
+
+                var size = +d.fSeq.length;
+                var features = d.featureArray;
+                var id = "fragment-map-" + d.id;
+                var name = d.name;
+                var width = 450;
+                drawLinearMap(features, id, name, size, width);
+            })
+        } catch (e) {
+            console.log(e);
+        }
+    });
+</script>
+
+<script>
+    function LoadData(data) {
+        document.getElementById("decodeIt").innerHTML = data;
+        outPut = document.getElementById("decodeIt").innerText;
+        return outPut;
+    }
+
+    //draw linear feature map of fragment
+    function drawLinearMap(features, id, name, size, width) {
+        var gd = GiraffeDraw();
+        var data = [size, features];
+        gd.read(data);
+        //draw linear
+        gd.LinearMap({
+            'map_dom_id': id,
+            'plasmid_name': name,
+            'digest': false,
+            'map_width': width,
+            'map_height': width
+        });
+    }
+</script>
