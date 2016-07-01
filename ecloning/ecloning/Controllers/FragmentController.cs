@@ -98,6 +98,34 @@ namespace ecloning.Controllers
             return View();
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult Delete(int? id, int? plasmid_id, string tag)
+        {
+            if(id== null || plasmid_id== null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                //remove the fragment features
+                var fMap = db.fragment_map.Where(f => f.fragment_id == id);
+                if (fMap.Count() > 0)
+                {
+                    foreach(var map in fMap)
+                    {
+                        db.fragment_map.Remove(map);
+                    }
+                }
+                //remove the fragment
+                var fragment = db.fragments.Find(id);
+                db.fragments.Remove(fragment);
+                db.SaveChanges();
+                return RedirectToAction("Index", "Fragment", new { id = plasmid_id, tag = tag });
+            }
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

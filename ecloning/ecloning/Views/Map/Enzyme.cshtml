@@ -36,7 +36,7 @@
                 <i class="fa fa-sun-o text-danger"></i>
                 <span>Plasmid Map</span>
             </a>
-            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Fragment", new { id = plasmidId })">
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Fragment", new { id = plasmidId, tag = Tag})">
                 <i class="fa fa-bars text-danger"></i>
                 <span>Fragments</span>
             </a>
@@ -137,10 +137,10 @@
                                 <input id="band-single-fseq" value="" />
                                 <input id="band-single-cseq" value="" />
                             </div>
-                            <div id="band-ends-single" class="col-xs-12"></div>
+                            <div id="band-ends-single" class="col-xs-12 text-center"></div>
                         </div>
                         <div class="panel-footer clearfix" >
-                            <a id="band-button-single" class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                            <a id="band-button-single" class="btn btn-default" data-toggle="tooltip" title="Save Band">
                                 <i class="fa fa-heart-o"></i>
                             </a>
                             <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-fseq" id="copy-band-single-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
@@ -187,10 +187,10 @@
                                 <input id="band-multiple-fseq" value="" />
                                 <input id="band-multiple-cseq" value="" />
                             </div>
-                            <div id="band-ends-multiple" class="col-xs-12"></div>
+                            <div id="band-ends-multiple" class="col-xs-12 text-center"></div>
                         </div>
                         <div class="panel-footer clearfix">
-                            <a id="band-button-multiple" class="btn btn-default" href="#" data-toggle="tooltip" title="Save Band">
+                            <a id="band-button-multiple" class="btn btn-default" data-toggle="tooltip" title="Save Band">
                                 <i class="fa fa-heart-o"></i>
                             </a>
                             <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-fseq" id="copy-band-multiple-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
@@ -469,7 +469,7 @@
                     //ladder selection box change========================================
                     $('#ladder-selection-single-selection').change(function () {
                         //change the sLadderId
-                        var sLadderId = +$(this).val();
+                        sLadderId = +$(this).val();
                         var newLadder = $.grep(ladders, function (d, i) {
                             return d.id === sLadderId;
                         })
@@ -521,10 +521,9 @@
                     LadderSelection("ladder-selection-multiple", mLadderId, allLadders);
                     //draw gel stimulation                    
                     drawGel("#gel-multiple", MEladder, MEbands, gelHeightMultiple); //change 300 to change the gel height == runing lognger
-
                     //ladder selection box change==================================================
                     $('#ladder-selection-multiple-selection').change(function () {
-                        var mLadderId = +$(this).val();
+                        mLadderId = +$(this).val();
                         var newLadder = $.grep(ladders, function (d, i) {
                             return d.id === mLadderId;
                         })
@@ -596,13 +595,13 @@
                         savedBands.push(data.band);
                         $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
                         $('#band-button-single').addClass('disabled');
-                        scrollTo('#band-single-msg');
+                        //scrollTo('#band-single-msg');
                         $('#band-single-msg').text("Fragment Saved!");
                         setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
                     }
                     else
                     {
-                        scrollTo('#band-single-msg');
+                        //scrollTo('#band-single-msg');
                         $('#band-single-msg').text("Fragment NOT Saved!");
                         setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
                     }
@@ -621,12 +620,12 @@
                         savedBands.push(data.band);
                         $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
                         $('#band-button-multiple').addClass("disabled");
-                        scrollTo('#band-multiple-msg');
+                        //scrollTo('#band-multiple-msg');
                         $('#band-multiple-msg').text("Fragment Saved!");
                         setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
                     } else
                     {
-                        scrollTo('#band-multiple-msg');
+                        //scrollTo('#band-multiple-msg');
                         $('#band-multiple-msg').text("Fragment NOT Saved!");
                         setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
                     }

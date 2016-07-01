@@ -706,3 +706,12 @@ svg text tspan{
         border-width: 1px;
         border-color:rgba(0,0,0,0.2);
     }
+
+.fixed-panel {
+  height: 280px;
+  overflow-y: scroll;
+}
+.max-width{
+    max-width: 450px;
+    overflow-x: scroll;
+}
