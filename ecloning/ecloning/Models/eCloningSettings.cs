@@ -12,8 +12,8 @@ namespace ecloning.Models
     public static class eCloningSettings
     {
         //set app hosting
-        //public readonly static string AppHosting = "Cloud";
-        public readonly static string AppHosting = "Local";
+        public readonly static string AppHosting = "Cloud";
+        //public readonly static string AppHosting = "Local";
         //set env
         public readonly static string AppEnv = "Developement";
 

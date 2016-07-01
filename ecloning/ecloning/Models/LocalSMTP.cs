@@ -5,12 +5,13 @@ using System.Web;
 
 namespace ecloning.Models
 {
-    public class LocalSMTP
+    public static class LocalSMTP
     {
-        public readonly string Server = "";
-        public readonly string Port = "";
-        public readonly string Login = "";
-        public readonly string Password = "";
+        public readonly static string Server = "smtp.nki.nl";
+        public readonly static int Port = 25;
+        public readonly static string Login = "";
+        public readonly static string Password = "";
+        public readonly static bool EnableSsl = false;
 
 
     }

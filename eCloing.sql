@@ -585,7 +585,7 @@ CREATE TABLE common_modifying
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	enzyme_id INT NOT NULL,
-	company_id INT NOT NULL
+	company_id INT NOT NULL,
 	group_id INT NOT NULL,
 	CONSTRAINT fk_common_modifying_enzyme_id FOREIGN KEY (enzyme_id) REFERENCES modifying_enzyme(id),
 	CONSTRAINT fk_common_modifying_company_id FOREIGN KEY (company_id) REFERENCES company(id),
@@ -1214,8 +1214,8 @@ INSERT INTO dropdownitem VALUES
 
 --0/1--
 --true /false
-(1, 'Yes', 'YN01'),
-(0, 'No', 'YN01'),
+('1', 'Yes', 'YN01'),
+('0', 'No', 'YN01'),
 
 --true /false
 ('true', 'Yes', 'TF'),

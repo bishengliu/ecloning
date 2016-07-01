@@ -90,12 +90,9 @@
     </div>
 </div>
 
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
-
-<script src="/Scripts/jquery-2.2.0.js"></script>
 <script>
     //aim: when use select department, show group list accordingly
     //first need to generate the list from json and then preprare the option list

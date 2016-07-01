@@ -108,7 +108,7 @@ namespace ecloning.Controllers
                         var userManager = new UserManager<ApplicationUser>(userStore);
                         ApplicationUser user = context.Users.Where(u => u.UserName.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
                         var Roles = userManager.GetRoles(user.Id);
-                        ecloningEntities db = new ecloningEntities();
+                        //ecloningEntities db = new ecloningEntities();
 
                         var appAdmin = new AppAdmin();
                         var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv, eCloningSettings.AppHosting);
@@ -171,7 +171,7 @@ namespace ecloning.Controllers
                             }
                         }
 
-                    return RedirectToLocal(returnUrl);
+                        return RedirectToAction("Index", "Home");
                     case SignInStatus.LockedOut:
                         return View("Lockout");
                     case SignInStatus.RequiresVerification:
@@ -266,8 +266,7 @@ namespace ecloning.Controllers
                 //institute admin
                 var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv, eCloningSettings.AppHosting);
                 //db
-                ecloningEntities db = new ecloningEntities();
-
+                //ecloningEntities db = new ecloningEntities();
 
                 //check registration code
 
@@ -515,13 +514,73 @@ namespace ecloning.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                // Send an email with this link
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+
+                if (eCloningSettings.AppHosting != "Cloud")
+                {
+                    var body = "<h3><b>Reset Password</b></h3><br/>Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                    var message = new MailMessage();
+                    message.To.Add(new MailAddress(model.Email));  // replace with valid value 
+                    message.From = new MailAddress(eCloningSettings.iEmail);  // replace with valid value
+                    message.Subject = "Reset your password";
+                    message.Body = body;
+                    message.IsBodyHtml = true;
+
+                    using (var smtp = new SmtpClient())
+                    {
+                        var credential = new NetworkCredential
+                        {
+                            UserName = LocalSMTP.Login,  // replace with valid value
+                            Password = LocalSMTP.Password  // replace with valid value
+                        };
+                        smtp.Credentials = credential;
+                        smtp.Host = LocalSMTP.Server;
+                        smtp.Port = LocalSMTP.Port;
+                        smtp.EnableSsl = LocalSMTP.EnableSsl;
+                        await smtp.SendMailAsync(message);
+                        //return RedirectToAction("Sent");
+                        return View("ForgotPasswordConfirmation");
+                    }
+                }
+                else
+                {
+                    var msg = new SendGridMessage();
+
+                    msg.From = new MailAddress(eCloningSettings.iEmail, eCloningSettings.iFirstName +" "+eCloningSettings.iLastName);
+                    msg.AddTo(model.Email);
+                    msg.Subject = "Reset your password";
+                
+                    msg.Html = "<h3><b>Reset Password</b></h3><br/>Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                    //var username = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
+                    //var pswd = "boL5MRQUCtbM1K8";
+                    //var username = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
+                    var username = eCloningSettings.SendgridLoginName;
+                    //var pswd = "boL5MRQUCtbM1K8";
+                    var pswd = eCloningSettings.SendgridPsw;
+                    var credentials = new NetworkCredential(username, pswd);
+
+                    // Create an Web transport for sending email.
+                    var transportWeb = new Web(credentials);
+
+                    // Send the email.
+                    // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                    await transportWeb.DeliverAsync(msg);
+                    return View("ForgotPasswordConfirmation");
+                }
+
+                //return RedirectToAction("ForgotPasswordConfirmation", "Account");
+         
                 // Send an email with this link
                 // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		

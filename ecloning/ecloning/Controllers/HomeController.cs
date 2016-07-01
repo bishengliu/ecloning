@@ -8,7 +8,7 @@ using System.Web.Mvc;
 namespace ecloning.Controllers
 {
 
-    public class HomeController : RootController
+    public class HomeController : Controller
     {
         //private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(HomeController));
         public ActionResult Index()
