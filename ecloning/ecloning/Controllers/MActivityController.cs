@@ -248,5 +248,14 @@ namespace ecloning.Controllers
             ViewBag.Buffers = buffers.ToList();
             return View(MActivity);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

@@ -35,5 +35,14 @@ namespace ecloning.Controllers
             ViewBag.Type = type;
             return View();
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

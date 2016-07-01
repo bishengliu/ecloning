@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ecloning.Models.RoleViewModel>
+@{
+    ViewBag.Title = "Group People";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h3 class="text-center text-primary">Group People</h3>
+    </div>
+</div>
+
+<div class="col-xs-12 col-md-offset-1 col-md-10">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th class="col-md-2">
+                        Email
+                    </th>
+                    <th class="col-md-2">
+                        Name
+                    </th>
+                    <th class="col-md-2">
+                        Roles
+                    </th>
+                    <th class="col-md-2"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var Roles = string.Join(", ", item.Roles.ToArray());
+                    <tr>
+                        <td class="col-md-2">
+                            @item.Email
+                        </td>
+                        <td class="col-md-2">
+                            @item.userName
+                        </td>
+                        <td class="col-md-2">
+                            @Roles
+                        </td>
+                        <td class="col-md-2">
+                            <a href="@Url.Action("AddRole", "Role", new { userId = @item.userId })">
+                                <i class="glyphicon glyphicon-plus text-info"></i>
+                                <span class="text-text-info">Add Role</span>
+                            </a> |
+                            <a href="@Url.Action("DeleteRole", "Role", new { userId = @item.userId })">
+                                <i class="glyphicon glyphicon-trash text-info"></i>
+                                <span class="text-text-info">Remove Role</span>
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

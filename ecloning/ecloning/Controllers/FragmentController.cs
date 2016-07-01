@@ -97,5 +97,14 @@ namespace ecloning.Controllers
             ViewBag.Fragments = JsonConvert.SerializeObject(fragments.ToList());
             return View();
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

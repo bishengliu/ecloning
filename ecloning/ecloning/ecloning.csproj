@@ -277,6 +277,7 @@
     <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\PrimerController.cs" />
     <Compile Include="Controllers\RActivityController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RootController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -485,6 +486,7 @@
     <Compile Include="Models\restri_enzyme.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Models\seq_code.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1060,6 +1062,7 @@
     <Content Include="Views\pBundle\Compare.cshtml" />
     <Content Include="Views\BioTools\SeqEditor.cshtml" />
     <Content Include="Views\Fragment\Index.cshtml" />
+    <Content Include="Views\Role\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

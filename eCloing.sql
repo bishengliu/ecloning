@@ -1261,6 +1261,10 @@ INSERT INTO dropdownitem VALUES
 ('RNA', 'RNA', 'ladder'),
 ('Protein', 'Protein', 'ladder')
 
+--app roles
+('GroupLeader', 'Group Leader', 'appRole'),
+('Assistant', 'Group Assistant', 'appRole'),
+('InstAdmin', 'Institute Administrator', 'appRole')
 
 ;
 
