@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7fb1b79853b4494c9446e63dbe4fbf59" Name="Diagram1">
+      <Diagram DiagramId="8f5af3d3c787452b9cd55e79d4bcb7e1" Name="Diagram1">
         <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.activity_modifying" Width="1.5" PointX="13.25" PointY="15.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.activity_restriction" Width="1.5" PointX="16.25" PointY="15.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="6.75" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="6.75" PointY="21.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
@@ -46,7 +46,7 @@
         <EntityTypeShape EntityType="ecloningModel.people_license" Width="1.5" PointX="6" PointY="26.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.plasmid" Width="1.5" PointX="3" PointY="41.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.plasmid_bundle" Width="1.5" PointX="3" PointY="37.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="0.75" PointY="34.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="0.75" PointY="34.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.plasmid_map" Width="1.5" PointX="11.25" PointY="34.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.plasmid_map_backup" Width="1.5" PointX="11.25" PointY="30" IsExpanded="true" />
         <EntityTypeShape EntityType="ecloningModel.primer" Width="1.5" PointX="3" PointY="48.875" IsExpanded="true" />

@@ -216,9 +216,9 @@ CREATE TABLE [group]
 	CONSTRAINT fk_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)
 );
 
-INSERT INTO [group](depart_id,name,email,[des]) VALUES 
-( 1, 'AppAdmin', 'bishengliu@gmail.com','SystemAdmin'),
-( 2, 'Institute Admin', 'bishengliu@gmail.com','Institute Admin');
+INSERT INTO [group](depart_id,name,[des]) VALUES 
+( 1, 'AppAdmin','SystemAdmin'),
+( 2, 'Institute Admin','Institute Admin');
 
 
 ---lab people in each research group----

@@ -303,6 +303,7 @@
     <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
     <NavigationProperty Name="common_modifying" Relationship="Self.fk_common_modifying_group_id" FromRole="group" ToRole="common_modifying" />

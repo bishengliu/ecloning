@@ -269,6 +269,7 @@
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="des" Type="text" />
           <Property Name="code" Type="text" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="group_people">
           <Key>
@@ -1935,6 +1936,7 @@
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
           <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
           <NavigationProperty Name="common_modifying" Relationship="Self.fk_common_modifying_group_id" FromRole="group" ToRole="common_modifying" />
@@ -3608,6 +3610,7 @@
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="email" ColumnName="email" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

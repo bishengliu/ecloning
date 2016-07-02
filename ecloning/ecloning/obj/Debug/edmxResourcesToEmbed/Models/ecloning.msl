@@ -274,6 +274,7 @@
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="email" ColumnName="email" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
