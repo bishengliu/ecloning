@@ -209,15 +209,16 @@ CREATE TABLE [group]
     id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	depart_id INT NOT NULL,
     name NVARCHAR(50) NOT NULL, 
+	email NVARCHAR(100), 
 	code TEXT, --for registration
 	[des] TEXT,
 	CONSTRAINT uq_group_depart_id_name UNIQUE (depart_id,name),
 	CONSTRAINT fk_group_depart_id FOREIGN KEY (depart_id) REFERENCES department(id)
 );
 
-INSERT INTO [group](depart_id,name,[des]) VALUES 
-( 1, 'AppAdmin', 'SystemAdmin'),
-( 2, 'Institute Admin', 'Institute Admin');
+INSERT INTO [group](depart_id,name,email,[des]) VALUES 
+( 1, 'AppAdmin', 'bishengliu@gmail.com','SystemAdmin'),
+( 2, 'Institute Admin', 'bishengliu@gmail.com','Institute Admin');
 
 
 ---lab people in each research group----
