@@ -8,7 +8,6 @@ namespace ecloning.Controllers
 {
     //only researcher and researcher have access
     [Authorize(Roles = "appAdmin, Researcher, GroupLeader, Assistant")]
-    [Authorize]
     //[AuthorizeArea(AllowIpAddresses = new[] { "1.1.1.1", "1.2.3.4" })]
     public class RootController : Controller
     {

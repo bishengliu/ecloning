@@ -556,7 +556,6 @@ namespace ecloning.Controllers
                 else
                 {
                     var msg = new SendGridMessage();
-
                     msg.From = new MailAddress(eCloningSettings.iEmail, eCloningSettings.iFirstName +" "+eCloningSettings.iLastName);
                     msg.AddTo(model.Email);
                     msg.Subject = "Reset your password";
@@ -572,7 +571,6 @@ namespace ecloning.Controllers
 
                     // Create an Web transport for sending email.
                     var transportWeb = new Web(credentials);
-
                     // Send the email.
                     // You can also use the **DeliverAsync** method, which returns an awaitable task.
                     await transportWeb.DeliverAsync(msg);
