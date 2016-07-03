@@ -217,8 +217,8 @@ CREATE TABLE [group]
 );
 
 INSERT INTO [group](depart_id,name,[des]) VALUES 
-( 1, 'AppAdmin','SystemAdmin'),
-( 2, 'Institute Admin','Institute Admin');
+( 1, 'AppAdmin','SystemAdmin'); --must be added first!
+-- ( 2, 'Institute Admin','Administrator');
 
 
 ---lab people in each research group----

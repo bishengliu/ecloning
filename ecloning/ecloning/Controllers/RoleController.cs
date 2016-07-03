@@ -162,26 +162,19 @@ namespace ecloning.Controllers
             var groupInfo = new GroupInfo(userInfo.PersonId);
             var groupId = groupInfo.groupId[0];
 
-            //generate the invitation code in the group
-            byte[] bytes = new byte[256];
-            var rng = new RNGCryptoServiceProvider();
-            rng.GetBytes(bytes);
-            HashAlgorithm algorithm = SHA256.Create();
-            var Hash = algorithm.ComputeHash(bytes);
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in Hash) { sb.Append(b.ToString("X2")); }
-            var code = sb.ToString();
+            ////generate the invitation code in the group
+            //var gencode = new genCode();
+            //var code = gencode.HashStringCode(256);
             var group = db.groups.Find(groupId);
-            group.code = code;
-            db.SaveChanges();
+            //group.code = code;
+            //db.SaveChanges();
             //send email
             //shared info
             var leaderEmail = User.Identity.GetUserName();
             var leaderName = db.people.Where(e => e.email == email).FirstOrDefault().first_name + " " + db.people.Where(e => e.email == email).FirstOrDefault().last_name;
             var html = "I invite you to register on this website: <a href=\"" + eCloningSettings.AppURI + "\">" + eCloningSettings.AppURI + "</a>";
             html = html + "<br/><p>Please copy the following code to register</p>";
-            html = html + "<p><strong>" + code + "</strong></p>";
+            html = html + "<p><strong>" + group.code + "</strong></p>";
             html = html + "<br/><br/><p>Regards, <br/>" + leaderName + "<br/>" + leaderEmail + "</p>";
             if (eCloningSettings.AppHosting == "Cloud")
             {

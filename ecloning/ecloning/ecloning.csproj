@@ -260,8 +260,11 @@
     <Compile Include="Areas\Admin\Controllers\MEnzymeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RActivityController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\RootController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Areas\Admin\Models\Restriction.cs" />
+    <Compile Include="Areas\Admin\Models\UsersViewModal.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BioToolsController.cs" />
     <Compile Include="Controllers\FeatureController.cs" />
@@ -271,7 +274,6 @@
     <Compile Include="Controllers\MActivityController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapController.cs" />
-    <Compile Include="Controllers\MiscellaneousController.cs" />
     <Compile Include="Controllers\OligoController.cs" />
     <Compile Include="Controllers\pBundleController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
@@ -378,6 +380,7 @@
     <Compile Include="Models\fragment_methylation.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\genCode.cs" />
     <Compile Include="Models\group.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -928,6 +931,7 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\Users\Index.cshtml" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />
@@ -1024,7 +1028,6 @@
     <Content Include="Views\Shared\_BioTools.cshtml" />
     <Content Include="Views\BioTools\Index.cshtml" />
     <Content Include="Views\Shared\_BioToolsLayout.cshtml" />
-    <Content Include="Views\Miscellaneous\FormatSeq.cshtml" />
     <Content Include="Views\RActivity\Index.cshtml" />
     <Content Include="Views\RActivity\EnzymeList.cshtml" />
     <Content Include="Views\MActivity\Index.cshtml" />
@@ -1063,10 +1066,12 @@
     <Content Include="Views\BioTools\SeqEditor.cshtml" />
     <Content Include="Views\Fragment\Index.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\BioTools\FormatSeq.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
     <Folder Include="App_Data\plasmid\" />
+    <Folder Include="Areas\Admin\Views\Role\" />
     <Folder Include="Areas\Admin\Views\Root\" />
     <Folder Include="logs\" />
     <Folder Include="Views\Root\" />

@@ -35,7 +35,11 @@ namespace ecloning.Controllers
             ViewBag.Type = type;
             return View();
         }
-
+        
+        public ActionResult FormatSeq()
+        {
+            return View();
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

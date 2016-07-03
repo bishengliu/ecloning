@@ -23,7 +23,7 @@ namespace ecloning.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        ecloningEntities db = new ecloningEntities();
+        private ecloningEntities db = new ecloningEntities();
 
         public AccountController()
         {
@@ -117,18 +117,18 @@ namespace ecloning.Controllers
                         if (model.Email == appAdmin.email)
                         {
                             //create role if not exist
-                            var appAdminRole = db.AspNetRoles.Where(r => r.Name == "AppAdmin").Select(r => r.Name).FirstOrDefault();
+                            var appAdminRole = db.AspNetRoles.Where(r => r.Name == "appAdmin").Select(r => r.Name).FirstOrDefault();
                             if (appAdminRole == null)
                             {
-                                IdentityRole Role = new IdentityRole("AppAdmin");
+                                IdentityRole Role = new IdentityRole("appAdmin");
                                 context.Roles.Add(Role);
                                 context.SaveChanges();
                             }
 
                             //add user to AppAdmin if not
-                            if (!userManager.IsInRole(user.Id, "AppAdmin"))
+                            if (!userManager.IsInRole(user.Id, "appAdmin"))
                             {
-                                userManager.AddToRole(user.Id, "AppAdmin");
+                                userManager.AddToRole(user.Id, "appAdmin");
                             }
                         }
 
@@ -154,24 +154,52 @@ namespace ecloning.Controllers
                         //auto role researcher
                         if (model.Email != appAdmin.email && model.Email != instAdmin.iEmail)
                         {
-                            //the user is researcher
-                            //create role if not exist
-                            var ResearcherRole = db.AspNetRoles.Where(r => r.Name == "Researcher").Select(r => r.Name).FirstOrDefault();
-                            if (ResearcherRole == null)
+                        //get the group leaders emails
+                            var leaderEmails = db.groups.Where(g => g.name != "AppAdmin" && g.name != "Institute Admin").Select(e => e.email).ToArray();
+                            if(Array.IndexOf(leaderEmails, model.Email) != -1)
                             {
-                                IdentityRole Role = new IdentityRole("Researcher");
-                                context.Roles.Add(Role);
-                                context.SaveChanges();
+                                //the user is the group leader
+                                //create role if not exist
+                                var GroupLeaderRole = db.AspNetRoles.Where(r => r.Name == "GroupLeader").Select(r => r.Name).FirstOrDefault();
+                                if (GroupLeaderRole == null)
+                                {
+                                    IdentityRole Role = new IdentityRole("GroupLeader");
+                                    context.Roles.Add(Role);
+                                    context.SaveChanges();
+                                }
+                                //add user to Researcher if not
+                                if (!userManager.IsInRole(user.Id, "GroupLeader"))
+                                {
+                                    userManager.AddToRole(user.Id, "GroupLeader");
+                                }
                             }
-
-                            //add user to Researcher if not
-                            if (!userManager.IsInRole(user.Id, "Researcher"))
+                            else
                             {
-                                userManager.AddToRole(user.Id, "Researcher");
-                            }
+                                //normal researchers
+                                //create role if not exist
+                                var ResearcherRole = db.AspNetRoles.Where(r => r.Name == "Researcher").Select(r => r.Name).FirstOrDefault();
+                                if (ResearcherRole == null)
+                                {
+                                    IdentityRole Role = new IdentityRole("Researcher");
+                                    context.Roles.Add(Role);
+                                    context.SaveChanges();
+                                }
+                                //add user to Researcher if not
+                                if (!userManager.IsInRole(user.Id, "Researcher"))
+                                {
+                                    userManager.AddToRole(user.Id, "Researcher");
+                                }
+                            }                            
                         }
-
-                        return RedirectToAction("Index", "Home");
+                        if(User.IsInRole("Researcher") || User.IsInRole("GroupLeader"))
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Dashboard", new { area ="Admin" });
+                        }
+                        
                     case SignInStatus.LockedOut:
                         return View("Lockout");
                     case SignInStatus.RequiresVerification:
@@ -238,7 +266,7 @@ namespace ecloning.Controllers
         public ActionResult Register()
         {
             //prepare department list
-            ViewBag.Department = new SelectList(db.departments.OrderBy(n=>n.name).Select(d=> new { depart = d.name, name = d.name}), "depart", "name");
+            ViewBag.Department = new SelectList(db.departments.Where(d=>d.name != "AppAdmin").OrderBy(n=>n.name).Select(d=> new { depart = d.name, name = d.des}), "depart", "name");
             //prepare group list
             var groups = db.groups.Include("department").OrderBy(n => n.name).Select(g => new {group = g.name, depart = g.department.name });
             ViewBag.JsonData = JsonConvert.SerializeObject(groups.ToList());
@@ -265,10 +293,24 @@ namespace ecloning.Controllers
 
                 //institute admin
                 var instAdmin = new InstituteAdmin(eCloningSettings.AppEnv, eCloningSettings.AppHosting);
-                //db
-                //ecloningEntities db = new ecloningEntities();
-
+                
                 //check registration code
+                if(model.Email == appAdmin.email)
+                {
+                    //appAdmin
+                    if (model.code != appAdmin.code)
+                    {
+                        TempData["msg"] = "Invitation Code is wrong!";
+                        return View(model);
+                    }
+                    else
+                    {
+                        //need to deal with appAdmin department and group
+                        //need to add first
+                        model.Department = "AppAdmin";
+                        model.Group = "AppAdmin";
+                    }
+                }
 
                 //find depart and group info
                 var depart = db.departments.Where(d => d.name == model.Department);
@@ -284,84 +326,48 @@ namespace ecloning.Controllers
                     return View(model);
                 }
 
-                //check registration code
-                if (model.Email == appAdmin.email)
-                {
-                    if(model.code != appAdmin.code)
-                    {
-                        TempData["msg"] = "Invitation Code is wrong!";
-                        return View(model);
-                    }
-                    else
-                    {
-                        //need to deal with appAdmin department and group
-                        //need to add first
-                        model.Department = "AppAdmin";
-                        model.Group = "AppAdmin";
-                    }
-
-                }
-                else if (model.Email == instAdmin.iEmail)
-                {
-                    if (model.code != instAdmin.iCode)
-                    {
-                        TempData["msg"] = "Invitation Code is wrong!";
-                        return View(model);
-                    }
-                    else
-                    {
-                        //need to deal with institute admin department and group
-                        //need to add first
-                        model.Department = "Institute Admin";
-                        model.Group = "Institute Admin";
-                    }
-
-                }
-                else
-                {
+                if(model.Department != "AppAdmin" && model.Email != appAdmin.email)
+                {                    
                     //check code in group table
-                    //researchers
                     if (group.FirstOrDefault().code != model.code)
                     {
                         TempData["msg"] = "Invitation Code is wrong!";
                         return View(model);
                     }
+
+                    //check license based on group
+                    if (model.Department != "AppAdmin" && model.Department != "Institute Admin")
+                    {
+                        //get group and department again 
+                        depart = db.departments.Where(d => d.name == model.Department);
+                        group = db.groups.Where(g => g.depart_id == depart.FirstOrDefault().id && g.name == model.Group);
+
+                        //check how many license left
+                        var license = db.app_license.Where(l => l.depart_id == depart.FirstOrDefault().id && l.group_id == group.FirstOrDefault().id);
+                        int licenseNum = -1;
+                        bool? licenseExpired = false;
+                        if (license.Count() > 0)
+                        {
+                            licenseNum = license.FirstOrDefault().group_num;  //license num and status are stored in the database;
+                            licenseExpired = license.FirstOrDefault().group_expired;
+                        }
+                        if (licenseExpired == true)
+                        {
+                            TempData["msg"] = "The license for " + model.Group + " has expired!";
+                            return View(model);
+                        }
+                        //check how many people in the same group
+                        var peopleInGroup = db.group_people.Where(g => g.group_id == group.FirstOrDefault().id).Select(p => p.people_id).ToList();
+                        var activePeople = db.people.Where(p => peopleInGroup.Contains(p.id) && p.active == true).Select(a => a.active);
+
+                        if (licenseNum > 0 && activePeople.Count() > 0 && activePeople.Count() > licenseNum)
+                        {
+                            TempData["msg"] = "registration failed. Maximum number of license for " + model.Group + "reached!";
+                            return View(model);
+                        }
+                    }
                 }
-
-
-                //check license based on group
-                if(model.Email != appAdmin.email && model.Email != instAdmin.iEmail)
-                {
-                    //get group and department again 
-                    depart = db.departments.Where(d => d.name == model.Department);
-                    group = db.groups.Where(g => g.depart_id == depart.FirstOrDefault().id && g.name == model.Group);
-
-                    //check how many license left
-                    var license = db.app_license.Where(l => l.depart_id == depart.FirstOrDefault().id && l.group_id == group.FirstOrDefault().id);
-                    int licenseNum = -1;
-                    bool? licenseExpired = false;
-                    if (license.Count() > 0)
-                    {
-                        licenseNum = license.FirstOrDefault().group_num;
-                        licenseExpired = license.FirstOrDefault().group_expired;
-                    }
-                    if(licenseExpired == true)
-                    {
-                        TempData["msg"] = "The license for "+model.Group+" has expired!";
-                        return View(model);
-                    }
-                    //check how many people in the same group
-                    var peopleInGroup = db.group_people.Where(g => g.group_id == group.FirstOrDefault().id).Select(p => p.people_id).ToList();
-                    var activePeople = db.people.Where(p => peopleInGroup.Contains(p.id) && p.active == true).Select(a => a.active);
-
-                    if(licenseNum >0 && activePeople.Count()>0 && activePeople.Count()> licenseNum)
-                    {
-                        TempData["msg"] = "registration failed. Maximum number of license for " + model.Group + "reached!";
-                        return View(model);
-                    }
-                }
-                
-
+                        
                 //try to register
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
@@ -395,7 +401,6 @@ namespace ecloning.Controllers
                         //get persion id
                         int people_id = db.people.Where(e => e.email == model.Email).FirstOrDefault().id;
 
-
                         //add to group_people
                         var group_people = new group_people();
                         group_people.group_id = group.FirstOrDefault().id;
@@ -403,14 +408,12 @@ namespace ecloning.Controllers
                         db.group_people.Add(group_people);
                         db.SaveChanges();
                     }
-                    
-
-                    
+                                        
                     //stopping auto sigin in
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                     //check whether it is appAdmin
-                    if (model.Email == appAdmin.email)
+                    if (model.Department == "AppAdmin" && model.Email == appAdmin.email)
                     {
                         //check whether appAmin role
                         var Admin = db.AspNetRoles.Where(r => r.Name == "appAdmin");
@@ -428,47 +431,40 @@ namespace ecloning.Controllers
                             userManager.AddToRole(user.Id, "appAdmin");
                         }
                     }
+                    //check whether is the instAdmin and add to role of InstAdmin
+                    if (model.Department != "Institute Admin")
+                    {
+                        //check whether appAmin role
+                        var Admin = db.AspNetRoles.Where(r => r.Name == "InstAdmin");
+                        if (Admin.Count() == 0)
+                        {
+                            //create it
+                            IdentityRole Role = new IdentityRole("InstAdmin");
+                            context.Roles.Add(Role);
+                            context.SaveChanges();
+                        }
 
+                        //add to appAdmin role
+                        if (!userManager.IsInRole(user.Id, "InstAdmin"))
+                        {
+                            userManager.AddToRole(user.Id, "InstAdmin");
+                        }
+                    }
+                    ////update the group code
+                    //var gencode = new genCode();
+                    //var code = gencode.HashStringCode(256);
+                    //group.FirstOrDefault().code = code;
+                    //db.SaveChanges();
 
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                    //if app host in azure, use sendgrid
-                    //if(eCloningSettings.AppEnv() == "Cloud")
-                    //{
-                    //    var msg = new SendGridMessage();
-
-                    //    msg.From = new MailAddress(appAdmin.email, appAdmin.appName);
-                    //    msg.AddTo(model.Email);
-                    //    msg.Subject = "Complete your registration";
-
-
-                    //    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    //    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    //    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    //    msg.Html = "Thank you for your registration, please click on the link to complete your registration: <a href=\"" + callbackUrl + "\">here</a>";
-
-                    //    var username = eCloningSettings.SendgridLoginName();
-                    //    var pswd = eCloningSettings.SendgridPsw();
-                    //    var credentials = new NetworkCredential(username, pswd);
-                    //    // Create an Web transport for sending email.
-                    //    var transportWeb = new Web(credentials);
-
-                    //    // Send the email.
-                    //    // You can also use the **DeliverAsync** method, which returns an awaitable task.
-                    //    await transportWeb.DeliverAsync(msg);
-                    //}
-                    //if(eCloningSettings.AppEnv() == "Cloud")
-                    //{
-                    //    //send email using local smtp
-                    //    var smtp = new LocalSMTP();
-                    //}
-
-                    //return RedirectToAction("EmailSent", "Account");
-                    return RedirectToAction("Index", "Home");
+                    //return views
+                    if (model.Department != "AppAdmin" && model.Department != "Institute Admin")
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Dashboard", new { area = "Admin"});
+                    }
                 }
                 AddErrors(result);
             }
@@ -476,7 +472,6 @@ namespace ecloning.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
 
         [AllowAnonymous]
         public ActionResult EmailSent()

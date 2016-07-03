@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ecloning.Controllers
 {
-    //only researcher and researcher have access
+    //instAdmin has no access
     [Authorize(Roles = "appAdmin, Researcher, GroupLeader, Assistant")]
     //[AuthorizeArea(AllowIpAddresses = new[] { "1.1.1.1", "1.2.3.4" })]
     public class RootController : Controller

@@ -59,12 +59,15 @@
                                         <span class="">Dashboard</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="@Url.Action("Index", "Home", new { area=""})" target="_blank">
-                                        <i class="fa fa-users text-danger"></i>
-                                        <span class="">Work Pages</span>
-                                    </a>
-                                </li>
+                                if (User.IsInRole("appAdmin") || User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Home", new { area=""})" target="_blank">
+                                            <i class="fa fa-users text-danger"></i>
+                                            <span class="">Work Pages</span>
+                                        </a>
+                                    </li>
+                                }
                             }
                         </ul>
                     </div>
@@ -83,9 +86,9 @@
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/biotools")
     @RenderSection("scripts", required: false)
-    <script src="~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    @*<script src="~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="~/Scripts/datatable/jquery.dataTables.min.js"></script>
     <script src="~/Scripts/datatable/dataTables.bootstrap.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/paging.js"></script>
+    <script type="text/javascript" src="~/Scripts/paging.js"></script>*@
 </body>
 </html>

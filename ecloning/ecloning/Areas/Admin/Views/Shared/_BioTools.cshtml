@@ -32,9 +32,6 @@
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
-                @*<li>
-                    <a href="@Url.Action("Index", "Ladder")"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> Ladders</a>
-                </li>*@
                 <li>
                     <a href="#"><i class="fa fa-barcode fa-fw fa-rotate-270"></i> Ladders<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -52,6 +49,13 @@
                 <li>
                     <a href="@Url.Action("Index", "Company")"><i class="fa fa-building-o fa-fw"></i> Companies</a>
                 </li>
+                @if (User.IsInRole("appAdmin") || User.IsInRole("InstAdmin"))
+                {
+                    <li>
+                        <a href="@Url.Action("Index", "Users")"><i class="fa fa-users fa-fw"></i> Application Users</a>
+                    </li>
+                }
+                
                 <li>
                     <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
