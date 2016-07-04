@@ -83,7 +83,7 @@
             <br /><br/>
             <h4 class="text-primary"><strong>Need help?</strong></h4>
             <h4 class="text-info">I cannot find my department.</h4>
-            <h4 class="text-info">I can find my department, but my researcher is not in the list.</h4>
+            <h4 class="text-info">I can find my department, but my group is not in the list.</h4>
             <h4 class="text-info">How to get the invitation code?</h4>
             <h4 class="text-info">Do I have to use my working email to register?</h4>
         </div>
@@ -108,6 +108,7 @@
         //alert(e);
     }
 
+    console.log(data);
     //get the selected department name
     $('#Department').on('change', function () {
         var depart = this.value;
@@ -121,14 +122,13 @@
                 group.push(data[index]["group"]);
             }            
         })
+        console.log(group);
         //prepare options dom
         if (group.length > 0) {
-            var groupOption = $('#Group option');
+            var groupOption = $('#Group');
+            groupOption.empty();
             $.each(group, function (index) {
-                groupOption
-                    .append($("<option></option>"))
-                    .attr("value", group[index])
-                    .text(group[index]);
+                groupOption.append($("<option value=" + group[index] + ">" + group[index] + "</option>"));
             });
         }
         else

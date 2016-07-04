@@ -106,15 +106,13 @@
                         <button class="btn btn-default pull-left" type="button" id="dp-add-cancel"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
-
                 <div class="pull-left col-xs-5 col-md-3 col-lg-2">
-                    <a data-toggle="tooltip" title="Add Department" id="dp-add" class="btn btn-default">
+                    <a id="dp-add" class="btn btn-default" data-toggle="tooltip" title="Add a department">
                         <i class="fa fa-plus-circle text-danger"></i>
                         <span>Department</span>
                     </a>
                 </div>
-            </div>
-            
+            </div>            
             @if (Model.Departments.Count == 0)
             {
                 <br/>
@@ -130,11 +128,48 @@
                     var dpId = "dpart-" + dp.Id;
                     var dpCId = "dpart-cancel-" + dp.Id;
                     var dpEId = "dpart-edit-" + dp.Id;
+
+                    var gpAId = "gp-add-" + dp.Id;
+                    var gpCId = "gp-cancel-" + dp.Id;
+                    var gpFId = "gp-form-" + dp.Id;
                     <div class="panel panel-info">
-                        <div class="panel-heading">@dp.Name</div>
+                        <div class="panel-heading"><strong>Department</strong>: @dp.Name</div>
+                        <div class="panel-footer clearfix">
+                            <div class="pull-left col-xs-5 col-md-4 col-lg-3">
+                                @if (dp.Groups.Count == 0)
+                                {
+                                    <a href="@Url.Action("DeleteDepart", "Users", new { Id = dp.Id })" class="btn btn-default" data-toggle="tooltip" title="Remove this department">
+                                        <i class="fa fa-trash-o text-danger"></i>
+                                    </a>
+                                }
+                                <a id="@dpEId" class="dp-edit clickable btn btn-default" data-toggle="tooltip" title="Modify department name">
+                                    <i class="fa fa-pencil-square-o text-info noEvent"></i>
+                                </a>
+                            </div>
+                            <div class="col-xs-7 col-md-8 col-lg-9">
+                                <div id="@dpId" class="hidden pull-right">
+                                    <div class="col-xs-10 col-md-8 col-lg-6">
+                                        @using (Html.BeginForm("EditDepart", "Users"))
+                                        {
+                                            <input type="text" class="hidden" name="id" value="@dp.Id" />
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="basic-addon">Name</span>
+                                                <input type="text" name="dpName" required="required" class="form-control" value="@dp.Name" aria-describedby="basic-addon" />
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-secondary" type="submit"><i class="fa fa-save text-danger"></i></button>
+                                                </span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-xs-2 col-md-4">
+                                        <button class="btn btn-default dp-cancel pull-left" type="button" id="@dpCId"><i class="fa fa-times noEvent"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="panel-body">
                             <div>
-                                <div id="gp-add-form" class="hidden pull-right col-xs-10">
+                                <div class="hidden pull-right col-xs-10" id="@gpFId">
                                     <div class="col-xs-10">
                                         @using (Html.BeginForm("AddGroup", "Users"))
                                         {
@@ -147,25 +182,20 @@
                                                     <label for="gpEmail" class="required">Email</label>
                                                     <input type="email" class="form-control" id="gpEmail" name="gpEmail" required="required" />
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="gpDes" class="required">Remarks</label>
-                                                    <input type="text" class="form-control" id="gpDes" name="gpDes" />
-                                                </div>
                                                 <input type="text" class="hidden" name="id" value="@dp.Id" />
                                                 <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-save text-danger"></i></button>
                                             </div>
-
                                         }
                                     </div>
                                     <div class="pull-left col-xs-2">
-                                        <button class="btn btn-sm btn-default" type="button" id="gp-add-cancel"><i class="fa fa-times"></i></button>
+                                        <button class="btn btn-sm btn-default gp-cancel " type="button" id="@gpCId"><i class="fa fa-times noEvent"></i></button>
                                     </div>                                    
                                 </div>
 
                                 <div class="pull-left col-xs-2">
-                                    <a data-toggle="tooltip" title="Add Group" id="gp-add" class="pull-left clickable">
-                                        <i class="fa fa-plus-circle text-danger"></i>
-                                        <span>Group</span>
+                                    <a id="@gpAId" class="pull-left clickable gp-add" data-toggle="tooltip" title="Add a group to this department">
+                                        <i class="fa fa-plus-circle text-danger noEvent"></i>
+                                        <span class="noEvent">Group</span>
                                     </a>
                                 </div>
                             </div>
@@ -183,10 +213,49 @@
                                 {
                                     var gpId = "gp-" + gp.groupId;
                                     var gpEId = "gp-edit-" + gp.groupId;
-                                    var gpRId = "gp-delete-" + gp.groupId;
-                                    <div class="col-xs-12 col-md-6">
+                                    var gpUId = "gp-update-" + gp.groupId;
+                                    var gpXId = "gp-x-" + gp.groupId;
+                                    <div class="col-xs-12 col-md-4">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">@gp.Name</div>
+                                            <div class="panel-heading"><strong>Group</strong>: @gp.Name (<a href="mailto:@gp.Email">@gp.Email</a>)</div>
+                                            <div class="panel-footer clearfix">
+                                                <div class="col-xs-12">
+                                                    <a href="@Url.Action("SendCode", "Users", new { Id = gp.groupId })" class="btn btn-default" data-toggle="tooltip" title="Send Registration Code">
+                                                        <i class="fa fa-send-o text-info"></i>
+                                                    </a>
+                                                    @if (gp.People.Count == 0)
+                                                    {
+                                                        <a href="@Url.Action("DeleteGroup", "Users", new { Id = gp.groupId })" class="btn btn-default" data-toggle="tooltip" title="Remove this group">
+                                                            <i class="fa fa-trash-o text-danger"></i>
+                                                        </a>
+                                                    }
+                                                    <a id="@gpEId" class="gp-edit clickable btn btn-default" data-toggle="tooltip" title="Modify this group">
+                                                        <i class="fa fa-pencil-square-o text-info noEvent"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="col-xs-12 hidden pull-right" id="@gpUId">
+                                                        <div class="col-xs-11">
+                                                            @using (Html.BeginForm("EditGroup", "Users"))
+                                                            {
+                                                                <div class="form-inline">
+                                                                    <div class="form-group">
+                                                                        <label for="gpName" class="required">Name</label>
+                                                                        <input type="text" class="form-control" id="gpName" name="gpName" value="@gp.Name" required="required" />
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="gpEmail" class="required">Email</label>
+                                                                        <input type="email" class="form-control" id="gpEmail" name="gpEmail" value="@gp.Email" required="required" />
+                                                                    </div>
+                                                                    <input type="text" class="hidden" name="id" value="@gp.groupId" />
+                                                                    <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-save text-danger"></i></button>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="pull-left col-xs-1">
+                                                            <button class="btn btn-sm btn-default gp-edit-cancel" type="button" id="@gpXId"><i class="fa fa-times noEvent"></i></button>
+                                                        </div>
+                                                </div>                                                
+                                            </div>
                                             <div class="panel-body">
                                                 <div class="table-responsive">
                                                     <table class="table table-hover table-condensed table-striped">
@@ -206,66 +275,29 @@
                                                         <tbody>
                                                             @foreach (var p in gp.People)
                                                             {
-                                                                var status = "Active";
+                                                                var status = "Locked Down";
                                                                 if (p.Active != null && p.Active == true)
                                                                 {
-                                                                    status = "Locked Down";
+                                                                    status = "Active";
                                                                 }
                                                                 <tr>
                                                                     <td>@p.Name</td>
-                                                                    <td>@p.Email</td>
+                                                                    <td><a href="mailto:@p.Email">@p.Email</a></td>
                                                                     <td>@status</td>
                                                                 </tr>
                                                             }
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            </div>
-                                            <div class="panel-footer clearfix">
-
-                                            </div>
+                                            </div>                                            
                                         </div>
                                     </div>
                                 }
                             }
                             
-                        </div>
-                        <div class="panel-footer clearfix">                            
-                            <div class="pull-left col-xs-5 col-md-4 col-lg-3">                                
-                                @if (dp.Groups.Count == 0)
-                                {
-                                    <a href="@Url.Action("DeleteDepart", "Users", new { Id = dp.Id })" data-toggle="tooltip" title="Remove Department" class="btn btn-default">
-                                        <i class="fa fa-trash-o text-danger"></i>
-                                    </a>
-                                }
-                                <a data-toggle="tooltip" id="@dpEId" title="Edit Department Name" class="dp-edit clickable btn btn-default">
-                                    <i class="fa fa-pencil-square-o text-danger"></i>
-                                </a>
-                            </div>
-                            <div class="col-xs-7 col-md-8 col-lg-9">
-                                <div id="@dpId" class="hidden pull-right">
-                                    <div class="col-xs-10 col-md-8 col-lg-6">
-                                        @using (Html.BeginForm("EditDepart", "Users"))
-                                        {
-                                            <input type="text" class="hidden" name="id" value="@dp.Id" />
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="basic-addon">Name</span>
-                                                <input type="text" name="dpName" required="required" class="form-control" value="@dp.Name" aria-describedby="basic-addon" />
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-secondary" type="submit"><i class="fa fa-save text-danger"></i></button>
-                                                </span>
-                                            </div>
-                                        }
-                                    </div>                                    
-                                    <div class="col-xs-2 col-md-4">
-                                        <button class="btn btn-default dp-cancel pull-left" type="button" id="@dpCId"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </div>                       
                     </div>
                 }
-
             }
         </div>
     </div>
@@ -282,17 +314,16 @@
                 //get the dp id
                 var array = e.target.id.split("-");
                 var dpId = +array[2];
-                console.log(dpId);
                 $(this).parent().parent().addClass("hidden");
                 $("#dpart-edit-" + dpId).removeClass("hidden");
             })
         })
+
         $(".dp-edit").each(function (i, el) {
             $(el).click(function (e) {
                 //get the dp id
                 var array = e.target.id.split("-");
                 var dpId = +array[2];
-                console.log(dpId);
                 $(this).addClass("hidden");
                 $("#dpart-" + dpId).removeClass("hidden");
             })
@@ -309,15 +340,51 @@
             $("#dp-add-form").addClass("hidden");
             $("#dp-add").removeClass("hidden");
         });
-        //add group
-        $("#gp-add").click(function () {
-            $(this).addClass("hidden");
-            $("#gp-add-form").removeClass("hidden");
+
+
+
+
+        ////add group
+        $(".gp-add").each(function (i, el) {
+            $(el).click(function (e) {
+                //get the dp id
+                var array = e.target.id.split("-");
+                var dpId = +array[2];
+                $(this).parent().addClass("hidden");
+                $("#gp-form-" + dpId).removeClass("hidden");
+            })
+        })
+        ////cancel adding group
+        $(".gp-cancel").each(function (i, el) {
+            $(el).click(function (e) {
+                //get the dp id
+                var array = e.target.id.split("-");
+                var dpId = +array[2];
+                $("#gp-form-" + dpId).addClass("hidden");
+                $("#gp-add-" + dpId).parent().removeClass("hidden");
+            })
         })
 
-        $("#gp-add-cancel").click(function () {
-            $("#gp-add-form").addClass("hidden");
-            $("#gp-add").removeClass("hidden");
-        });
+        //edit group
+        $(".gp-edit").each(function (i, el) {
+            $(el).click(function (e) {
+                //get the dp id
+                var array = e.target.id.split("-");
+                var gpId = +array[2];
+                $(this).addClass("hidden");
+                $("#gp-update-" + gpId).removeClass("hidden");
+            })
+        })
+
+
+        $(".gp-edit-cancel").each(function (i, el) {
+            $(el).click(function (e) {
+                //get the dp id
+                var array = e.target.id.split("-");
+                var gpId = +array[2];
+                $("#gp-update-" + gpId).addClass("hidden");
+                $("#gp-edit-" + gpId).removeClass("hidden");
+            })            
+        })
     });
 </script>
