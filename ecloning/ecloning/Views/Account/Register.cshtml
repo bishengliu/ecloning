@@ -128,7 +128,7 @@
             var groupOption = $('#Group');
             groupOption.empty();
             $.each(group, function (index) {
-                groupOption.append($("<option value=" + group[index] + ">" + group[index] + "</option>"));
+                groupOption.append($("<option value=\"" + group[index] + "\">" + group[index] + "</option>"));
             });
         }
         else

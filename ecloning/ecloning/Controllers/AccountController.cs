@@ -365,21 +365,19 @@ namespace ecloning.Controllers
                             TempData["msg"] = "registration failed. Maximum number of license for " + model.Group + "reached!";
                             return View(model);
                         }
-                    }
+                    } 
                 }
-                        
+                 //role related
+                    ApplicationDbContext context = new ApplicationDbContext();
+                    var roleStore = new RoleStore<IdentityRole>(context);
+                    var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+                    var userStore = new UserStore<ApplicationUser>(context);
+                    var userManager = new UserManager<ApplicationUser>(userStore); 
+                      
                 //try to register
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
-
-                //role related
-                ApplicationDbContext context = new ApplicationDbContext();
-                var roleStore = new RoleStore<IdentityRole>(context);
-                var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-                var userStore = new UserStore<ApplicationUser>(context);
-                var userManager = new UserManager<ApplicationUser>(userStore);
- 
 
                 //register sucess
                 if (result.Succeeded)
@@ -432,7 +430,7 @@ namespace ecloning.Controllers
                         }
                     }
                     //check whether is the instAdmin and add to role of InstAdmin
-                    if (model.Department != "Institute Admin")
+                    if (model.Department == "Institute Admin")
                     {
                         //check whether appAmin role
                         var Admin = db.AspNetRoles.Where(r => r.Name == "InstAdmin");
@@ -450,11 +448,65 @@ namespace ecloning.Controllers
                             userManager.AddToRole(user.Id, "InstAdmin");
                         }
                     }
-                    ////update the group code
-                    //var gencode = new genCode();
-                    //var code = gencode.HashStringCode(256);
-                    //group.FirstOrDefault().code = code;
-                    //db.SaveChanges();
+
+                    //if the user is the group leader
+                    if (model.Email == group.FirstOrDefault().email)
+                    {
+                        //check whether GroupLeader role
+                        var leder = db.AspNetRoles.Where(r => r.Name == "GroupLeader");
+                        if (leder.Count() == 0)
+                        {
+                            //create it
+                            IdentityRole Role = new IdentityRole("GroupLeader");
+                            context.Roles.Add(Role);
+                            context.SaveChanges();
+                        }
+                        //remove all previous group leader
+                        //find all the people in the same group
+                        var peopleId = db.group_people.Where(g => g.group_id == group.FirstOrDefault().id).Select(p=>p.people_id).ToList();
+                        List<string> gEmail = new List<string>();
+                        List<string> userIds = new List<string>();
+                        if (peopleId.Count() > 0)
+                        {
+                            foreach (var pid in peopleId)
+                            {
+                                var email = db.people.Where(p=>p.id==pid).FirstOrDefault().email;
+                                gEmail.Add(email);
+                            }
+                        }
+                        if (gEmail.Count() > 0)
+                        {
+                            foreach (var e in gEmail)
+                            {
+                                var userId = db.AspNetUsers.Where(u => u.Email == e).FirstOrDefault().Id;
+                                userIds.Add(userId);
+                            }
+                        }
+                        if (userIds.Count() > 0)
+                        {
+                            foreach (var uId in userIds)
+                            {
+                                if (userManager.IsInRole(uId, "GroupLeader"))
+                                {
+                                    userManager.RemoveFromRole(uId, "GroupLeader");
+                                }
+                            }
+                        }
+
+                        //add current user to role "GroupLeader"
+                        if (!userManager.IsInRole(user.Id, "GroupLeader"))
+                        {
+                            userManager.RemoveFromRole(user.Id, "GroupLeader");
+                        }
+                    }
+                    else
+                    {
+                        //normal user
+                        if (!userManager.IsInRole(user.Id, "Researcher"))
+                        {
+                            userManager.RemoveFromRole(user.Id, "Researcher");
+                        }
+                    }
 
                     //return views
                     if (model.Department != "AppAdmin" && model.Department != "Institute Admin")
