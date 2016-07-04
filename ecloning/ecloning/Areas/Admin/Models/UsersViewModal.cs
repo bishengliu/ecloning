@@ -7,8 +7,8 @@ namespace ecloning.Areas.Admin.Models
 {
     public class UsersViewModal
     {
-        public List<Administrator> Administrators { get; set; }
-        public List<Department> Departments { get; set; }
+        public IList<Administrator> Administrators { get; set; }
+        public IList<Department> Departments { get; set; }
     }
 
     public class Administrator
@@ -16,6 +16,7 @@ namespace ecloning.Areas.Admin.Models
         public int peopleId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public bool? Active { get; set; }
     }
     public class Department
     {
