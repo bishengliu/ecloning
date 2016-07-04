@@ -136,6 +136,7 @@ namespace ecloning.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
             dpart.name = dpName;
+            dpart.des = dpName;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -146,6 +147,7 @@ namespace ecloning.Areas.Admin.Controllers
         {
             var dpart = new department();
             dpart.name = dpName;
+            dpart.des = dpName;
             db.departments.Add(dpart);
             db.SaveChanges();
             return RedirectToAction("Index");
