@@ -47,15 +47,10 @@
                     <th class="no-sort">
                         Sequence
                     </th>
-                    @*<th>
-                        Usage
-                    </th>*@
+
                     <th>
                         Modification
                     </th>
-                    @*<th class="no-sort">
-                        Purity
-                    </th>*@
                     <th>
                         Company
                     </th>
@@ -89,15 +84,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.sequence)
                         </td>
-                        @*<td>
-                            @Html.DisplayFor(modelItem => item.usage)
-                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.modification)
                         </td>
-                        @*<td>
-                            @Html.DisplayFor(modelItem => item.purity)
-                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.company)
                         </td>
@@ -126,7 +115,7 @@
                             @peopleInfo.Name
                         </td>
                         <td>
-                            @if (item.people_id == PeopleId && !SharedIds.Contains(item.id))
+                            @if ((item.people_id == PeopleId && !SharedIds.Contains(item.id)) || (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")))
                             {
                                 <a href="@Url.Action("Edit", "Primer", new { id= item.id})">
                                     <i class="fa fa-pencil-square-o text-danger"></i>

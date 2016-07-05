@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace ecloning.Controllers
 {
-    public class PrimerController : Controller
+    public class PrimerController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 

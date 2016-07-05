@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace ecloning.Controllers
 {
-    public class LadderController : Controller
+    public class LadderController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
         // GET: Ladder

@@ -113,7 +113,7 @@
                                     }
                                     else
                                     {
-                                        if (PeopelId == item.people_id)
+                                        if (PeopelId == item.people_id || User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
                                         {
                                             <a href="@Url.Action("Edit", "Feature", new { id= item.id})">
                                                 <i class="fa fa-pencil-square-o text-danger"></i>

@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace ecloning.Controllers
 {
-    public class OligoController : Controller
+    public class OligoController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 

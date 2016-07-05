@@ -262,6 +262,7 @@
     <Compile Include="Areas\Admin\Controllers\RestrictionController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\RootController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SubRootController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Areas\Admin\Models\Restriction.cs" />
     <Compile Include="Areas\Admin\Models\UsersViewModal.cs" />
@@ -1073,6 +1074,7 @@
     <Folder Include="App_Data\plasmid\" />
     <Folder Include="Areas\Admin\Views\Role\" />
     <Folder Include="Areas\Admin\Views\Root\" />
+    <Folder Include="Areas\Admin\Views\SubRoot\" />
     <Folder Include="logs\" />
     <Folder Include="Views\Root\" />
   </ItemGroup>

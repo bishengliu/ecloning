@@ -196,13 +196,15 @@
                                         </li>
                                     </ul>
                                 </li>
-
-                                <li>
-                                    <a href="@Url.Action("Index", "Role")">
-                                        <i class="fa fa-users"></i>
-                                        <span class="">People</span>
-                                    </a>
-                                </li>
+                                if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant") || User.IsInRole("appAdmin"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Role")">
+                                            <i class="fa fa-users"></i>
+                                            <span class="">People</span>
+                                        </a>
+                                    </li>
+                                }
                             }
                         </ul>
                     </div>

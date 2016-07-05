@@ -10,7 +10,7 @@ using ecloning.Models;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class BufferController : RootController
+    public class BufferController : SubRootController
     {
         private ecloningEntities db = new ecloningEntities();
 

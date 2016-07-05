@@ -191,7 +191,7 @@ namespace ecloning.Controllers
                                 }
                             }                            
                         }
-                        if(User.IsInRole("Researcher") || User.IsInRole("GroupLeader"))
+                        if (userManager.IsInRole(user.Id, "Researcher") || userManager.IsInRole(user.Id, "GroupLeader"))
                         {
                             return RedirectToAction("Index", "Home");
                         }
@@ -430,7 +430,7 @@ namespace ecloning.Controllers
                         }
                     }
                     //check whether is the instAdmin and add to role of InstAdmin
-                    if (model.Department == "Institute Admin")
+                    else if (model.Department == "Institute Admin")
                     {
                         //check whether appAmin role
                         var Admin = db.AspNetRoles.Where(r => r.Name == "InstAdmin");
@@ -450,7 +450,7 @@ namespace ecloning.Controllers
                     }
 
                     //if the user is the group leader
-                    if (model.Email == group.FirstOrDefault().email)
+                    else if (model.Department != "AppAdmin" && model.Department != "Institute Admin" && model.Email == group.FirstOrDefault().email)
                     {
                         //check whether GroupLeader role
                         var leder = db.AspNetRoles.Where(r => r.Name == "GroupLeader");

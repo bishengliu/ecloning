@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class DashboardController : RootController
+    public class DashboardController : SubRootController
     {
         // GET: Admin/Dashboard
         [Authorize]

@@ -17,7 +17,7 @@ using System.Transactions;
 
 namespace ecloning.Controllers
 {
-    public class pBundleController : Controller
+    public class pBundleController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
 

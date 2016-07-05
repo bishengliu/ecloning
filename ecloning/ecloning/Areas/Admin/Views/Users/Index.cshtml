@@ -1,7 +1,8 @@
 ﻿@model  ecloning.Areas.Admin.Models.UsersViewModal
 @{
     ViewBag.Title = "Users";
-    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";    
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";   
+    
 }
 
 @Html.Partial("_BioTools")
@@ -84,7 +85,9 @@
             </div>
         </div>
     </div>
-
+    <div>
+        <p class="text-center text-danger">@TempData["codeMsg"] </p>
+    </div>
     <div class="panel panel-primary">
         <div class="panel-heading">Departments & Groups</div>
         <div class="panel-body">

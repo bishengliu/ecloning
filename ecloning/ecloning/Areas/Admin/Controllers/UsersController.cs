@@ -13,12 +13,11 @@ using System.Web.Mvc;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : RootController
     {
         private ecloningEntities db = new ecloningEntities();
         private ApplicationDbContext context = new ApplicationDbContext();
         // GET: Admin/Users
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         public ActionResult Index()
         {
             var userStore = new UserStore<ApplicationUser>(context);
@@ -121,7 +120,6 @@ namespace ecloning.Areas.Admin.Controllers
             return View(users);
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpPost]
         public ActionResult EditDepart(int? id, string dpName)
         {
@@ -149,7 +147,6 @@ namespace ecloning.Areas.Admin.Controllers
             
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpPost]
         public ActionResult AddDepart(string dpName)
         {
@@ -169,7 +166,6 @@ namespace ecloning.Areas.Admin.Controllers
 
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpGet]
         public ActionResult DeleteDepart(int? id)
         {
@@ -203,7 +199,6 @@ namespace ecloning.Areas.Admin.Controllers
             
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpPost]
         public async System.Threading.Tasks.Task<ActionResult> Invite(string email)
         {
@@ -266,9 +261,8 @@ namespace ecloning.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpPost]
-        public ActionResult AddGroup(int? id, string gpName, string gpEmail)
+        public async System.Threading.Tasks.Task<ActionResult> AddGroup(int? id, string gpName, string gpEmail)
         {
             if (id == null)
             {
@@ -317,7 +311,7 @@ namespace ecloning.Areas.Admin.Controllers
                     var transportWeb = new Web(credentials);
                     // Send the email.
                     // You can also use the **DeliverAsync** method, which returns an awaitable task.
-                    transportWeb.DeliverAsync(msg);
+                    await transportWeb.DeliverAsync(msg);
                 }
                 if (eCloningSettings.AppHosting == "Local")
                 {
@@ -340,7 +334,7 @@ namespace ecloning.Areas.Admin.Controllers
                         smtp.Host = LocalSMTP.Server;
                         smtp.Port = LocalSMTP.Port;
                         smtp.EnableSsl = LocalSMTP.EnableSsl;
-                        smtp.SendMailAsync(message);
+                        await smtp.SendMailAsync(message);
                     }
                 }
                 return RedirectToAction("Index");
@@ -351,9 +345,8 @@ namespace ecloning.Areas.Admin.Controllers
             }
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpGet]
-        public ActionResult SendCode(int? id)
+        public async System.Threading.Tasks.Task<ActionResult> SendCode(int? id)
         {
             if (id == null)
             {
@@ -393,7 +386,9 @@ namespace ecloning.Areas.Admin.Controllers
                     var transportWeb = new Web(credentials);
                     // Send the email.
                     // You can also use the **DeliverAsync** method, which returns an awaitable task.
-                    transportWeb.DeliverAsync(msg);
+                    await transportWeb.DeliverAsync(msg);
+                    TempData["codeMsg"] = "Registration Code Sent!";
+
                 }
                 if (eCloningSettings.AppHosting == "Local")
                 {
@@ -416,7 +411,8 @@ namespace ecloning.Areas.Admin.Controllers
                         smtp.Host = LocalSMTP.Server;
                         smtp.Port = LocalSMTP.Port;
                         smtp.EnableSsl = LocalSMTP.EnableSsl;
-                        smtp.SendMailAsync(message);
+                        await smtp.SendMailAsync(message);
+                        TempData["codeMsg"] = "Registration Code Sent!";
                     }
                 }
 
@@ -428,7 +424,6 @@ namespace ecloning.Areas.Admin.Controllers
             }
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpPost]
         public ActionResult EditGroup(int? id, string gpName, string gpEmail)
         {
@@ -456,7 +451,6 @@ namespace ecloning.Areas.Admin.Controllers
             }
         }
 
-        [Authorize(Roles = "appAdmin, InstAdmin")]
         [HttpGet]
         public ActionResult DeleteGroup(int? id)
         {

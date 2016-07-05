@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class MActivityController : RootController
+    public class MActivityController : SubRootController
     {
         private ecloningEntities db = new ecloningEntities();
         // GET: Admin/MActivity

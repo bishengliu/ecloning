@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class RoleController : Controller
+    public class RoleController : RootController
     {
         // GET: Admin/Role
         [Authorize(Roles = "appAdmin, InstAdmin")]

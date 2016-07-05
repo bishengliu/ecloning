@@ -88,20 +88,30 @@ namespace ecloning.Controllers
 
         [Authorize(Roles = "appAdmin, GroupLeader")]
         [HttpGet]
-        public ActionResult Assistant(string userId, string action)
+        public ActionResult Assistant(string userId, string tag)
         {
             try
             {
                 var userStore = new UserStore<ApplicationUser>(context);
                 var userManager = new UserManager<ApplicationUser>(userStore);
-                if(action == "add")
+                if(tag == "add")
                 {
+                    //check whether Assistant role
+                    var Admin = db.AspNetRoles.Where(r => r.Name == "Assistant");
+                    if (Admin.Count() == 0)
+                    {
+                        //create it
+                        IdentityRole Role = new IdentityRole("Assistant");
+                        context.Roles.Add(Role);
+                        context.SaveChanges();
+                    }
+
                     if(!userManager.IsInRole(userId, "Assistant"))
                     {
                         userManager.AddToRole(userId, "Assistant");
                     }
                 }
-                if (action == "remove")
+                if (tag == "remove")
                 {
                     //remove
                     if (userManager.IsInRole(userId, "Assistant"))
@@ -119,7 +129,7 @@ namespace ecloning.Controllers
 
         [Authorize(Roles = "appAdmin, GroupLeader")]
         [HttpGet]
-        public ActionResult Lock(string email, string action)
+        public ActionResult Lock(string email, string tag)
         {
             try
             {
@@ -129,7 +139,7 @@ namespace ecloning.Controllers
                 }
                 //get the person
                 var person = db.people.Where(p => p.email == email).FirstOrDefault();
-                if (action == "lock")
+                if (tag == "lock")
                 {
                     if(person.active == true)
                     {
@@ -137,7 +147,7 @@ namespace ecloning.Controllers
                         db.SaveChanges();
                     }
                 }
-                if (action == "unlock")
+                if (tag == "unlock")
                 {
                     if (person.active != null && person.active == false)
                     {

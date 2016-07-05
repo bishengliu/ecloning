@@ -10,7 +10,7 @@ using System.Net;
 
 namespace ecloning.Areas.Admin.Controllers
 {
-    public class LadderController : RootController
+    public class LadderController : SubRootController
     {
         private ecloningEntities db = new ecloningEntities();
 

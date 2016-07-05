@@ -38,41 +38,54 @@
             <div class="panel-group">
                 <div class="@className">
                     <div class="panel-heading text-center">@item.userName</div>
-                    <div class="panel-body">
-                        <span class="text-primary text-center">@item.Email</span> 
+                    <div class="panel-body text-center">
+                        <span class="text-center"><a href="mailto:@item.Email">@item.Email</a></span>
                     </div>
                     <div class="panel-footer clearfix">
-                        @if (ViewBag.userId != item.userId)
+                        @if (!item.Roles.Contains("GroupLeader"))
                         {
-                            if (item.isAssistant)
+                            if (ViewBag.userId != item.userId)
                             {
-                                <a href="@Url.Action("Assistant", "Role", new { userId = @item.userId, action="remove" })" class="pull-left">
-                                    <i class="fa fa-toggle-on text-danger"></i>
-                                    <span class="text-info required">Senior</span>
-                                </a>
-                            }
-                            else
-                            {
-                                <a href="@Url.Action("Assistant", "Role", new { userId = @item.userId, action="add" })" class="pull-left">
-                                    <i class="fa fa-toggle-off text-info"></i>
-                                    <span class="text-info required">Senior</span>
-                                </a>
-                            }
+                                if (item.isAssistant)
+                                {
+                                    <a href="@Url.Action("Assistant", "Role", new { userId = @item.userId, tag="remove" })" class="pull-left">
+                                        <i class="fa fa-toggle-on text-danger"></i>
+                                        <span class="text-info">Senior</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Assistant", "Role", new { userId = @item.userId, tag="add" })" class="pull-left">
+                                        <i class="fa fa-toggle-off text-info"></i>
+                                        <span class="text-info">Senior</span>
+                                    </a>
+                                }
 
-                            if (item.isActive != null && (bool)item.isActive)
-                            {
-                                <a href="@Url.Action("Lock", "Role", new { email = @item.Email, action="lock"})" class="pull-right" data-toggle="tooltip" title="Lock a user">
-                                    <i class="fa fa-unlock text-info"></i>
-                                </a>
+                                if (item.isActive != null && (bool)item.isActive)
+                                {
+                                    <a href="@Url.Action("Lock", "Role", new { email = @item.Email, tag="lock"})" class="pull-right" data-toggle="tooltip" title="Lock a user">
+                                        <i class="fa fa-unlock text-info"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Lock", "Role", new { email = @item.Email, tag="unlock"})" class="pull-right" data-toggle="tooltip" title="Unlock a user">
+                                        <i class="fa fa-lock text-danger"></i>
+                                    </a>
+                                }
                             }
-                            else
-                            {
-                                <a href="@Url.Action("Lock", "Role", new { email = @item.Email, action="unlock"})" class="pull-right" data-toggle="tooltip" title="Unlock a user">
-                                    <i class="fa fa-lock text-danger"></i>
-                                </a>
-                            }
-                            
                         }
+                        else
+                        {
+                            <a class="pull-left disabled noEvent">
+                                <i class="fa fa-toggle-on text-muted"></i>
+                                <span class="text-muted">Senior</span>
+                            </a>
+                            <a class="pull-right disabled">
+                                <i class="fa fa-unlock text-muted"></i>
+                            </a>
+                        }
+                        
                     </div>
                 </div>                
             </div>
