@@ -266,7 +266,7 @@ namespace ecloning.Controllers
             }
             else
             {
-                ViewBag.people_id = new SelectList(db.people.Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name",people_id);
+                ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", people_id);
             }
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value");
             ViewBag.resistance = new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value");
@@ -294,6 +294,8 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
+            //get current login email
+            var email = User.Identity.GetUserName();
             //get userId
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
@@ -303,7 +305,7 @@ namespace ecloning.Controllers
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
-            ViewBag.people_id = new SelectList(db.people.Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name",plasmid.people_id);
+            ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value",plasmid.expression_system);
             ViewBag.insert_species = new SelectList(db.dropdownitems.Where(c => c.category == "InsertSpecies").OrderBy(g => g.text), "text", "value",plasmid.insert_species);
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value",plasmid.plasmid_type);
@@ -628,12 +630,13 @@ namespace ecloning.Controllers
             Plasmid.seq_length = (int)plasmid.seq_length;
 
 
+            var email = User.Identity.GetUserName();
 
             //find all plasmid
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
-            ViewBag.people_id = new SelectList(db.people.Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
+            ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value", plasmid.expression_system);
             ViewBag.insert_species = new SelectList(db.dropdownitems.Where(c => c.category == "InsertSpecies").OrderBy(g => g.text), "text", "value", plasmid.insert_species);
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value", plasmid.plasmid_type);
@@ -650,6 +653,7 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(string old_img_name, [Bind(Include = "id,name,sequence,seq_length,expression_system,expression_subsystem,promotor,polyA,resistance,reporter,selection,insert,insert_species,usage,plasmid_type,ref_plasmid,img_fn,addgene,d,people_id,des")] PlasmidViewModel plasmid)
         {
+            var email = User.Identity.GetUserName();
             //get userId
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
@@ -658,7 +662,7 @@ namespace ecloning.Controllers
             var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
-            ViewBag.people_id = new SelectList(db.people.Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
+            ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
             ViewBag.expression_system = new SelectList(db.dropdownitems.Where(c => c.category == "ExpSystem").OrderBy(g => g.text), "text", "value", plasmid.expression_system);
             ViewBag.insert_species = new SelectList(db.dropdownitems.Where(c => c.category == "InsertSpecies").OrderBy(g => g.text), "text", "value", plasmid.insert_species);
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value", plasmid.plasmid_type);
