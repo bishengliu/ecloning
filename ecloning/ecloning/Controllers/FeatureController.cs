@@ -33,7 +33,7 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //appAdmin features and custom feature
-            var common_feature = db.common_feature.Include(c => c.plasmid_feature).Where(g=>groupInfo.groupId.Contains(g.group_id) || g.id == adminGroupId).OrderBy(l=>l.label);
+            var common_feature = db.common_feature.Include(c => c.plasmid_feature).Where(g=>groupInfo.groupId.Contains(g.group_id) || g.group_id== adminGroupId).OrderBy(l=>l.label);
             ViewBag.Count = common_feature.Count();
             ViewBag.PeopleId = userInfo.PersonId;
             ViewBag.adminGroupId = adminGroupId;
@@ -98,20 +98,20 @@ namespace ecloning.Controllers
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
 
 
-            ////feature sequence must be unieque
-            //var checkSeq = db.common_feature.Where(s => s.sequence == common_feature.sequence);
-            //if (checkSeq.Count() > 0)
-            //{
-            //    TempData["msg"] = "Error: feature with the same sequence already exists!";
-            //    return View(common_feature);
-            //}
 
             if (ModelState.IsValid)
             {
-                common_feature.people_id = userInfo.PersonId;
-                db.common_feature.Add(common_feature);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    common_feature.people_id = userInfo.PersonId;
+                    db.common_feature.Add(common_feature);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch(Exception)
+                {
+                    return RedirectToAction("Index");
+                }               
             }
 
             return View(common_feature);
