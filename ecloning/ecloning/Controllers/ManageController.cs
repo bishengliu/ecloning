@@ -215,7 +215,7 @@ namespace ecloning.Controllers
         //
         // GET: /Manage/ChangePassword
         public ActionResult ChangePassword()
-        {
+        {            
             return View();
         }
 
@@ -224,7 +224,7 @@ namespace ecloning.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
+        {          
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -247,8 +247,7 @@ namespace ecloning.Controllers
         [HttpGet]
         [Authorize]
         public ActionResult ViewAccount()
-        {
-
+        {            
             var email = @User.Identity.GetUserName();
             //string userId = User.Identity.GetUserId();
             ecloningEntities db = new ecloningEntities();
