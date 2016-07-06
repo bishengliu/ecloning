@@ -239,7 +239,7 @@
                 hintText: 'Type plasmid\'s name to search',
                 //tokenLimit: 1,
                 propertyToSearch: "name",
-                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.usage + "</span></p></li>" },
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.seqLen + "</span></p></li>" },
                 tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
             });
 

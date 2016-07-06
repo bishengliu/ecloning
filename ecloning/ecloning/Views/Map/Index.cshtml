@@ -11,6 +11,7 @@
     var BackupCount = (int)ViewBag.BackupCount;
     var Tag = (string)ViewBag.Tag;
     var Plasmid = (ecloning.Models.plasmid)ViewBag.Plasmid;
+    ecloning.Models.ecloningEntities db = new ecloning.Models.ecloningEntities();
 }
 
 <div class="row">
@@ -303,8 +304,15 @@
 
             @if (Plasmid.ref_plasmid != null)
             {
-                <span class="text-info"><strong>Linked Plasmid(s): </strong></span><span>@Plasmid.ref_plasmid</span><br />
-
+                <span class="text-info"><strong>Linked Plasmid(s): </strong></span>
+                //convert ref_plasmid into array
+                var array = Plasmid.ref_plasmid.Split(',');
+                foreach (var id in array)
+                {
+                    var linkedPlasmid = db.plasmids.Find(Int32.Parse(id)).name;
+                    <span><a href="@Url.Action("Index", "Map", new { id = Int32.Parse(id), tag = "groupDispaly" })">@linkedPlasmid</a>&nbsp;</span>
+                }
+                <br/>
             }
             @if (Plasmid.addgene != null)
             {

@@ -66,15 +66,6 @@ namespace ecloning.Controllers
             //only show my plasmids that are not shared with any group            
             IQueryable<plasmid> plasmids = null;
             plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId).Where(p => !sharedPlasmidId.Contains(p.id));
-            //if (sharedPlasmidId.Count() > 0)
-            //{
-            //    plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId).Where(p=>!sharedPlasmidId.Contains(p.id));
-            //}
-            //else
-            //{
-            //    plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId);
-            //}
-            
 
             //get the combined plasmid ids
             var combinedIds = sharedPlasmidId.Concat(plasmids.Select(i => i.id).ToList()).Distinct();
@@ -183,17 +174,23 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
 
-            //get all the people in the group
-            var peopleId = db.group_people.Where(p => groupInfo.groupId.Contains(p.group_id)).Select(p => p.people_id).ToList();
+            //get sharep plasmids
+            List<int> sharedPlasmidId = new List<int>();
+            var sharePlasmids = db.group_shared.Where(g => groupInfo.groupId.Contains(g.group_id)).Where(c => c.category == "plasmid").Select(r => r.resource_id);
+            sharedPlasmidId = sharePlasmids.ToList();
+            //only show my plasmids that are not shared with any group            
+            var myPlasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == userInfo.PersonId).Where(p => !sharedPlasmidId.Contains(p.id));
+            //get the combined plasmid ids
+            var combinedIds = sharedPlasmidId.Concat(myPlasmids.Select(i => i.id).ToList()).Distinct();
+
 
             //pass all the plasmids and setLength into json
-            var plasmids = db.plasmids.Where(p => peopleId.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
+            var plasmids = db.plasmids.Where(p => combinedIds.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
             //ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
-            var plasmidId = plasmids.Select(p => p.id).ToList();
             //pass all features into json
-            var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10);
-            var fLabels = features.Select(f => f.common_feature.label).Distinct().ToList();
-            var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f=>f.common_feature.label).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(m => combinedIds.Contains(m.plasmid_id)).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10);
+            var fLabels = features.OrderBy(f => f.feature_id).Select(f => f.common_feature.label).Distinct().ToList();
+            var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f => f.common_feature.label).Where(p => combinedIds.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
             ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
             ViewBag.Features = JsonConvert.SerializeObject(featuresJson.ToList());
             ViewBag.Count = featuresJson.Count();
@@ -209,18 +206,24 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
 
-            //get all the people in the group
-            var peopleId = db.group_people.Where(p => groupInfo.groupId.Contains(p.group_id)).Select(p=>p.people_id).ToList();
+            //get sharep plasmids
+            List<int> sharedPlasmidId = new List<int>();
+            var sharePlasmids = db.group_shared.Where(g => groupInfo.groupId.Contains(g.group_id)).Where(c => c.category == "plasmid").Select(r => r.resource_id);
+            sharedPlasmidId = sharePlasmids.ToList();
+            //only show my plasmids that are not shared with any group            
+            var myPlasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == userInfo.PersonId).Where(p => !sharedPlasmidId.Contains(p.id));
+            //get the combined plasmid ids
+            var combinedIds = sharedPlasmidId.Concat(myPlasmids.Select(i => i.id).ToList()).Distinct();
 
             //pass all the plasmids and setLength into json
-            var plasmids = db.plasmids.Where(p => peopleId.Contains(p.people_id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
+            var plasmids = db.plasmids.Where(p => combinedIds.Contains(p.id)).OrderBy(p => p.id).Select(p => new { id = p.id, length = p.seq_length, name = p.name });
             ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
-            var plasmidId = plasmids.Select(p => p.id).ToList();
             //pass all features into json
-            var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p=>plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            var plasmid_maps = db.plasmid_map.Include(p => p.plasmid).Where(m => combinedIds.Contains(m.plasmid_id)).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10);
+            var features = plasmid_maps.OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p => combinedIds.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
 
-            var fLabels = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10).Select(f => f.common_feature.label).Distinct().ToList();
+            var fLabels = plasmid_maps.OrderBy(f=>f.feature_id).Select(f => f.common_feature.label).Distinct().ToList();
             ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
             return View();
         }
@@ -264,7 +267,7 @@ namespace ecloning.Controllers
             
 
             //find all plasmid
-            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
+            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, seqLen = p.seq_length+" bp" });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
             return View();
@@ -286,7 +289,7 @@ namespace ecloning.Controllers
             var groupInfo = new GroupInfo(userInfo.PersonId);
 
             //find all plasmid
-            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
+            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, seqLen = p.seq_length + " bp" });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
             ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
@@ -630,7 +633,7 @@ namespace ecloning.Controllers
             var email = User.Identity.GetUserName();
 
             //find all plasmid
-            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
+            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, seqLen = p.seq_length + " bp" });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
             ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);
@@ -656,7 +659,7 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //find all plasmid
-            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, usage = p.usage });
+            var plasmids = db.plasmids.OrderBy(n => n.name).Select(p => new { id = p.id, name = p.name, seqLen = p.seq_length + " bp" });
             ViewBag.JsonPlasmid = JsonConvert.SerializeObject(plasmids.ToList());
 
             ViewBag.people_id = new SelectList(db.people.Where(e => e.email == email).Select(p => new { id = p.id, name = p.first_name + " " + p.last_name }), "id", "name", plasmid.people_id);

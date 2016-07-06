@@ -78,8 +78,13 @@
     }
 
     function drawFeatures(idArray, Features, fLabels) {
-        var margin = { top: 20, right: 200, bottom: 0, left: 20 },
-            width = ($("#features").width() <= 250 ? 250 : $("#features").width()) - 20 - margin.left - margin.right;
+        //var margin = { top: 20, right: 200, bottom: 0, left: 20 },
+        //    width = ($("#features").width() <= 250 ? 250 : $("#features").width()) - 20 - margin.left - margin.right;
+        //height = 650;
+        //var padding = 0.5;
+        var margin = { top: 20, right: 200, bottom: 0, left: 20 };
+        var step = 22,
+            width = step * fLabels.length;
         height = 650;
         var padding = 0.5;
         //filter the plasmid

@@ -736,3 +736,9 @@ svg text tspan{
 .noEvent{
     pointer-events: none;
 }
+.xScrollable{
+    overflow-x:auto;
+}
+.yScrollable{
+    overflow-y:auto;
+}

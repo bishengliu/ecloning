@@ -701,6 +701,32 @@ namespace ecloning.Controllers
         }
 
 
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult unShare(int? bundle_id)
+        {
+            //check the existence of bundle id
+            if (bundle_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
+            if (pBundle.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+            //find the share
+            var share = db.group_shared.Where(s => s.category == "pBundle" && s.resource_id == bundle_id);
+            foreach (var item in share)
+            {
+                db.group_shared.Remove(item);
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
         // GET: pBundle/Delete/5
         public ActionResult Delete(int? bundle_id)
         {

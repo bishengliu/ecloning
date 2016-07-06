@@ -59,7 +59,7 @@
             //this bundle id
             var bundleId = BundleIds[i];
             var bundle = Model.Where(b => b.bundle_id == bundleId);
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 bundleDiv">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 bundleDiv">
                 <div class="@ClassName">
                     <div class="panel-heading">
                         <h3 class="panel-title text-center"><em><strong>@bundle.First().name</strong></em><span>&nbsp;</span><span class="badge">@bundle.Count()</span></h3>
@@ -97,6 +97,9 @@
                             <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Compare Components">
                                 <i class="fa fa-th"></i>
                             </a>
+                            <a class="btn btn-default" href="@Url.Action("Analysis", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Batch Analysis">
+                                <i class="fa fa-rocket"></i>
+                            </a>
                             @if (GroupBundleIds.Contains(bundleId))
                             {
                                 <a class="btn btn-default disabled" href="@Url.Action("Edit", "pBundle")">
@@ -105,9 +108,22 @@
                                 <a class="btn btn-default disabled" href="@Url.Action("Delete", "pBundle")">
                                     <i class="fa fa-trash-o"></i>
                                 </a>
-                                <a class="btn btn-default disabled" href="@Url.Action("Share", "pBundle")">
-                                    <i class="fa fa-share-alt"></i>
-                                </a>
+                                if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
+                                {
+                                    <a href="@Url.Action("unShare", "pBundle", new { bundle_id = bundleId })" data-toggle="tooltip" title="Unshare this bundle!">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                            <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
+                                        </span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-default disabled" href="@Url.Action("Share", "pBundle")">
+                                        <i class="fa fa-share-alt"></i>
+                                    </a>
+                                }
+
                             }
                             else
                             {
@@ -121,9 +137,6 @@
                                     <i class="fa fa-share-alt"></i>
                                 </a>
                             }
-                            <a class="btn btn-default" href="@Url.Action("Analysis", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Batch Analysis">
-                                <i class="fa fa-rocket"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
