@@ -39,7 +39,7 @@ namespace ecloning.Controllers
             {
 
                 //get the shared plasmid id
-                sharePlasmids = db.group_shared.Where(g => groupId.Contains(g.group_id)).Where(c => c.category == "plasmid").Select(r => r.resource_id);
+                sharePlasmids = db.group_shared.Where(g => groupId.Contains(g.group_id)).Where(c => c.category == "plasmid").OrderByDescending(r=>r.resource_id).Select(r => r.resource_id);
                 if(sharePlasmids.Count() > 0)
                 {
                     //show group plasmid
@@ -65,7 +65,7 @@ namespace ecloning.Controllers
 
             //only show my plasmids that are not shared with any group            
             IQueryable<plasmid> plasmids = null;
-            plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId).Where(p => !sharedPlasmidId.Contains(p.id));
+            plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId).Where(p => !sharedPlasmidId.Contains(p.id)).OrderByDescending(i=>i.id);
 
             //get the combined plasmid ids
             var combinedIds = sharedPlasmidId.Concat(plasmids.Select(i => i.id).ToList()).Distinct();

@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Bundle Replacer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Sequence Replacer</h3>
+    </div>
+</div>
+
+<span id="decodeIt" class="hidden"></span>
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Howto: </strong>
+    <br/>1) The replacer only accepts <span><em>single-stranded</em></span> DNA sequences. All letters or symbols except "a/A", "t/T", "g/G" and "c/C", such as space, line break, number, nonprintable characters <i>etc.</i> will be removed automatically;
+    <br/>2) You first need to provide the DNA sequence to be replaced. This DNA sequence is NOT shorter than <strong class="text-danger">6</strong> letters. The replacer uses the "perfect match" to find the sequence to be replaced on all the plasmids in the current bundle;
+    <br/>3) After that, you will be asked to provide the new DNA sequence that will replace the sequence in the previous step. if you don't provide this sequence, the replacer will remove the DNA sequence provied in the previous step.
+    <br/>4) The replacer will ask you to choose what to replace if <strong class="text-danger"><=3</strong> matches are found on a plasmid. If too much matches (>4) found, the plasmid will be ingnored;
+</div>

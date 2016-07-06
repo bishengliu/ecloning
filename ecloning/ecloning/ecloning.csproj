@@ -444,6 +444,7 @@
     <Compile Include="Models\ORFFinder.cs" />
     <Compile Include="Models\ORFObject.cs" />
     <Compile Include="Models\pBundle.cs" />
+    <Compile Include="Models\pBundleSeqObj.cs" />
     <Compile Include="Models\people_license.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1072,6 +1073,7 @@
     <Content Include="Views\Fragment\Index.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\BioTools\FormatSeq.cshtml" />
+    <Content Include="Views\pBundle\Replacer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

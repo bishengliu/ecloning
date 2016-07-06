@@ -78,7 +78,7 @@ namespace ecloning.Controllers
             var groupInfo = new GroupInfo(userInfo.PersonId);
             var peopleIds = db.group_people.Where(g => groupInfo.groupId.Contains(g.group_id)).Select(p => p.people_id).ToList();
             //current bundle and plasmid id
-            var bundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id && b.people_id == userInfo.PersonId);
+            var bundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
             if (bundle.Count() == 0)
             {
                 return HttpNotFound();
@@ -88,7 +88,7 @@ namespace ecloning.Controllers
             var features = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p => plasmidId.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
 
-            var fLabels = db.plasmid_map.Include(p => p.plasmid).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10).Select(f => f.common_feature.label).Distinct().ToList();
+            var fLabels = db.plasmid_map.Include(p => p.plasmid).Where(p => plasmidId.Contains(p.plasmid_id)).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10).Select(f => f.common_feature.label).Distinct().ToList();
             ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
             ViewBag.PlasmidId = plasmidId;
             return View();
@@ -701,7 +701,6 @@ namespace ecloning.Controllers
         }
 
 
-
         [Authorize]
         [HttpGet]
         public ActionResult unShare(int? bundle_id)
@@ -727,6 +726,41 @@ namespace ecloning.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult Replacer(int? bundle_id)
+        {
+            //check the existence of bundle id
+            if (bundle_id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
+            if (pBundle.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+            //pass json object to hold info of the bundle
+            var bundleSeq = new pBundleSeqObj();
+            bundleSeq.bName = pBundle.FirstOrDefault().name;
+            bundleSeq.bId = (int)bundle_id;
+
+            //get member info
+            List<plamidSeqObj> pSeqs = new List<plamidSeqObj>();
+            foreach (var plasmidId in pBundle.Select(m=>m.member_id).ToList())
+            {
+                var plasmid = db.plasmids.Find(plasmidId);
+                var pSeq = new plamidSeqObj();
+                pSeq.pId = plasmidId;
+                pSeq.pName = plasmid.name;
+                pSeq.seqCount = (int)plasmid.seq_length;
+                pSeq.sequence = plasmid.sequence;
+                pSeqs.Add(pSeq);
+            }
+            bundleSeq.plasmids = pSeqs;
+            ViewBag.BundleSeq = JsonConvert.SerializeObject(bundleSeq);
+            return View();
+        }
         // GET: pBundle/Delete/5
         public ActionResult Delete(int? bundle_id)
         {

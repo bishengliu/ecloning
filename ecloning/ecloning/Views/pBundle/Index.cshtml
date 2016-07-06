@@ -81,7 +81,9 @@
                         {
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
                                 <div class="col-xs-12">
-                                    <p class="text-center plasmidName"><em>@plasmid.PlasmidName(@item.member_id)</em></p>
+                                    <a href="@Url.Action("Index", "Map", new { id = @item.member_id, tag = "groupDispaly" })">
+                                        <p class="text-center plasmidName"><em>@plasmid.PlasmidName(@item.member_id)</em></p>
+                                    </a>
                                 </div>
                                 <div class="col-xs-10">
                                     <span>@item.member_role</span>
@@ -97,7 +99,7 @@
                             <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Compare Components">
                                 <i class="fa fa-th"></i>
                             </a>
-                            <a class="btn btn-default" href="@Url.Action("Analysis", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Batch Analysis">
+                            <a class="btn btn-default" href="@Url.Action("Replacer", "pBundle", new { bundle_id = bundleId })" data-toggle="tooltip" title="Sequence Replacer">
                                 <i class="fa fa-rocket"></i>
                             </a>
                             @if (GroupBundleIds.Contains(bundleId))
