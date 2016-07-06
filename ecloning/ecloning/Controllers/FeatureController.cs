@@ -98,11 +98,24 @@ namespace ecloning.Controllers
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
 
 
-
             if (ModelState.IsValid)
-            {
+            {              
                 try
                 {
+                    //check whether the name has been used in the current group or the add min group
+                    //get appAdmin group id
+                    var adminGroupIds = db.groups.Where(g => g.name == "AppAdmin" || g.name == "Institute Admin").Select(i => i.id).ToList();
+
+                    var isFound = false;
+                    var oldFeatures = db.common_feature.Where(f => f.label == common_feature.label && adminGroupIds.Contains(f.group_id));
+                    if(oldFeatures.Count()>0){
+                        isFound = true;
+                    }
+                    if(isFound){
+                        TempData["msg"] = "Feature Name has already been used, please choose a different name!";
+                        return View(common_feature);
+                    }
+
                     common_feature.people_id = userInfo.PersonId;
                     db.common_feature.Add(common_feature);
                     db.SaveChanges();
@@ -185,12 +198,21 @@ namespace ecloning.Controllers
             var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
 
-            //var checkSeq = db.common_feature.Where(f=>f.id != common_feature.id && f.sequence == common_feature.sequence);
-            //if (checkSeq.Count() > 0)
-            //{
-            //    TempData["msg"] = "Error: feature with the same sequence already exists!";
-            //    return View(common_feature);
-            //}
+            //check whether the name has been used in the current group or the add min group
+            //get appAdmin group id
+            var adminGroupIds = db.groups.Where(g => g.name == "AppAdmin" || g.name == "Institute Admin").Select(i => i.id).ToList();
+
+            var isFound = false;
+            var oldFeatures = db.common_feature.Where(f=>f.id != common_feature.id).Where(f => f.label == common_feature.label && adminGroupIds.Contains(f.group_id));
+            if (oldFeatures.Count() > 0)
+            {
+                isFound = true;
+            }
+            if (isFound)
+            {
+                TempData["msg"] = "Feature Name has already been used, please choose a different name!";
+                return View(common_feature);
+            }
 
             if (ModelState.IsValid)
             {
