@@ -28,32 +28,13 @@ namespace ecloning.Controllers
             List<int> sharedPlasmidId = new List<int>();
             IQueryable<int> sharePlasmids = null;
             //get my people_id
-            int peopleId = 0;
-            var people = db.people.Where(e => e.email == email);
-            if(people.Count() == 0)
-            {
-                //no group plasmid to show
-                ViewBag.GroupCount =0;
-            }
-            else
-            {
-                peopleId = people.FirstOrDefault().id;
-            }
-            //get the group id
-            List<int> groupId = new List<int>();
-            var group_people = db.group_people.Where(p => p.people_id == peopleId);
-            if (group_people.Count() == 0)
-            {
-                //no group plasmid to show
-                ViewBag.GroupCount = 0;
-            }
-            else
-            {
-                foreach(int i in group_people.Select(g => g.group_id).ToList())
-                {
-                    groupId.Add(i);
-                }
-            }
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+
+            int peopleId = userInfo.PersonId;
+            List<int> groupId = groupInfo.groupId;
+            
             if (groupId.Count() > 0)
             {
 
@@ -82,21 +63,24 @@ namespace ecloning.Controllers
                 }
             }
 
-
             //only show my plasmids that are not shared with any group            
             IQueryable<plasmid> plasmids = null;
-            if (sharedPlasmidId.Count() > 0)
-            {
-                plasmids = db.plasmids.Include(p => p.person).Where(p => p.person.email == email).Where(p => !sharedPlasmidId.Contains(p.id));            
-            }
-            else
-            {
-                plasmids = db.plasmids.Include(p => p.person).Where(p => p.person.email == email);
-            }
-            ViewBag.Count = plasmids.Count();
+            plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId).Where(p => !sharedPlasmidId.Contains(p.id));
+            //if (sharedPlasmidId.Count() > 0)
+            //{
+            //    plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId).Where(p=>!sharedPlasmidId.Contains(p.id));
+            //}
+            //else
+            //{
+            //    plasmids = db.plasmids.Include(p => p.person).Where(p => p.people_id == peopleId);
+            //}
+            
 
             //get the combined plasmid ids
             var combinedIds = sharedPlasmidId.Concat(plasmids.Select(i => i.id).ToList()).Distinct();
+            //var resultPlasmids = db.plasmids.Where(p => combinedIds.Contains(p.id));
+            ViewBag.Count = combinedIds.Count();
+
             //get the feautures
             var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
@@ -1095,6 +1079,24 @@ namespace ecloning.Controllers
             return RedirectToAction("Index");
         }
 
+
+        [HttpGet]
+        public ActionResult unSharePlasmid(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //find the plasmid
+            var plasmid = db.group_shared.Where(s=>s.category=="plasmid" && s.resource_id==id);
+            if (plasmid.Count()==0)
+            {
+                return HttpNotFound();
+            }
+            db.group_shared.Remove(plasmid.FirstOrDefault());
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         // GET: Plasmid/Delete/5
         public ActionResult Delete(int? id)
         {

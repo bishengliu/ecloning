@@ -32,9 +32,9 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <div class="form-group required">
-                                @Html.Label("Group(s)", htmlAttributes: new { @class = "control-label col-md-3" })
+                                @Html.Label("Group", htmlAttributes: new { @class = "control-label col-md-3" })
                                 <div class="col-md-6">
-                                    @Html.DropDownList("group", listItems, new { @class = "form-control", multiple = "multiple", required = "required" })
+                                    @Html.DropDownList("group", listItems, new { @class = "form-control", required = "required", id="group-share" })
                                 </div>
                             </div>
                             <div class="form-group">
@@ -56,3 +56,11 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
             </div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#group-share").chosen();
+    });
+</script>
