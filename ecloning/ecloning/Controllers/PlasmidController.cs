@@ -313,6 +313,19 @@ namespace ecloning.Controllers
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value",plasmid.polyA);
             
 
+            //validate unique name
+            var isFound = false;
+            var oldPlasmids = db.plasmids.Where(p => p.people_id == userInfo.PersonId && p.name == plasmid.name).ToList();
+            if (oldPlasmids.Count() > 0)
+            {
+                isFound = true;
+            }
+            if (isFound)
+            {
+                TempData["msg"] = "Plasmid name is alreay used, please choose a different name!";
+                return View(plasmid);
+            }
+
             if (ModelState.IsValid)
             {
                 plasmid.d = DateTime.Now;
@@ -668,7 +681,19 @@ namespace ecloning.Controllers
             ViewBag.plasmid_type = new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidType").OrderBy(g => g.text), "text", "value", plasmid.plasmid_type);
             ViewBag.promotor = new SelectList(db.dropdownitems.Where(c => c.category == "Promotor").OrderBy(g => g.text), "text", "value", plasmid.promotor);
             ViewBag.polyA = new SelectList(db.dropdownitems.Where(c => c.category == "PolyA").OrderBy(g => g.text), "text", "value", plasmid.polyA);
-           
+
+            //validate unique name
+            var isFound = false;
+            var oldPlasmids = db.plasmids.Where(p=>p.id != plasmid.id).Where(p => p.people_id == userInfo.PersonId && p.name == plasmid.name).ToList();
+            if (oldPlasmids.Count() > 0)
+            {
+                isFound = true;
+            }
+            if (isFound)
+            {
+                TempData["msg"] = "Plasmid name is alreay used, please choose a different name!";
+                return View(plasmid);
+            }
 
 
             if (ModelState.IsValid)
@@ -920,24 +945,6 @@ namespace ecloning.Controllers
                 return View();
             }
 
-
-            var plasmids = db.plasmids.Include(p => p.person)
-                .Where(p=>(name==null? true : p.name.Contains(name)))
-                .Where(p => (expression_system == null ? true : p.expression_system.Contains(expression_system)))
-                .Where(p => (promotor == null ? true : p.promotor.Contains(promotor)))
-                .Where(p => (polyA == null ? true : p.polyA.Contains(polyA)))
-                .Where(p => (insert == null ? true : p.insert.Contains(insert)))
-                .Where(p => (reporter == null ? true : p.reporter.Contains(reporter)))
-                .Where(p => (resistance1 == null ? true : p.resistance.Contains(resistance1)))
-                .Where(p => (resistance2 == null ? true : p.resistance.Contains(resistance2)))
-                .Where(p => (selection1 == null ? true : p.resistance.Contains(selection1)))
-                .Where(p => (selection2 == null ? true : p.resistance.Contains(selection2)))
-                .Where(p => (usage1 == null ? true : p.resistance.Contains(usage1)))
-                .Where(p => (usage2 == null ? true : p.resistance.Contains(usage2)));
-
-            ViewBag.Count = plasmids.Count();
-
-            //get all the shared plasmid id
             //get current login email
             var userId = User.Identity.GetUserId();
             //get people id
@@ -947,18 +954,73 @@ namespace ecloning.Controllers
             //get groupId
             var groupInfo = new GroupInfo(peopleId);
             IList<int> groupId = groupInfo.groupId;
+            //get all the shared plasmid id
 
             //get group shared plasmid ids
             var shared_plasmid = db.group_shared.Where(c => c.category == "plasmid").Where(g => groupId.Contains(g.group_id));
             ViewBag.sharedPlasmidCount = 0;
+            List<int> sharedPlasmidId = new List<int>();
             if (shared_plasmid.Count() > 0)
             {
-                List<int> sharedPlasmidId = shared_plasmid.Select(p => p.resource_id).ToList();
+                sharedPlasmidId = shared_plasmid.Select(p => p.resource_id).ToList();
                 ViewBag.sharedPlasmidCount = 1;
                 ViewBag.sharedPlasmidId = sharedPlasmidId;
             }
 
-            return View(plasmids.ToList());
+
+            //get all my plasmidIds
+            List<int> myPlasmidIds = new List<int>();
+            myPlasmidIds = db.plasmids.Where(p => p.people_id == userInfo.PersonId).Select(p => p.id).ToList();
+
+            //first search plasmid map
+            List<int> plasmidMapIds = new List<int>();
+            //get search string
+            var searchString = "";
+            searchString = searchString + promotor;
+            searchString = searchString + polyA;
+            searchString = searchString + insert;
+            searchString = searchString + reporter;
+            searchString = searchString + resistance1;
+            searchString = searchString + resistance2;
+
+            plasmidMapIds = db.plasmid_map.Where(m => myPlasmidIds.Contains(m.plasmid_id) || sharedPlasmidId.Contains(m.plasmid_id))
+                .Where(n => searchString.Contains(n.feature) || n.feature.Contains(searchString))
+                .Select(p=>p.plasmid_id).ToList();
+
+
+            //search only my plasmids and group shared plasmids
+            List<int> plasmidIds = new List<int>();
+            plasmidIds = db.plasmids.Include(p => p.person).Where(p=>p.people_id== userInfo.PersonId || sharedPlasmidId.Contains(p.id))
+                .Where(p => (name == null ? true : p.name.Contains(name)) || (name == null ? true : name.Contains(p.name)))
+                .Where(p => (expression_system == null ? true : p.expression_system.Contains(expression_system)) || (expression_system == null ? true : expression_system.Contains(p.expression_system)))
+                .Where(p => (promotor == null ? true : p.promotor.Contains(promotor)) || (promotor == null ? true : promotor.Contains(p.promotor)))
+                .Where(p => (polyA == null ? true : p.polyA.Contains(polyA)) || (polyA == null ? true : polyA.Contains(p.polyA)))
+                .Where(p => (insert == null ? true : p.insert.Contains(insert)) || (insert == null ? true : insert.Contains(p.insert)))
+                .Where(p => (reporter == null ? true : p.reporter.Contains(reporter)) || (reporter == null ? true : reporter.Contains(p.reporter)))
+                .Where(p => (resistance1 == null ? true : p.resistance.Contains(resistance1)) ||(resistance1 == null ? true : resistance1.Contains(p.resistance)))
+                .Where(p => (resistance2 == null ? true : p.resistance.Contains(resistance2)) || (resistance2 == null ? true : resistance2.Contains(p.resistance)))
+                .Where(p => (selection1 == null ? true : p.resistance.Contains(selection1)) || (selection1 == null ? true : resistance1.Contains(p.selection)))
+                .Where(p => (selection2 == null ? true : p.resistance.Contains(selection2)) || (selection2 == null ? true : resistance2.Contains(p.selection)))
+                .Where(p => (usage1 == null ? true : p.usage.Contains(usage1)) || (usage1 == null ? true : usage1.Contains(p.usage)))
+                .Where(p => (usage2 == null ? true : p.usage.Contains(usage2)) || (usage2 == null ? true : usage2.Contains(p.usage)))
+                .Select(p=>p.id).ToList();
+
+
+            //get the final results
+            var resultPlasmids = db.plasmids.Where(p => plasmidMapIds.Contains(p.id) || plasmidIds.Contains(p.id));
+
+
+            ViewBag.Count = resultPlasmids.Count();
+
+            //get the combined plasmid ids
+            var combinedIds = sharedPlasmidId.Concat(plasmidMapIds).Distinct();
+            //get the feautures
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            ViewBag.plasmidIds = JsonConvert.SerializeObject(combinedIds.ToList());
+
+
+            return View(resultPlasmids.ToList());
         }
 
         [Authorize]
