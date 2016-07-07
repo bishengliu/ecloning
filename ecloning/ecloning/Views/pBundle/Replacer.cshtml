@@ -19,7 +19,7 @@
     <br/>1) The replacer only accepts <span><em>single-stranded</em></span> DNA sequences. All letters or symbols except "a/A", "t/T", "g/G" and "c/C", such as space, line break, number, nonprintable characters <i>etc.</i> will be removed automatically;
     <br/>2) You first need to provide the DNA sequence to be replaced. This DNA sequence must NOT be shorter than <strong class="text-danger">10</strong> letters. The replacer uses the "Exact Match" to find the sequence to be replaced on all the plasmids in the current bundle;
     <br/>3) After that, you will be asked to provide the new DNA sequence that will replace the sequence in the previous step. if you don't provide this sequence, the replacer will remove the DNA sequence provied in the previous step.
-    <br/>4) The replacer will ask you to choose what to replace if <strong class="text-danger"><=3</strong> matches are found on a plasmid. If too much matches (>4) found, the plasmid will be ingnored; Increase the length of the DNA sequence to be replaced will reduces the number of matches.
+    <br/>4) The replacer will ask you to choose what to replace if <strong class="text-danger"><=2</strong> matches are found on a plasmid. If too much matches (>4) found, the plasmid will be ingnored; Increase the length of the DNA sequence to be replaced will reduces the number of matches.
 </div>
 
 <div class="row" id="tobereplaced">
@@ -69,8 +69,14 @@
         <div class="panel panel-primary">
             <div class="panel-heading">Matches Overview</div>
             <div class="panel-body">
-                <div id="aligment"></div>
-                <div id="match_overview"></div>
+                <div class="col-xs-offset-1 col-xs-10">
+                    <div id="aligment"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div id="match_overview">
+                    <p id="match_msg" class="text-danger"></p>
+                    <div id="match_selection"></div>
+                </div>
             </div>
             <div class="panel-footer clearfix">
                 <button class="btn btn-default pull-right disabled" id="match_button">
@@ -92,15 +98,7 @@
 <script src="~/Scripts/ecloning-ali2seq.js"></script>
 <script>
     //define array to hold the matches
-    /*
-    obj = {
-        "pId": 1,
-        "show": false,
-        "seqCount": 1000, //total seq count of  a plasmid
-        "match": [startPos1, startPos2, startPos2] //1 based index of the start positions of the matches
-    }
-    */
-    var mathes = [];
+    var matchedPlasmids = [];
 
 
 
@@ -205,23 +203,87 @@
                 scrollTo("#match_found");
 
 
-
+                var seq1 = $("#old_dna").val().trim();
+                var seq2 = $("#new_dna").val().trim();
+                var seq1Name = "Step 1";
+                var seq2Name = "Step 2";
                 //show the aligment if the new seq is provide
-                if ($("#new_dna").length > 0) {
-                    var seq1 = $("#old_dna").val().trim();
-                    var seq2 = $("#new_dna").val().trim();
-                    var seq1Name = "Step 1";
-                    var seq2Name = "Step 2";
-
+                if ($("#new_dna").length > 0) {                   
                     //align the seq and show the result
                     ali2seq(seq1, seq2, seq1Name, seq2Name, "aligment", "zappo");
                 }
 
                 //find matches
+                console.log(bundleObj.plasmids);
+                $.each(bundleObj.plasmids, function (i, d) {
+                    //get the index array
+                    var matches = findIndexes(d.sequence, seq1);
+                        if (matches.length < 3 && matches.length > 0) {
+                            var obj = {};
+                            obj.pId = d.pId;
+                            obj.pName = d.pName;
+                            obj.seqCount = d.seqCount;
+                            obj.sequence = d.sequence;
+                            obj.features = d.features;
+                            obj.matches = matches; //0-based index of the start
+                            //generate fake feature
+                            var mArray = [];
+                            $.each(matches, function (i, m) {                                
+                                var mfeature = {};
+                                mfeature.clockwise = true;
+                                mfeature.cut = null;
+                                mfeature.start = matches[i]+1;
+                                mfeature.end = matches[i] + seq1.length + 1;
+                                mfeature.feature = "To Be Replaced";
+                                mfeature.seqCount = d.seqCount;
+                                mfeature.show_feature = 1;
+                                mfeature.type_id = 5;
+                                mArray.push(mfeature);
+                            });
+                            obj.mfeatures = mArray;
+                            
+                            //set the first match to be replaced
+                            obj.selection = [matches[0]];
+                            matchedPlasmids.push(obj);
+                        }                                               
+                })
 
-                //show match overview of all plasmids, non-match plasmids or >4 matches are not shown
+                //show match overview of all plasmids, non-match plasmids or >3 matches are not shown
+                console.log(matchedPlasmids);
+                if (matchedPlasmids.length > 0) {
+                    $("#match_msg").text(null);
+                    //match_selection
+                    var oriMapId;
+                    var mMapId1, mMapId2;
+                    $.each(matchedPlasmids, function (i, d) {
+                        //add dom
+                        var html = "<div id=\"match-" + d.pId + "\" class=\"row xScrollable\">";
+                        //div for original features
+                        oriMapId = "origin-map-" + d.pId;
+                            html = html + '<div class="col-xs-4 xScrollable" id="origin-map-' + d.pId + '"></div>';
+                                //div for the matched option, can be max 2 options
+                                mMapId1 = 'matched-map-' + d.pId + '-1';
+                                mMapId2 = 'matched-map-' + d.pId + '-2';
+                                html = html + '<div class="col-xs-4 xScrollable" id="matched-map-' + d.pId + '-1"></div>';
+                                html = html + '<div class="col-xs-4 xScrollable" id="matched-map-' + d.pId + '-2"></div>';
+                            html = html+"</div><div class=\"clearfix\"></div>";
+                        $("#match_selection").append(html);
 
-
+                        //draw original ma
+                        drawMap(d.pName, d.seqCount, d.features, oriMapId, 468, 448);
+                        //draw matched maps
+                        if (d.mfeatures.length == 1) {
+                            drawMap(d.pName, d.seqCount, [d.mfeatures[0]], mMapId1, 400, 448);
+                        }
+                        if (d.mfeatures.length ==2) {
+                            drawMap(d.pName, d.seqCount, [d.mfeatures[1]], mMapId2, 500, 548);
+                        }
+                    })
+                    
+                }
+                else {
+                    $("#match_msg").text("No match is found, nothing to replace. Refresh the page to start again.");
+                }
             })
 
             //=====================match results=======================
@@ -245,4 +307,30 @@
             scrollTop: $(id).offset().top
         }, 1000);
     }
+
+    //find all the indexes
+    function findIndexes(fullSeq, subSeq) {
+        var array = [];
+        for (var index = 0; index < (fullSeq.length - subSeq.length); index += subSeq.length)
+        {
+            index = fullSeq.indexOf(subSeq, index);
+            if (index == -1)
+                return array;
+            array.push(index);
+        }
+    }
+
+    function drawMap(pName, pCount, features, mapId, width, height) {          
+            var fData = [pCount, features];
+            width = ($("#" + mapId).width() <= width ? width : $("#" + mapId).width());
+            //draw the map
+            var gd = GiraffeDraw();
+            gd.read(fData);
+            gd.CircularMap({
+                'map_dom_id': mapId,
+                'plasmid_name': pName,
+                'map_width': width,
+                'map_height': height
+            });
+    };
 </script>
