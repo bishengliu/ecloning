@@ -258,14 +258,14 @@
                     $.each(matchedPlasmids, function (i, d) {
                         //add dom
                         var html = "<div id=\"match-" + d.pId + "\" class=\"row xScrollable\">";
-                        //div for original features
-                        oriMapId = "origin-map-" + d.pId;
-                            html = html + '<div class="col-xs-4 xScrollable" id="origin-map-' + d.pId + '"></div>';
+                                //div for original features
+                                oriMapId = "origin-map-" + d.pId;
+                                html = html + '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 xScrollable" id="origin-map-' + d.pId + '"></div>';
                                 //div for the matched option, can be max 2 options
                                 mMapId1 = 'matched-map-' + d.pId + '-1';
                                 mMapId2 = 'matched-map-' + d.pId + '-2';
-                                html = html + '<div class="col-xs-4 xScrollable" id="matched-map-' + d.pId + '-1"></div>';
-                                html = html + '<div class="col-xs-4 xScrollable" id="matched-map-' + d.pId + '-2"></div>';
+                                html = html + '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 xScrollable" id="matched-map-' + d.pId + '-1"></div>';
+                                html = html + '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 xScrollable" id="matched-map-' + d.pId + '-2"></div>';
                             html = html+"</div><div class=\"clearfix\"></div>";
                         $("#match_selection").append(html);
 
