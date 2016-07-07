@@ -755,6 +755,25 @@ namespace ecloning.Controllers
                 pSeq.pName = plasmid.name;
                 pSeq.seqCount = (int)plasmid.seq_length;
                 pSeq.sequence = plasmid.sequence;
+                //find the features of this plasmid
+                var features = new List<plasmidFeature>();
+                var maps = db.plasmid_map.Where(p => p.plasmid_id == plasmidId).Where(f => f.feature_id != 4).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false }).ToList();
+                foreach (var map in maps)
+                {
+                    var feature = new plasmidFeature();
+                    feature.clockwise = map.clockwise;
+                    feature.cut = map.cut;
+                    feature.end = map.end;
+                    feature.feature = map.feature;
+                    feature.pId = plasmidId;
+                    feature.pName = plasmid.name;
+                    feature.seqCount = (int)plasmid.seq_length; ;
+                    feature.show_feature = map.show_feature;
+                    feature.start = map.start;
+                    feature.type_id = map.type_id;
+                    features.Add(feature);
+                }
+                pSeq.features = features;
                 pSeqs.Add(pSeq);
             }
             bundleSeq.plasmids = pSeqs;

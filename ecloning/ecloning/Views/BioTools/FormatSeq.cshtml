@@ -38,7 +38,7 @@
         var before = $('#dna').val();
         //strip out non-alpha characters and convert to uppercase
         var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
-        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsvwxyzBDEFHIJKLMNOPQRSVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
         $('#dna').val(after);
         var count = after.length;
         $("#dnaCount").text(" Count: " + count+"!");
