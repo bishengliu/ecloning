@@ -742,3 +742,70 @@ svg text tspan{
 .yScrollable{
     overflow-y:auto;
 }
+.replacerDiv{
+    position: relative;
+    background-color:rgba(248, 253, 248, 0.16);
+    height: 380px;
+    margin: 4px;
+    float: left;
+    padding: 15px 5px;
+    overflow: hidden;
+    -moz-border-radius: 10px;
+    border-radius: 10px;   
+    width:1654px;
+}
+.replacerSubDiv{
+    background-color:rgba(181, 191, 179, 0.09);
+    display:inline-block;
+    width: 400px;
+    height: 330px;
+    margin: 4px;
+    padding: 15px 5px;
+    overflow: hidden;
+    border:none;
+    border-color:rgba(181, 191, 179, 0.09);
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    pointer-events: none;
+}
+.divUnselected{
+    background-color:rgba(193, 193, 193, 0.38);
+    display:inline-block;
+    width: 400px;
+    height: 330px;
+    margin: 4px;
+    padding: 15px 5px;
+    overflow: hidden;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+}
+.divSelected{
+    background-color:InactiveBorder;
+    display:inline-block;
+    width: 400px;
+    height: 330px;
+    margin: 4px;
+    padding: 15px 5px;
+    overflow: hidden;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+}
+.bandDiv{
+    background-color:aquamarine;
+    display:inline-block;
+    width: 5px;
+    height: 330px;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: inset -3px -6px 1px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+    box-shadow: inset -1px -2px 3px rgba(0,0,0,0.2), 0px 4px 6px #c1c1c1;
+}
