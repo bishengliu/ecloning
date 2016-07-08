@@ -31,25 +31,25 @@ namespace ecloning.Controllers
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //only get my bundle and group bundle
             //get the group shared plasmid bundle id          
-            var grouppBundleIds = db.group_shared.Where(g => groupInfo.groupId.Contains(g.group_id)).Where(c => c.category == "pBundle").Select(r => r.resource_id).ToList();
+            var grouppBundleIds = db.group_shared.Where(g => groupInfo.groupId.Contains(g.group_id)).Where(c => c.category == "pBundle").OrderByDescending(b => b.resource_id).Select(r => r.resource_id).ToList();
 
             ViewBag.GrouppBundleIds = grouppBundleIds;
             //only show my bundles that are not shared with any group  
             IQueryable<plasmid_bundle> pBundles = null;
-            if (grouppBundleIds.Count() > 0)
-            {
-                pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId).Where(b => !grouppBundleIds.Contains(b.bundle_id));
-            }
-            else
-            {
-                pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId);
-            }
-            var pBundleIds = pBundles.Select(i => i.bundle_id).ToList();
+            pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId).Where(b => !grouppBundleIds.Contains(b.bundle_id));
+            //if (grouppBundleIds.Count() > 0)
+            //{
+            //    pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId).Where(b => !grouppBundleIds.Contains(b.bundle_id));
+            //}
+            //else
+            //{
+            //    pBundles = db.plasmid_bundle.Where(p => p.people_id == userInfo.PersonId);
+            //}
+            var pBundleIds = pBundles.OrderByDescending(b=>b.bundle_id).Select(i => i.bundle_id).ToList();
 
             //get combined bundle ids
             var combinedIds = pBundleIds.Concat(grouppBundleIds).Distinct().ToList();
-
-            ViewBag.BundleIds = combinedIds;
+            ViewBag.BundleIds = combinedIds;            
             //get top level bundles
             var rootBundles = db.plasmid_bundle.Where(i => combinedIds.Contains(i.bundle_id));
             //get the features into json
