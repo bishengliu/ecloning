@@ -79,12 +79,13 @@
                 <div id="match_overview" class="panel panel-color9">
                     <div class="panel-heading text-center">Matched Plasmids</div>
                     <div class="panel-body">
-                        <p id="match_msg" class="text-danger"></p>
                         <div id="match_selection" class="col-xs-12 xScrollable "></div>
                     </div>                    
                 </div>
             </div>
             <div class="panel-footer clearfix">
+                <p id="match_msg" class="text-danger pull-left"></p>
+
                 <button class="btn btn-default pull-right disabled" id="match_button">
                     <i class="fa fa-chevron-circle-right"></i>
                     <span>Next</span>
@@ -174,7 +175,6 @@
                 scrollTo("#new_seq_div");
             })
 
-
             //===================new seq===============================
             //remove all non letter in the seqeuce input
             $('#new_dna').change(function () {
@@ -229,6 +229,8 @@
                             obj.pName = d.pName;
                             obj.seqCount = d.seqCount;
                             obj.sequence = d.sequence;
+                            obj.seq1 = seq1;
+                            obj.seq2 = seq2;
                             obj.features = d.features;
                             obj.matches = matches; //0-based index of the start
                             //generate fake feature
@@ -309,17 +311,7 @@
                         }
                     })
                     //enable button
-                    if (isSelected) {
-                        if ($("#match_button").hasClass("disabled")) {
-                            $("#match_button").removeClass("disabled");
-                        }
-                        if ($("#match_button").hasClass("btn-default")) {
-                            $("#match_button").removeClass("btn-default");
-                        }
-                        if (!$("#match_button").hasClass("btn-danger")) {
-                            $("#match_button").addClass("btn-danger");
-                        }
-                    }
+                    checkMatchSaveButton(isSelected, "match_button");
 
                     //=====================mouse events=======================
                     //tooltip titles
@@ -336,12 +328,13 @@
                                 var pId = idArray[2];
                                 var startPos = idArray[3];
                                 //====================remove this pos from the matchedPlasmids
-
+                                updateMatchedPlasmids(pId, startPos, "remove");
+                                console.log(matchedPlasmids);
                                 //change the class to divUnselected
                                 $(el).removeClass('divSelected').addClass('divUnselected');
                                 //change fa-check to fa-times
                                 $(el).find('i').removeClass('fa-check-circle-o').removeClass('text-danger').addClass('fa-times-circle-o').addClass('text-muted');
-                                //====================check match_button again
+                                
                             }
                             else {
                                 $(el).prop("title", "This match is selected to be replaced!");
@@ -351,24 +344,36 @@
                                 var pId = idArray[2];
                                 var startPos = idArray[3];
                                 //=====================add this pos from the matchedPlasmids
-
+                                updateMatchedPlasmids(pId, startPos, "add");
+                                console.log(matchedPlasmids);
                                 //change the class
                                 $(el).removeClass('divUnselected').addClass('divSelected');
                                 //change fa-check to fa-times
-                                $(el).find('i').removeClass('fa-times-circle-o').removeClass('text-muted').addClass('fa-check-circle-o').addClass('text-danger');
-                                //======================check match_button again
-
+                                $(el).find('i').removeClass('fa-times-circle-o').removeClass('text-muted').addClass('fa-check-circle-o').addClass('text-danger');                                
+                            }
+                            //check match button
+                            //====================check match_button again
+                            isSelected = false;
+                            $.each(matchedPlasmids, function (i, d) {
+                                //check the selection
+                                if (d.selection.length > 0) {
+                                    isSelected = true;
+                                }
+                            });
+                            checkMatchSaveButton(isSelected, "match_button");
+                            if (!isSelected) {
+                                $("#match_msg").text("No match is found or selected, nothing to replace");
+                            }
+                            else {
+                                $("#match_msg").text(null);
                             }
                         })
                     })
                 }
                 else {
-                    $("#match_msg").text("No match is found, nothing to replace. Refresh the page to start again.");
+                    $("#match_msg").text("No match is found or selected, nothing to replace");
                 }
             })
-
-            //===============match nex button event to save the changes==============
-
         }
         catch (e) {
             console.log(e);
@@ -414,4 +419,56 @@
                 'map_height': height
             });
     };
+
+    //uodate match Plasmid
+    function updateMatchedPlasmids(pId, startPos, action){
+        //filter the data find the target
+        $.each(matchedPlasmids, function (i, d) {
+            if (+d.pId === +pId) {
+                if (action == "remove") {
+                    //remove a statt pos
+                    if (d.selection.indexOf(+startPos) !== -1) {
+                        var index = d.selection.indexOf(+startPos);                        
+                        d.selection.splice(index, 1);
+                    }
+                }
+                if (action == "add") {
+                    //add a start pos
+                    if (d.selection.indexOf(+startPos) === -1) {                        
+                        d.selection.push(+startPos);
+                        d.selection.sort();
+                    }
+                }
+            }
+        })
+    }
+
+    //check match button
+    function checkMatchSaveButton(isSelected, id)
+    {
+
+        //enable button
+        if (isSelected) {
+            if ($("#"+id).hasClass("disabled")) {
+                $("#" + id).removeClass("disabled");
+            }
+            if ($("#" + id).hasClass("btn-default")) {
+                $("#" + id).removeClass("btn-default");
+            }
+            if (!$("#" + id).hasClass("btn-danger")) {
+                $("#" + id).addClass("btn-danger");
+            }
+        }
+        else {
+            if (!$("#" + id).hasClass("disabled")) {
+                $("#" + id).addClass("disabled");
+            }
+            if (!$("#" + id).hasClass("btn-default")) {
+                $("#" + id).addClass("btn-default");
+            }
+            if ($("#" + id).hasClass("btn-danger")) {
+                $("#" + id).removeClass("btn-danger");
+            }
+        }
+    }
 </script>
