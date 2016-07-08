@@ -63,6 +63,22 @@ namespace ecloning.Controllers
                 var Restore = new RestoreMap(plasmid.id);
             }
 
+            //personDisplay, try to auto generate maps if not found
+            if (tag == "personDispaly")
+            {
+                //restore plasmid map
+                var maps = db.plasmid_map.Where(m => m.plasmid_id == plasmid.id);
+                if (maps.Count() == 0)
+                {
+                    //maps don't exist try to auto generate it
+                    if(plasmid.sequence != null)
+                    {
+                        //auto generate features
+                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                    }                    
+                }
+            }
+
             //display all features of the current plasmid
             var plasmid_map = db.plasmid_map.OrderBy(s=>s.start).Include(p => p.plasmid).Include(p => p.plasmid_feature).Where(p=>p.plasmid_id==id);
 
