@@ -780,6 +780,104 @@ namespace ecloning.Controllers
             ViewBag.BundleSeq = JsonConvert.SerializeObject(bundleSeq);
             return View();
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Replacer(string replacerArray)
+        {
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    var data = JsonConvert.DeserializeObject<List<ReplacerObj>>(replacerArray);
+                        foreach (var item in data)
+                        {
+                            //find the plasmid
+                            var plasmid = db.plasmids.Find(item.pId);
+                            if (plasmid != null)
+                            {
+                                var sequence = plasmid.sequence;
+                                if (item.seq1 != item.seq2)
+                                {
+                                    //update seq
+                                    if (item.seq1 != null && item.seq2 != null)
+                                    {
+                                        //changes
+                                        if (sequence.IndexOf(item.seq1) != -1 && item.selection.Count() > 0)
+                                        {
+                                            //loop into the selection (positon)
+                                            foreach (int s in item.selection)
+                                            {
+                                                var sIndex = s;
+                                                var eIndex = s + item.seq1.Length;
+                                                //get the new sequence
+                                                sequence = sequence.Substring(0, s) + item.seq2 + sequence.Substring(eIndex, sequence.Length - s - item.seq1.Length);
+                                            }
+
+                                        }
+                                        //update seq
+                                        plasmid.sequence = sequence;
+                                    }
+                                    if (item.seq1 != null && item.seq2 == null)
+                                    {
+                                        //remove
+                                        if (sequence.IndexOf(item.seq1) != -1 && item.selection.Count() > 0)
+                                        {
+                                            //loop into the selection (positon)
+                                            foreach (int s in item.selection)
+                                            {
+                                                var sIndex = s;
+                                                var eIndex = s + item.seq1.Length;
+                                                //get the new sequence
+                                                sequence = sequence.Substring(0, s) + sequence.Substring(eIndex, sequence.Length - s - item.seq1.Length);
+                                            }
+                                        }
+                                        //update seq
+                                        plasmid.sequence = sequence;
+                                    }
+                                    //empty backed map
+                                    var oldBackedMaps = db.plasmid_map_backup.Where(p => p.plasmid_id == item.pId);
+                                    if (oldBackedMaps.Count() > 0)
+                                    {
+                                        foreach (var b in oldBackedMaps.ToList())
+                                        {
+                                            db.plasmid_map_backup.Remove(b);
+                                        }
+                                    }
+                                    //empty current maps
+                                    var maps = db.plasmid_map.Where(p => p.plasmid_id == item.pId);
+                                    if (maps.Count() > 0)
+                                    {
+                                        foreach (var m in maps.ToList())
+                                        {
+                                            db.plasmid_map.Remove(m);
+                                        }
+                                    }
+                                    ////gen new map
+                                    if (sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(item.pId, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                            }
+                        }                        
+                        //save changes
+                        db.SaveChanges();
+                        scope.Complete();
+                        return Json(new { URL = Url.Action("Index", "pBundle", new { result = true})});                    
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return Json(new { URL = Url.Action("Index", "pBundle", new { result = false })});
+                }
+            }
+            
+        }
         // GET: pBundle/Delete/5
         public ActionResult Delete(int? bundle_id)
         {

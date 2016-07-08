@@ -88,7 +88,7 @@
 
                 <button class="btn btn-default pull-right disabled" id="match_button">
                     <i class="fa fa-chevron-circle-right"></i>
-                    <span>Next</span>
+                    <span>Save Changes</span>
                 </button>
             </div>
         </div>
@@ -374,6 +374,29 @@
                     $("#match_msg").text("No match is found or selected, nothing to replace");
                 }
             })
+
+            $("#match_button").click(function () {
+                //generate json to pass to the server
+                var replacerArray = genReplacerArray(matchedPlasmids);
+                //change icon and show msg
+                $("#match_button").addClass("disabled");
+                $(".divSelected").each(function (i, el) { $(el).addClass("noEvent") })
+                $(".divUnselected").each(function (i, el) { $(el).addClass("noEvent") })
+                $("#match_msg").text(null);
+                $("#match_msg").append('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span> saving changes..., please keep this page open.</span>');
+                //post data
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Replacer", "pBundle")',
+                    data: { 'replacerArray': JSON.stringify(replacerArray) },
+                    crossDomain: true,
+                    success: function (data) {
+                        window.location.href = data.URL;
+                    }
+
+                });
+            })
         }
         catch (e) {
             console.log(e);
@@ -470,5 +493,21 @@
                 $("#" + id).removeClass("btn-danger");
             }
         }
+    }
+
+    //generate json to pass to the server
+    function genReplacerArray(matchedPlasmids) {
+        var array = [];
+        $.each(matchedPlasmids, function (i, d) {
+            if (d.selection.length > 0) {
+                var obj = {};
+                obj.pId = d.pId;
+                obj.selection = d.selection;
+                obj.seq1 = d.seq1;
+                obj.seq2 = d.seq2;
+                array.push(obj);
+            }            
+        })
+        return array;
     }
 </script>

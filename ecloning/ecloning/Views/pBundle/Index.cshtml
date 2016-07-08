@@ -38,13 +38,12 @@
         </div>
     </div>
     <br class="hidden-xs" />
+    <p id="msg" class="text-danger">@TempData["msg"]</p>
 </div>
 
-<div>
-    <p>@TempData["msg"]</p>
-</div>
 <br />
 <div>
+
     @if (BundleIds.Count() > 0)
     {
         int x = 0;
@@ -176,4 +175,15 @@
             });
         });
     });
+</script>
+
+<script>
+    //get current url, only works for seq replacer
+    var url = window.location.href;
+    if (url.indexOf('?result=False') != -1) {
+        $("#msg").text("Something went wrong with the sequence replacer. Plasmid sequence(s) was/were not changed, please try again later!");
+    }
+    if (url.indexOf('?result=True') != -1) {
+        $("#msg").text("Plasmid sequence(s) was/were changed!");
+    }
 </script>
