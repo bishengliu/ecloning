@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace ecloning.Models
@@ -25,7 +26,15 @@ namespace ecloning.Models
             SeqCount = sequence.Length;
             this.idPrefix = idPrefix;
             this.WrapLength = WrapLength;
-            Name = name.IndexOf("'") != -1? name.Replace("'", "") : name;
+
+            //change name to int in case of special chars
+            char[] nameArray = name.ToCharArray();
+            StringBuilder sb = new StringBuilder();
+            foreach(var c in nameArray){
+                int value = Convert.ToInt32(c);
+                sb.Append(value.ToString());
+            }
+            Name = sb.ToString();
             aText = sequence.Substring(0, 50)+"...";
         }
 
