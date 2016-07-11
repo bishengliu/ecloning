@@ -71,9 +71,9 @@ namespace ecloning.Models
 
 
         //process forward seq with one cut
-        public string RestrictionForwardSeq(string seq, int forward_cut, int reverse_cut)
+        public string RestrictionForwardSeq(string seq, int forward_cut, int reverse_cut, string type)
         {
-            string newSeq = seq;
+            string newSeq = type=="one-cut"? seq.ToUpper().TrimStart('N').TrimEnd('N') : seq.ToUpper();
             int totalLengen = seq.Length;
             //precess cut
             if (forward_cut >= 1 && forward_cut > totalLengen)
@@ -199,6 +199,7 @@ namespace ecloning.Models
         //display prototype cut for restriction enzyme
         //if there is non-N letter code, show only single straind
         //if there is only N letter with ATGC show both strainds
+        //only allow N in the middle, not on 2 ends
         public string ShowPrototype(string seq, int forward_cut, int reverse_cut)
         {
             string prototype = "<span></span>";
@@ -209,7 +210,7 @@ namespace ecloning.Models
 
             //process seq with one cut
             var processSeq = new RestrictionEnzyme();
-            var newSeq = processSeq.RestrictionForwardSeq(seq, forward_cut, reverse_cut);
+            var newSeq = processSeq.RestrictionForwardSeq(seq, forward_cut, reverse_cut, "one-cut");
 
             //find new cut position on the newseq
             var cuts = processSeq.FindNewCut(newSeq, seq, forward_cut, reverse_cut);
@@ -286,7 +287,7 @@ namespace ecloning.Models
 
             var processSeq = new RestrictionEnzyme();
             //the most left cut
-            var newSeq1 = processSeq.RestrictionForwardSeq(seq, forward_cut, reverse_cut);
+            var newSeq1 = processSeq.RestrictionForwardSeq(seq, forward_cut, reverse_cut, "two-cut");
             //find new most right cut
             var cuts = processSeq.FindNewCut(newSeq1, seq, forward_cut2, reverse_cut2);
 
@@ -294,7 +295,7 @@ namespace ecloning.Models
             var newRCut2 = cuts[1];
 
             //the most right cut
-            var newSeq2 = processSeq.RestrictionForwardSeq(newSeq1, newFCut2, reverse_cut2);
+            var newSeq2 = processSeq.RestrictionForwardSeq(newSeq1, newFCut2, reverse_cut2, "two-cut");
             return newSeq2;
         }
 
