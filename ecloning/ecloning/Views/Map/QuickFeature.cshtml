@@ -37,8 +37,18 @@
                                     <p id="error1" class="text-danger"></p>
                                 </div>
                             </div>
+
+                        <div class="form-group hidden" id="primer-modi">
+                            @Html.LabelFor(model => model.modification, "Non-hybridization Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.modification, new { htmlAttributes = new { @class = "form-control", placeholder = "extra base pairs/tags on the 5' end + restriction site" } })
+                                @Html.ValidationMessageFor(model => model.modification, "", new { @class = "text-danger" })
+                                <p id="error0" class="text-danger"></p>
+                            </div>
+                        </div>
+
                             <div class="form-group required">
-                                @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                                @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4", id = "primer-seq" })
                                 <div class="col-md-6">
                                     @Html.TextAreaFor(model => model.sequence, 4, 150, new { @class = "form-control", @readonly=true })                                    
                                     @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
@@ -94,4 +104,21 @@
         }
         return true;
     });
+
+    $('#feature_id').change(function (e) {
+        var val = $(this).val();
+        console.log(val);
+        if (+val === 3) {
+            if ($("#primer-modi").hasClass("hidden")) {
+                $("#primer-modi").removeClass("hidden");
+            }
+            $("#primer-seq").text("Hybridization Sequence");
+        }
+        else {
+            if (!$("#primer-modi").hasClass("hidden")) {
+                $("#primer-modi").addClass("hidden");
+            }
+            $("#primer-seq").text("Sequence");
+        }
+    })
 </script>

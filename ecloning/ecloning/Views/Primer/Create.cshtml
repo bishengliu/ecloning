@@ -21,46 +21,46 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
                 <div class="form-group required">
-                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group required">
-                    @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
-                        @Html.EditorFor(model => model.sequence, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.LabelFor(model => model.sequence, "Hybridization Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.sequence, new { htmlAttributes = new { @class = "form-control", placeholder = "the region of the primer that binds to the DNA strand" } })
                         @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group hidden">
-                    @Html.LabelFor(model => model.usage, "Usage", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.usage, "Usage", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.EditorFor(model => model.usage, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.usage, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group hidden">
-                    @Html.LabelFor(model => model.purity, "Purity", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.purity, "Purity", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.EditorFor(model => model.purity, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.purity, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.modification, "Modification", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
-                        @Html.EditorFor(model => model.modification, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.LabelFor(model => model.modification, "Non-hybridization Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.modification, new { htmlAttributes = new { @class = "form-control", placeholder = "extra base pairs/tags on the 5' end + restriction site" } })
                         @Html.ValidationMessageFor(model => model.modification, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.location, "Location", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.location, "Location", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.EditorFor(model => model.location, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.location, "", new { @class = "text-danger" })
                     </div>
@@ -71,22 +71,22 @@
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
                 <div class="form-group">
-                    @Html.LabelFor(model => model.company, "Company", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.company, "Company", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.EditorFor(model => model.company, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.company, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.orderref, "Order#", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.orderref, "Order#", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.EditorFor(model => model.orderref, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.orderref, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
                         @Html.TextAreaFor(model => model.des, 3, 150, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
                     </div>

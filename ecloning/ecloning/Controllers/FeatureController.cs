@@ -107,7 +107,7 @@ namespace ecloning.Controllers
                     var adminGroupIds = db.groups.Where(g => g.name == "AppAdmin" || g.name == "Institute Admin").Select(i => i.id).ToList();
 
                     var isFound = false;
-                    var oldFeatures = db.common_feature.Where(f => f.label == common_feature.label && adminGroupIds.Contains(f.group_id));
+                    var oldFeatures = db.common_feature.Where(f => f.label == common_feature.label && (adminGroupIds.Contains(f.group_id) || groupInfo.groupId.Contains(f.group_id)));
                     if(oldFeatures.Count()>0){
                         isFound = true;
                     }
@@ -203,7 +203,7 @@ namespace ecloning.Controllers
             var adminGroupIds = db.groups.Where(g => g.name == "AppAdmin" || g.name == "Institute Admin").Select(i => i.id).ToList();
 
             var isFound = false;
-            var oldFeatures = db.common_feature.Where(f=>f.id != common_feature.id).Where(f => f.label == common_feature.label && adminGroupIds.Contains(f.group_id));
+            var oldFeatures = db.common_feature.Where(f => f.id != common_feature.id).Where(f => f.label == common_feature.label && (adminGroupIds.Contains(f.group_id) || groupInfo.groupId.Contains(f.group_id)));
             if (oldFeatures.Count() > 0)
             {
                 isFound = true;

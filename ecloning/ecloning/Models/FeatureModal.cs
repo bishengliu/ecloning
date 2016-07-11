@@ -12,7 +12,8 @@ namespace ecloning.Models
         public string tag { get; set; }
         public int feature_id { get; set; } //discard when primer
         public string label { get; set; } //= primer name
-        public string sequence { get; set; } //=primer seq
+        public string modification { get; set; } //=primer modification, Non-hybridization Sequence
+        public string sequence { get; set; } //=primer, hybridization Sequence
         public int clockwise { get; set; }
         //public int group_id { get; set; } //not used for primer
         //public int people_id { get; set; } //also for primer

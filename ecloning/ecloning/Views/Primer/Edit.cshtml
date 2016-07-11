@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="form-group required">
-                    @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.sequence, "Hybridization Sequence", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-8">
                         @Html.EditorFor(model => model.sequence, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.modification, "Modification", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.modification, "Non-hybridization Sequence", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-8">
                         @Html.EditorFor(model => model.modification, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.modification, "", new { @class = "text-danger" })

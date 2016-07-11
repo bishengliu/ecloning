@@ -857,7 +857,7 @@ namespace ecloning.Controllers
         }
         [Authorize]
         [HttpPost]
-        public ActionResult QuickFeature([Bind(Include = "feature_id,label,sequence,plasmid_id,start,end,tag, clockwise")] FeatureModal feature)
+        public ActionResult QuickFeature([Bind(Include = "feature_id,label,sequence,modification,plasmid_id,start,end,tag, clockwise")] FeatureModal feature)
         {
             //get userId
             var userId = User.Identity.GetUserId();
@@ -883,6 +883,7 @@ namespace ecloning.Controllers
                             var primer = new primer();
                             primer.name = feature.label;
                             primer.sequence = feature.sequence;
+                            primer.modification = feature.modification;
                             primer.people_id = userInfo.PersonId;
                             primer.dt = DateTime.Now;
                             db.primers.Add(primer);
