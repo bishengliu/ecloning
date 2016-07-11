@@ -25,13 +25,13 @@ namespace ecloning.Models
             SeqCount = sequence.Length;
             this.idPrefix = idPrefix;
             this.WrapLength = WrapLength;
-            Name = name;
+            Name = name.IndexOf("'") != -1? name.Replace("'", "") : name;
             aText = sequence.Substring(0, 50)+"...";
         }
 
         public string ModalRawHTML()
         {
-            Id = idPrefix.ToString() + Name;
+            Id = idPrefix.ToString() + '-' + Name;
             refId = "#" + Id;
 
             //sequence is divided by WrapLength
