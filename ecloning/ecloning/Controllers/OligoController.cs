@@ -23,7 +23,7 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //get the shared primer ids
-            var sharedOligos = db.group_shared.Where(p => p.category == "Oligo").Where(g => groupInfo.groupId.Contains(g.group_id));
+            var sharedOligos = db.group_shared.Where(p => p.category == "oligo").Where(g => groupInfo.groupId.Contains(g.group_id));
             List<int> sharedIds = new List<int>();
             if (sharedOligos.Count() > 0)
             {
@@ -154,7 +154,7 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //check whether it has already been shared
-            var isShared = db.group_shared.Where(r => r.category == "Oligo" && r.resource_id == id && r.group_id == groupInfo.groupId.FirstOrDefault());
+            var isShared = db.group_shared.Where(r => r.category == "oligo" && r.resource_id == id && r.group_id == groupInfo.groupId.FirstOrDefault());
             if (isShared.Count() > 0)
             {
                 return RedirectToAction("Index");
@@ -172,6 +172,23 @@ namespace ecloning.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult unShare(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //find the plasmid
+            var oligo = db.group_shared.Where(s => s.category == "oligo" && s.resource_id == id);
+            if (oligo.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+            db.group_shared.Remove(oligo.FirstOrDefault());
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         // GET: Oligoe/Delete/5
         public ActionResult Delete(int? id)
         {
