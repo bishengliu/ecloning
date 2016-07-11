@@ -1,6 +1,6 @@
 ﻿//button events of seq-editor
 $("#delete_seq").on("click", function (e) {
-    var seq = $('#seq').val().trim();
+    var seq = $('#seq').text().trim();
     var seqArray = seq.split('');
     var seq_len = seqArray.length;
     $("#delete_msg").text(null);
@@ -9,7 +9,7 @@ $("#delete_seq").on("click", function (e) {
         $("#delete_msg").text("Both positions are required!");
         return false;
     }
-    if ($('#from_pos').val().trim() < 1 || $('#to_pos').val().trim() > seq_len) {
+    if (+$('#from_pos').val().trim() < 1 || +$('#to_pos').val().trim() > seq_len) {
         $("#delete_msg").text("Invalid position!");
         return false;
     }
@@ -45,7 +45,7 @@ $('#insert_seq').change(function () {
     $('#insert_seq').val(after);
 });
 $("#insert").on("click", function (e) {
-    var seq = $('#seq').val().trim();
+    var seq = $('#seq').text().trim();
     var seqArray = seq.split('');
     var seq_len = seqArray.length;
     var r = 10;
@@ -69,7 +69,7 @@ $("#insert").on("click", function (e) {
         $("#insert_msg").text("position is required!");
         return false;
     }
-    if ($('#insert_pos').val().trim() < 1 || $('#insert_pos').val().trim() > seq_len) {
+    if (+$('#insert_pos').val().trim() < 1 || +$('#insert_pos').val().trim() > seq_len) {
         $("#insert_msg").text("Invalid position!");
         return false;
     }
@@ -324,8 +324,8 @@ $("#insert").on("click", function (e) {
 
 function validateForm() {
     //validate the form submission
-    var seq = $('#seq').val();
-    if (!seq.trim()) {
+    var oldSeq = $('#old_seq').val();
+    if (!oldSeq.trim()) {
         $('#error').text("\"Sequence\" is required!");
         return false;
     }

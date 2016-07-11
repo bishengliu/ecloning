@@ -23,7 +23,7 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //get the shared primer ids
-            var sharedPrimers = db.group_shared.Where(p => p.category == "Primer").Where(g => groupInfo.groupId.Contains(g.group_id));
+            var sharedPrimers = db.group_shared.Where(p => p.category == "primer").Where(g => groupInfo.groupId.Contains(g.group_id));
             List<int> sharedIds = new List<int>();
             if (sharedPrimers.Count() > 0)
             {
@@ -156,7 +156,7 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             var groupInfo = new GroupInfo(userInfo.PersonId);
             //check whether it has already been shared
-            var isShared = db.group_shared.Where(r => r.category == "Primer" && r.resource_id == id && r.group_id == groupInfo.groupId.FirstOrDefault());
+            var isShared = db.group_shared.Where(r => r.category == "primer" && r.resource_id == id && r.group_id == groupInfo.groupId.FirstOrDefault());
             if (isShared.Count() > 0)
             {
                 return RedirectToAction("Index");
@@ -174,6 +174,23 @@ namespace ecloning.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult unShare(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //find the plasmid
+            var primer = db.group_shared.Where(s => s.category == "primer" && s.resource_id == id);
+            if (primer.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+            db.group_shared.Remove(primer.FirstOrDefault());
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         // GET: Primer/Delete/5
         public ActionResult Delete(int? id)
         {

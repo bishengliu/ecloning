@@ -133,15 +133,28 @@
                             }
                             @if (!SharedIds.Contains(item.id))
                             {
+                               if (item.people_id == PeopleId)
+                               {
                                 <a href="@Url.Action("Share", "Primer", new { id= item.id})">
                                     <i class="fa fa-share-alt text-danger"></i>
                                     <span></span>
                                 </a>
+                               }
+                               
                             }
                             else
                             {
-                                <i class="fa fa-share-alt text-muted"></i>
+                                if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
+                                {
+                                    <a href="@Url.Action("unShare", "Primer", new { id= item.id})">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                            <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
+                                        </span>
+                                    </a>
+                                }
                             }
+                            
                         </td>
                     </tr>
                 }
