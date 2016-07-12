@@ -48,6 +48,30 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Bio.Core, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetBioCore.PCL.2.0.150722\lib\net45\Bio.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Bio.Desktop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetBioCore.PCL.2.0.150722\lib\net45\Bio.Desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Bio.Padena, Version=2.0.5681.21500, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetBioAlgorithms.PCL.2.0.150722\lib\Bio.Padena.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Bio.Pamsam, Version=2.0.5681.21502, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetBioAlgorithms.PCL.2.0.150722\lib\Bio.Pamsam.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Bio.Platform.Helpers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetBioCore.PCL.2.0.150722\lib\net45\Bio.Platform.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Bio.WebServices, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetBioWeb.PCL.2.0.150722\lib\Bio.WebServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="dotless.Core, Version=1.5.2.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
       <HintPath>..\packages\dotless.1.5.2\lib\dotless.Core.dll</HintPath>
       <Private>True</Private>
