@@ -1,0 +1,1113 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bio.Padena</name>
+    </assembly>
+    <members>
+        <member name="T:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger">
+            <summary>
+            Dangling links are caused by errors occurring at the end of read.
+            This class implements the methods for detecting dangling links
+            and removing the nodes on dangling links from the graph.
+            This also implements graph erosion, where ends of graph which 
+            have low coverage are removed. 
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.erodeThreshold">
+            <summary>
+            User Input Parameter
+            Threshold for eroding low coverage ends.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.danglingLinkLengths">
+            <summary>
+            Field used to keep track of the minimum length of 
+            dangling link that crosses the length threshold.
+            This is used to update the threshold for next round.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.danglingLinkExtensionTasks">
+            <summary>
+            Tasks queued to extend dangling links following
+            graph clean-up after erosion.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the DanglingLinksPurger class.
+            </summary>
+            <param name="threshold">Threshold for dangling links.</param>
+            <param name="erodeThreshold">Threshold for eroding endpoints.</param>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.Name">
+            <summary>
+            Gets the name of the algorithm.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.Description">
+            <summary>
+            Gets the description of algorithm.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.LengthThreshold">
+            <summary>
+            Gets or sets the threshold length.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.ErodeGraphEnds(Bio.Algorithms.Assembly.Graph.DeBruijnGraph,System.Int32)">
+            <summary>
+            Erode ends of graph that have coverage less than given erodeThreshold.
+            As optimization, we also check for dangling links and keeps track of the
+            lengths of the links found. No removal is done at this step.
+            This is done to get an idea of the different lengths at 
+            which to run the dangling links purger step.
+            This method returns the lengths of dangling links found.
+            Locks: Method only does reads. No locking necessary here. 
+            </summary>
+            <param name="graph">Input graph.</param>
+            <param name="erosionThreshold">Threshold for erosion.</param>
+            <returns>List of lengths of dangling links detected.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.DetectErroneousNodes(Bio.Algorithms.Assembly.Graph.DeBruijnGraph)">
+            <summary>
+            Detect nodes that are part of dangling links. 
+            Locks: Method only does reads. No locking necessary here or its callees. 
+            </summary>
+            <param name="deBruijnGraph">Input graph.</param>
+            <returns>List of nodes in dangling links.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.RemoveErroneousNodes(Bio.Algorithms.Assembly.Graph.DeBruijnGraph,Bio.Algorithms.Assembly.Graph.DeBruijnPathList)">
+            <summary>
+            Removes nodes that are part of dangling links.
+            </summary>
+            <param name="deBruijnGraph">Input graph.</param>
+            <param name="nodesList">List of dangling link nodes.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.RemoveErodedNodes(Bio.Algorithms.Assembly.Graph.DeBruijnGraph)">
+            <summary>
+            Delete nodes marked for erosion. Update adjacent nodes to update their extension tables.
+            After nodes are deleted, some new end-points might be created. We need to check for 
+            dangling links at these new points. This list is returned in the out parameter.
+            
+            TODO: Perhaps refactor code so that the graph is only manipulated by itself?
+            Might make it easier to implement future performance improvements, or cost performance
+            </summary>
+            <param name="graph">De Bruijn Graph.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.RemoveLinkNodes(Bio.Algorithms.Assembly.Graph.DeBruijnPath,System.Collections.Generic.HashSet{Bio.Algorithms.Assembly.Graph.DeBruijnNode})">
+            <summary>
+            Removes nodes in link from the graph.
+            Parallelization Note: Locks required here. We are modifying graph structure here.
+            </summary>
+            <param name="nodes">List of nodes to remove.</param>
+            <param name="lastNodes">Set of all nodes occurring at end of dangling links.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.TraceDanglingExtensionLink(System.Boolean,Bio.Algorithms.Assembly.Graph.DeBruijnPath,Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean)">
+            <summary>
+            Starting from potential end of dangling link, trace back along 
+            extension edges in graph to find if it is a valid dangling link.
+            Parallelization Note: No locks used in TraceDanglingLink. 
+            We only read graph structure here. No modifications are made.
+            </summary>
+            <param name="isForwardDirection">Boolean indicating direction of dangling link.</param>
+            <param name="link">Dangling Link.</param>
+            <param name="node">Node that is next on the link.</param>
+            <param name="sameOrientation">Orientation of link.</param>
+            <returns>List of nodes in dangling link.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.CheckAndAddDanglingNode(Bio.Algorithms.Assembly.Graph.DeBruijnPath,Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean@)">
+            <summary>
+            Checks if 'node' can be added to 'link' without 
+            violating any conditions pertaining to dangling links.
+            Returns null if loop is found or length exceeds threshold.
+            Otherwise, adds node to link and returns.
+            </summary>
+            <param name="link">Dangling link.</param>
+            <param name="node">Node to be added.</param>
+            <param name="reachedErrorEndPoint">Indicates if we have reached end of dangling link.</param>
+            <returns>Updated dangling link.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.ExtendDanglingLinks">
+            <summary>
+            Try and extend previously terminated dangling links.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.DanglingLinksPurger.ExtendDanglingLink(System.Boolean,Bio.Algorithms.Assembly.Graph.DeBruijnPath,Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean,System.Boolean)">
+            <summary>
+            Try and extend dangling links following
+            graph clean-up after erosion.
+            </summary>
+            <param name="isForwardDirection">Boolean indicating direction of dangling link.</param>
+            <param name="danglingLink">Dangling Link.</param>
+            <param name="node">Node that is next on the link.</param>
+            <param name="sameOrientation">Orientation of link.</param>
+            <param name="removeLast">Boolean indicating if last node 
+            in link has to be removed before extending.</param>
+            <returns>Length of dangling link found after extension.</returns>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.PadenaAssembly">
+            <summary>
+            PadenaAssembly is the result of running Padena on a set input sequences. 
+            As part of assembled output, it gives contig and scaffold sequences.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.PadenaAssembly.contigSequences">
+            <summary>
+            Holds list of contigs created after Assembly.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.PadenaAssembly.scaffolds">
+            <summary>
+            Holds list of scaffolds created after Assembly.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.PadenaAssembly.#ctor">
+            <summary>
+            Initializes a new instance of the PadenaAssembly class.
+            Default constructor.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.PadenaAssembly.AssembledSequences">
+            <summary>
+            Gets the list of assembled sequences.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.PadenaAssembly.Documentation">
+            <summary>
+            Gets or sets the associated documentation.
+            The Documentation object is intended for tracking the history, provenance,
+            and experimental context of a PadenaAssembly. The user can adopt any desired
+            convention for use of this object.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.PadenaAssembly.ContigSequences">
+            <summary>
+            Gets list of contig sequences created by assembler.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.PadenaAssembly.Scaffolds">
+            <summary>
+            Gets the list of assembler scaffolds.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.PadenaAssembly.AddContigs(System.Collections.Generic.IEnumerable{Bio.ISequence})">
+            <summary>
+            Add list of contigs.
+            </summary>
+            <param name="contigs">List of contig sequences.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.PadenaAssembly.AddScaffolds(System.Collections.Generic.IEnumerable{Bio.ISequence})">
+            <summary>
+            Add list of scaffolds.
+            </summary>
+            <param name="scaffoldsLists">List of scaffold sequences.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.PadenaAssembly.ToString">
+            <summary>
+            Converts all Contig sequences data to string
+            </summary>
+            <returns>All Contig sequences Data.</returns>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler">
+            <summary>
+            Implements a De-Bruijn based approach for
+            assembly of DNA sequences.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.kmerLength">
+            <summary>
+            User Input Parameter
+            Length of k-mer.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.sequenceReads">
+            <summary>
+            List of input sequence reads. Different steps in the assembly 
+            may access this. Should be set before starting the assembly process.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.StatusMessage">
+            <summary>
+            Holds the status message which will be sent through the Status event.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.currentStep">
+            <summary>
+            Holds the current step number being executed.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.graphBuildCompleted">
+            <summary>
+            Flag to indicate whether graph building completed progress message has been reported.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.linkGenerationCompleted">
+            <summary>
+            Flag to indicate whether generate link completed progress message has been reported.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.#ctor">
+            <summary>
+            Initializes a new instance of the ParallelDeNovoAssembler class.
+            Sets thresholds to default values.
+            Also initializes instances implementing different steps.
+            </summary>
+        </member>
+        <member name="E:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.StatusChanged">
+            <summary>
+            Provides the status to the subscribers.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Name">
+            <summary>
+            Gets the name of the current assembly algorithm used.
+            This property returns the Name of our assembly algorithm i.e 
+            Parallel De Novo algorithm.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Description">
+            <summary>
+            Gets the description of the current assembly algorithm used.
+            This property returns a simple description of what 
+             Parallel De Novo class implements.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.KmerLength">
+            <summary>
+            Gets or sets the kmer length.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.AllowKmerLengthEstimation">
+            <summary>
+            Gets or sets a value indicating whether to estimate kmer length.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Graph">
+            <summary>
+            Gets the assembler de-bruijn graph.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.DanglingLinksPurger">
+            <summary>
+            Gets or sets the instance that implements
+            dangling links purging step.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.DanglingLinksThreshold">
+            <summary>
+            Gets or sets the threshold length 
+            for dangling link purger.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.AllowErosion">
+            <summary>
+            Gets or sets a value indicating whether to allow erosion of the graph.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.ErosionThreshold">
+            <summary>
+            Gets or sets the threshold length for eroding low coverage graph 
+            ends. In case erosion step is not to be done, set this to 0.
+            As an performance optimization in assembler process, erosion and 
+            dangling link purging step are done together in a single step. 
+            Note that because of this optimization, unless the danglingLinkPurger 
+            implements IGraphErodePurger, erosion will not be done irrespective 
+            of the threshold value provided. 
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.RedundantPathsPurger">
+            <summary>
+            Gets or sets the instance that implements
+            redundant paths purging step.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.RedundantPathLengthThreshold">
+            <summary>
+            Gets or sets the length threshold 
+            for redundant paths purger.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.LowCoverageContigPurger">
+            <summary>
+            Gets or sets instance of class implementing Low coverage contig removal.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.AllowLowCoverageContigRemoval">
+            <summary>
+            Gets or sets a value indicating whether to enable removal of low coverage contigs.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.ContigCoverageThreshold">
+            <summary>
+            Gets or sets Threshold used for removing low-coverage contigs.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.ContigBuilder">
+            <summary>
+            Gets or sets the instance that implements
+            contig building step.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.ScaffoldBuilder">
+            <summary>
+            Gets or sets the instance that implements
+            scaffold building step.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.ScaffoldRedundancy">
+            <summary>
+            Gets or sets value of redundancy for building scaffolds.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Depth">
+            <summary>
+            Gets or sets the Depth for graph traversal in scaffold builder step.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.SequenceReads">
+            <summary>
+            Gets or sets the list of sequence reads.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.EstimateKmerLength(System.Collections.Generic.IEnumerable{Bio.ISequence})">
+            <summary>
+            For optimal graph formation, k-mer length should not be less 
+            than half the length of the longest input sequence and 
+            cannot be more than the length of the shortest input sequence. 
+            Reference for estimating kmerlength from reads: Supplement material from 
+            publication "ABySS: A parallel assembler for short read sequence data".
+            </summary>
+            <param name="sequences">List of input sequences.</param>
+            <returns>Estimated optimal kmer length.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Assemble(System.Collections.Generic.IEnumerable{Bio.ISequence})">
+            <summary>
+            Assemble the list of sequence reads.
+            </summary>
+            <param name="inputSequences">List of input sequences.</param>
+            <returns>Assembled output.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Assemble(System.Collections.Generic.IEnumerable{Bio.ISequence},System.Boolean)">
+            <summary>
+            Assemble the list of sequence reads. Also performs the 
+            scaffold building step as part of assembly process.
+            </summary>
+            <param name="inputSequences">List of input sequences.</param>
+            <param name="includeScaffolds">Boolean indicating whether scaffold building step has to be run.</param>
+            <returns>Assembled output.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Dispose">
+            <summary>
+            Implements dispose to suppress GC finalize
+            This is done as one of the methods uses ReadWriterLockSlim
+            which extends IDisposable.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.EstimateDefaultThresholds">
+            <summary>
+            Estimates and sets erosion and coverage threshold for contigs.
+            Median value of kmer coverage is set as default value.
+            Reference: ABySS Release Notes 1.1.1 - "The default threshold 
+            is the square root of the median k-mer coverage".
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.CreateGraph">
+            <summary>
+            Step 1: Building k-mers from sequence reads
+            Step 2: Build de bruijn graph for input set of k-mers.
+            Sets the _assemblerGraph field.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.UnDangleGraph">
+            <summary>
+            Step 3: Remove dangling links from graph.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.RemoveRedundancy">
+            <summary>
+            Step 4: Remove redundant paths from graph.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.BuildContigs">
+            <summary>
+            Step 5: Build contigs from de bruijn graph.
+            If coverage threshold is set, remove low coverage contigs.
+            </summary>
+            <returns>List of contig sequences.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.BuildScaffolds(System.Collections.Generic.IList{Bio.ISequence})">
+            <summary>
+            Step 6: Build scaffolds from contig list and paired reads.
+            </summary>
+            <param name="contigs">List of contigs.</param>
+            <returns>List of scaffold sequences.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Dispose(System.Boolean)">
+            <summary>
+            Dispose field instances.
+            </summary>
+            <param name="disposeManaged">If disposeManaged equals true, clean all resources.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.SetSequenceReads(System.Collections.Generic.IList{Bio.ISequence})">
+            <summary>
+            Sets the sequences from which the graph will be created.
+            </summary>
+            <param name="sequences">Sequences to set.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.Initialize">
+            <summary>
+            Sets up fields for the assembly process.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.InitializeDefaultGraphModifiers">
+            <summary>
+            Initializes the above defined fields. For each step in assembly
+            we use a separate class for implementation. This method assigns 
+            these variables to classes with desired implementation.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.RaiseStatusEvent(System.String)">
+            <summary>
+            Raises status event.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.ReportIntermediateProgress(System.Threading.CancellationToken)">
+            <summary>
+            Method to report intermediate progress
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.CreateGraphStarted">
+            <summary>
+            Raises status changed event with Graph creating started status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.CreateGraphEnded">
+            <summary>
+            Raises status changed event with Graph creating ended status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.TaskTimeSpanReport(System.TimeSpan)">
+            <summary>
+            Report the time a task took
+            </summary>
+            <param name="ts"></param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.NodeCountReport">
+            <summary>
+            Raise event to report the number of nodes currently in graph.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.EstimateDefaultValuesStarted">
+            <summary>
+            Raises status changed event with EstimateDefaultValues started status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.EstimateDefaultValuesEnded">
+            <summary>
+            Raises status changed event with EstimateDefaultValues ended status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.UndangleGraphStarted">
+            <summary>
+            Raises status changed event with UndangleGraph started status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.UndangleGraphEnded">
+            <summary>
+            Raises status changed event with UndangleGraph ended status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.RemoveRedundancyStarted">
+            <summary>
+            Raises status changed event with RemoveRedundancy started status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.RemoveRedundancyEnded">
+            <summary>
+            Raises status changed event with RemoveRedundancy ended status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.BuildContigsStarted">
+            <summary>
+            Raises status changed event with BuildContigs started status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.BuildContigsEnded">
+            <summary>
+            Raises status changed event with BuildContigs ended status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.BuildScaffoldsStarted">
+            <summary>
+            Raises status changed event with BuildScaffolds started status message.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.ParallelDeNovoAssembler.BuildScaffoldsEnded">
+            <summary>
+            Raises status changed event with BuildScaffolds ended status message.
+            </summary>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.PathWithOrientation">
+            <summary>
+            Structure that stores list of nodes in path, 
+            along with path orientation.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.PathWithOrientation.nodes">
+            <summary>
+            List of nodes in path.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.PathWithOrientation.#ctor(Bio.Algorithms.Assembly.Graph.DeBruijnNode,Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean)">
+            <summary>
+            Initializes a new instance of the PathWithOrientation class.
+            </summary>
+            <param name="node1">First node to add.</param>
+            <param name="node2">Second node to add.</param>
+            <param name="orientation">Path orientation.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.PathWithOrientation.#ctor(Bio.Algorithms.Assembly.Padena.PathWithOrientation)">
+            <summary>
+            Initializes a new instance of the PathWithOrientation class.
+            Copies the input path info to a new one.
+            </summary>
+            <param name="other">Path info to copy.</param>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.PathWithOrientation.Nodes">
+            <summary>
+            Gets the list of nodes in path.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.PathWithOrientation.IsSameOrientation">
+            <summary>
+            Gets or sets a value indicating whether path orientation is same or opposite
+            with respect to the start node of the path.
+            </summary>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger">
+            <summary>
+            Redundant links are caused by single point mutations occuring in middle of reads.
+            This class implements the methods for detecting redundant paths, 
+            and then removing all but one path.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.pathLengthThreshold">
+            <summary>
+            Threshold for length of redundant paths.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.graph">
+            <summary>
+            Holds reference to assembler graph.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the RedundantPathsPurger class.
+            Takes user parameter for threshold. 
+            </summary>
+            <param name="length">Threshold length.</param>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.Name">
+            <summary>
+            Gets the name of the algorithm.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.Description">
+            <summary>
+            Gets the description of the algorithm.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.LengthThreshold">
+            <summary>
+            Gets or sets threshold for length of redundant paths.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.DetectErroneousNodes(Bio.Algorithms.Assembly.Graph.DeBruijnGraph)">
+            <summary>
+            Detect nodes that are on redundant paths. 
+            Start from any node that has ambiguous (more than one) extensions.
+            From this node, trace path for each extension until either they 
+            converge to a single node or threshold length is exceeded. 
+            In case they converge, we have a set of redundant paths. 
+            We pick the best path based on the kmer counts of the path nodes.
+            All paths other than the best one are returned for removal.
+            Locks: Method only does reads. No locking necessary here or its callees. 
+            </summary>
+            <param name="deBruijnGraph">De Bruijn Graph.</param>
+            <returns>List of path nodes to be deleted.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.RemoveErroneousNodes(Bio.Algorithms.Assembly.Graph.DeBruijnGraph,Bio.Algorithms.Assembly.Graph.DeBruijnPathList)">
+            <summary>
+            Removes nodes that are part of redundant paths. 
+            </summary>
+            <param name="deBruijnGraph">De Bruijn graph.</param>
+            <param name="nodesList">Path nodes to be deleted.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.DetachBestPath(System.Collections.Generic.List{Bio.Algorithms.Assembly.Graph.DeBruijnPathList})">
+            <summary>
+            Extract best path from the list of paths in each cluster.
+            Take off the best path from list and return rest of the paths
+            for removal.
+            </summary>
+            <param name="pathClusters">List of path clusters.</param>
+            <returns>List of path nodes to be removed.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.ExtractBestPath(Bio.Algorithms.Assembly.Graph.DeBruijnPathList)">
+            <summary>
+            Extract best path from list of paths. For the current cluster 
+            of paths, return only those that should be removed.
+            </summary>
+            <param name="divergingPaths">List of redundant paths.</param>
+            <returns>List of paths nodes to be deleted.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.GetBestPath(Bio.Algorithms.Assembly.Graph.DeBruijnPathList)">
+            <summary>
+            Gets the best path from the list of diverging paths.
+            Path that has maximum sum of 'count' of belonging k-mers is best.
+            In case there are multiple 'best' paths, we arbitrarily return one of them.
+            </summary>
+            <param name="divergingPaths">List of diverging paths.</param>
+            <returns>Index of the best path.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.GetStartNode(Bio.Algorithms.Assembly.Graph.DeBruijnPathList)">
+            <summary>
+            Gets start node of redundant path cluster
+            All paths in input are part of a redundant path cluster
+            So all of them have the same start and the end node.
+            Return the first node of first path.
+            </summary>
+            <param name="paths">List of redundant paths.</param>
+            <returns>Start node of redundant path cluster.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.GetEndNode(Bio.Algorithms.Assembly.Graph.DeBruijnPathList)">
+            <summary>
+            Gets end node of redundant path cluster
+            All paths in input are part of a redundant path cluster
+            So all of them have the same start and the end node.
+            Return the last node of first path.
+            </summary>
+            <param name="paths">List of redundant paths.</param>
+            <returns>End node of redundant path cluster.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.RemoveDuplicates(System.Collections.Generic.List{Bio.Algorithms.Assembly.Graph.DeBruijnPathList})">
+            <summary>
+            Some set of paths will appear twice, one traced in forward direction
+            and other in opposite. This method eliminate duplicates.
+            </summary>
+            <param name="redundantPathClusters">List of path cluster.</param>
+            <returns>List of unique path clusters.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.RedundantPathsPurger.TraceDivergingExtensionPaths(Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Collections.Generic.Dictionary{Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean},System.Boolean,System.Collections.Generic.List{Bio.Algorithms.Assembly.Graph.DeBruijnPathList})">
+            <summary>
+            Traces diverging paths in given direction.
+            For each path in the set of diverging paths, extend path by one node
+            at a time. Continue this until all diverging paths converge to a 
+            single node or length threshold is exceeded.
+            If paths converge, add path cluster containing list of redundant 
+            path nodes to list of redundant paths and return.
+            </summary>
+            <param name="startNode">Node at starting point of divergence.</param>
+            <param name="divergingNodes">List of diverging nodes.</param>
+            <param name="isForwardExtension">Bool indicating direction of divergence.</param>
+            <param name="redundantPaths">List of redundant paths.</param>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder">
+            <summary>
+            Class implements algorithm for extracting contig sequences from de 
+            De-bruijn graph. It detects simple paths in graph, and for each simple 
+            path in the graph, it generates corresponding sequence as a contig.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder._graph">
+            <summary>
+            Holds reference to assembler graph.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder._coverageThreshold">
+            <summary>
+            Holds value of the coverage threshold to be
+            used for filtering contigs.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.RemoveLowCoverageContigs(Bio.Algorithms.Assembly.Graph.DeBruijnGraph,System.Double)">
+            <summary>
+            Build contigs from graph. For contigs whose coverage is less than 
+            the specified threshold, remove graph nodes belonging to them.
+            </summary>
+            <param name="deBruijnGraph">DeBruijn Graph.</param>
+            <param name="coverageThresholdForContigs">Coverage Threshold for contigs.</param>
+            <returns>Number of nodes removed.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.Build(Bio.Algorithms.Assembly.Graph.DeBruijnGraph)">
+            <summary>
+            Build contig sequences from the graph.
+            </summary>
+            <param name="deBruijnGraph">De Bruijn graph.</param>
+            <returns>List of contig data.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.ExcludeAmbiguousExtensions">
+            <summary>
+            For nodes that have more than one extension in either direction,
+            mark the extensions invalid.
+            Locks: No locks used as extensions are only marked invalid, not deleted.
+            Write locks not used because in only possible conflict both threads will 
+            try to write same value to memory. So race is harmless.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.GetSimplePaths(System.Boolean)">
+            <summary>
+            Get simple paths in the graph.
+            </summary>
+            <returns>List of simple paths.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.TraceSimplePath(System.Collections.Generic.List{Bio.ISequence},Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Trace simple path starting from 'node' in specified direction.
+            </summary>
+            <param name="assembledContigs">List of assembled contigs.</param>
+            <param name="node">Starting node of contig path.</param>
+            <param name="isForwardDirection">Boolean indicating direction of path.</param>
+            <param name="createContigSequences">Boolean indicating whether the contig sequences are to be created or not.</param>
+            <param name="DuplicatesPossible">Boolean indicating if duplicates are possible, true if both the forward and reverse path could be generated</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.TraceSimplePathLinks(System.Collections.Generic.List{Bio.Algorithms.Assembly.Graph.DeBruijnNode},System.Collections.Generic.List{System.Byte},System.Boolean,System.Boolean,Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean)">
+            <summary>
+            Trace simple path in specified direction.
+            </summary>
+            <param name="contigPath">List of graph nodes corresponding to contig path.</param>
+            <param name="contigSequence">Sequence of contig being assembled.</param>
+            <param name="isForwardDirection">Boolean indicating direction of path.</param>
+            <param name="sameOrientation">Path orientation.</param>
+            <param name="node">Next node on the path.</param>
+            <param name="createContigSequences">Indicates whether the contig sequences are to be created or not.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.SimplePathContigBuilder.CheckAndAddNode(System.Collections.Generic.List{Bio.Algorithms.Assembly.Graph.DeBruijnNode},System.Collections.Generic.List{System.Byte},Bio.Algorithms.Assembly.Graph.DeBruijnNode,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Checks if 'node' can be added to 'path' without causing a loop.
+            If yes, adds node to path and returns true. If not, returns false.
+            </summary>
+            <param name="contigPath">List of graph nodes corresponding to contig path.</param>
+            <param name="contigSequence">Sequence of contig being assembled.</param>
+            <param name="nextNode">Next node on the path to be added.</param>
+            <param name="isForwardDirection">Boolean indicating direction.</param>
+            <param name="isSameOrientation">Boolean indicating orientation.</param>
+            <param name="createContigSequences">Boolean indicating whether contig sequences are to be created or not.</param>
+            <returns>Boolean indicating if path was updated successfully.</returns>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment">
+            <summary>
+            Utility for aligning reads to contigs.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.ReadContigAlignment(System.Collections.Generic.IList{Bio.ISequence},System.Collections.Generic.IList{Bio.ISequence},System.Int32)">
+            <summary>
+            Aligns reads to contigs using kmer method of alignment.
+            </summary>
+            <param name="contigs">List of contig sequences.</param>
+            <param name="reads">List of read sequences.</param>
+            <param name="kmerLength">Kmer Length.</param>
+            <returns>List of Contig.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.MapRead(System.Int32,System.Collections.Generic.IList{System.Collections.Generic.IList{Bio.Algorithms.Kmer.KmerIndexer}},System.Int64,System.Int32)">
+            <summary>
+            Traverse through list of contig-read match indexes for given read.
+            </summary>
+            <param name="position">Position from where list of 
+             indexes should be traversed.</param>
+            <param name="contigReadMatch">List for contig-read match indexes.</param>
+            <param name="contigIndex">Index of contig sequence.</param>
+            <param name="kmerLength">Length of kmer.</param>
+            <returns>List of read maps.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.FindContinuous(Bio.Algorithms.Kmer.KmerIndexer,System.Collections.Generic.IList{Bio.Algorithms.Assembly.Padena.Scaffold.ReadMap},System.Int32,System.Int32)">
+            <summary>
+            Merge continuous positions of a read in kmer indexes.
+            </summary>
+            <param name="kmer">Position of contig kmer.</param>
+            <param name="readMaps">Alignment between read and contig.</param>
+            <param name="position">Position of kmer in read.</param>
+            <param name="kmerLength">Length of kmer.</param>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.IsContinousRight(Bio.Algorithms.Assembly.Padena.Scaffold.ReadMap,System.Int32,System.Int32,System.Int32)">
+            <summary>
+             Find if positions occur simultaneously of read in contig, 
+             if contig is traced from right direction.
+            </summary>
+            <param name="map">Map from previous position of read.</param>
+            <param name="readPosition">Position of read.</param>
+            <param name="contigPosition">Position of contig.</param>
+            <param name="length">Length of kmer.</param>
+            <returns>True if continuous position of reads in contig.</returns>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.IsContinousLeft(Bio.Algorithms.Assembly.Padena.Scaffold.ReadMap,System.Int32,System.Int32,System.Int32)">
+            <summary>
+             Find if positions occur simultaneously of read in contig, 
+             if contig is traced from left direction.
+            </summary>
+            <param name="map">Map from previous position of read.</param>
+            <param name="readPosition">Position of read.</param>
+            <param name="contigPosition">Position of contig.</param>
+            <param name="length">Length of kmer.</param>
+            <returns>True if continuous position of reads in contig.</returns>
+        </member>
+        <member name="T:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.ContigIndex">
+            <summary>
+            Stores information of kmer reads map with contigs.
+            </summary>
+        </member>
+        <member name="F:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.ContigIndex.contigReadMatchIndexes">
+            <summary>
+            Contig stored in form of kmer maps of reads
+            ------------------------------  Contig
+            --------                        read1
+            --------                        read5
+                    --------                read2
+                            --------        read3
+                                    ------  read4.
+            </summary>
+        </member>
+        <member name="M:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.ContigIndex.#ctor(Bio.ISequence)">
+            <summary>
+            Initializes a new instance of the ContigIndex class.
+            </summary>
+            <param name="contig">Contig sequence.</param>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.ContigIndex.ContigReadMatchIndexes">
+            <summary>
+            Gets the value of Read as indexes of contig overlap.
+            </summary>
+        </member>
+        <member name="P:Bio.Algorithms.Assembly.Padena.Utility.ReadAlignment.ContigIndex.ContigSequence">
+            <summary>
+            Gets the value of Contig sequence.
+            </summary>
+        </member>
+        <member name="T:Bio.Properties.Resource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.AmbiguousCharacter">
+            <summary>
+              Looks up a localized string similar to At least one sequence should not contain Gap/Ambiguous character.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.BuildContigsEnded">
+            <summary>
+              Looks up a localized string similar to Step 5: BuildContigs - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.BuildContigsStarted">
+            <summary>
+              Looks up a localized string similar to Step 5: BuildContigs - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.BuildScaffoldEnded">
+            <summary>
+              Looks up a localized string similar to Step 6: BuildScaffolds - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.BuildScaffoldStarted">
+            <summary>
+              Looks up a localized string similar to Step 6: BuildScaffolds - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.CannotAssembleSequenceType">
+            <summary>
+              Looks up a localized string similar to Cannot Assemble RNA or Protein Sequences.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.CreateGraphEnded">
+            <summary>
+              Looks up a localized string similar to Step 1 &amp; 2: Create Kmer and Graph - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.CreateGraphStarted">
+            <summary>
+              Looks up a localized string similar to Step 1 &amp; 2: Create Kmer and Graph - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.CreateGraphSubStatus">
+            <summary>
+              Looks up a localized string similar to {0} sequence(s) skipped outof {1} processed sequences..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.CreateGraphSubStatusWithoutSkipped">
+            <summary>
+              Looks up a localized string similar to {0} sequence(s) processed..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.DanglingLinksPurger">
+            <summary>
+              Looks up a localized string similar to DanglingLinksPurger.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.DanglingLinksPurgerDescription">
+            <summary>
+              Looks up a localized string similar to Error correction module by removal of dangling links in graph.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.DefaultSubStatus">
+            <summary>
+              Looks up a localized string similar to ..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.Depth">
+            <summary>
+              Looks up a localized string similar to Depth cannot be less than or equal to 0.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.DuplicatingReadIds">
+            <summary>
+              Looks up a localized string similar to Duplicate read found. Id:{0}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.EstimateDefaultValuesEnded">
+            <summary>
+              Looks up a localized string similar to    Estimating default values - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.EstimateDefaultValuesStarted">
+            <summary>
+              Looks up a localized string similar to    Estimating default values - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.GenerateLinkEnded">
+            <summary>
+              Looks up a localized string similar to    Generate Links Ended..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.GenerateLinkStarted">
+            <summary>
+              Looks up a localized string similar to    Generate Links Started..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.GraphBuilt">
+            <summary>
+              Looks up a localized string similar to    Graph built successfully - Processed {0} sequences..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.GraphNodeCountDisplay">
+            <summary>
+              Looks up a localized string similar to Nodes in graph: {0}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.InappropriateKmerLength">
+            <summary>
+              Looks up a localized string similar to Kmer length must be less than the length of the shortest sequence, and should be greater than half the length of the longest sequence..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.InitializingEnded">
+            <summary>
+              Looks up a localized string similar to Initializing - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.InitializingStarted">
+            <summary>
+              Looks up a localized string similar to Initializing - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.InputSequenceCannotBeNull">
+            <summary>
+              Looks up a localized string similar to One of the sequences in list is null. All sequences in input list must be valid sequences..
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.KmerLength">
+            <summary>
+              Looks up a localized string similar to Kmer length cannot be less than or equal to 0.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.NegativeRedundancy">
+            <summary>
+              Looks up a localized string similar to Redundancy value cannot be negative.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.NullContigBuilder">
+            <summary>
+              Looks up a localized string similar to Contig Builder cannot be null.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.Padena">
+            <summary>
+              Looks up a localized string similar to Padena.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.PadenaDescription">
+            <summary>
+              Looks up a localized string similar to Implements parallel de-novo assembly using De-bruijn graph.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.PairedReadException">
+            <summary>
+              Looks up a localized string similar to No Paired Read Data.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.RedundantPathsPurger">
+            <summary>
+              Looks up a localized string similar to RedundantPathsPurger.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.RedundantPathsPurgerDescription">
+            <summary>
+              Looks up a localized string similar to Graph error correction by removal of redundant paths.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.RemoveReducndancyEnded">
+            <summary>
+              Looks up a localized string similar to Step 4: RemoveRedundancy - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.RemoveReducndancyStarted">
+            <summary>
+              Looks up a localized string similar to Step 4: RemoveRedundancy - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.SecondaryUndangleGraphEnded">
+            <summary>
+              Looks up a localized string similar to   Secondary UndangleGraph - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.SecondaryUndangleGraphStarted">
+            <summary>
+              Looks up a localized string similar to   Secondary UndangleGraph - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.SimplePathContigBuilder">
+            <summary>
+              Looks up a localized string similar to Simple path based contig builder.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.SimplePathContigBuilderDescription">
+            <summary>
+              Looks up a localized string similar to Builds contigs from simple paths in the de bruijn graph.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.TimeSpanReport">
+            <summary>
+              Looks up a localized string similar to Total Time for Task: {0:c}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.UndangleGraphEnded">
+            <summary>
+              Looks up a localized string similar to Step 3: UndangleGraph - End time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+        <member name="P:Bio.Properties.Resource.UndangleGraphStarted">
+            <summary>
+              Looks up a localized string similar to Step 3: UndangleGraph - Start time: {0:yyyy-MM-dd-HH:mm:ss.fff}.
+            </summary>
+        </member>
+    </members>
+</doc>
