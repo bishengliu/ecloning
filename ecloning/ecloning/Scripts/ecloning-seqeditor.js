@@ -453,7 +453,7 @@ function seqEditor(seq, id, type) {
 
         //preparep tooltip div
         var tooltip = d3.select("body").append("div")
-                            .attr("class", "tooltip")
+                            .attr("class", "tooltip2")
                             .style("opacity", 0);
         //============points and count===================
         //point
@@ -546,7 +546,7 @@ function seqEditor(seq, id, type) {
                              .transition().delay(150)//.attr("transform", "scale(0)");
                              .attr("display", "none");
                          //delete all tooltip
-                         d3.selectAll(".tooltip").remove();
+                         d3.selectAll(".tooltip2").remove();
                      })
                      .datum(dataLetter).attr("transform", "translate(" + tx + "," + ty + ")");
 
