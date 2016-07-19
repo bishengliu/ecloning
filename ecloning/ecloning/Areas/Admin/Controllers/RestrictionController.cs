@@ -21,7 +21,8 @@ namespace ecloning.Areas.Admin.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            return View(db.restri_enzyme.OrderBy(n=>n.name).ToList());
+            var restris = db.restri_enzyme.OrderBy(n => n.name).ToList();
+            return View(restris);
         }
 
         // GET: Admin/Restriction/Create
@@ -32,8 +33,8 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
-            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
-            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", true);
+            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 2);
 
             //prepare lette code
             var codes = db.letter_code.OrderBy(c => c.name);
@@ -103,8 +104,8 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.staractitivity = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.dam = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
             ViewBag.dcm = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
-            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", false);
-            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 0);
+            ViewBag.cpg = new SelectList(db.dropdownitems.Where(c => c.category == "TF").OrderBy(g => g.id), "value", "text", true);
+            ViewBag.inactivation = new SelectList(db.dropdownitems.Where(c => c.category == "StarActivity").OrderBy(g => g.id), "value", "text", 2);
 
             //prepare lette code
             var codes = db.letter_code.OrderBy(c => c.name);
