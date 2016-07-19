@@ -24,7 +24,7 @@ namespace ecloning.Models
             string symbol = null;
             if (dam)
             {
-                symbol = "<button type='button' class='btn btn-danger btn-circle disabled'>Dam</button>";
+                symbol = "<button type='button' class='btn btn-danger btn-circle disabled noEvent'>Dam</button>";
             }
             return symbol;
         }
@@ -34,7 +34,7 @@ namespace ecloning.Models
             string symbol = null;
             if (dcm)
             {
-                symbol = "<button type='button' class='btn btn-primary btn-circle disabled'>Dcm</button>";
+                symbol = "<button type='button' class='btn btn-primary btn-circle disabled noEvent'>Dcm</button>";
             }
             return symbol;
         }
@@ -44,7 +44,7 @@ namespace ecloning.Models
             string symbol = null;
             if (cpg)
             {
-                symbol = "<button type='button' class='btn btn-info btn-circle disabled'>CpG</button>";
+                symbol = "<button type='button' class='btn btn-info btn-circle disabled noEvent'>CpG</button>";
             }
             return symbol;
         }
@@ -55,16 +55,16 @@ namespace ecloning.Models
             if (inactivation == 1)
             {
                 //650C
-                symbol = "<button type='button' class='btn btn-success btn-circle disabled'>65&deg;C</button>";
+                symbol = "<button type='button' class='btn btn-success btn-circle disabled noEvent'>65&deg;C</button>";
             }
             else if(inactivation == 2)
             {
                 //850C
-                symbol = "<button type='button' class='btn btn-success btn-circle disabled'>80&deg;C</button>";
+                symbol = "<button type='button' class='btn btn-success btn-circle disabled noEvent'>80&deg;C</button>";
             }
             else
             {
-                symbol = "<span class='fa-stack fa-lg'><i class='fa fa-fire fa-stack-1x'></i><i class='fa fa-ban fa-stack-2x text-danger'></i></span>";
+                symbol = "<span class='fa-stack fa-lg noEvent'><i class='fa fa-fire fa-stack-1x'></i><i class='fa fa-ban fa-stack-2x text-danger'></i></span>";
             }
             return symbol;
         }
@@ -96,21 +96,21 @@ namespace ecloning.Models
                     }
                     newSeq = newSeq + N2;
                 }
-                if (reverse_cut < 0)
+                if (reverse_cut < -1)
                 {
                     var N3 = new StringBuilder();
-                    for (int i = -1; i >= reverse_cut; i--)
+                    for (int i = -2; i >= reverse_cut; i--)
                     {
                         N3.Append("N");
                     }
                     newSeq = N3 + newSeq;
                 }
             }
-            if (forward_cut < 0)
+            if (forward_cut < -1)
             {
                 //put N
                 var Ns = new StringBuilder();
-                for (int i = -1; i >= forward_cut; i--)
+                for (int i = -2; i >= forward_cut; i--)
                 {
                     Ns.Append("N");
                 }
@@ -125,7 +125,7 @@ namespace ecloning.Models
                     }
                     newSeq = newSeq + N2;
                 }
-                if (reverse_cut < 0 && reverse_cut < forward_cut)
+                if (reverse_cut < -1 && reverse_cut < forward_cut)
                 {
                     var N3 = new StringBuilder();
                     for (int i = 1; i <= (Math.Abs(reverse_cut) - Math.Abs(forward_cut)); i++)
@@ -141,10 +141,8 @@ namespace ecloning.Models
 
         //find new cut position
         public int[] FindNewCut(string newSeq, string seq, int forward_cut, int reverse_cut)
-        {
-            
-
-            //find index of ols seq in newseq
+        {           
+            //find index of old seq in newseq
             int idx = newSeq.IndexOf(seq);
             int newFCut = forward_cut;
             int newRCut = reverse_cut;
@@ -183,12 +181,12 @@ namespace ecloning.Models
                     {
                         //idx >0
                         newFCut = 0;
-                        newRCut = Math.Abs(forward_cut) - Math.Abs(reverse_cut);
+                        newRCut = Math.Abs(Math.Abs(forward_cut) - Math.Abs(reverse_cut));
                     }
                     else
                     {
-                        newFCut = idx + forward_cut;
-                        newRCut = idx + reverse_cut;
+                        newFCut = Math.Abs(Math.Abs(reverse_cut) - Math.Abs(forward_cut));
+                        newRCut = 0;
                     }
                 }
             }
@@ -210,6 +208,7 @@ namespace ecloning.Models
 
             //process seq with one cut
             var processSeq = new RestrictionEnzyme();
+            //append "N" to original seq
             var newSeq = processSeq.RestrictionForwardSeq(seq, forward_cut, reverse_cut, "one-cut");
 
             //find new cut position on the newseq
@@ -234,7 +233,7 @@ namespace ecloning.Models
             if (hasLetter)
             {
                 //if there is non-N letter code, show only single straind
-                string front = newSeq.Substring(0, newFCut);
+                string front = newFCut==0? "" : newSeq.Substring(0, newFCut);
                 string end = newSeq.Substring(newFCut, (totalLengen - newFCut));
                 prototype = "<pre><span class='seqFont'>5' - <strong>" + front + "</strong><span class='verticalLine'></span><strong>" + end + "</strong> - 3'</span></pre>";
 
@@ -246,7 +245,7 @@ namespace ecloning.Models
                 if(newFCut >= newRCut)
                 {
                     //forward seq
-                    string front1 = newSeq.Substring(0, newRCut);
+                    string front1 = newFCut == 0 ? "" : newSeq.Substring(0, newRCut);
                     string front12 = newSeq.Substring(newRCut, (newFCut - newRCut));
 
                     string end1 = newSeq.Substring(newFCut, (totalLengen - newFCut));
