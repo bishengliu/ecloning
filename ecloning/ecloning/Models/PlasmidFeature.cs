@@ -317,7 +317,7 @@ namespace ecloning.Models
             //========================================================================
             //=====================================================================
             //check restriciton cut
-
+            /*
             //first check the group common restriction enzymes
             //if no common restriction, then look all the restriction enzymes
 
@@ -337,7 +337,14 @@ namespace ecloning.Models
                     enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
                 }
             }
-
+            */
+            //check all the enzymes available
+            List<int> enzymeId = new List<int>();
+            var restrictions = db.restri_enzyme;
+            if (restrictions.Count() > 0)
+            {
+                enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
+            }
             if (enzymeId.Count() > 0)
             {
                 //check whether enzymeId.count >0 

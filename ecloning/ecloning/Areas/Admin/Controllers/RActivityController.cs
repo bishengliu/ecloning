@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -199,30 +200,42 @@ namespace ecloning.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //add to company list
-            var enzyme = new restriction_company();
-            enzyme.company_id = (int)company_id;
-            enzyme.enzyme_id = (int)enzyme_id;
-            db.restriction_company.Add(enzyme);
-
-
-            //create empty activity in activity_restriction table
-            //get all buffer id
-            var buffers = db.buffers.Where(c => c.company_id == company_id);
-            if (buffers.Count() > 0)
+            //start transction
+            using (TransactionScope scope = new TransactionScope())
             {
-                foreach(var b  in buffers)
+                try
                 {
-                    var activity = new activity_restriction();
-                    activity.enzyme_id = (int)enzyme_id;
-                    activity.company_id = (int)company_id;
-                    activity.buffer_id = b.id;
-                    activity.temprature = 37;
-                    activity.activity = 0; 
-                    db.activity_restriction.Add(activity);
+                    //add to company list
+                    var enzyme = new restriction_company();
+                    enzyme.company_id = (int)company_id;
+                    enzyme.enzyme_id = (int)enzyme_id;
+                    db.restriction_company.Add(enzyme);
+
+                    //create empty activity in activity_restriction table
+                    //get all buffer id
+                    var buffers = db.buffers.Where(c => c.company_id == company_id);
+                    if (buffers.Count() > 0)
+                    {
+                        foreach(var b  in buffers)
+                        {
+                            var activity = new activity_restriction();
+                            activity.enzyme_id = (int)enzyme_id;
+                            activity.company_id = (int)company_id;
+                            activity.buffer_id = b.id;
+                            activity.temprature = 37;
+                            activity.activity = 0; 
+                            db.activity_restriction.Add(activity);
+                        }
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
                 }
             }
-            db.SaveChanges();
+            
 
             return RedirectToAction("AddEnzyme", new { company_id = company_id });
         }

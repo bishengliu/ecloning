@@ -105,7 +105,7 @@
                 $(this).removeClass("hidden");
                 $(this).addClass("hidden");
                 var _aText = $(this).children('span').eq(0).text().toLowerCase().replace(/\s+/g, '');
-                if (RegExp('^' + _text).test(_aText)) {
+                if (RegExp('^' + _text).test(_aText) || _aText.indexOf(_text) != -1) {
                     $(this).removeClass("hidden");
                     $(this).fadeIn(400);
                 };
