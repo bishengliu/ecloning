@@ -9,7 +9,6 @@ namespace ecloning.Models
     {
         private ecloningEntities db = new ecloningEntities();
 
-
         //find the restriction enzyme feature
         public List<RestriFeatureObject> RestricitonObject(string fullSeq, List<int> enzymeId, int cutNum=0)
         {
@@ -74,6 +73,7 @@ namespace ecloning.Models
                     }
                 }
                 //remove the duplicates
+                //THIS IS PROBLEMS HERE NEED TO BE SOLVED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 Objects = Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
 
                 if (cutNum != 0 && Objects.Count() <= cutNum)
@@ -96,12 +96,12 @@ namespace ecloning.Models
             List<RestriFeatureObject> FrObjects = new List<RestriFeatureObject>();
             List<RestriFeatureObject> RrObjects = new List<RestriFeatureObject>();
 
-
             //find forward
             var findObject = new FindRestriction();
             FrObjects = findObject.FrObject(rs, fullSeq, enzyme, isCircular);
 
-            //find the reverse
+            //find on the reverse
+            //look for the reverse comple of the restriction site in the forward seq
             if (cutNum == 0 || (cutNum != 0 && FrObjects.Count() < cutNum))
             {
                 //get the revser completment restriction site 
@@ -109,7 +109,6 @@ namespace ecloning.Models
                 var crs = FindSeq.cDNA(rs);
                 //find reverse
                 var rcrs = FindSeq.ReverseSeq(crs);
-
 
                 if (FrObjects.Count() > 0)
                 {
@@ -120,7 +119,6 @@ namespace ecloning.Models
                         FrObjects = findObject.newFrObject(rcrs, fullSeq, enzyme, FrObjects, isCircular);
                     }
                 }
-
                 if (!object.Equals(rs, rcrs))
                 {
                     RrObjects = findObject.RrObject(rcrs, fullSeq, enzyme, isCircular);
@@ -222,7 +220,6 @@ namespace ecloning.Models
             return rObjects;
         }
 
-
         public RestriFeatureObject FindEndRestriction(string rs, string fullSeq, restri_enzyme enzyme)
         {
             var EndObject = new RestriFeatureObject();
@@ -234,13 +231,13 @@ namespace ecloning.Models
             {
                 EndObject.clockwise = 1;
                 EndObject.start = fullSeq.Length - rs.Length + index;
-                EndObject.end= index;
+                EndObject.end= index+1;
 
                 //cut after index
                 if (enzyme.forward_cut >= 1 && enzyme.forward_cut + index < rs.Length)
                 {
                     //cut is still before the end of plasmid
-                    EndObject.cut = fullSeq.Length - rs.Length + index + enzyme.forward_cut;
+                    EndObject.cut = fullSeq.Length - rs.Length + index + enzyme.forward_cut+1;
                 }
                 else if (enzyme.forward_cut < 0)
                 {
@@ -272,7 +269,6 @@ namespace ecloning.Models
             }           
             return EndObject;
         }
-
 
         public Dictionary<bool, bool> CheckDam(string rs, int index, string fullSeq, restri_enzyme enzyme)
         {
@@ -328,7 +324,6 @@ namespace ecloning.Models
                     }
                     else
                     {
-
                         //find the index of the letters in rs
                         int letterIndex = rs.IndexOf(letters);
                         if (letterIndex != -1)
@@ -352,7 +347,6 @@ namespace ecloning.Models
                                     }
                                 }
                             }
-
                             if (letters == "GA")
                             {
                                 if (index + letterIndex + 3 > fullSeq.Length)
@@ -371,14 +365,12 @@ namespace ecloning.Models
                                         dict.Add(true, false);
                                     }
                                 }
-
                             }
                         }
                         else
                         {
                             dict.Add(false, false);
                         }
-
                     }
                 }
                 else
@@ -453,7 +445,6 @@ namespace ecloning.Models
                                         dict.Add(false, true);
                                     }
                                 }
-
                             }
                         }
                         else
@@ -468,14 +459,12 @@ namespace ecloning.Models
                     //if the appending letter is empty, assume it is not blocked
                     dict.Add(false, false);
                 }
-
             }
             else
             {
                 //enzyme not in the dam list, set both to false
                 dict.Add(false, false);
             }
-
             return dict;
         }
 
@@ -531,7 +520,7 @@ namespace ecloning.Models
                 {
                     //prefixing letters are not empty but appeding letters are empty, 
                     int prefixCount = dcmEnzyme.prefixing.Length;
-                    if (prefixCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if (prefixCount < 5 && "CCWGG".IndexOf(dcmEnzyme.prefixing) != -1 )
                     {
                         letters1 = "CCAGG".Substring(0, prefixCount);
                         letters2 = "CCTGG".Substring(0, prefixCount);
@@ -553,14 +542,13 @@ namespace ecloning.Models
                                 dict.Add(true, false);
                             }
                         }
-
                     }
                 }
                 else if (string.IsNullOrWhiteSpace(dcmEnzyme.prefixing) && !string.IsNullOrWhiteSpace(dcmEnzyme.appending))
                 {
                     //prefixing letters are empty but appeing letters are not empty
                     int appendCount = dcmEnzyme.appending.Length;
-                    if (appendCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1))
+                    if (appendCount < 5 && "CCWGG".IndexOf(dcmEnzyme.appending) != -1)
                     {
                         letters1 = "CCAGG".Substring((4 - appendCount), appendCount);
                         letters2 = "CCTGG".Substring((4 - appendCount), appendCount);
@@ -580,7 +568,6 @@ namespace ecloning.Models
                                 dict.Add(true, false);
                             }
                         }
-
                     }
                 }
                 else
@@ -590,8 +577,7 @@ namespace ecloning.Models
                     int prefixCount = dcmEnzyme.prefixing.Length;
                     int appendCount = dcmEnzyme.appending.Length;
 
-
-                    if ((prefixCount + appendCount) < 5 && (("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1)) && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if ((prefixCount + appendCount) < 5 && "CCWGG".IndexOf(dcmEnzyme.appending) != -1 && "CCWGG".IndexOf(dcmEnzyme.prefixing) != -1)
                     {
                         string front = (index < prefixCount) ? (fullSeq.Substring(Math.Max(0, fullSeq.Length - (prefixCount - index))) + fullSeq.Substring(0, index)) : fullSeq.Substring(index - prefixCount, prefixCount);
                         string mid = fullSeq.Substring(index, rs.Length);
@@ -602,9 +588,7 @@ namespace ecloning.Models
                             dict.Add(true, false);
                         }
                     }
-
                 }
-
             }
             else if (PIDcm.Count() > 0 && PIDcm.Contains(enzyme.name))
             {
@@ -628,7 +612,7 @@ namespace ecloning.Models
                 {
                     //prefixing letters are not empty but appeding letters are empty, 
                     int prefixCount = dcmEnzyme.prefixing.Length;
-                    if (prefixCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if (prefixCount < 5 && "CCWGG".IndexOf(dcmEnzyme.prefixing) != -1)
                     {
                         letters1 = "CCAGG".Substring(0, prefixCount);
                         letters2 = "CCTGG".Substring(0, prefixCount);
@@ -649,16 +633,13 @@ namespace ecloning.Models
                                 dict.Add(false, true);
                             }
                         }
-
                     }
-
-
                 }
                 else if (string.IsNullOrWhiteSpace(dcmEnzyme.prefixing) && !string.IsNullOrWhiteSpace(dcmEnzyme.appending))
                 {
                     //prefixing letters are empty but appeing letters are not empty
                     int appendCount = dcmEnzyme.appending.Length;
-                    if (appendCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1))
+                    if (appendCount < 5 && "CCWGG".IndexOf(dcmEnzyme.appending) != -1)
                     {
                         letters1 = "CCAGG".Substring((4 - appendCount), appendCount);
                         letters2 = "CCTGG".Substring((4 - appendCount), appendCount);
@@ -678,7 +659,6 @@ namespace ecloning.Models
                                 dict.Add(false, true);
                             }
                         }
-
                     }
                 }
                 else
@@ -689,8 +669,7 @@ namespace ecloning.Models
                     int prefixCount = dcmEnzyme.prefixing.Length;
                     int appendCount = dcmEnzyme.appending.Length;
 
-
-                    if ((prefixCount + appendCount) < 5 && (("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1)) && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if ((prefixCount + appendCount) < 5 && "CCWGG".IndexOf(dcmEnzyme.appending) != -1 && "CCWGG".IndexOf(dcmEnzyme.prefixing) != -1)
                     {
                         string front = (index < prefixCount) ? (fullSeq.Substring(Math.Max(0, fullSeq.Length - (prefixCount - index))) + fullSeq.Substring(0, index)) : fullSeq.Substring(index - prefixCount, prefixCount);
                         string mid = fullSeq.Substring(index, rs.Length);
@@ -702,7 +681,6 @@ namespace ecloning.Models
                         }
                     }
                 }
-
             }
             else
             {
@@ -715,8 +693,9 @@ namespace ecloning.Models
         //reverse
         public List<RestriFeatureObject> RrObject(string crs, string fullSeq, restri_enzyme enzyme, bool isCircular)
         {
+            //CRS IS ACTUALLY REVERSED COMPLEMETARY SEQ
+            //look for the reverse comple of the restriction site in the forward seq
             List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
-
             for (int index = 0; ; index += crs.Length)
             {
                 //object
@@ -736,7 +715,7 @@ namespace ecloning.Models
                     //deel with end out of range problem
                     if (enzyme.reverse_cut < 0 && (index + crs.Length + Math.Abs(enzyme.reverse_cut) - 1 <= fullSeq.Length))
                     {
-                        //enzyme cut is to the right if the restriciotn site and is not close to the right side of the plasmid
+                        //enzyme cut is to the right of the restriciotn site and is not close to the right side of the plasmid
                         FObject.cut = (Math.Abs(enzyme.reverse_cut) -1) + crs.Length + index -1;
                     }
                     if (enzyme.reverse_cut < 0 && (index + crs.Length + Math.Abs(enzyme.reverse_cut) -1 > fullSeq.Length))
@@ -745,16 +724,16 @@ namespace ecloning.Models
                         var length2 = (Math.Abs(enzyme.reverse_cut) - 1) + crs.Length - (fullSeq.Length - index);
                         FObject.cut = length2 - 1;
                     }
-                    else if ((enzyme.reverse_cut > crs.Length) && (index < (enzyme.reverse_cut + 1 - crs.Length)))
+                    else if ((enzyme.reverse_cut > crs.Length) && (index <= (enzyme.reverse_cut - crs.Length)))
                     {
                         //enzyme cut is left to the restriciton site and is close to the left side of the plasmid seq
-                        var length2 = enzyme.reverse_cut + 1 - crs.Length - index;
-                        FObject.cut = fullSeq.Length - length2 - 1;
+                        var length2 = enzyme.reverse_cut - crs.Length - index;
+                        FObject.cut = fullSeq.Length - length2 - 1; //switch to 0 index mode
                     }
-                    else if ((enzyme.reverse_cut > crs.Length) && (index >= (enzyme.reverse_cut + 1 - crs.Length)))
+                    else if ((enzyme.reverse_cut > crs.Length) && (index > (enzyme.reverse_cut - crs.Length)))
                     {
                         //enzyme cut is left to the restriciton site and is not close to the left side of the plasmid seq
-                        FObject.cut =  index - (enzyme.reverse_cut + 1 - crs.Length);
+                        FObject.cut =  index - (enzyme.reverse_cut - crs.Length) - 1; //switch to 0 index mode
                     }
                     else
                     {                       
@@ -762,8 +741,7 @@ namespace ecloning.Models
                         FObject.cut =(crs.Length - enzyme.reverse_cut)  + index - 1; //switch to 0 index mode 
                     }
                     
-                    
-                             
+                                                
                     //check dam and dcm
                     var findRestrction = new FindRestriction();
                     //chack dam
@@ -811,32 +789,32 @@ namespace ecloning.Models
                     ///do find an extra one that span the begining and end of the seq
                     ///
                     EndObject.clockwise = 0;
-                    EndObject.start = fullSeq.Length - crs.Length + index + 2;
-                    EndObject.end = index + crs.Length - (crs.Length - 1);
+                    EndObject.start = fullSeq.Length - crs.Length + index;
+                    EndObject.end = index + 1;
 
 
                     if (enzyme.reverse_cut < 0)
                     {
                         //must be from the begining
-                        EndObject.cut = index + Math.Abs(enzyme.reverse_cut);
+                        EndObject.cut = index + Math.Abs(enzyme.reverse_cut) -1; //index mode
                     }
                     else if(enzyme.reverse_cut >= 1 && enzyme.reverse_cut <= crs.Length)
                     {
+                        //close to the end of the seq
                         if(index + (crs.Length - enzyme.reverse_cut) < (crs.Length - 1))
                         {
-                            EndObject.cut = fullSeq.Length  + index - enzyme.reverse_cut;
-                        }
+                            EndObject.cut = fullSeq.Length  + index - enzyme.reverse_cut; //index mode
+                    }
                         else
                         {
-                            EndObject.cut = index  - enzyme.reverse_cut;
-                        }
+                            EndObject.cut = index  - enzyme.reverse_cut; //index mode
+                    }
                     }
                     else
                     {
                         //enzyme.reverse_cut >= 1 && enzyme.reverse_cut > crs.Length
-                        EndObject.cut = fullSeq.Length - enzyme.reverse_cut + index;
-                    }
-
+                        EndObject.cut = fullSeq.Length - enzyme.reverse_cut + index; //index mode
+                }
 
                     //check dam and dcm
                     var findRestrction = new FindRestriction();
@@ -1062,7 +1040,6 @@ namespace ecloning.Models
             return dict;
         }
 
-
         public Dictionary<bool, bool> CheckRDcm(string crs, int index, string fullSeq, restri_enzyme enzyme)
         {
             var dict = new Dictionary<bool, bool>();
@@ -1118,7 +1095,7 @@ namespace ecloning.Models
                     //switch prefix and appending
 
                     int appendCount = dcmEnzyme.prefixing.Length;
-                    if (appendCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if (appendCount < 5 && "CCWGG".IndexOf(dcmEnzyme.prefixing) != -1)
                     {
                         letters1 = "CCTGG".Substring((4 - appendCount), appendCount);
                         letters2 = "CCAGG".Substring((4 - appendCount), appendCount);
@@ -1138,15 +1115,13 @@ namespace ecloning.Models
                                 dict.Add(true, false);
                             }
                         }
-
                     }
-
                 }
                 else if (string.IsNullOrWhiteSpace(dcmEnzyme.prefixing) && !string.IsNullOrWhiteSpace(dcmEnzyme.appending))
                 {
                     //prefixing letters are empty but appeing letters are not empty
                     int prefixCount = dcmEnzyme.appending.Length;
-                    if (prefixCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1))
+                    if (prefixCount < 5 && ("CCWGG".IndexOf(dcmEnzyme.appending) != -1))
                     {
                         letters1 = "CCAGG".Substring(0, prefixCount);
                         letters2 = "CCTGG".Substring(0, prefixCount);
@@ -1168,7 +1143,6 @@ namespace ecloning.Models
                                 dict.Add(true, false);
                             }
                         }
-
                     }
                 }
                 else
@@ -1181,7 +1155,7 @@ namespace ecloning.Models
                     int appendCount = dcmEnzyme.prefixing.Length;
 
 
-                    if ((prefixCount + appendCount) < 5 && (("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1)) && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if ((prefixCount + appendCount) < 5 && (("CCWGG".IndexOf(dcmEnzyme.appending) != -1 )) && ("CCWGG".IndexOf(dcmEnzyme.prefixing) != -1 ))
                     {
                         string front = (index < prefixCount) ? (fullSeq.Substring(Math.Max(0, fullSeq.Length - (prefixCount - index))) + fullSeq.Substring(0, index)) : fullSeq.Substring(index - prefixCount, prefixCount);
                         string mid = fullSeq.Substring(index, crs.Length);
@@ -1193,7 +1167,6 @@ namespace ecloning.Models
                         }
                     }
                 }
-
             }
             else if (PIDcm.Count() > 0 && PIDcm.Contains(enzyme.name))
             {
@@ -1218,7 +1191,7 @@ namespace ecloning.Models
                     //prefixing letters are not empty but appeding letters are empty, 
                     //switch
                     int appendCount = dcmEnzyme.prefixing.Length;
-                    if (appendCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1))
+                    if (appendCount < 5 && ("CCWGG".IndexOf(dcmEnzyme.appending) != -1 ))
                     {
                         letters1 = "CCAGG".Substring((4 - appendCount), appendCount);
                         letters2 = "CCTGG".Substring((4 - appendCount), appendCount);
@@ -1238,14 +1211,13 @@ namespace ecloning.Models
                                 dict.Add(false, true);
                             }
                         }
-
                     }
                 }
                 else if (string.IsNullOrWhiteSpace(dcmEnzyme.prefixing) && !string.IsNullOrWhiteSpace(dcmEnzyme.appending))
                 {
                     //prefixing letters are empty but appeing letters are not empty
                     int prefixCount = dcmEnzyme.appending.Length;
-                    if (prefixCount < 5 && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if (prefixCount < 5 && ("CCWGG".IndexOf(dcmEnzyme.prefixing) != -1 ))
                     {
                         letters1 = "CCAGG".Substring(0, prefixCount);
                         letters2 = "CCTGG".Substring(0, prefixCount);
@@ -1266,7 +1238,6 @@ namespace ecloning.Models
                                 dict.Add(false, true);
                             }
                         }
-
                     }
                 }
                 else
@@ -1278,7 +1249,7 @@ namespace ecloning.Models
                     int appendCount = dcmEnzyme.prefixing.Length;
 
 
-                    if ((prefixCount + appendCount) < 5 && (("CCAGG".IndexOf(dcmEnzyme.appending) != -1 || "CCTGG".IndexOf(dcmEnzyme.appending) != -1)) && ("CCAGG".IndexOf(dcmEnzyme.prefixing) != -1 || "CCTGG".IndexOf(dcmEnzyme.prefixing) != -1))
+                    if ((prefixCount + appendCount) < 5 && (("CCWGG".IndexOf(dcmEnzyme.appending) != -1 )) && ("CCWGG".IndexOf(dcmEnzyme.prefixing) != -1 ))
                     {
                         string front = (index < prefixCount) ? (fullSeq.Substring(Math.Max(0, fullSeq.Length - (prefixCount - index))) + fullSeq.Substring(0, index)) : fullSeq.Substring(index - prefixCount, prefixCount);
                         string mid = fullSeq.Substring(index, crs.Length);
@@ -1299,7 +1270,6 @@ namespace ecloning.Models
             }
             return dict;
         }
-
 
         //if rs complementaty is same same as rs, then no need to find new restriciton site, but need to check the dam and dcm
         public List<RestriFeatureObject> newFrObject(string rs, string fullSeq, restri_enzyme enzyme, List<RestriFeatureObject> FrObjects, bool isCircular)
@@ -1335,7 +1305,6 @@ namespace ecloning.Models
             return FrObjects;
         }
 
-
         //=====================deal with more than one cut each enzyme ======================================================//
 
         //find the non N letters in the restriciton sites
@@ -1356,6 +1325,7 @@ namespace ecloning.Models
             FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
 
             //remove duplicates
+            //ALSO HAVING PROBLEMS HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             FRr2Objects = FRr2Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
 
             return FRr2Objects;
@@ -1401,9 +1371,9 @@ namespace ecloning.Models
                         if (index < Math.Abs(enzyme.forward_cut))
                         {
                             //left end
-                            var lenth1 = Math.Abs(enzyme.forward_cut) - index;
-                            FObject1.cut = fullSeq.Length - lenth1 - 1;
-                            FObject2.cut = index + (int)enzyme.forward_cut2;
+                            var lenth1 = Math.Abs(enzyme.forward_cut) - 1 - index; //COUNT
+                            FObject1.cut = fullSeq.Length - lenth1 -1; //INDEX MODE
+                            FObject2.cut = index + (int)enzyme.forward_cut2 -1; //INDEX MODE
                         }
                         else if ((index + Math.Abs((int)enzyme.forward_cut2)) > fullSeq.Length)
                         {
@@ -1415,7 +1385,7 @@ namespace ecloning.Models
                         else
                         {
                             FObject1.cut = index + enzyme.forward_cut;
-                            FObject2.cut = index + (int)enzyme.forward_cut2;
+                            FObject2.cut = index + (int)enzyme.forward_cut2 - 1;
                         }
 
                         FObject1.clockwise = 1;
@@ -1473,7 +1443,7 @@ namespace ecloning.Models
 
             if(index != -1)
             {
-                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength - 1;
+                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
                 if (rightIndex + r2SeqObject.rightSeq.Length <= rightEndSeq.Length &&  rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
                     //rightindex is at the end of fullseq
@@ -1481,8 +1451,8 @@ namespace ecloning.Models
                     //forward_cut2 must be at the beging of the full seq
                     //forward_cut must be at the end of the full seq
                     // cuts
-                    r2EndObject.cut = fullSeq.Length - rsLength - Math.Abs(enzyme.forward_cut) + index;
-                    r2EndObject2.cut = index + (int)enzyme.forward_cut2 - rsLength;
+                    r2EndObject.cut = fullSeq.Length - rsLength - Math.Abs(enzyme.forward_cut) + index + 1; //INDEX MODE
+                    r2EndObject2.cut = index + (int)enzyme.forward_cut2 - rsLength; //INDEX MODE
 
                     r2EndObject.clockwise = 1;
                     r2EndObject2.clockwise = 1;
@@ -1558,25 +1528,25 @@ namespace ecloning.Models
 
                         //add to object
                         //index found but the cut is out of the range
-                        if (index - 1 < Math.Abs((int)enzyme.forward_cut2) - rrs.Length)
+                        if (index <= Math.Abs((int)enzyme.forward_cut2) - rrs.Length)
                         {
                             //left end
-                            var lenth1 = Math.Abs((int)enzyme.forward_cut2) - rrs.Length + 1 - index;
-                            FObject1.cut = fullSeq.Length - lenth1 - 1;
-                            FObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1;
+                            var lenth1 = Math.Abs((int)enzyme.forward_cut2) - rrs.Length - index; //COUNT
+                            FObject1.cut = fullSeq.Length - lenth1 -1; //INDEX MODE
+                            FObject2.cut = index + Math.Abs(enzyme.forward_cut) - 2; //INDEX MODE
                         }
                         else if ((index + Math.Abs((int)enzyme.forward_cut) - 1) > fullSeq.Length)
                         {
                             //right end
-                            FObject1.cut = index + Math.Abs((int)enzyme.forward_cut2) - rrs.Length - 1;
-                            var length = index + Math.Abs((int)enzyme.forward_cut) - 1 - fullSeq.Length;
-                            FObject2.cut = length - 1;
+                            FObject1.cut = index - (Math.Abs((int)enzyme.forward_cut2) - rrs.Length) - 1; //INDEX MODE
+                            var length = index + Math.Abs((int)enzyme.forward_cut) - 1 - fullSeq.Length; //COUNT
+                            FObject2.cut = length - 1; //INDEX MODE
                         }
                         else
                         {
                             //in the middle
-                            FObject1.cut = index + Math.Abs((int)enzyme.forward_cut2) - rrs.Length - 1;
-                            FObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1;
+                            FObject1.cut = index - (Math.Abs((int)enzyme.forward_cut2) - rrs.Length) - 1; //INDEX MODE
+                            FObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1; //INDEX MODE
                         }
 
                         FObject1.clockwise = 0;
@@ -1629,12 +1599,12 @@ namespace ecloning.Models
             int index = rightEndSeq.IndexOf(r2SeqObject.leftSeq);
             if (index != -1)
             {
-                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength - 1 ;
+                int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
                 if (rightIndex + r2SeqObject.rightSeq.Length <= rightEndSeq.Length && rightEndSeq.Substring(rightIndex, r2SeqObject.rightSeq.Length) == r2SeqObject.rightSeq)
                 {
 
-                    r2EndObject.cut = cfullSeq.Length - (int)enzyme.forward_cut2  - 1 + index;
-                    r2EndObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1;
+                    r2EndObject.cut = cfullSeq.Length - (int)enzyme.forward_cut2+ index; //INDEX MODE
+                    r2EndObject2.cut = index + Math.Abs(enzyme.forward_cut) - 1; //INDEX MODE
                     r2EndObject.clockwise = 0;
                     r2EndObject2.clockwise = 0;
                     r2EndObject.start = cfullSeq.Length - rsLength + index;
