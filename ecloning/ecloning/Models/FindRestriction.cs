@@ -231,13 +231,13 @@ namespace ecloning.Models
             {
                 EndObject.clockwise = 1;
                 EndObject.start = fullSeq.Length - rs.Length + index;
-                EndObject.end= index+1;
+                EndObject.end= index;
 
                 //cut after index
                 if (enzyme.forward_cut >= 1 && enzyme.forward_cut + index < rs.Length)
                 {
                     //cut is still before the end of plasmid
-                    EndObject.cut = fullSeq.Length - rs.Length + index + enzyme.forward_cut+1;
+                    EndObject.cut = fullSeq.Length - rs.Length + index + enzyme.forward_cut;
                 }
                 else if (enzyme.forward_cut < 0)
                 {
