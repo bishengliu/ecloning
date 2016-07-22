@@ -318,8 +318,9 @@ namespace ecloning.Models
             //=====================================================================
             //check restriciton cut
 
-            //first check the group common restriction enzymes
-            //if no common restriction, then look all the restriction enzymes
+            //max cuts
+            var minLen = eCloningSettings.bLength;
+            var cutNum = Math.Floor((double)(Sequence.Length / minLen)) / 2;
 
             //first the common the enzymes
             //if no common enzyme found, check all the enzymes available
@@ -343,7 +344,7 @@ namespace ecloning.Models
                 //generate enzyme restriction features
 
                 var restriciton = new FindRestriction();
-                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId); //find all the restrictions cutNum default is 0 == all.
+                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, (int)cutNum); //find all the restrictions cutNum default is 0 == all.
 
                 //remove all the old methylation info
                 var methy = db.methylations.Where(p => p.plasmid_id == PlasmidId);

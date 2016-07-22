@@ -41,5 +41,8 @@ namespace ecloning.Models
         //local data path
         public readonly static string filePath = "~/App_Data/";
 
+        //set the min length of cut band
+
+        public readonly static int bLength = 100;
     }
 }
