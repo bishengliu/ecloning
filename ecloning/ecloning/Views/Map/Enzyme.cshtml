@@ -85,14 +85,13 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title text-center" id="cut-title"></h3>
                             </div>
-                            <div class="panel-body" id="cut-map"></div>
+                            <div class="panel-body xScrollable"><div id="cut-map"></div></div>
                             <div class="panel-footer clearfix"></div>
                         </div>
                     </div>
                 </div>
                 <div id="enzyme-info" class="col-xs-12 col-md-4"></div>
                 <div id="activity-info" class="col-xs-12 col-md-4"></div>
-
 
                 <!--header-->
                 <div class="col-xs-12" id="middle-result">
@@ -132,7 +131,7 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Band Info</div>
                         <div class="panel-body">
-                            <div id="band-feature-single" class="col-xs-12"></div>
+                            <div class="xScrollable"><div id="band-feature-single" class="col-xs-12"></div></div>
                             <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
                                 <input id="band-single-fseq" value="" />
                                 <input id="band-single-cseq" value="" />
@@ -181,7 +180,7 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Band Info</div>
                         <div class="panel-body">
-                            <div id="band-feature-multiple" class="col-xs-12"></div>
+                            <div class="xScrollable"><div id="band-feature-multiple" class="col-xs-12"></div></div>
                             <br/>
                             <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
                                 <input id="band-multiple-fseq" value="" />
@@ -413,7 +412,6 @@
                 genCutTitle("cut-title", enzyArray);
                 //generate plasmid cut-map overview using giraffe
                 drawCuts("cut-map", enzymes, enzyArray, features, seqCount, name);
-
                 //show cut info with tabs
                 //==========================================================================
                 genEnzymeTabs(enzyArray, 'enzyme-info');
@@ -424,7 +422,6 @@
                 showDigestInfo(enzymes, enzyArray, methylation);
                 //show cut prototype and property
                 showRestricProperty(enzyArray, restricProperty);
-
                 //=========================================================================
                 //show activity tabs
                 genActivityTab(enzyArray, 'activity-info', companies);
@@ -454,7 +451,7 @@
                 //===========================================================================
                 //draw gel
                 //generate single enzyme digestion bands======******************==============
-                var SEbands = enzyArray.length >0 ? genSEBands(enzyArray, enzymes, methylation, seqCount): [];
+                var SEbands = enzyArray.length > 0 ? genSEBands(enzyArray, enzymes, methylation, seqCount): [];
                 //draw gel stimulation
                 if (SEbands.length > 0) {
                     //choose ladder based on the band sizes

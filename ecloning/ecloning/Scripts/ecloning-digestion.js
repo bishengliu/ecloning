@@ -363,7 +363,7 @@ function createEnzymeTabs(enzyArray, id) {
                         htmlsubdiv = htmlsubdiv + '</div>';
                         htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse">';
                             htmlsubdiv = htmlsubdiv + '<div class="panel-body" >';
-                                htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-map' + '"></div>';
+                                htmlsubdiv = htmlsubdiv + '<div class="xScrollable"><div id="' + v + '-cut-map' + '"></div></div>';
                                 htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-info' + '"></div>'; //add cut position and methylation info
                             htmlsubdiv = htmlsubdiv + '</div>';
                         htmlsubdiv = htmlsubdiv + '</div>';
@@ -1472,9 +1472,18 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
     //find the name
     var nameArray = name2Array(name, cutType);
     var clockwiseArray = clockwise2Array(clockwise);
-    //get forward seq 
-    var fSeq = sequence.substring(bandStart - 1, bandEnd);
-
+    //get forward seq
+    var fSeq;
+    if (bandStart <= bandEnd) {
+        fSeq = sequence.substring(bandStart, bandEnd); //bandStart and bandEnd are counts not indexes
+    }
+    else {
+        //front
+        var frontSeq = sequence.substring(bandStart, seqCount);
+        //end
+        var endSeq = sequence.substring(0, bandEnd);
+        fSeq = frontSeq + endSeq;
+    }
     //get end obj [left, right]
     //[{ 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}, { 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}]
     //var enzymeAttr = [{ 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}, { 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}];
@@ -1484,9 +1493,18 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
     var overHangs = getOverhangs(enzymeAttr, clockwiseArray);
     //get complement seq
     //get cSeq range
-    var cSeqRange = [bandStart + overHangs[0], bandEnd + overHangs[1]];
-    var cSeq = cSequence.substring(cSeqRange[0] - 1, cSeqRange[1]);
-
+    var cSeqRange = [bandStart - overHangs[0], bandEnd + overHangs[1]];
+    var cSeq;
+    if (cSeqRange[0] <= cSeqRange[1]) {
+        cSeq = cSequence.substring(cSeqRange[0], cSeqRange[1]);
+    }
+    else {
+        //font
+        var frontSeq = cSequence.substring(cSeqRange[0], seqCount);
+        //end
+        var endSeq = cSequence.substring(0, cSeqRange[1]);
+        cSeq = frontSeq + endSeq;
+    }
     //put fSeq and cSeq into inputs
     $("#" + fSeqId).val(fSeq);
     $("#" + cSeqId).val(cSeq);
@@ -1530,13 +1548,13 @@ function drawEndSeq(id, fSeq, cSeq, overhangs, numLetter) {
     var cSeqCount = cSeq.length;
     var rightfSeq, rightcSeq, rightSpace;
     if (overhangs[1] > 0) {
-        rightfSeq = fSeq.substring(fSeqCount - (numLetter - overhangs[1]) - 1, fSeqCount - overhangs[1]+1);
-        rightcSeq = cSeq.substring(cSeqCount - numLetter - 1, fSeqCount+1);
+        rightfSeq = fSeq.substring(fSeqCount - (numLetter - overhangs[1]), fSeqCount);
+        rightcSeq = cSeq.substring(cSeqCount - numLetter, cSeqCount);
         rightSpace = genSpace(overhangs[1]);
     }
     else {
-        rightfSeq = fSeq.substring(fSeqCount - numLetter - 1, fSeqCount+1);
-        rightcSeq = cSeq.substring(cSeqCount - (numLetter + overhangs[1]) - 1, fSeqCount + overhangs[1]+1);
+        rightfSeq = fSeq.substring(fSeqCount - numLetter, fSeqCount);
+        rightcSeq = cSeq.substring(cSeqCount - (numLetter + overhangs[1]), cSeqCount);
         rightSpace = genSpace(-overhangs[1]);
     }
     //display end in pre
