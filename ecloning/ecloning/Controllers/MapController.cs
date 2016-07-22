@@ -233,7 +233,7 @@ namespace ecloning.Controllers
                         fragment.forward_seq = data.fSeq;
                         fragment.rc_seq = data.cSeq;
                         fragment.rc_left_overhand = data.overhangs[0];
-                        fragment.rc_right_overhand = data.overhangs[0];
+                        fragment.rc_right_overhand = data.overhangs[1];
                         fragment.ladder_id = data.ladder_id;
                         fragment.people_id = userInfo.PersonId;
                         fragment.dt = DateTime.Now;

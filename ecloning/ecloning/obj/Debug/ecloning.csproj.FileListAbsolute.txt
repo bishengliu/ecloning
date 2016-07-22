@@ -312,3 +312,14 @@ D:\ecloning\ecloning\ecloning\bin\zh-Hant\System.Spatial.resources.dll
 D:\ecloning\ecloning\ecloning\obj\Debug\ecloning.dll
 D:\ecloning\ecloning\ecloning\obj\Debug\ecloning.pdb
 D:\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache
+D:\ecloning\ecloning\ecloning\bin\Bio.Core.dll
+D:\ecloning\ecloning\ecloning\bin\Bio.Desktop.dll
+D:\ecloning\ecloning\ecloning\bin\Bio.Padena.dll
+D:\ecloning\ecloning\ecloning\bin\Bio.Pamsam.dll
+D:\ecloning\ecloning\ecloning\bin\Bio.Platform.Helpers.dll
+D:\ecloning\ecloning\ecloning\bin\Bio.WebServices.dll
+D:\ecloning\ecloning\ecloning\bin\Bio.Core.xml
+D:\ecloning\ecloning\ecloning\bin\Bio.Desktop.xml
+D:\ecloning\ecloning\ecloning\bin\Bio.Padena.xml
+D:\ecloning\ecloning\ecloning\bin\Bio.Pamsam.xml
+D:\ecloning\ecloning\ecloning\bin\Bio.WebServices.xml
