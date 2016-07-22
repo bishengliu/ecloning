@@ -338,19 +338,21 @@ function createEnzymeTabs(enzyArray, id) {
 
     $.each(enzyArray, function (i, v) {
         //ul
-        var htmlli = '<li><a data-toggle="tab" href="#' + v + '">' + v + '</a></li>';
+        //get name split
+        var name = v.split(' ')[0];
+        var htmlli = '<li><a data-toggle="tab" href="#' + name + '">' + v + '</a></li>';
         htmlul = htmlul + htmlli;
         //div
-        var htmlsubdiv = '<div id="' + v + '" class="tab-pane fade">';
-        htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-'+v+ '">'
+        var htmlsubdiv = '<div id="' + name + '" class="tab-pane fade">';
+        htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-' + name + '">'
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
                         htmlsubdiv = htmlsubdiv + '<h4 class="panel-title text-center">';
-                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '1">'+v+' Property</a>';
+                        htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + name + '" href="#' + name + '1">' + v + ' Property</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="'+v+'1" class="panel-collapse collapse in">';
-                            htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="'+v+'-cut-property"></div>';
+                        htmlsubdiv = htmlsubdiv + '<div id="' + name + '1" class="panel-collapse collapse in">';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="' + name + '-cut-property"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
 
@@ -358,13 +360,13 @@ function createEnzymeTabs(enzyArray, id) {
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
                             htmlsubdiv = htmlsubdiv + '<h4 class="panel-title text-center">';
-                                htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + v + '" href="#' + v + '2">' + v + ' Cuts</a>';
+                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-' + name + '" href="#' + name + '2">' + v + ' Cuts</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
-                        htmlsubdiv = htmlsubdiv + '<div id="' + v + '2" class="panel-collapse collapse">';
+                        htmlsubdiv = htmlsubdiv + '<div id="' + name + '2" class="panel-collapse collapse">';
                             htmlsubdiv = htmlsubdiv + '<div class="panel-body" >';
-                                htmlsubdiv = htmlsubdiv + '<div class="xScrollable"><div id="' + v + '-cut-map' + '"></div></div>';
-                                htmlsubdiv = htmlsubdiv + '<div id="' + v + '-cut-info' + '"></div>'; //add cut position and methylation info
+                            htmlsubdiv = htmlsubdiv + '<div class="xScrollable"><div id="' + name + '-cut-map' + '"></div></div>';
+                                htmlsubdiv = htmlsubdiv + '<div id="' + name + '-cut-info' + '"></div>'; //add cut position and methylation info
                             htmlsubdiv = htmlsubdiv + '</div>';
                         htmlsubdiv = htmlsubdiv + '</div>';
                    htmlsubdiv = htmlsubdiv + '</div>';
@@ -381,8 +383,8 @@ function createEnzymeTabs(enzyArray, id) {
 }
 
 function activeTab(enzyArray, id){
-    //find the fist tab
-    var tab = enzyArray[enzyArray.length-1];
+    //find the first tab
+    var tab = enzyArray[enzyArray.length-1].split(' ')[0];
     $('#'+id+' a[href="#' + tab + '"]').tab('show');
 }
 
@@ -401,8 +403,9 @@ function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
             return d.type_id != 4 || (d.type_id == 4 && d.feature == v);
         });
         var giraffeData = [seqCount, ftdata];
-        id = v + "-cut-map";
-        drawMap(giraffeData, id, name + ': ' + v, width, cutArray);
+        var vname = v.split(' ')[0];
+        id = vname + "-cut-map";
+        drawMap(giraffeData, id, name + ': ' + vname, width, cutArray);
     });
 }
 function genArray(maxCuts) {
@@ -426,7 +429,8 @@ function findMaxCuts(enzymes) {
 //show restriction property
 function showRestricProperty(enzyArray, restricProperty) {
     $.each(enzyArray, function (i, v) {
-        var id = v + "-cut-property";
+        var vname = v.split(' ')[0];
+        var id = vname + "-cut-property";
         var data = $.grep(restricProperty, function (value, index) {
             return value.name === v;
         })
@@ -493,7 +497,8 @@ function showDigestInfo(enzymes, enzyArray, methylation) {
             html = html + pos.join(", ");
             html = html + "</p>";
             //append html
-            $("#" + v + '-cut-info').append(html);
+            var vname = v.split(' ')[0];
+            $("#" + vname + '-cut-info').append(html);
         }            
     })
 }
@@ -525,25 +530,26 @@ function createActivityTabs(enzyArray, id, company) {
 
     $.each(enzyArray, function (i, v) {
         //ul
-        var htmlli = '<li><a data-toggle="tab" href="#activity-' + v + '">' + v + '</a></li>';
+        var vname = v.split(' ')[0];
+        var htmlli = '<li><a data-toggle="tab" href="#activity-' + vname + '">' + v + '</a></li>';
         htmlul = htmlul + htmlli;
         //div
-        var htmlsubdiv = '<div id="activity-' + v + '" class="tab-pane fade">';
-        htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-activity-' + v + '">'
+        var htmlsubdiv = '<div id="activity-' + vname + '" class="tab-pane fade">';
+        htmlsubdiv = htmlsubdiv + '<div class="panel-group" id="' + 'accordion-activity-' + vname + '">'
             
         $.each(company, function (si, sv) {
                     htmlsubdiv = htmlsubdiv + '<div class="panel panel-primary">';
                         htmlsubdiv = htmlsubdiv + '<div class="panel-heading">';
                             htmlsubdiv = htmlsubdiv + '<h4 class="panel-title text-center">';
-                                htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + v + '" href="#activity-' + v + '-'+ si + '">' + sv + '</a>';
+                            htmlsubdiv = htmlsubdiv + '<a data-toggle="collapse" data-parent="#' + 'accordion-activity-' + vname + '" href="#activity-' + vname + '-' + si + '">' + sv + '</a>';
                             htmlsubdiv = htmlsubdiv + '</h4>';
                         htmlsubdiv = htmlsubdiv + '</div>';
                         if (si == 0) {
-                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + si + '" class="panel-collapse collapse in">';
+                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + vname + '-' + si + '" class="panel-collapse collapse in">';
                         } else {
-                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + v + '-' + si + '" class="panel-collapse collapse">';
+                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + vnamev + '-' + si + '" class="panel-collapse collapse">';
                         }
-                        htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + v + '-' + si + '"></div>';
+                        htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + vname + '-' + si + '"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
                     htmlsubdiv = htmlsubdiv + '</div>';
         })
@@ -783,6 +789,7 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                 }
                 var obj = {};
                 obj.name = d;
+                obj.label = d;
                 obj.type = "cut";
                 if (i == cuts.length - 1) {
                     obj.clockwise = cuts[cuts.length - 1].clockwise + '-' + cuts[0].clockwise;
@@ -829,6 +836,7 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                         var obj = {};
                         obj.clockwise = null;
                         obj.name = d + ':' + 'methy';
+                        obj.label= d + ':' + 'methy';
                         obj.type = "cut";
                         obj.bandRange = "0-0"; //if "0-0", then it is circular
                         obj.Size = seqCount;
@@ -842,6 +850,7 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
                             var obj = {};
                             obj.clockwise = cutsCopy[i].clockwise;
                             obj.name = d + ':' + 'methy';
+                            obj.label = d + ':' + 'methy';
                             obj.type = "cut";
                             if (i == cutsCopy.length - 1) {
                                 obj.clockwise = cutsCopy[cutsCopy.length - 1].clockwise + '-' + cutsCopy[0].clockwise;
@@ -868,7 +877,6 @@ function genSEBands(enzyArray, enzymes, methylation, seqCount) {
             } //end of hasMethylation
 
         } //end of cuts.length
-
 
     })
 
@@ -926,15 +934,17 @@ function genMEBands(digestArray, enzymes, seqCount) {
                     hasMethylation = true;
                 }
                 var obj = {};
-                obj.name = d.join("-");
+                obj.label = d.reverse().join("-");
                 obj.type = "cut";
                 if (i == cuts.length - 1) {
+                    obj.name = cuts[cuts.length - 1].name + '-' + cuts[0].name;
                     obj.clockwise = cuts[cuts.length - 1].clockwise + '-' + cuts[0].clockwise;
                     obj.bandRange = cuts[cuts.length - 1].cut == seqCount ? '1-' + cuts[0].cut : cuts[cuts.length - 1].cut + '-' + cuts[0].cut;
                     obj.Size = cuts[cuts.length - 1].cut == seqCount ? cuts[0].cut : (seqCount - cuts[cuts.length - 1].cut + cuts[0].cut);
                     obj.Mass = 100;
                 }
                 else {
+                    obj.name = cuts[i].name + '-' + cuts[i + 1].name;
                     obj.clockwise = cuts[i].clockwise + '-' + cuts[i+1].clockwise;
                     obj.bandRange = cuts[i].cut + '-' + cuts[i + 1].cut;
                     obj.Size = cuts[i + 1].cut - cuts[i].cut;
@@ -960,7 +970,8 @@ function genMEBands(digestArray, enzymes, seqCount) {
                     //nothing left, generate the circular plasmid
                     var obj = {};
                     obj.clockwise = null;
-                    obj.name = d.join("-") + ':' + 'methy';
+                    obj.name = d.reverse().join("-") + ':' + 'methy';
+                    obj.label = d.reverse().join("-") + ':' + 'methy';
                     obj.type = "cut";
                     obj.bandRange = "0-0"; //if "0-0", then it is circular
                     obj.Size = seqCount;
@@ -973,15 +984,17 @@ function genMEBands(digestArray, enzymes, seqCount) {
                     for (var i = 0; i < cutsCopy.length; i++) {
                         var obj = {};
                         obj.clockwise = cutsCopy[i].clockwise;
-                        obj.name = d.join("-") + ':' + 'methy';
+                        obj.label = d.reverse().join("-") + ':' + 'methy';
                         obj.type = "cut";
                         if (i == cutsCopy.length - 1) {
+                            obj.name = cuts[cuts.length - 1].name + '-' + cuts[0].name;
                             obj.clockwise = cuts[cuts.length - 1].clockwise + '-' + cuts[0].clockwise;
                             obj.bandRange = cutsCopy[cutsCopy.length - 1].cut == seqCount ? '1-' + cutsCopy[0].cut : cutsCopy[cutsCopy.length - 1].cut + '-' + cutsCopy[0].cut;
                             obj.Size = cutsCopy[cutsCopy.length - 1].cut == seqCount ? cutsCopy[0].cut : (seqCount - cutsCopy[cutsCopy.length - 1].cut + cutsCopy[0].cut);
                             obj.Mass = 100;
                         }
                         else {
+                            obj.name = cuts[i].name + '-' + cuts[i + 1].name;
                             obj.clockwise = cuts[i].clockwise + '-' + cuts[i + 1].clockwise;
                             obj.bandRange = cutsCopy[i].cut + '-' + cutsCopy[i + 1].cut;
                             obj.Size = cutsCopy[i + 1].cut - cutsCopy[i].cut;
@@ -1082,7 +1095,9 @@ function drawGel(id, ladder, bands, gelHeight)
         var topLegends = [];
         topLegends.push("Ladder"); //first is the ladder
         $.each(bands, function (i, d) {
-            topLegends.push(d[0].name);
+            //formate name and remove 2ed name
+            var labelName = formatBandLabel(d[0].label);
+            topLegends.push(labelName);
         })
         //cal the Rf for each band based on ladder lr
         //get lr
@@ -1474,7 +1489,7 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
     var clockwiseArray = clockwise2Array(clockwise);
     //get forward seq
     var fSeq;
-    if (bandStart <= bandEnd) {
+    if (bandStart < bandEnd) {
         fSeq = sequence.substring(bandStart, bandEnd); //bandStart and bandEnd are counts not indexes
     }
     else {
@@ -1488,14 +1503,13 @@ function showFragmentEnds(id, fSeqId, cSeqId, bandStart, bandEnd, name, clockwis
     //[{ 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}, { 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}]
     //var enzymeAttr = [{ 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}, { 'fc': fc, 'rc': rc, 'fc2': fc2, 'rc2': rc2}];
     var enzymeAttr = getEynzymeAttr(restricProperty, nameArray);
-
     //get overhangs [left, right]
     var overHangs = getOverhangs(enzymeAttr, clockwiseArray);
     //get complement seq
     //get cSeq range
     var cSeqRange = [bandStart - overHangs[0], bandEnd + overHangs[1]];
     var cSeq;
-    if (cSeqRange[0] <= cSeqRange[1]) {
+    if (cSeqRange[0] < cSeqRange[1]) {
         cSeq = cSequence.substring(cSeqRange[0], cSeqRange[1]);
     }
     else {
@@ -1873,4 +1887,21 @@ function parseRange(bandRange)
 {
     var array = bandRange.split("-");
     return array;
+}
+
+//formate gel label, to remove 2nd name
+function formatBandLabel(name){
+    var array1 = name.split('-');
+    var array2 = [];
+    $.each(array1, function (i, n) {
+        var fname = n.split(' ')[0];
+        array2.push(fname);
+    })
+    if (array2.length === 1) {
+        return array2[0];
+    }
+    else {
+        var nName = array2.join('-');
+        return nName;
+    }
 }
