@@ -196,13 +196,13 @@
         var cSeqCount = cSeq.length;
         var rightfSeq, rightcSeq, rightSpace;
         if (overhangs[1] > 0) {
-            rightfSeq = fSeq.substring(fSeqCount - (numLetter - overhangs[1]) - 1, fSeqCount - overhangs[1] + 1);
-            rightcSeq = cSeq.substring(cSeqCount - numLetter - 1, fSeqCount + 1);
+            rightfSeq = fSeq.substring(fSeqCount - (numLetter - overhangs[1]), fSeqCount);
+            rightcSeq = cSeq.substring(cSeqCount - numLetter, cSeqCount);
             rightSpace = genSpace(overhangs[1]);
         }
         else {
-            rightfSeq = fSeq.substring(fSeqCount - numLetter - 1, fSeqCount + 1);
-            rightcSeq = cSeq.substring(cSeqCount - (numLetter + overhangs[1]) - 1, fSeqCount + overhangs[1] + 1);
+            rightfSeq = fSeq.substring(fSeqCount - numLetter, fSeqCount);
+            rightcSeq = cSeq.substring(cSeqCount - (numLetter + overhangs[1]), cSeqCount);
             rightSpace = genSpace(-overhangs[1]);
         }
         //display end in pre
