@@ -46,7 +46,7 @@ namespace ecloning.Models
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                findRestri(10, PlasmidId, GroupId, Sequence, true);
+                findRestri(eCloningSettings.cutNum, PlasmidId, GroupId, Sequence, true);
             }).Start();
         }
 

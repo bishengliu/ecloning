@@ -518,7 +518,7 @@ function genActivityTab(enzyArray, id, company){
 
 function activeActivityTab(enzyArray, id) {
     //find the fist tab
-    var tab = enzyArray[enzyArray.length - 1];
+    var tab = enzyArray[enzyArray.length - 1].split(' ')[0];
     $('#' + id + ' a[href="#activity-' + tab + '"]').tab('show');
 }
 
@@ -547,7 +547,7 @@ function createActivityTabs(enzyArray, id, company) {
                         if (si == 0) {
                             htmlsubdiv = htmlsubdiv + '<div id="activity-' + vname + '-' + si + '" class="panel-collapse collapse in">';
                         } else {
-                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + vnamev + '-' + si + '" class="panel-collapse collapse">';
+                            htmlsubdiv = htmlsubdiv + '<div id="activity-' + vname + '-' + si + '" class="panel-collapse collapse">';
                         }
                         htmlsubdiv = htmlsubdiv + '<div class="panel-body" id="company-' + vname + '-' + si + '"></div>';
                         htmlsubdiv = htmlsubdiv + '</div>';                        
@@ -619,9 +619,10 @@ function showActivity(enzyArray, activity, company) {
     //loop enzymeArray
     $.each(enzyArray, function (ei, ev) {
         var idArray = [];
+        var vname = ev.split(' ')[0];
         //loop company
         $.each(company, function (ci, cv) {
-            var id = 'company-' + ev + '-' + ci;
+            var id = 'company-' + vname + '-' + ci;
             idArray.push(id);
             var data1 = $.grep(activity, function (d, i) {
                 return d.key === cv;

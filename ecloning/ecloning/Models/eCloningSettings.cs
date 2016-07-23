@@ -42,7 +42,9 @@ namespace ecloning.Models
         public readonly static string filePath = "~/App_Data/";
 
         //set the min length of cut band
-
         public readonly static int bLength = 100;
+
+        //set the max num of restriction cuts to find
+        public readonly static int cutNum = 10;
     }
 }
