@@ -630,7 +630,7 @@ CREATE TABLE Dam
 	CBlocked BIT NOT NULL, --complately blocked or paritally impaired, true = completely, false= paritially	
 	appending NVARCHAR(100) --appending letter to check	
 );
-
+/*
 INSERT INTO [Dam]
 VALUES
 --completely overlapping and completely blocked
@@ -668,7 +668,7 @@ VALUES
 ('SmoI', 0, 0, 'TC'),
 --need to be careful to deel with, in middle
 ('BcgI', 0, 0, 'TC');
-
+*/
 
 --CCAGG or CCTGG
 CREATE TABLE Dcm
@@ -680,7 +680,7 @@ CREATE TABLE Dcm
 	prefixing NVARCHAR(100), --appending letter to check	
 	appending NVARCHAR(100) --appending letter to check	
 );
-
+/*
 INSERT INTO [Dcm]
 VALUES
 --completely overlapping and completely blocked
@@ -710,7 +710,7 @@ VALUES
 ('Eco31I', 0, 0, 'CCW',null),
 ('Hin1I', 0, 0, null,'WGG'),
 ('SfiI', 0, 0, null,'WGG');
-
+*/
 --table to keep the dam and dcm on plasmid map
 CREATE TABLE methylation
 (
