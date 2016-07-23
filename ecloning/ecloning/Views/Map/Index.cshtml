@@ -46,7 +46,7 @@
                         <i style="position:relative; left:-13px;" class="fa fa-sun-o"></i>
                     </span>
                         <span style="position:relative; left:-13px;">Compare Plasmids</span>
-</a>
+                </a>
                 <a class="btn btn-default" href="@Url.Action("Sequence", "Map", new { plasmid_id = plasmidId, tag = Tag})">
                     <i class="fa fa-exchange text-danger"></i>
                     <span>Sequence</span>
@@ -74,7 +74,7 @@
                             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
                                 <a id="autogenerate" class="btn btn-link" href="@Url.Action("Index", "Map", new { id = plasmidId, tag="autogenerate" })">
                                     <i class="fa fa-spinner text-danger"></i>
-                                    <span>Auto</span>
+                                    <span>Redraw Map</span>
                                 </a>
                             </div>
                             @if (BackupCount > 0)
@@ -242,7 +242,6 @@
                             </a>
                         </div>
                         }
-
                         </div>
                     }
                 }
@@ -329,7 +328,6 @@
 </div>
 
 
-
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
 <script>
@@ -379,6 +377,7 @@
 <script>
     $('#autogenerate').click(function () {
         $('#autogenerate i').addClass("fa-pulse");
+        findCutAlert();
     });
 
     $('#backup').click(function () {
@@ -448,5 +447,17 @@
             }
             return sortStatus;
         };
+    }
+
+    function findCutAlert() {
+        //show alert and auto close it.
+        var html = '';
+        html = html + '<div class="alert alert-info navbar-fixed-bottom" id="redraw-alert">';
+        html = html + '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+        html = html + '<span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Searching the restriction sites is running in background, please wait for about 10 mins before working on "<i class="text-danger fa fa-scissors"></i><span class="text-danger">Digestion</span>".</div>';
+        $('body').append(html);
+        $("#redraw-alert").fadeTo(50000, 500).slideUp(500, function () {
+            $("#redraw-alert").alert('close');
+        });
     }
 </script>

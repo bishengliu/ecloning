@@ -16,7 +16,6 @@ namespace ecloning.Models
         public string Sequence { get; set; }
         public int PlasmidId { get; set; }
         public bool result { get; set; }
-
         //to get group id for group used enzymes
         public List<int> GroupId { get; set; }
 
@@ -28,6 +27,31 @@ namespace ecloning.Models
             Sequence = seq;
             GroupId = groupId;
 
+            //backup features
+            this.backupFeatrues();
+
+            //backup methylation
+            this.backupMethy();
+
+            //find features
+            this.findFeature();
+
+            //find primers
+            this.findPrimer();
+
+            //find ORF
+            this.findORF();
+
+            //find the cuts
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                findRestri(10, PlasmidId, GroupId, Sequence, true);
+            }).Start();
+        }
+
+        public void backupFeatrues()
+        {
             //remove exsited features to backup table
             var currentPlasmidMap = db.plasmid_map.Where(p => p.plasmid_id == PlasmidId);
             if (currentPlasmidMap.Count() > 0)
@@ -45,7 +69,7 @@ namespace ecloning.Models
                 //backup current features
                 foreach (var c in currentPlasmidMap.ToList())
                 {
-                    var b  = new plasmid_map_backup();
+                    var b = new plasmid_map_backup();
                     b.plasmid_id = PlasmidId;
                     b.show_feature = c.show_feature;
                     b.feature = c.feature;
@@ -59,22 +83,28 @@ namespace ecloning.Models
                     db.plasmid_map_backup.Add(b);
                     db.plasmid_map.Remove(c);
                 }
+                db.SaveChanges();
             }
+        }
 
-            //backup current methylation
-
-            //remove previous mehtylation backup info
-            var previousMethylation = db.methylation_backup.Where(p => p.plasmid_id == PlasmidId);
-            if (previousMethylation.Count() > 0)
+        public void backupMethy()
+        {
+            //backup and remove current methylation
+            var currentMethylation = db.methylations.Where(p => p.plasmid_id == PlasmidId);
+            if (currentMethylation.Count() > 0)
             {
-                foreach (var m in previousMethylation)
+                //remove previous mehtylation backup info
+                var previousMethylation = db.methylation_backup.Where(p => p.plasmid_id == PlasmidId);
+                if (previousMethylation.Count() > 0)
                 {
-                    db.methylation_backup.Remove(m);
+                    foreach (var m in previousMethylation)
+                    {
+                        db.methylation_backup.Remove(m);
+                    }
                 }
+                //backup current methylation
 
-                //backup and remove current methylation
-                var currentMethylation = db.methylations.Where(p => p.plasmid_id == PlasmidId);
-                foreach(var c in currentMethylation)
+                foreach (var c in currentMethylation)
                 {
                     var b = new methylation_backup();
                     b.plasmid_id = c.plasmid_id;
@@ -88,55 +118,53 @@ namespace ecloning.Models
                     db.methylation_backup.Add(b);
                     db.methylations.Remove(c);
                 }
+                db.SaveChanges();
             }
-
-            
-            //find features
-            findFeature();
-
-            //find primers
-            findPrimer();
-            //find the cuts
-            findRestri();
-            
-            //find ORF
-            findORF();
-
         }
 
-        public void findRestri()
+        public void findRestri(int cutNum, int PlasmidId, List<int> GroupId, string Sequence, bool allEnzymes)
         {
             //========================================================================
             //========================================================================
             //=====================================================================
             //check restriciton cut
-
-            //max cuts
-            var minLen = eCloningSettings.bLength;
-            var cutNum = Math.Floor((double)(Sequence.Length / minLen)) / 2;
-            //first the common the enzymes
-            //if no common enzyme found, check all the enzymes available
+         
             List<int> enzymeId = new List<int>();
-            var common_restriction = db.common_restriction.Where(g => GroupId.Contains(g.group_id));
-            if (common_restriction.Count() > 0)
+            if (allEnzymes)
             {
-                enzymeId = common_restriction.OrderBy(e => e.enzyme_id).Select(e => e.enzyme_id).Distinct().ToList();
-            }
-            else
-            {
+                //search all enzymes
                 var restrictions = db.restri_enzyme;
                 if (restrictions.Count() > 0)
                 {
                     enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
                 }
             }
+            else
+            {
+                //first the common the enzymes
+                //if no common enzyme found, check all the enzymes available
+                var common_restriction = db.common_restriction.Where(g => GroupId.Contains(g.group_id));
+                if (common_restriction.Count() > 0)
+                {
+                    enzymeId = common_restriction.OrderBy(e => e.enzyme_id).Select(e => e.enzyme_id).Distinct().ToList();
+                }
+                else
+                {
+                    var restrictions = db.restri_enzyme;
+                    if (restrictions.Count() > 0)
+                    {
+                        enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
+                    }
+                }
+            }
+
             if (enzymeId.Count() > 0)
             {
                 //check whether enzymeId.count >0 
                 //generate enzyme restriction features
 
                 var restriciton = new FindRestriction();
-                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, (int)cutNum); //find all the restrictions cutNum default is 0 == all.
+                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, cutNum); //find all the restrictions cutNum default is 0 == all.
                 if (restricitonObjects.Count() > 0)
                 {
                     //remove all the old methylation info
@@ -153,8 +181,6 @@ namespace ecloning.Models
                     foreach (var rObject in restricitonObjects)
                     {
                         var map = new plasmid_map();
-                        var methylation = new methylation();
-
                         //add to map table
                         map.plasmid_id = PlasmidId;
                         map.show_feature = 1;
@@ -166,37 +192,24 @@ namespace ecloning.Models
                         map.clockwise = rObject.clockwise;
                         db.plasmid_map.Add(map);
 
-
                         //add to methylation table
-                        methylation.plasmid_id = PlasmidId;
-                        methylation.cut = rObject.cut + 1;
-                        methylation.clockwise = rObject.clockwise;
-                        methylation.name = rObject.name;
-                        methylation.dam_complete = rObject.dam_complete;
-                        methylation.dam_impaired = rObject.dam_impaired;
-                        methylation.dcm_complete = rObject.dcm_complete;
-                        methylation.dcm_impaired = rObject.dcm_impaired;
-                        if (methylation.dam_complete || methylation.dam_impaired || methylation.dcm_complete || methylation.dcm_impaired)
+                        if(rObject.dam_complete||rObject.dam_impaired || rObject.dcm_complete || rObject.dcm_impaired)
                         {
+                            var methylation = new methylation();
+                            methylation.plasmid_id = PlasmidId;
+                            methylation.cut = rObject.cut + 1;
+                            methylation.clockwise = rObject.clockwise;
+                            methylation.name = rObject.name;
+                            methylation.dam_complete = rObject.dam_complete;
+                            methylation.dam_impaired = rObject.dam_impaired;
+                            methylation.dcm_complete = rObject.dcm_complete;
+                            methylation.dcm_impaired = rObject.dcm_impaired;
                             db.methylations.Add(methylation);
                         }
                     }
                     db.SaveChanges();
                 }
-            }
-
-
-
-            //running in background
-
-            //Task task = Task.Run( (Action) findCuts());
-
-
-            //new Thread(() =>
-            //{
-            //    Thread.CurrentThread.IsBackground = true;
-                
-            //}).Start();
+            }      
         }
 
         public void findORF()
@@ -350,7 +363,6 @@ namespace ecloning.Models
             }
         }
 
-
         public void findFeature()
         {
             //========================================================================
@@ -471,9 +483,6 @@ namespace ecloning.Models
                 db.SaveChanges();
             }
         }
-
-
-
 
     }
 }

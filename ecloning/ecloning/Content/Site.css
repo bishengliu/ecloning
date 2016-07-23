@@ -525,6 +525,10 @@ svg text tspan{
     height:15px;
     padding:0px;
 }
+#redraw-alert{
+    height:15px;
+    padding:0px;
+}
 
 #tool-alert{
     height:20px;
