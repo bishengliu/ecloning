@@ -454,7 +454,7 @@
         var html = '';
         html = html + '<div class="alert alert-info navbar-fixed-bottom" id="redraw-alert">';
         html = html + '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
-        html = html + '<span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Searching the restriction sites is running in background, please wait for about 10 mins before working on "<i class="text-danger fa fa-scissors"></i><span class="text-danger">Digestion</span>".</div>';
+        html = html + '<span class="pull-right"><span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Searching the restriction sites is running in background, please wait for about 10 mins before working on "<i class="text-danger fa fa-scissors"></i><span class="text-danger">Digestion</span>".<span>&nbsp;&nbsp;</span></span></div>';
         $('body').append(html);
         $("#redraw-alert").fadeTo(50000, 500).slideUp(500, function () {
             $("#redraw-alert").alert('close');

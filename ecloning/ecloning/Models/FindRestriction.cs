@@ -99,7 +99,7 @@ namespace ecloning.Models
             //find forward
             var findObject = new FindRestriction();
             FrObjects = findObject.FrObject(rs, fullSeq, enzyme, isCircular, cutNum);
-            //if cutNum==> find all the possible cuts
+            //if cutNum = 0 ==> find all the possible cuts
             //find on the reverse
             //look for the reverse comple of the restriction site in the forward seq
             if (cutNum == 0 || (cutNum != 0 && FrObjects.Count() < cutNum))
@@ -134,7 +134,7 @@ namespace ecloning.Models
         //forward
         public List<RestriFeatureObject> FrObject(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular, int cutNum)
         {
-            //if cutNum==> find all the possible cuts
+            //if cutNum=0 ==> find all the possible cuts
             int count = 0; //count for num of cuts for current enzyme found
             List<RestriFeatureObject> rObjects = new List<RestriFeatureObject>();
             for (int index = 0; ; index += rs.Length)
@@ -702,7 +702,7 @@ namespace ecloning.Models
         //reverse
         public List<RestriFeatureObject> RrObject(string crs, string fullSeq, restri_enzyme enzyme, bool isCircular, int cutNum, int minusCutNum)
         {
-            //if cutNum==> find all the possible cuts
+            //if cutNum=0 ==> find all the possible cuts
             int count = 0; //count for num of cuts for current enzyme found
 
             //CRS IS ACTUALLY REVERSED COMPLEMETARY SEQ
@@ -770,14 +770,14 @@ namespace ecloning.Models
                     //set the name of the feature
                     var featureName = enzyme.name;
                     FObject.name = featureName;
-                }
 
-                rObjects.Add(FObject);
-                count++;
-                if(cutNum !=0 && count >= minusCutNum + 1)
-                {
-                    break;
-                }
+                    rObjects.Add(FObject);
+                    count++;
+                    if(cutNum !=0 && count >= minusCutNum + 1)
+                    {
+                        break;
+                    }
+                }  
             }
 
             if(cutNum ==0 || count < minusCutNum)
@@ -1336,10 +1336,11 @@ namespace ecloning.Models
             List<RestriFeatureObject> Rr2Objects = new List<RestriFeatureObject>();
 
             var findObject = new FindRestriction();
-            Fr2Objects = findObject.Fr2Object(rs, fullSeq, enzyme, isCircular);
+            Fr2Objects = findObject.Fr2Object(rs, fullSeq, enzyme, isCircular, cutNum);
             if (cutNum == 0 || (cutNum != 0 && Fr2Objects.Count() < cutNum))
             {
-                Rr2Objects = findObject.Rr2Object(rs, fullSeq, enzyme, isCircular);
+                int minusCutNum = cutNum - Fr2Objects.Count();
+                Rr2Objects = findObject.Rr2Object(rs, fullSeq, enzyme, isCircular, cutNum, minusCutNum);
             }
 
             FRr2Objects = Fr2Objects.Concat(Rr2Objects).ToList();
@@ -1351,8 +1352,11 @@ namespace ecloning.Models
             return FRr2Objects;
         }
 
-        public List<RestriFeatureObject> Fr2Object(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> Fr2Object(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular, int cutNum)
         {
+            //if cutNum=0 ==> find all the possible cuts
+            int count = 0; //count for num of cuts for current enzyme found
+
             List<RestriFeatureObject> r2Objects = new List<RestriFeatureObject>();
             //process rs
             var findRestrciton = new FindRestriction();
@@ -1430,20 +1434,30 @@ namespace ecloning.Models
                         r2Objects.Add(FObject1);
                         r2Objects.Add(FObject2);
                     }
-                }
-            }
-            if (isCircular)
-            {
-                //end
-                var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, fullSeq, enzyme);
-                foreach (var o in endObjects)
-                {
-                    if (o.name != null)
+                    count++;
+                    if (cutNum != 0 && count >= cutNum + 1)
                     {
-                        r2Objects.Add(o);
+                        //if cutNum=0 ==> find all the possible cuts
+                        break;
                     }
                 }
             }
+            if (cutNum == 0 || (cutNum != 0 && count < cutNum))
+            {
+                if (isCircular)
+                {
+                    //end
+                    var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, fullSeq, enzyme);
+                    foreach (var o in endObjects)
+                    {
+                        if (o.name != null)
+                        {
+                            r2Objects.Add(o);
+                        }
+                    }
+                }
+            }
+
             return r2Objects;
     }
 
@@ -1506,8 +1520,11 @@ namespace ecloning.Models
             return r2EndObjects;
         }
 
-        public List<RestriFeatureObject> Rr2Object(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular)
+        public List<RestriFeatureObject> Rr2Object(string rs, string fullSeq, restri_enzyme enzyme, bool isCircular, int cutNum, int minusCutNum)
         {
+            //if cutNum=0 ==> find all the possible cuts
+            int count = 0; //count for num of cuts for current enzyme found
+
             List<RestriFeatureObject> r2Objects = new List<RestriFeatureObject>();
 
             //get the complementary fullseq
@@ -1590,19 +1607,28 @@ namespace ecloning.Models
 
                         r2Objects.Add(FObject1);
                         r2Objects.Add(FObject2);
-                    }
+
+                        count++;
+                        if (cutNum != 0 && count >= minusCutNum + 1)
+                        {
+                            break;
+                        }
+                    }                    
                 }
             }
-            //check the circular
-            if (isCircular)
+            if(cutNum ==0 || count < minusCutNum)
             {
-                //end
-                var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, cfullSeq, enzyme);
-                foreach (var o in endObjects)
+                //check the circular
+                if (isCircular)
                 {
-                    if (o.name != null)
+                    //end
+                    var endObjects = findRestrciton.FindEnd2Restriction(r2SeqObject, cfullSeq, enzyme);
+                    foreach (var o in endObjects)
                     {
-                        r2Objects.Add(o);
+                        if (o.name != null)
+                        {
+                            r2Objects.Add(o);
+                        }
                     }
                 }
             }

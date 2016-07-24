@@ -113,64 +113,6 @@ namespace ecloning.Controllers
             ViewBag.Sequence = plasmid.sequence;
             ViewBag.SeqLength = plasmid.seq_length;
 
-            /*
-            //check restriciton cut
-            //cal the max cuts to check
-            var maps = new List<plasmid_map>();
-            var methys = new List<methylation>();
-
-            var minLen = eCloningSettings.bLength;
-            var cutNum = Math.Floor((double)(plasmid.seq_length / minLen));
-            
-            //first the common the enzymes
-            //if no common enzyme found, check all the enzymes available
-            List<int> enzymeId = new List<int>();
-            var restrictions = db.restri_enzyme;
-            if (restrictions.Count() > 0)
-            {
-                enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
-            }
-            if (enzymeId.Count() > 0)
-            {
-                //check whether enzymeId.count >0 
-                //generate enzyme restriction features
-
-                var restriciton = new FindRestriction();
-                var restricitonObjects = restriciton.RestricitonObject(plasmid.sequence, enzymeId, (int)cutNum); //find all the restrictions cutNum default is 0 == all.
-
-                //add results to plasmid map table
-                
-                foreach (var rObject in restricitonObjects)
-                {
-                    var map = new plasmid_map();
-                    var methy = new methylation();
-
-                    //add to map table
-                    map.plasmid_id = plasmid.id;
-                    map.show_feature = 1;
-                    map.feature = rObject.name;
-                    map.feature_id = 4;
-                    map.start = rObject.start + 1;
-                    map.end = rObject.end + 1;
-                    map.cut = rObject.cut + 1;
-                    map.clockwise = rObject.clockwise;
-                    maps.Add(map);
-
-                    methy.plasmid_id = plasmid.id;
-                    methy.cut = rObject.cut + 1;
-                    methy.clockwise = rObject.clockwise;
-                    methy.name = rObject.name;
-                    methy.dam_complete = rObject.dam_complete;
-                    methy.dam_impaired = rObject.dam_impaired;
-                    methy.dcm_complete = rObject.dcm_complete;
-                    methy.dcm_impaired = rObject.dcm_impaired;
-                    if (methy.dam_complete || methy.dam_impaired || methy.dcm_complete || methy.dcm_impaired)
-                    {
-                        methys.Add(methy);
-                    }
-                }
-            }
-            */
             //pass json
             //all the methylation
             var methylation = db.methylations.Where(m => m.plasmid_id == plasmid_id);

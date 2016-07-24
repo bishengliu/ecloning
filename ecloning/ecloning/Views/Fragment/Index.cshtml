@@ -24,11 +24,11 @@
                 <i class="fa fa-exchange text-danger"></i>
                 <span>Sequence</span>
             </a>
-            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Map", new { id = Id, tag = Tag })">
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Map", new { id = Id, tag = "personDispaly" })">
                 <i class="fa fa-sun-o text-danger"></i>
                 <span>Plasmid Map</span>
             </a>
-            <a class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = Id, tag = Tag})">
+            <a class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = Id, tag = "personDispaly"})">
                 <i class="fa fa-scissors text-danger"></i>
                 <span>Digestion</span>
             </a>
