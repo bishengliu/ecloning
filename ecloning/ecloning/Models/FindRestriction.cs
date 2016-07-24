@@ -74,7 +74,7 @@ namespace ecloning.Models
                 }
                 //remove the duplicates
                 //THIS IS PROBLEMS HERE NEED TO BE SOLVED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                Objects = Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
+                //Objects = Objects.GroupBy(c => c.cut).Select(f => f.First()).ToList();
 
                 if (cutNum != 0 && Objects.Count() <= cutNum)
                 {
@@ -126,7 +126,9 @@ namespace ecloning.Models
                     RrObjects = findObject.RrObject(rcrs, fullSeq, enzyme, isCircular, cutNum, minusCutNum);
                 }
             }
-            FRrObjects = FrObjects.Concat(RrObjects).ToList();     
+            //remove the duplicates
+            //THIS IS PROBLEMS HERE NEED TO BE SOLVED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            FRrObjects = FrObjects.Concat(RrObjects).GroupBy(c => c.cut).Select(f => f.First()).ToList();     
             return FRrObjects;
         }
 
