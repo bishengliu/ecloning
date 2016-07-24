@@ -453,7 +453,7 @@ function seqEditor(seq, id, type) {
 
         //preparep tooltip div
         var tooltip = d3.select("body").append("div")
-                            .attr("class", "tooltip2")
+                            .attr("class", "seq-tool")
                             .style("opacity", 0);
         //============points and count===================
         //point
