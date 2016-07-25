@@ -317,6 +317,7 @@
     <Compile Include="Models\activity_restriction.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AdminInfo.cs" />
     <Compile Include="Models\AppAdmin.cs" />
     <Compile Include="Models\app_license.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
@@ -1100,6 +1101,7 @@
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\BioTools\FormatSeq.cshtml" />
     <Content Include="Views\pBundle\Replacer.cshtml" />
+    <Content Include="Views\Fragment\Fragment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

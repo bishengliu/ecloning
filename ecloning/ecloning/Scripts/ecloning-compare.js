@@ -84,7 +84,7 @@
         //var padding = 0.5;
         var margin = { top: 20, right: 200, bottom: 0, left: 20 };
         var step = 22,
-            width = step * fLabels.length;
+            width = step * fLabels.length < $("#features").width() - 20 - margin.left - margin.right?$("#features").width() - 20 - margin.left - margin.right : step * fLabels.length;
         height = 650;
         var padding = 0.5;
         //filter the plasmid

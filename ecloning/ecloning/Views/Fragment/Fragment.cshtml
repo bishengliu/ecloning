@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ecloning.Models.fragment>
+@{
+    ViewBag.Title = "Fragment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //features
+    var Features = ViewBag.Features;
+
+    //shared fragments
+    IEnumerable<ecloning.Models.fragment> sharedFragment = ViewBag.shareFragments;
+}
+<span id="decodeIt" class="hidden"></span>
+
+<div class="row">
+    <div class="col-sm-5 col-sm-offset-1 col-xs-12 pull-left">
+        <h3 class="text-center text-warning">Linearized Vectors and Saved Fragments</h3>
+    </div>
+    <div class="col-sm-3 col-xs-6 pull-left">
+        <h3 class="hidden-xs">
+            <a class="btn btn-sm btn-info topButton" href="@Url.Action("Create", "Fragment")">
+                <i class="fa fa-plus-circle"></i>
+                <span>Fragment</span>
+            </a>
+        </h3>
+        <a class="btn btn-sm btn-info hidden-sm hidden-md hidden-lg topButton" href="@Url.Action("Create", "Fragment")">
+            <i class="fa fa-plus-circle"></i>
+            <span>Fragment</span>
+        </a>
+    </div>
+    <div class="col-sm-3 col-xs-6 pull-right">
+        <br class="hidden-xs"/>
+        <div class="input-group topButton">
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            <input id="searchFragment" type="text" class="form-control" placeholder="Search...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="clearText">
+                    <i class="fa fa-remove"></i>
+                </button>
+            </span>
+        </div>
+    </div>
+</div>
+

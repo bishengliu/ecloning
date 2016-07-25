@@ -125,6 +125,61 @@ namespace ecloning.Controllers
             }
         }
 
+        //for manually added linearized vectors
+        [Authorize]
+        [HttpGet]
+        public ActionResult Fragment()
+        {
+            //get my people_id
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+
+            int peopleId = userInfo.PersonId;
+            List<int> groupId = groupInfo.groupId;
+
+
+            //get group shared vectors
+            //get the admin group ids (appAdmin, InstAdmin)
+            List<int> adminId = new List<int>();
+            List<string> adminNames = new List<string>();
+            adminNames.Add("appAdmin");
+            adminNames.Add("Institute Admin");
+            var adminInfo = new AdminInfo();
+            adminId = adminInfo.AdminId(adminNames);
+
+            List<int> shareIds = new List<int>();
+            if (groupId.Count() > 0)
+            {
+                var share = db.group_shared.Where(g => groupId.Contains(g.group_id) || adminId.Contains(g.group_id)).Where(c => c.category == "fragment").OrderByDescending(r => r.resource_id);
+                shareIds = share.Select(r => r.resource_id).ToList();
+            }
+            var shareFragments = db.fragments.Where(f => shareIds.Contains(f.id)).ToList();
+            ViewBag.shareFragments = shareFragments;
+            //get my vectors and ally my own plasmid derived plasmid
+            var myFragments = db.fragments.Where(f => f.people_id == userInfo.PersonId).Where(f => !shareIds.Contains(f.id));
+            List<int> myfragId = myFragments.Select(f => f.id).ToList();
+
+            //get the combined ids for get the fragment map
+            List<int> combinedId = shareIds.Concat(myfragId).ToList();
+            var maps = db.fragment_map.Where(m => combinedId.Contains(m.fragment_id)).OrderBy(f => f.fragment_id).Select(f => 
+            new {
+                fId = f.fragment_id,
+                fName = f.fragment.name,
+                show_feature = f.show_feature,
+                end = f.end,
+                feature = f.feature,
+                type_id = f.feature_id,
+                start = f.start,
+                cut = f.cut,
+                clockwise = f.clockwise == 1 ? true : false
+            });
+            ViewBag.Features = JsonConvert.SerializeObject(maps.ToList());
+
+            return View(myFragments.ToList());
+        }
+
+
 
         protected override void Dispose(bool disposing)
         {

@@ -37,7 +37,6 @@ namespace ecloning.Controllers
             
             if (groupId.Count() > 0)
             {
-
                 //get the shared plasmid id
                 sharePlasmids = db.group_shared.Where(g => groupId.Contains(g.group_id)).Where(c => c.category == "plasmid").OrderByDescending(r=>r.resource_id).Select(r => r.resource_id);
                 if(sharePlasmids.Count() > 0)

@@ -94,7 +94,7 @@
     var margin = { top: 20, right: 200, bottom: 0, left: 20 };
         //width = ($("#overview").width() <= 250 ? 250 : $("#overview").width()) - 20 - margin.left - margin.right;
     var step = 22,
-        width = step * fLabels.length;
+        width = step * fLabels.length < $("#overview").width() - 20 - margin.left - margin.right ? $("#overview").width() - 20 - margin.left - margin.right : step * fLabels.length;
 	    height = 650;
 	    var padding = 0.5;
 
