@@ -187,11 +187,180 @@ namespace ecloning.Controllers
             return View();
         }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "fName,fSeq,cSeq,left_overhang")] FragmentViewModel fragment)
+        {
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            int peopleId = userInfo.PersonId;
+            //non zero validation
+            if (fragment.left_overhang == 0)
+            {
+                TempData["error"] = "Left Overhang cann't be zero!";
+                return View(fragment);
+            }
+            //check the name
+            var fragments = db.fragments.Where(f => f.name == fragment.fName && f.people_id == peopleId);
+            if (fragments.Count() > 0)
+            {
+                TempData["error"] = "Vector \"" + fragment.fName + "\" already exists!";
+                return View(fragment);
+            }
+            if (ModelState.IsValid)
+            {
+                //cal the right overhang
+                int right_overhang = -999;
+                if (fragment.left_overhang == 0)
+                {
+                    right_overhang = fragment.cSeq.Length - fragment.fSeq.Length;
+                }
+                else if (fragment.left_overhang < 0)
+                {
+                    right_overhang = fragment.cSeq.Length - Math.Abs(fragment.left_overhang) - fragment.fSeq.Length;
+                }
+                else
+                {
+                    right_overhang = fragment.cSeq.Length + Math.Abs(fragment.left_overhang) - fragment.fSeq.Length;
+                }
+                var f = new fragment();
+                f.name = fragment.fName;
+                f.parantal = false;
+                f.forward_start = 1;
+                f.forward_end = fragment.fSeq.Length;
+                f.rc_seq = fragment.cSeq;
+                f.rc_left_overhand = fragment.left_overhang;
+                f.people_id = peopleId;
+                f.dt = DateTime.Now;
+                f.rc_right_overhand = right_overhang;
+                db.fragments.Add(f);
+                db.SaveChanges();
+                return RedirectToAction("Fragment", "Fragment");
+            }
+            return View(fragment);
+        }
 
         //edit linearized vectors
+        [Authorize]
+        [HttpGet]
+        public ActionResult Edit(int? id)
+        {
+            //id is the fragment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var fragment = db.fragments.Find(id);
+            if (fragment == null)
+            {
+                return HttpNotFound();
+            }
+            //load data
+            var f = new FragmentViewModel();
+            f.id = fragment.id;
+            f.fName = fragment.name;
+            f.fSeq = fragment.forward_seq;
+            f.cSeq = fragment.rc_seq;
+            f.left_overhang = (int)fragment.rc_left_overhand;
+            return View(f);
+        }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "id,fName,fSeq,cSeq,left_overhang")] FragmentViewModel fragment)
+        {
+            //people id
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            int peopleId = userInfo.PersonId;
+            //non zero validation
+            if (fragment.left_overhang == 0)
+            {
+                TempData["error"] = "Left Overhang cann't be zero!";
+                return View(fragment);
+            }
+            //check the name
+            var fragments = db.fragments.Where(f=>f.id != fragment.id).Where(f => f.name == fragment.fName && f.people_id==peopleId);
+            if (fragments.Count() > 0)
+            {
+                TempData["error"] = "Vector \"" + fragment.fName + "\" already exists!";
+                return View(fragment);
+            }
+            if (ModelState.IsValid)
+            {
+                //find the fragment from database
+                var f = db.fragments.Find(fragment.id);
+                
+                //cal the right overhang
+                int right_overhang = -999;
+                if (fragment.left_overhang == 0)
+                {
+                    right_overhang = fragment.cSeq.Length - fragment.fSeq.Length;
+                }
+                else if (fragment.left_overhang < 0)
+                {
+                    right_overhang = fragment.cSeq.Length - Math.Abs(fragment.left_overhang) - fragment.fSeq.Length;
+                }
+                else
+                {
+                    right_overhang = fragment.cSeq.Length + Math.Abs(fragment.left_overhang) - fragment.fSeq.Length;
+                }
+                f.name = fragment.fName;
+                f.parantal = false;
+                f.forward_start = 1;
+                f.forward_end = fragment.fSeq.Length;
+                f.rc_seq = fragment.cSeq;
+                f.rc_left_overhand = fragment.left_overhang;
+                f.people_id = peopleId;
+                f.dt = DateTime.Now;
+                f.rc_right_overhand = right_overhang;
+                db.SaveChanges();
+                return RedirectToAction("Fragment", "Fragment");
+            }
+            return View(fragment);
+        }
 
         //delete linearized vectors
+        [Authorize]
+        [HttpGet]
+        public ActionResult Delete(int? id)
+        {
+            //id is the fragment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var fragment = db.fragments.Find(id);
+            if (fragment == null)
+            {
+                return HttpNotFound();
+            }
+            return View(fragment);
+            
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var fragment = db.fragments.Find(id);
+            db.fragments.Remove(fragment);
+
+            //detele all the reffered features in fragment_map
+            var maps = db.fragment_map.Where(i => i.fragment_id == id);
+            if (maps.Count() > 0)
+            {
+                foreach (var m in maps)
+                {
+                    db.fragment_map.Remove(m);
+                }
+            }
+            db.SaveChanges();
+            return RedirectToAction("Fragment", "Fragment");
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

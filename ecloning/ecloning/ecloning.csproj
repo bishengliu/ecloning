@@ -1104,6 +1104,7 @@
     <Content Include="Views\pBundle\Replacer.cshtml" />
     <Content Include="Views\Fragment\Fragment.cshtml" />
     <Content Include="Views\Fragment\Create.cshtml" />
+    <Content Include="Views\Fragment\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
