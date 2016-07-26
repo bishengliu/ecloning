@@ -164,7 +164,7 @@ namespace ecloning.Models
                 //generate enzyme restriction features
 
                 var restriciton = new FindRestriction();
-                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, cutNum); //find all the restrictions cutNum default is 0 == all.
+                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, true, cutNum); //find all the restrictions cutNum default is 0 == all.
                 if (restricitonObjects.Count() > 0)
                 {
                     //remove all the old methylation info
@@ -484,5 +484,321 @@ namespace ecloning.Models
             }
         }
 
+    }
+
+    public class VectorFeature
+    {
+        private ecloningEntities db = new ecloningEntities();
+        public string Sequence { get; set; }
+        public int FragmentId { get; set; }
+        public bool result { get; set; }
+        //to get group id for group used enzymes
+        public List<int> GroupId { get; set; }
+
+        public VectorFeature(int id, string seq, List<int> groupId)
+        {
+            //**************all the classes doesn't add 1 to indexes, therefore, must add 1 to all feature starts, ends and cuts***************//
+
+            FragmentId = id;
+            Sequence = seq;
+            GroupId = groupId;
+
+
+            //find features
+            this.findFeature();
+
+            //find primers
+            this.findPrimer();
+
+            //find ORF
+            this.findORF();
+
+            //find the cuts
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                findRestri(eCloningSettings.cutNum, FragmentId, GroupId, Sequence, true);
+            }).Start();
+
+        }
+
+        public void findFeature()
+        {
+            //========================================================================
+            //========================================================================
+            //===========================find common features (not primers)===========
+            //find all features except primers
+            //put all features in list except ORF/ restriction cut
+            var result = false;
+            var features = db.common_feature.Where(f => f.plasmid_feature.feature != "orf" || f.plasmid_feature.feature != "enzyme");
+            if (features.Count() == 0)
+            {
+                //result = false;
+            }
+            else
+            {
+                //find common features
+                //except restriction cut and ORF
+                foreach (var item in features.ToList())
+                {
+                    //find all the indexes of features in both forward and reserver seq
+                    //feature sequence
+                    var subSeq = item.sequence;
+
+                    //forward
+                    List<int> indexesF = new List<int>();
+                    indexesF = FindSeq.NotRestriction(Sequence, subSeq);
+                    if (indexesF.Count() > 0)
+                    {
+                        //add to plasmd_feature
+                        //start and end need to add 1, since seq starts from 1;
+                        foreach (int index in indexesF)
+                        {
+                            var feature = new fragment_map();
+                            feature.fragment_id = FragmentId;
+                            feature.show_feature = 1;
+                            feature.feature = item.label;
+                            feature.feature_id = item.feature_id;
+                            feature.start = index + 1;
+                            feature.end = index + subSeq.Length;
+                            feature.common_id = item.id;
+                            feature.clockwise = 1;
+                            db.fragment_map.Add(feature);
+                        }
+                        result = true;
+                    }
+
+
+                    //reverse the subseq (feature seq)                  
+                    var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
+                    //get completment DNA of plasmid seq, but not reverse
+                    var cSequence = FindSeq.cDNA(Sequence);
+                    List<int> indexesR = new List<int>();
+                    indexesR = FindSeq.NotRestriction(cSequence, reversesubSeq);
+                    if (indexesR.Count() > 0)
+                    {
+                        //add to plasmd_feature
+                        //start and end need to add 1, since seq starts from 1;
+                        foreach (int index in indexesR)
+                        {
+                            var feature = new fragment_map();
+                            feature.fragment_id = FragmentId;
+                            feature.show_feature = 1;
+                            feature.feature = item.label;
+                            feature.feature_id = item.feature_id;
+                            feature.start = index + 1;
+                            feature.end = index + subSeq.Length;
+                            feature.common_id = item.id;
+                            feature.clockwise = 0;
+                            db.fragment_map.Add(feature);
+                        }
+                        result = true;
+                    }
+                }
+
+            }
+            if (result)
+            {
+                db.SaveChanges();
+            }
+        }
+
+        public void findPrimer()
+        {
+            //========================================================================
+            //========================================================================
+            //===========================find primers ================================
+            bool result = false;
+            var primers = db.primers;
+            if (primers.Count() == 0)
+            {
+                //result = false;
+            }
+            else
+            {
+                //find common features
+                //except restriction cut and ORF
+                foreach (var item in primers.ToList())
+                {
+                    //find all the indexes of features in both forward and reserver seq
+                    //feature sequence
+                    var subSeq = item.sequence;
+
+                    //forward
+                    List<int> indexesF = new List<int>();
+                    indexesF = FindSeq.NotRestriction(Sequence, subSeq);
+                    if (indexesF.Count() > 0)
+                    {
+                        //add to plasmd_feature
+                        //start and end need to add 1, since seq starts from 1;
+                        foreach (int index in indexesF)
+                        {
+                            var feature = new fragment_map();
+                            feature.fragment_id = FragmentId;
+                            feature.show_feature = 1;
+                            feature.feature = item.name;
+                            feature.feature_id = 3;
+                            feature.start = index + 1;
+                            feature.end = index + subSeq.Length;
+                            //feature.common_id = item.id;
+                            feature.clockwise = 1;
+                            db.fragment_map.Add(feature);
+                        }
+                        result = true;
+                    }
+
+                    //reverse the subseq (feature seq)                  
+                    var reversesubSeq = FindSeq.ReverseSeq(item.sequence);
+                    //get completment DNA of plasmid seq, but not reverse
+                    var cSequence = FindSeq.cDNA(Sequence);
+                    List<int> indexesR = new List<int>();
+                    indexesR = FindSeq.NotRestriction(cSequence, reversesubSeq);
+                    if (indexesR.Count() > 0)
+                    {
+                        //add to plasmd_feature
+                        //start and end need to add 1, since seq starts from 1;
+                        foreach (int index in indexesR)
+                        {
+                            var feature = new fragment_map();
+                            feature.fragment_id = FragmentId;
+                            feature.show_feature = 1;
+                            feature.feature = item.name;
+                            feature.feature_id = 3;
+                            feature.start = index + 1;
+                            feature.end = index + subSeq.Length;
+                            //feature.common_id = item.id;
+                            feature.clockwise = 0;
+                            db.fragment_map.Add(feature);
+                        }
+                        result = true;
+                    }
+                }
+            }
+            if (result)
+            {
+                db.SaveChanges();
+            }
+        }
+
+        public void findORF()
+        {
+            //========================================================================
+            //========================================================================
+            ////check ORF
+
+            var orf = new List<ORFObject>();
+            var orfFinder = new ORFFinder(0, 0, 0, 0, 300, Sequence);
+            //ORFFinder(int startCodon, int stopCodon, int frame, int direction, int minSzie, string sequence)
+            orf = orfFinder.FindPlasmidORF();
+            if (orf.Count() > 0)
+            {
+                //save to plasmid_map table
+                //start and end need to add 1, since seq starts from 1;
+                foreach (var orfItem in orf)
+                {
+                    var feature = new fragment_map();
+                    feature.fragment_id = FragmentId;
+                    feature.show_feature = 1;
+                    feature.feature = orfItem.Name;
+                    feature.feature_id = 10;
+                    feature.start = orfItem.start + 1;
+                    feature.end = orfItem.end + 1;
+                    feature.clockwise = orfItem.clockwise;
+                    feature.common_id = null;
+                    db.fragment_map.Add(feature);
+                }
+                db.SaveChanges();
+            }
+        }
+
+        public void findRestri(int cutNum, int FragmentId, List<int> GroupId, string Sequence, bool allEnzymes)
+        {
+            //========================================================================
+            //========================================================================
+            //=====================================================================
+            //check restriciton cut
+
+            List<int> enzymeId = new List<int>();
+            if (allEnzymes)
+            {
+                //search all enzymes
+                var restrictions = db.restri_enzyme;
+                if (restrictions.Count() > 0)
+                {
+                    enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
+                }
+            }
+            else
+            {
+                //first the common the enzymes
+                //if no common enzyme found, check all the enzymes available
+                var common_restriction = db.common_restriction.Where(g => GroupId.Contains(g.group_id));
+                if (common_restriction.Count() > 0)
+                {
+                    enzymeId = common_restriction.OrderBy(e => e.enzyme_id).Select(e => e.enzyme_id).Distinct().ToList();
+                }
+                else
+                {
+                    var restrictions = db.restri_enzyme;
+                    if (restrictions.Count() > 0)
+                    {
+                        enzymeId = restrictions.OrderBy(e => e.id).Select(e => e.id).Distinct().ToList();
+                    }
+                }
+            }
+
+            if (enzymeId.Count() > 0)
+            {
+                //check whether enzymeId.count >0 
+                //generate enzyme restriction features
+
+                var restriciton = new FindRestriction();
+                var restricitonObjects = restriciton.RestricitonObject(Sequence, enzymeId, false, cutNum); //find all the restrictions cutNum default is 0 == all.
+                if (restricitonObjects.Count() > 0)
+                {
+                    //remove all the old methylation info
+                    var methy = db.fragment_methylation.Where(p => p.fragment_id == FragmentId);
+                    if (methy.Count() > 0)
+                    {
+                        foreach (var m in methy)
+                        {
+                            db.fragment_methylation.Remove(m);
+                        }
+                    }
+
+                    //add results to plasmid map table
+                    foreach (var rObject in restricitonObjects)
+                    {
+                        var map = new fragment_map();
+                        //add to map table
+                        map.fragment_id = FragmentId;
+                        map.show_feature = 1;
+                        map.feature = rObject.name;
+                        map.feature_id = 4;
+                        map.start = rObject.start + 1;
+                        map.end = rObject.end + 1;
+                        map.cut = rObject.cut + 1;
+                        map.clockwise = rObject.clockwise;
+                        db.fragment_map.Add(map);
+
+                        //add to methylation table
+                        if (rObject.dam_complete || rObject.dam_impaired || rObject.dcm_complete || rObject.dcm_impaired)
+                        {
+                            var methylation = new fragment_methylation();
+                            methylation.fragment_id = FragmentId;
+                            methylation.cut = rObject.cut + 1;
+                            methylation.clockwise = rObject.clockwise;
+                            methylation.name = rObject.name;
+                            methylation.dam_complete = rObject.dam_complete;
+                            methylation.dam_impaired = rObject.dam_impaired;
+                            methylation.dcm_complete = rObject.dcm_complete;
+                            methylation.dcm_impaired = rObject.dcm_impaired;
+                            db.fragment_methylation.Add(methylation);
+                        }
+                    }
+                    db.SaveChanges();
+                }
+            }
+        }
     }
 }

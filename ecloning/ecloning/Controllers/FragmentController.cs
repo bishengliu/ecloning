@@ -195,6 +195,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             int peopleId = userInfo.PersonId;
+            var groupInfo = new GroupInfo(userInfo.PersonId);
             //non zero validation
             if (fragment.left_overhang == 0)
             {
@@ -236,6 +237,14 @@ namespace ecloning.Controllers
                 f.rc_right_overhand = right_overhang;
                 db.fragments.Add(f);
                 db.SaveChanges();
+
+
+                if (f.forward_seq != null)
+                {
+                    //auto generate features
+                    var autoFeatures = new VectorFeature(f.id, f.forward_seq, groupInfo.groupId);
+                }
+
                 return RedirectToAction("Fragment", "Fragment");
             }
             return View(fragment);
@@ -275,6 +284,7 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             var userInfo = new UserInfo(userId);
             int peopleId = userInfo.PersonId;
+            var groupInfo = new GroupInfo(userInfo.PersonId);
             //non zero validation
             if (fragment.left_overhang == 0)
             {
@@ -317,9 +327,82 @@ namespace ecloning.Controllers
                 f.dt = DateTime.Now;
                 f.rc_right_overhand = right_overhang;
                 db.SaveChanges();
+
+                if (f.forward_seq != null)
+                {
+                    //auto generate features
+                    var autoFeatures = new VectorFeature(f.id, f.forward_seq, groupInfo.groupId);
+                }
+
                 return RedirectToAction("Fragment", "Fragment");
             }
             return View(fragment);
+        }
+
+
+        //share vectors
+        [Authorize]
+        [HttpGet]
+        public ActionResult Share(int? id)
+        {
+            //check the existence of vector id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var vector = db.fragments.Where(f => f.id == id);
+            if (vector.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+
+            //get the group info
+            //get userId
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
+            //check whether it has already been shared
+            var isShared = db.group_shared.Where(r => r.category == "fragment" && r.resource_id == id && r.group_id == groupInfo.groupId.FirstOrDefault());
+            if (isShared.Count() > 0)
+            {
+                return RedirectToAction("Fragment", "Fragment");
+            }
+
+            //share the bundle
+            var share = new group_shared();
+            share.category = "fragment";
+            share.group_id = groupInfo.groupId.FirstOrDefault();
+            share.resource_id = (int)id;
+            share.sratus = "submitted";
+            db.group_shared.Add(share);
+            db.SaveChanges();
+
+            return RedirectToAction("Fragment", "Fragment");
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult unShare(int? id)
+        {
+            //check the existence of fragment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var pBundle = db.fragments.Where(f => f.id == id);
+            if (pBundle.Count() == 0)
+            {
+                return HttpNotFound();
+            }
+            //find the share
+            var share = db.group_shared.Where(s => s.category == "fragment" && s.resource_id == id);
+            foreach (var item in share)
+            {
+                db.group_shared.Remove(item);
+            }
+            db.SaveChanges();
+            return RedirectToAction("Fragment", "Fragment");
         }
 
         //delete linearized vectors

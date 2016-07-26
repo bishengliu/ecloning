@@ -10,7 +10,7 @@ namespace ecloning.Models
         private ecloningEntities db = new ecloningEntities();
 
         //find the restriction enzyme feature
-        public List<RestriFeatureObject> RestricitonObject(string fullSeq, List<int> enzymeId, int cutNum=0)
+        public List<RestriFeatureObject> RestricitonObject(string fullSeq, List<int> enzymeId, bool isCircular, int cutNum=0)
         {
             //fullSeq is the plasmid sequence
             //enzymeId are the list for enzyme ids, come from group common enzymes or restricton enzymes
@@ -41,7 +41,7 @@ namespace ecloning.Models
                             var findObjects = new FindRestriction();
                             //find the restriction for both forward and reverse
                             //also check dam and dcm
-                            FRrObjects = findObjects.FRrObject(cutNum, rs, fullSeq, enzyme, true);
+                            FRrObjects = findObjects.FRrObject(cutNum, rs, fullSeq, enzyme, isCircular);
                             if (FRrObjects.Count() > 0)
                             {
                                 Objects = Objects.Concat(FRrObjects).Distinct().ToList();
@@ -64,7 +64,7 @@ namespace ecloning.Models
                             var findObjects = new FindRestriction();
                             //don't look for dam and dcm
                             //generate 2 object for each index
-                            FRr2Objects = findObjects.FRr2Object(cutNum, rs, fullSeq, enzyme, true);
+                            FRr2Objects = findObjects.FRr2Object(cutNum, rs, fullSeq, enzyme, isCircular);
                             if (FRr2Objects.Count() > 0)
                             {
                                 Objects = Objects.Concat(FRr2Objects).Distinct().ToList();
