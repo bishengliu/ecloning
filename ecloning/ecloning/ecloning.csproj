@@ -615,6 +615,7 @@
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\msa\msa.css" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="images\Fragment.jpg" />
     <Content Include="Models\ecloning.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ecloning.edmx</DependentUpon>
@@ -1102,6 +1103,7 @@
     <Content Include="Views\BioTools\FormatSeq.cshtml" />
     <Content Include="Views\pBundle\Replacer.cshtml" />
     <Content Include="Views\Fragment\Fragment.cshtml" />
+    <Content Include="Views\Fragment\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

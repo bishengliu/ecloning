@@ -179,8 +179,19 @@ namespace ecloning.Controllers
             return View(myFragments.ToList());
         }
 
+        //add linearized vectors
+        [Authorize]
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
 
 
+        //edit linearized vectors
+
+
+        //delete linearized vectors
         protected override void Dispose(bool disposing)
         {
             if (disposing)
