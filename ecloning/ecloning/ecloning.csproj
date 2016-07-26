@@ -635,6 +635,7 @@
     <Content Include="Scripts\ecloning-ali2seq.js" />
     <Content Include="Scripts\ecloning-compare.js" />
     <Content Include="Scripts\ecloning-digestion.js" />
+    <Content Include="Scripts\ecloning-fragment.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.nextprot.js" />
     <Content Include="Scripts\feature-viewer\fv.nextprot.js" />
@@ -1105,6 +1106,7 @@
     <Content Include="Views\Fragment\Fragment.cshtml" />
     <Content Include="Views\Fragment\Create.cshtml" />
     <Content Include="Views\Fragment\Edit.cshtml" />
+    <Content Include="Views\Fragment\DVector.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

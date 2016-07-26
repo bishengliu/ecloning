@@ -3,8 +3,12 @@
     ViewBag.Title = "Fragment";
     Layout = "~/Views/Shared/_Layout.cshtml";
     //features
-    var Features = ViewBag.Features;
+    var shareIds = (List<int>)ViewBag.shareIds;
+    var FragmentIds = (List<int>)ViewBag.FragmentIds;
+    var Fragments = ViewBag.Fragments;
 
+    var db = new ecloning.Models.ecloningEntities();
+    
     //shared fragments
     IEnumerable<ecloning.Models.fragment> sharedFragment = ViewBag.shareFragments;
 }
@@ -42,3 +46,200 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-xs-12 col-md-offset-1 col-md-10">
+        @foreach (var item in FragmentIds)
+        {
+            //get the fragemnt
+            var frag = db.fragments.Find(item);
+            var id = "fragment-" + item;
+            var headId = "fragment-header-" + item;
+            var mapId = "fragment-map-" + item;
+            var endId = "fragment-end-" + item;
+
+            var fId = "fragment-fSeq-" + item;
+            var cId = "fragment-cSeq-" + item;
+
+            var fIdRef = "#fragment-fSeq-" + item;
+            var cIdRef = "#fragment-cSeq-" + item;
+
+            var fIdCopy = "copy-fragment-fSeq-" + item;
+            var cIdCopy = "copy-fragment-cSeq-" + item;
+            var cIdMsg = "copy-msg-" + item;
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="panel panel-primary" id="@id">
+                    <div class="panel-heading text-center" id="@headId"></div>
+                    <div class="panel-body fixed-panel">
+                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                            <input id="@fId" value="" />
+                            <input id="@cId" value="" />
+                        </div>
+                        <div id="@endId" class="col-xs-12"></div>
+                        <br />
+                        <p id="@cIdMsg" class="text-info"></p>
+                    </div>
+                    <div class="panel-footer clearfix">
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <div class="pull-left">
+                                    @if (!shareIds.Contains(item))
+                                    {
+                                        <a class="btn btn-default" href="@Url.Action("DVector", "Fragment", new { id = item })" data-toggle="tooltip" title="Delete Fragment">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-default disabled" href="@Url.Action("DVector", "Fragment", new { id = item })" data-toggle="tooltip" title="Delete Fragment">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    }
+                                    <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                        <i class="fa fa-copy text-danger"></i>
+                                    </a>
+                                    <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                        <i class="fa fa-copy text-primary"></i>
+                                    </a>
+
+                                    @if (!shareIds.Contains(item) && frag.plasmid_id== null)
+                                    {
+                                        <a class="btn btn-default" href="@Url.Action("Edit", "Fragment", new { id = item })" data-toggle="tooltip" title="Edit Fragment">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        if (frag.plasmid_id== null && (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")))
+                                        {
+                                            <a class="btn btn-default" href="@Url.Action("Edit", "Fragment", new { id = item })" data-toggle="tooltip" title="Edit Fragment">
+                                                <i class="fa fa-pencil-square-o"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-default disabled" href="@Url.Action("Edit", "Fragment", new { id = item })" data-toggle="tooltip" title="Edit Fragment">
+                                                <i class="fa fa-pencil-square-o"></i>
+                                            </a>
+                                        }
+                                    }
+                                </div>                                
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="pull-right">
+                                    @if (!shareIds.Contains(item))
+                                    {
+                                        <a class="btn btn-default" href="@Url.Action("Share", "Fragment", new { id = item })" data-toggle="tooltip" title="Share Fragment">
+                                            <i class="fa fa-share-alt"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")  || User.IsInRole("appAdmin"))
+                                        {
+                                            <a href="@Url.Action("unShare", "Fragment", new { id = item })" data-toggle="tooltip" title="Unshare Fragment!">
+                                                <span class="fa-stack fa-lg">
+                                                    <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                                    <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
+                                                </span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-default disabled" href="@Url.Action("Share", "Fragment")">
+                                                <i class="fa fa-share-alt"></i>
+                                            </a>
+                                        }
+                                    }
+                                </div>                                
+                            </div>
+                        </div>                       
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+<script src="~/Scripts/ecloning-fragment.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var fragments = ("@Fragments");
+        fragments = LoadData(fragments);
+
+        try {
+            fragments = JSON.parse(fragments);
+            //console.log(fragments);
+            $.each(fragments, function (i, d) {
+                var size = +d.fSeq.length;
+                var features = d.featureArray;
+                var id = "fragment-map-" + d.id;
+                var enzymes = d.enzymes[0] == d.enzymes[1] ? d.enzymes[0] : d.enzymes[0] + ", " + d.enzymes[1];
+                var fname = d.plasmid_id != null ? d.fName + " (" + enzymes + ", " + d.f_start + "-" + d.f_end + ")" : d.fName;
+                var width = 450;
+                drawLinearMap(features, id, fname, size, width);
+                //set panel name header
+                $('#fragment-header-' + d.id).text(fname);
+
+                //set fSeq and cSeq
+                $('#fragment-fSeq-' + d.id).val(d.fSeq);
+                $('#fragment-cSeq-' + d.id).val(d.cSeq);
+                //prepare to copy seq
+                //copy seq using clipboard.min.js
+                var clipboard = new Clipboard('#copy-fragment-fSeq-' + d.id);
+                clipboard.on('success', function (e) {
+                    $('#copy-msg-' + d.id).text("Sequence Copied!");
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    setTimeout(function () { $('#copy-msg-' + d.id).text(null); }, 2000);
+                });
+
+                var clipboard = new Clipboard('#copy-fragment-cSeq-' + d.id);
+                clipboard.on('success', function (e) {
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    $('#copy-msg-' + d.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg-' + d.id).text(null); }, 2000);
+                });
+                //draw end
+                drawEndSeq("fragment-end-" + d.id, d.fSeq, d.cSeq, d.overhangs, 10)
+            })
+        } catch (e) {
+            console.log(e);
+        }
+    });
+</script>
+
+<script>
+    $('#searchFragment').keyup(function () {
+        var _text = $(this).val().toLowerCase();       
+        $('.panel').each(function () {
+            $(this).parent().removeClass("hidden");
+            $(this).parent().addClass("hidden");
+            var _aText = $(this).children().eq(0).text().toLowerCase().replace(/\s+/g, '');
+            if (RegExp('^' + _text).test(_aText) || _aText.indexOf(_text) != -1) {
+                $(this).parent().removeClass("hidden");
+                $(this).parent().fadeIn(400);
+            };
+        });
+    });
+
+    $('#clearText').click(function (e) {
+        e.preventDefault();
+        $('#searchFragment').val('');
+        $('.panel').each(function () {
+            $(this).parent().removeClass("hidden");
+            $(this).parent().fadeIn(400);
+        });
+    });
+</script>
