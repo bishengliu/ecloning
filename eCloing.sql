@@ -1021,6 +1021,7 @@ CREATE TABLE storage --for above all
 	[des] TEXT,
 );
 
+/*
 
 --------------------------------------------------------------
 --general protocols, sop
@@ -1044,8 +1045,6 @@ CREATE TABLE protocol
 	CONSTRAINT uq_protocol_name_version UNIQUE ([name],[version])
 
 );
-
-
 
 ---------------------------------------------------------------------------------------------------
 --project design, should be automatically generated steps and cloning strategies
@@ -1097,6 +1096,106 @@ CREATE TABLE project
 
 ----------------------
 --add tables to record exp/data for each small experiment, think about all the work in the lab. should be expandable and flexible
+
+*/
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------tables for adding experiments---------------------------------------------------------------------------
+CREATE TABLE protocol 
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(500) NOT NULL,
+	version INT,
+	versionref INT, --ref to previous version
+	people_id INT,
+	[des] TEXT,
+	dt DATETIME,
+	CONSTRAINT fk_protocol_people_id FOREIGN KEY (people_id) REFERENCES people(id),
+	CONSTRAINT uq_protocol_name_version UNIQUE ([name],[version])
+);
+
+
+CREATE TABLE experiment
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(200),
+	[des] TEXT,
+	people_id INT NOT NULL,
+	dt DATETIME, --date of creation
+	CONSTRAINT fk_experiment_people_id FOREIGN KEY (people_id) REFERENCES people(id),
+);
+
+--ligation
+CREATE TABLE exp_type
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(200),
+	[des] TEXT
+);
+
+INSERT INTO exp_type VALUES
+('Pick Colony', 'Pick Colony for expanding the plasmid'),
+('Plasmid Transduction', 'Plasmid Transduction'),
+('Plasmid Transfection', 'Plasmid Transfection'),
+('Plasmid Miniprep','Plasmid Miniprep'),
+('Restriction Enzyme Digestion', 'Plasmid Enzyme Digestion'), 
+('Fragment Gel Extraction', 'Fragment Gel Extraction'),
+('PCR', 'PCR'), 
+('Ligation', 'ligate 2 fragments into a plasmid'),
+('Restriction Enzyme Digestion', 'Plasmid Enzyme Digestion'), 
+('Plasmid Maxiprep', 'Plasmid Maxiprepp');
+
+
+--experiment types
+--general types 
+CREATE TABLE exp_step
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	name NVARCHAR(200),
+	exp_id INT NOT NULL,
+	type_id INT NOT NULL, --ligation exp_type id
+	step_id INT NOT NULL,
+	protocol_id INT,
+	[des] TEXT
+	people_id INT NOT NULL,
+	dt DATETIME, --date of creation
+	CONSTRAINT fk_exp_step_people_id FOREIGN KEY (people_id) REFERENCES people(id),
+	CONSTRAINT fk_exp_step_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
+	CONSTRAINT fk_exp_step_type_id FOREIGN KEY (type_id) REFERENCES exp_type(id),
+	CONSTRAINT fk_exp_step_protocol_id FOREIGN KEY (protocol_id) REFERENCES protocol(id),
+	CONSTRAINT uq_exp_step_exp_id_step_id UNIQUE ([exp_id],[step_id])
+);
+
+CREATE TABLE exp_step_material
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	exp_id INT NOT NULL,
+	exp_step_id INT NOT NULL, --link to ligation exp
+	forward_primer INT, 
+	reverse_primer INT,
+	probe_id INT,
+	emzyme_id NVARCHAR(200), --for digestion, ligarion, etc--link to enzyme ids, can be multiple enzymes, thus should be string and seprated by  '-'
+	plasmid_id INT, --if plasmid is used
+	frag1_id INT, --1st fragment for ligation
+	frag2_id INT,--2nd fragment for ligation
+	[des] TEXT, --comment
+	dt DATETIME, 
+	CONSTRAINT fk_exp_step_material_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
+	CONSTRAINT fk_exp_step_material_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id)
+);
+CREATE TABLE exp_step_result
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	exp_id INT NOT NULL,
+	exp_step_id INT NOT NULL, --link to ligation exp
+	result_id INT NOT NULL,
+	result_upload NVARCHAR(200),
+	result_des TEXT,
+	dt DATETIME, 
+	CONSTRAINT fk_exp_step_result_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
+	CONSTRAINT fk_exp_step_result_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id)
+)
+
+
 
 
 --for form dropdown items--
