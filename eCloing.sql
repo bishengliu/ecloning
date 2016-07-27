@@ -1170,8 +1170,8 @@ CREATE TABLE exp_step_material
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	exp_id INT NOT NULL,
 	exp_step_id INT NOT NULL, --link to ligation exp
-	forward_primer INT, 
-	reverse_primer INT,
+	forward_primer_id INT, 
+	reverse_primer_id INT,
 	probe_id INT,
 	emzyme_id NVARCHAR(200), --for digestion, ligarion, etc--link to enzyme ids, can be multiple enzymes, thus should be string and seprated by  '-'
 	plasmid_id INT, --if plasmid is used
@@ -1180,7 +1180,13 @@ CREATE TABLE exp_step_material
 	[des] TEXT, --comment
 	dt DATETIME, 
 	CONSTRAINT fk_exp_step_material_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
-	CONSTRAINT fk_exp_step_material_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id)
+	CONSTRAINT fk_exp_step_material_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id),
+	CONSTRAINT fk_exp_step_material_forward_primer_id FOREIGN KEY (forward_primer_id) REFERENCES primer(id),
+	CONSTRAINT fk_exp_step_material_reverse_primer_id FOREIGN KEY (reverse_primer_id) REFERENCES primer(id),
+	CONSTRAINT fk_exp_step_material_probe_id FOREIGN KEY (probe_id) REFERENCES probe(id),
+	CONSTRAINT fk_exp_step_material_plasmid_id FOREIGN KEY (plasmid_id) REFERENCES plasmid(id),
+	CONSTRAINT fk_exp_step_material_frag1_id FOREIGN KEY (frag1_id) REFERENCES fragment(id),
+	CONSTRAINT fk_exp_step_material_frag2_id FOREIGN KEY (frag2_id) REFERENCES fragment(id)
 );
 CREATE TABLE exp_step_result
 (
@@ -1193,10 +1199,7 @@ CREATE TABLE exp_step_result
 	dt DATETIME, 
 	CONSTRAINT fk_exp_step_result_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
 	CONSTRAINT fk_exp_step_result_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id)
-)
-
-
-
+);
 
 --for form dropdown items--
 CREATE TABLE dropdownitem
