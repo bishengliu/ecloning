@@ -14,19 +14,22 @@ namespace ecloning.Models
     
     public partial class protocol
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public protocol()
+        {
+            this.exp_step = new HashSet<exp_step>();
+        }
+    
         public int id { get; set; }
         public string name { get; set; }
-        public string category { get; set; }
-        public string purpose { get; set; }
         public Nullable<int> version { get; set; }
         public Nullable<int> versionref { get; set; }
         public Nullable<int> people_id { get; set; }
         public string des { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
-        public Nullable<bool> submitted_to_group { get; set; }
-        public Nullable<bool> shared_with_group { get; set; }
-        public string shared_with_people { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_step> exp_step { get; set; }
         public virtual person person { get; set; }
     }
 }

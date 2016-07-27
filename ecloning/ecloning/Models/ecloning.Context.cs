@@ -43,6 +43,11 @@ namespace ecloning.Models
         public virtual DbSet<Dcm> Dcms { get; set; }
         public virtual DbSet<department> departments { get; set; }
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }
+        public virtual DbSet<exp_step> exp_step { get; set; }
+        public virtual DbSet<exp_step_material> exp_step_material { get; set; }
+        public virtual DbSet<exp_step_result> exp_step_result { get; set; }
+        public virtual DbSet<exp_type> exp_type { get; set; }
+        public virtual DbSet<experiment> experiments { get; set; }
         public virtual DbSet<fragment> fragments { get; set; }
         public virtual DbSet<fragment_map> fragment_map { get; set; }
         public virtual DbSet<fragment_methylation> fragment_methylation { get; set; }
@@ -53,7 +58,6 @@ namespace ecloning.Models
         public virtual DbSet<ladder_size> ladder_size { get; set; }
         public virtual DbSet<letter_code> letter_code { get; set; }
         public virtual DbSet<license> licenses { get; set; }
-        public virtual DbSet<main_step> main_step { get; set; }
         public virtual DbSet<methylation> methylations { get; set; }
         public virtual DbSet<methylation_backup> methylation_backup { get; set; }
         public virtual DbSet<minus180_liquid_nitrogen> minus180_liquid_nitrogen { get; set; }
@@ -71,7 +75,6 @@ namespace ecloning.Models
         public virtual DbSet<plasmid_map_backup> plasmid_map_backup { get; set; }
         public virtual DbSet<primer> primers { get; set; }
         public virtual DbSet<probe> probes { get; set; }
-        public virtual DbSet<project> projects { get; set; }
         public virtual DbSet<protocol> protocols { get; set; }
         public virtual DbSet<restri_enzyme> restri_enzyme { get; set; }
         public virtual DbSet<restriction_company> restriction_company { get; set; }

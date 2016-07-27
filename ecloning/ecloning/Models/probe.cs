@@ -14,6 +14,12 @@ namespace ecloning.Models
     
     public partial class probe
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public probe()
+        {
+            this.exp_step_material = new HashSet<exp_step_material>();
+        }
+    
         public int id { get; set; }
         public string name { get; set; }
         public string sequence { get; set; }
@@ -27,6 +33,8 @@ namespace ecloning.Models
         public string des { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_step_material> exp_step_material { get; set; }
         public virtual person person { get; set; }
         public virtual primer primer { get; set; }
         public virtual primer primer1 { get; set; }

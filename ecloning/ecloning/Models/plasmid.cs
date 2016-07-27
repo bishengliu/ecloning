@@ -17,6 +17,7 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public plasmid()
         {
+            this.exp_step_material = new HashSet<exp_step_material>();
             this.fragments = new HashSet<fragment>();
             this.methylations = new HashSet<methylation>();
             this.methylation_backup = new HashSet<methylation_backup>();
@@ -27,6 +28,7 @@ namespace ecloning.Models
         public int id { get; set; }
         public string name { get; set; }
         public string sequence { get; set; }
+        public Nullable<int> seq_length { get; set; }
         public string expression_system { get; set; }
         public string expression_subsystem { get; set; }
         public string promotor { get; set; }
@@ -35,6 +37,7 @@ namespace ecloning.Models
         public string reporter { get; set; }
         public string selection { get; set; }
         public string insert { get; set; }
+        public string insert_species { get; set; }
         public string usage { get; set; }
         public string plasmid_type { get; set; }
         public string ref_plasmid { get; set; }
@@ -42,10 +45,11 @@ namespace ecloning.Models
         public Nullable<int> addgene { get; set; }
         public Nullable<System.DateTime> d { get; set; }
         public int people_id { get; set; }
+        public Nullable<bool> linear { get; set; }
         public string des { get; set; }
-        public string insert_species { get; set; }
-        public Nullable<int> seq_length { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_step_material> exp_step_material { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<fragment> fragments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

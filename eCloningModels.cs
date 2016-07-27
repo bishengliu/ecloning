@@ -3,7 +3,7 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class buffer
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -15,14 +15,14 @@ namespace ecloning.Models
     
         public int id { get; set; }
         [Required(ErrorMessage = "Required")]
+        public int company_id { get; set; }
+        [Required(ErrorMessage = "Required")]
         public string name { get; set; }
-        public string des { get; set; }
         [Required(ErrorMessage = "Required")]
         public string composition { get; set; }
-        [Required(ErrorMessage = "Required")]
-        public int company_id { get; set; }
         public Nullable<bool> show_activity { get; set; }
         public Nullable<bool> show_activity2 { get; set; }
+        public string des { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<activity_modifying> activity_modifying { get; set; }
@@ -37,7 +37,6 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
     public partial class company
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -78,12 +77,14 @@ namespace ecloning.Models
         public virtual ICollection<restriction_company> restriction_company { get; set; }
     }
 }
+
+
 namespace ecloning.Models
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class common_feature
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -124,7 +125,7 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class modifying_enzyme
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -156,13 +157,15 @@ namespace ecloning.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class person
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public person()
         {
             this.common_feature = new HashSet<common_feature>();
+            this.exp_step = new HashSet<exp_step>();
+            this.experiments = new HashSet<experiment>();
             this.fragments = new HashSet<fragment>();
             this.group_people = new HashSet<group_people>();
             this.oligoes = new HashSet<oligo>();
@@ -171,7 +174,6 @@ namespace ecloning.Models
             this.plasmids = new HashSet<plasmid>();
             this.primers = new HashSet<primer>();
             this.probes = new HashSet<probe>();
-            this.projects = new HashSet<project>();
             this.protocols = new HashSet<protocol>();
         }
     
@@ -188,6 +190,10 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<common_feature> common_feature { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_step> exp_step { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<experiment> experiments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<fragment> fragments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group_people> group_people { get; set; }
@@ -203,8 +209,6 @@ namespace ecloning.Models
         public virtual ICollection<primer> primers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<probe> probes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<project> projects { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<protocol> protocols { get; set; }
     }

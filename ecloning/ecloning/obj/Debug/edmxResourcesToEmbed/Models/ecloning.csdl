@@ -18,8 +18,8 @@
     <Property Name="enzyme_id" Type="Int32" Nullable="false" />
     <Property Name="company_id" Type="Int32" Nullable="false" />
     <Property Name="buffer_id" Type="Int32" Nullable="false" />
-    <Property Name="activity" Type="Int32" Nullable="false" />
     <Property Name="temprature" Type="Int32" Nullable="false" />
+    <Property Name="activity" Type="Int32" Nullable="false" />
     <NavigationProperty Name="buffer" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="activity_modifying" ToRole="buffer" />
     <NavigationProperty Name="company" Relationship="Self.fk_activity_modifying_company_id" FromRole="activity_modifying" ToRole="company" />
     <NavigationProperty Name="modifying_enzyme" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="activity_modifying" ToRole="modifying_enzyme" />
@@ -32,8 +32,8 @@
     <Property Name="enzyme_id" Type="Int32" Nullable="false" />
     <Property Name="company_id" Type="Int32" Nullable="false" />
     <Property Name="buffer_id" Type="Int32" Nullable="false" />
-    <Property Name="activity" Type="Int32" Nullable="false" />
     <Property Name="temprature" Type="Int32" Nullable="false" />
+    <Property Name="activity" Type="Int32" Nullable="false" />
     <NavigationProperty Name="buffer" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="activity_restriction" ToRole="buffer" />
     <NavigationProperty Name="company" Relationship="Self.fk_activity_restriction_company_id" FromRole="activity_restriction" ToRole="company" />
     <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="activity_restriction" ToRole="restri_enzyme" />
@@ -111,12 +111,12 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="composition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="company_id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="composition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="show_activity" Type="Boolean" />
     <Property Name="show_activity2" Type="Boolean" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="buffer" ToRole="activity_modifying" />
     <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="buffer" ToRole="activity_restriction" />
     <NavigationProperty Name="company" Relationship="Self.fk_buffer_company_id" FromRole="buffer" ToRole="company" />
@@ -145,8 +145,8 @@
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="enzyme_id" Type="Int32" Nullable="false" />
-    <Property Name="group_id" Type="Int32" Nullable="false" />
     <Property Name="company_id" Type="Int32" Nullable="false" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
     <NavigationProperty Name="company" Relationship="Self.fk_common_modifying_company_id" FromRole="common_modifying" ToRole="company" />
     <NavigationProperty Name="modifying_enzyme" Relationship="Self.fk_common_modifying_enzyme_id" FromRole="common_modifying" ToRole="modifying_enzyme" />
     <NavigationProperty Name="group" Relationship="Self.fk_common_modifying_group_id" FromRole="common_modifying" ToRole="group" />
@@ -157,8 +157,8 @@
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="enzyme_id" Type="Int32" Nullable="false" />
-    <Property Name="group_id" Type="Int32" Nullable="false" />
     <Property Name="company_id" Type="Int32" Nullable="false" />
+    <Property Name="group_id" Type="Int32" Nullable="false" />
     <NavigationProperty Name="company" Relationship="Self.fk_common_restriction_company_id" FromRole="common_restriction" ToRole="company" />
     <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_common_restriction_enzyme_id" FromRole="common_restriction" ToRole="restri_enzyme" />
     <NavigationProperty Name="group" Relationship="Self.fk_common_restriction_group_id" FromRole="common_restriction" ToRole="group" />
@@ -228,6 +228,84 @@
     <Property Name="text" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
+  <EntityType Name="exp_step">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="exp_id" Type="Int32" Nullable="false" />
+    <Property Name="type_id" Type="Int32" Nullable="false" />
+    <Property Name="step_id" Type="Int32" Nullable="false" />
+    <Property Name="protocol_id" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_exp_id" FromRole="exp_step" ToRole="experiment" />
+    <NavigationProperty Name="person" Relationship="Self.fk_exp_step_people_id" FromRole="exp_step" ToRole="people" />
+    <NavigationProperty Name="protocol" Relationship="Self.fk_exp_step_protocol_id" FromRole="exp_step" ToRole="protocol" />
+    <NavigationProperty Name="exp_type" Relationship="Self.fk_exp_step_type_id" FromRole="exp_step" ToRole="exp_type" />
+  </EntityType>
+  <EntityType Name="exp_step_material">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="exp_id" Type="Int32" Nullable="false" />
+    <Property Name="exp_step_id" Type="Int32" Nullable="false" />
+    <Property Name="forward_primer_id" Type="Int32" />
+    <Property Name="reverse_primer_id" Type="Int32" />
+    <Property Name="probe_id" Type="Int32" />
+    <Property Name="emzyme_id" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="plasmid_id" Type="Int32" />
+    <Property Name="frag1_id" Type="Int32" />
+    <Property Name="frag2_id" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_material_exp_id" FromRole="exp_step_material" ToRole="experiment" />
+    <NavigationProperty Name="primer" Relationship="Self.fk_exp_step_material_forward_primer_id" FromRole="exp_step_material" ToRole="primer" />
+    <NavigationProperty Name="fragment" Relationship="Self.fk_exp_step_material_frag1_id" FromRole="exp_step_material" ToRole="fragment" />
+    <NavigationProperty Name="fragment1" Relationship="Self.fk_exp_step_material_frag2_id" FromRole="exp_step_material" ToRole="fragment" />
+    <NavigationProperty Name="plasmid" Relationship="Self.fk_exp_step_material_plasmid_id" FromRole="exp_step_material" ToRole="plasmid" />
+    <NavigationProperty Name="probe" Relationship="Self.fk_exp_step_material_probe_id" FromRole="exp_step_material" ToRole="probe" />
+    <NavigationProperty Name="primer1" Relationship="Self.fk_exp_step_material_reverse_primer_id" FromRole="exp_step_material" ToRole="primer" />
+  </EntityType>
+  <EntityType Name="exp_step_result">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="exp_id" Type="Int32" Nullable="false" />
+    <Property Name="exp_step_id" Type="Int32" Nullable="false" />
+    <Property Name="result_id" Type="Int32" Nullable="false" />
+    <Property Name="result_upload" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="result_des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_result_exp_id" FromRole="exp_step_result" ToRole="experiment" />
+  </EntityType>
+  <EntityType Name="exp_type">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_type_id" FromRole="exp_type" ToRole="exp_step" />
+  </EntityType>
+  <EntityType Name="experiment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_exp_id" FromRole="experiment" ToRole="exp_step" />
+    <NavigationProperty Name="exp_step_material" Relationship="Self.fk_exp_step_material_exp_id" FromRole="experiment" ToRole="exp_step_material" />
+    <NavigationProperty Name="exp_step_result" Relationship="Self.fk_exp_step_result_exp_id" FromRole="experiment" ToRole="exp_step_result" />
+    <NavigationProperty Name="person" Relationship="Self.fk_experiment_people_id" FromRole="experiment" ToRole="people" />
+  </EntityType>
   <EntityType Name="fragment">
     <Key>
       <PropertyRef Name="id" />
@@ -254,6 +332,8 @@
     <Property Name="people_id" Type="Int32" Nullable="false" />
     <Property Name="dt" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="exp_step_material" Relationship="Self.fk_exp_step_material_frag1_id" FromRole="fragment" ToRole="exp_step_material" />
+    <NavigationProperty Name="exp_step_material1" Relationship="Self.fk_exp_step_material_frag2_id" FromRole="fragment" ToRole="exp_step_material" />
     <NavigationProperty Name="fragment_map" Relationship="Self.fk_fragment_map_fragment_id" FromRole="fragment" ToRole="fragment_map" />
     <NavigationProperty Name="fragment_methylation" Relationship="Self.fk_fragment_methylation_fragment_id" FromRole="fragment" ToRole="fragment_methylation" />
     <NavigationProperty Name="person" Relationship="Self.fk_plasmid_fragment_people_id" FromRole="fragment" ToRole="people" />
@@ -301,8 +381,8 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="depart_id" Type="Int32" Nullable="false" />
     <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
@@ -356,8 +436,8 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="ladder_id" Type="Int32" Nullable="false" />
     <Property Name="size" Type="Int32" Nullable="false" />
-    <Property Name="Rf" Type="Double" Nullable="false" />
     <Property Name="mass" Type="Int32" Nullable="false" />
+    <Property Name="Rf" Type="Double" Nullable="false" />
     <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
   </EntityType>
   <EntityType Name="letter_code">
@@ -376,14 +456,6 @@
     <Property Name="licence_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="people_license" Relationship="Self.fk_people_license_licence_id" FromRole="license" ToRole="people_license" />
-  </EntityType>
-  <EntityType Name="main_step">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="methylation">
     <Key>
@@ -501,6 +573,8 @@
     <Property Name="func" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="active" Type="Boolean" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_people_id" FromRole="people" ToRole="common_feature" />
+    <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_people_id" FromRole="people" ToRole="exp_step" />
+    <NavigationProperty Name="experiments" Relationship="Self.fk_experiment_people_id" FromRole="people" ToRole="experiment" />
     <NavigationProperty Name="fragments" Relationship="Self.fk_plasmid_fragment_people_id" FromRole="people" ToRole="fragment" />
     <NavigationProperty Name="group_people" Relationship="Self.fk_group_people_people_id" FromRole="people" ToRole="group_people" />
     <NavigationProperty Name="oligoes" Relationship="Self.fk_oligo_people_id" FromRole="people" ToRole="oligo" />
@@ -509,7 +583,6 @@
     <NavigationProperty Name="plasmids" Relationship="Self.fk_plasmid_people_id" FromRole="people" ToRole="plasmid" />
     <NavigationProperty Name="primers" Relationship="Self.fk_primer_tech_id" FromRole="people" ToRole="primer" />
     <NavigationProperty Name="probes" Relationship="Self.fk_probe_tech_id" FromRole="people" ToRole="probe" />
-    <NavigationProperty Name="projects" Relationship="Self.fk_project_people_id" FromRole="people" ToRole="project" />
     <NavigationProperty Name="protocols" Relationship="Self.fk_protocol_people_id" FromRole="people" ToRole="protocol" />
   </EntityType>
   <EntityType Name="people_license">
@@ -530,6 +603,7 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="sequence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="seq_length" Type="Int32" />
     <Property Name="expression_system" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="expression_subsystem" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="promotor" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -538,6 +612,7 @@
     <Property Name="reporter" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="selection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="insert" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="usage" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="plasmid_type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="ref_plasmid" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -545,9 +620,9 @@
     <Property Name="addgene" Type="Int32" />
     <Property Name="d" Type="DateTime" Precision="3" />
     <Property Name="people_id" Type="Int32" Nullable="false" />
+    <Property Name="linear" Type="Boolean" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="seq_length" Type="Int32" />
+    <NavigationProperty Name="exp_step_material" Relationship="Self.fk_exp_step_material_plasmid_id" FromRole="plasmid" ToRole="exp_step_material" />
     <NavigationProperty Name="fragments" Relationship="Self.fk_plasmid_fragment_plasmid_id" FromRole="plasmid" ToRole="fragment" />
     <NavigationProperty Name="methylations" Relationship="Self.fk_methylation_plasmid_id" FromRole="plasmid" ToRole="methylation" />
     <NavigationProperty Name="methylation_backup" Relationship="Self.fk_methylation_backup_plasmid_id" FromRole="plasmid" ToRole="methylation_backup" />
@@ -597,8 +672,8 @@
     <Property Name="cut" Type="Int32" />
     <Property Name="common_id" Type="Int32" />
     <Property Name="clockwise" Type="Int32" Nullable="false" />
-    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="locked" Type="Int32" />
+    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="common_feature" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="plasmid_map" ToRole="common_feature" />
     <NavigationProperty Name="plasmid" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid_map" ToRole="plasmid" />
     <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_map" ToRole="plasmid_feature" />
@@ -638,6 +713,8 @@
     <Property Name="people_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="exp_step_material" Relationship="Self.fk_exp_step_material_forward_primer_id" FromRole="primer" ToRole="exp_step_material" />
+    <NavigationProperty Name="exp_step_material1" Relationship="Self.fk_exp_step_material_reverse_primer_id" FromRole="primer" ToRole="exp_step_material" />
     <NavigationProperty Name="person" Relationship="Self.fk_primer_tech_id" FromRole="primer" ToRole="people" />
     <NavigationProperty Name="probes" Relationship="Self.fk_probe_forward_primer" FromRole="primer" ToRole="probe" />
     <NavigationProperty Name="probes1" Relationship="Self.fk_probe_reverse_primer" FromRole="primer" ToRole="probe" />
@@ -658,26 +735,10 @@
     <Property Name="people_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="dt" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="exp_step_material" Relationship="Self.fk_exp_step_material_probe_id" FromRole="probe" ToRole="exp_step_material" />
     <NavigationProperty Name="person" Relationship="Self.fk_probe_tech_id" FromRole="probe" ToRole="people" />
     <NavigationProperty Name="primer" Relationship="Self.fk_probe_forward_primer" FromRole="probe" ToRole="primer" />
     <NavigationProperty Name="primer1" Relationship="Self.fk_probe_reverse_primer" FromRole="probe" ToRole="primer" />
-  </EntityType>
-  <EntityType Name="project">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="aim" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="people_id" Type="Int32" Nullable="false" />
-    <Property Name="start_dt" Type="DateTime" Precision="3" />
-    <Property Name="status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="finished_dt" Type="DateTime" Precision="3" />
-    <Property Name="dt" Type="DateTime" Precision="3" />
-    <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="shared_with_group" Type="Boolean" />
-    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="person" Relationship="Self.fk_project_people_id" FromRole="project" ToRole="people" />
   </EntityType>
   <EntityType Name="protocol">
     <Key>
@@ -685,16 +746,12 @@
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="purpose" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="version" Type="Int32" />
     <Property Name="versionref" Type="Int32" />
     <Property Name="people_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="dt" Type="DateTime" Precision="3" />
-    <Property Name="submitted_to_group" Type="Boolean" />
-    <Property Name="shared_with_group" Type="Boolean" />
-    <Property Name="shared_with_people" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_protocol_id" FromRole="protocol" ToRole="exp_step" />
     <NavigationProperty Name="person" Relationship="Self.fk_protocol_people_id" FromRole="protocol" ToRole="people" />
   </EntityType>
   <EntityType Name="restri_enzyme">
@@ -1080,6 +1137,162 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_exp_step_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_protocol_id">
+    <End Role="protocol" Type="Self.protocol" Multiplicity="0..1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="protocol">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="protocol_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_type_id">
+    <End Role="exp_type" Type="Self.exp_type" Multiplicity="1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="exp_type">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="type_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_forward_primer_id">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="forward_primer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_frag1_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="frag1_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_frag2_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="frag2_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_probe_id">
+    <End Role="probe" Type="Self.probe" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="probe">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="probe_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_reverse_primer_id">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="reverse_primer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_result_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_step_result" Type="Self.exp_step_result" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_result">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_experiment_people_id">
+    <End Role="people" Type="Self.person" Multiplicity="1" />
+    <End Role="experiment" Type="Self.experiment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="experiment">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_fragment_map_fragment_id">
     <End Role="fragment" Type="Self.fragment" Multiplicity="1" />
     <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
@@ -1308,18 +1521,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_project_people_id">
-    <End Role="people" Type="Self.person" Multiplicity="1" />
-    <End Role="project" Type="Self.project" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="people">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="project">
-        <PropertyRef Name="people_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_protocol_people_id">
     <End Role="people" Type="Self.person" Multiplicity="0..1" />
     <End Role="protocol" Type="Self.protocol" Multiplicity="*" />
@@ -1439,6 +1640,11 @@
     <EntitySet Name="Dcms" EntityType="Self.Dcm" />
     <EntitySet Name="departments" EntityType="Self.department" />
     <EntitySet Name="dropdownitems" EntityType="Self.dropdownitem" />
+    <EntitySet Name="exp_step" EntityType="Self.exp_step" />
+    <EntitySet Name="exp_step_material" EntityType="Self.exp_step_material" />
+    <EntitySet Name="exp_step_result" EntityType="Self.exp_step_result" />
+    <EntitySet Name="exp_type" EntityType="Self.exp_type" />
+    <EntitySet Name="experiments" EntityType="Self.experiment" />
     <EntitySet Name="fragments" EntityType="Self.fragment" />
     <EntitySet Name="fragment_map" EntityType="Self.fragment_map" />
     <EntitySet Name="fragment_methylation" EntityType="Self.fragment_methylation" />
@@ -1449,7 +1655,6 @@
     <EntitySet Name="ladder_size" EntityType="Self.ladder_size" />
     <EntitySet Name="letter_code" EntityType="Self.letter_code" />
     <EntitySet Name="licenses" EntityType="Self.license" />
-    <EntitySet Name="main_step" EntityType="Self.main_step" />
     <EntitySet Name="methylations" EntityType="Self.methylation" />
     <EntitySet Name="methylation_backup" EntityType="Self.methylation_backup" />
     <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" />
@@ -1467,7 +1672,6 @@
     <EntitySet Name="plasmid_map_backup" EntityType="Self.plasmid_map_backup" />
     <EntitySet Name="primers" EntityType="Self.primer" />
     <EntitySet Name="probes" EntityType="Self.probe" />
-    <EntitySet Name="projects" EntityType="Self.project" />
     <EntitySet Name="protocols" EntityType="Self.protocol" />
     <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" />
     <EntitySet Name="restriction_company" EntityType="Self.restriction_company" />
@@ -1581,6 +1785,58 @@
       <End Role="department" EntitySet="departments" />
       <End Role="group" EntitySet="groups" />
     </AssociationSet>
+    <AssociationSet Name="fk_exp_step_exp_id" Association="Self.fk_exp_step_exp_id">
+      <End Role="experiment" EntitySet="experiments" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_people_id" Association="Self.fk_exp_step_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_protocol_id" Association="Self.fk_exp_step_protocol_id">
+      <End Role="protocol" EntitySet="protocols" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_type_id" Association="Self.fk_exp_step_type_id">
+      <End Role="exp_type" EntitySet="exp_type" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_exp_id" Association="Self.fk_exp_step_material_exp_id">
+      <End Role="experiment" EntitySet="experiments" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_forward_primer_id" Association="Self.fk_exp_step_material_forward_primer_id">
+      <End Role="primer" EntitySet="primers" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_frag1_id" Association="Self.fk_exp_step_material_frag1_id">
+      <End Role="fragment" EntitySet="fragments" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_frag2_id" Association="Self.fk_exp_step_material_frag2_id">
+      <End Role="fragment" EntitySet="fragments" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_plasmid_id" Association="Self.fk_exp_step_material_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmids" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_probe_id" Association="Self.fk_exp_step_material_probe_id">
+      <End Role="probe" EntitySet="probes" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_reverse_primer_id" Association="Self.fk_exp_step_material_reverse_primer_id">
+      <End Role="primer" EntitySet="primers" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_result_exp_id" Association="Self.fk_exp_step_result_exp_id">
+      <End Role="experiment" EntitySet="experiments" />
+      <End Role="exp_step_result" EntitySet="exp_step_result" />
+    </AssociationSet>
+    <AssociationSet Name="fk_experiment_people_id" Association="Self.fk_experiment_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="experiment" EntitySet="experiments" />
+    </AssociationSet>
     <AssociationSet Name="fk_fragment_map_fragment_id" Association="Self.fk_fragment_map_fragment_id">
       <End Role="fragment" EntitySet="fragments" />
       <End Role="fragment_map" EntitySet="fragment_map" />
@@ -1656,10 +1912,6 @@
     <AssociationSet Name="fk_probe_tech_id" Association="Self.fk_probe_tech_id">
       <End Role="people" EntitySet="people" />
       <End Role="probe" EntitySet="probes" />
-    </AssociationSet>
-    <AssociationSet Name="fk_project_people_id" Association="Self.fk_project_people_id">
-      <End Role="people" EntitySet="people" />
-      <End Role="project" EntitySet="projects" />
     </AssociationSet>
     <AssociationSet Name="fk_protocol_people_id" Association="Self.fk_protocol_people_id">
       <End Role="people" EntitySet="people" />

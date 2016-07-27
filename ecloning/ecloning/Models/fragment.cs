@@ -17,6 +17,8 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public fragment()
         {
+            this.exp_step_material = new HashSet<exp_step_material>();
+            this.exp_step_material1 = new HashSet<exp_step_material>();
             this.fragment_map = new HashSet<fragment_map>();
             this.fragment_methylation = new HashSet<fragment_methylation>();
         }
@@ -44,6 +46,10 @@ namespace ecloning.Models
         public System.DateTime dt { get; set; }
         public string des { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_step_material> exp_step_material { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_step_material> exp_step_material1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<fragment_map> fragment_map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
