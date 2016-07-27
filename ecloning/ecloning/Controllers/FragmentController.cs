@@ -156,7 +156,7 @@ namespace ecloning.Controllers
             }
 
             //get my vectors and ally my own plasmid derived plasmid
-            var myFragments = db.fragments.Where(f => f.people_id == userInfo.PersonId).Where(f => !shareIds.Contains(f.id));
+            var myFragments = db.fragments.Where(f => f.people_id == userInfo.PersonId && f.plasmid_id == null).Where(f => !shareIds.Contains(f.id));
             List<int> myfragId = myFragments.Select(f => f.id).ToList();
 
             //get the combined ids for get the fragment map
@@ -202,14 +202,12 @@ namespace ecloning.Controllers
                             featuresArray.Add(fObj);
                         }
                     }
-                    //get plasmid name
-                    var plasmid = db.plasmids.Find((int)item.plasmid_id);
 
                     var fragment = new FragmentViewModel();
                     fragment.featureArray = featuresArray;
                     fragment.id = item.id;
-                    fragment.fName = item.plasmid_id != null ? plasmid.name: item.name;
-                    fragment.plasmid_id = (int)item.plasmid_id;
+                    fragment.fName = item.plasmid_id != null ? db.plasmids.Find((int)item.plasmid_id).name: item.name;
+                    
                     fragment.enzymes = enzymes;
                     fragment.f_start = (int)item.forward_start;
                     fragment.f_end = (int)item.forward_end;
@@ -248,12 +246,6 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             int peopleId = userInfo.PersonId;
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            //non zero validation
-            if (fragment.left_overhang == 0)
-            {
-                TempData["error"] = "Left Overhang cann't be zero!";
-                return View(fragment);
-            }
             //check the name
             var fragments = db.fragments.Where(f => f.name == fragment.fName && f.people_id == peopleId);
             if (fragments.Count() > 0)
@@ -281,6 +273,7 @@ namespace ecloning.Controllers
                 f.name = fragment.fName;
                 f.parantal = false;
                 f.forward_start = 1;
+                f.forward_seq = fragment.fSeq;
                 f.forward_end = fragment.fSeq.Length;
                 f.rc_seq = fragment.cSeq;
                 f.rc_left_overhand = fragment.left_overhang;
@@ -337,12 +330,6 @@ namespace ecloning.Controllers
             var userInfo = new UserInfo(userId);
             int peopleId = userInfo.PersonId;
             var groupInfo = new GroupInfo(userInfo.PersonId);
-            //non zero validation
-            if (fragment.left_overhang == 0)
-            {
-                TempData["error"] = "Left Overhang cann't be zero!";
-                return View(fragment);
-            }
             //check the name
             var fragments = db.fragments.Where(f=>f.id != fragment.id).Where(f => f.name == fragment.fName && f.people_id==peopleId);
             if (fragments.Count() > 0)
@@ -372,6 +359,7 @@ namespace ecloning.Controllers
                 f.name = fragment.fName;
                 f.parantal = false;
                 f.forward_start = 1;
+                f.forward_seq = fragment.fSeq;
                 f.forward_end = fragment.fSeq.Length;
                 f.rc_seq = fragment.cSeq;
                 f.rc_left_overhand = fragment.left_overhang;

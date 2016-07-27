@@ -503,6 +503,8 @@ namespace ecloning.Models
             Sequence = seq;
             GroupId = groupId;
 
+            //remove old features
+            removeFeature();
 
             //find features
             this.findFeature();
@@ -520,6 +522,24 @@ namespace ecloning.Models
                 findRestri(eCloningSettings.cutNum, FragmentId, GroupId, Sequence, true);
             }).Start();
 
+        }
+
+        public void removeFeature()
+        {
+            //remove methy
+            var oldMethy = db.fragment_methylation.Where(f => f.fragment_id == FragmentId);
+            foreach (var om in oldMethy)
+            {
+                db.fragment_methylation.Remove(om);
+            }
+            var oldFeatures = db.fragment_map.Where(f => f.fragment_id == FragmentId);
+            if (oldFeatures.Count() > 0)
+            {
+                foreach(var item in oldFeatures){
+                    db.fragment_map.Remove(item);
+                }
+            }
+            db.SaveChanges();
         }
 
         public void findFeature()
