@@ -293,6 +293,7 @@
     <Compile Include="Areas\Admin\Models\UsersViewModal.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BioToolsController.cs" />
+    <Compile Include="Controllers\ExperimentController.cs" />
     <Compile Include="Controllers\FeatureController.cs" />
     <Compile Include="Controllers\FragmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="Models\experiment.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ExperimentViewModal.cs" />
     <Compile Include="Models\exp_step.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1122,6 +1124,8 @@
     <Content Include="Views\Probe\Index.cshtml" />
     <Content Include="Views\Probe\Edit.cshtml" />
     <Content Include="Views\Probe\Delete.cshtml" />
+    <Content Include="Views\Experiment\Index.cshtml" />
+    <Content Include="Views\Experiment\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

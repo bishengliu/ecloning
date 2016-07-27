@@ -1,0 +1,155 @@
+﻿@model IEnumerable<ecloning.Models.experiment>
+@{
+    ViewBag.Title = "My Experiments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<int> SharedIds = (List<int>)ViewBag.SharedId;
+    var db = new ecloning.Models.ecloningEntities();
+    int PeopleId = ViewBag.PersonId;
+}
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-list"></i>My Experiments</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Create", "Experiment")" class="btn btn-default">
+                <i class="fa fa-plus-circle"></i>
+                <span>Experiment</span>
+            </a>
+        </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        @if (Model.Count() == 0)
+        {
+            <br />
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <h4 class="text-info">No experiment found!</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Exp#
+                        </th>
+                        <th class="no-sort">
+                            Name
+                        </th>
+                        <th class="no-sort">
+                            #Step
+                        </th>
+                        <th class="no-sort">
+                            Comment
+                        </th>
+                        <th class="no-sort">
+                            Date
+                        </th>
+                        <th class="no-sort">
+                            People
+                        </th>
+                        <th class="no-sort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        //get the step count
+                        int stepCount = db.exp_step.Where(e => e.exp_id == item.id).Count();
+                        
+                        var peopleInfo = new ecloning.Models.PeopleInfo((int)item.people_id);
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.name)
+                            </td>
+                            <td>
+                                @stepCount
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.dt)
+                            </td>
+                            <td>
+                                @peopleInfo.Name
+                            </td>
+                            <td>
+                                @if ((item.people_id == PeopleId && !SharedIds.Contains(item.id)) || (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")))
+                                {
+                                    <a href="@Url.Action("Edit", "Experiment", new { id= item.id})">
+                                        <i class="fa fa-pencil-square-o text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                    if (stepCount == 0)
+                                    {
+                                        <a href="@Url.Action("Delete", "Experiment", new { id = item.id })">
+                                            <i class="glyphicon glyphicon-trash text-danger"></i>
+                                            <span></span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <i class="glyphicon glyphicon-trash text-muted"></i>
+                                    }
+                                }
+                                else
+                                {
+                                    <i class="fa fa-pencil-square-o text-muted"></i>
+                                    <i class="glyphicon glyphicon-trash text-muted"></i>
+                                }
+                                @if (!SharedIds.Contains(item.id))
+                                {
+                                    if (item.people_id == PeopleId)
+                                    {
+                                        <a href="@Url.Action("Share", "Experiment", new { id = item.id })">
+                                            <i class="fa fa-share-alt text-danger"></i>
+                                            <span></span>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant") || User.IsInRole("appAdmin"))
+                                    {
+                                        <a href="@Url.Action("unShare", "Experiment", new { id = item.id })">
+                                            <span class="fa-stack fa-lg">
+                                                <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                                <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }       
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table').DataTable({
+            responsive: true,
+            "iDisplayLength": 50,
+            columnDefs: [
+                { targets: 'no-sort', orderable: false }
+            ]
+        });
+    });
+</script>
