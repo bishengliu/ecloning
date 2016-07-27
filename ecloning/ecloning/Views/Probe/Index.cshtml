@@ -135,7 +135,7 @@
                                 }
                                 else
                                 {
-                                    if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
+                                    if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant") || User.IsInRole("appAdmin"))
                                     {
                                         <a href="@Url.Action("unShare", "Probe", new { id = item.id })">
                                             <span class="fa-stack fa-lg">
