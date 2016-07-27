@@ -1113,7 +1113,6 @@ CREATE TABLE protocol
 	CONSTRAINT uq_protocol_name_version UNIQUE ([name],[version])
 );
 
-
 CREATE TABLE experiment
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -1155,7 +1154,7 @@ CREATE TABLE exp_step
 	type_id INT NOT NULL, --ligation exp_type id
 	step_id INT NOT NULL,
 	protocol_id INT,
-	[des] TEXT
+	[des] TEXT,
 	people_id INT NOT NULL,
 	dt DATETIME, --date of creation
 	CONSTRAINT fk_exp_step_people_id FOREIGN KEY (people_id) REFERENCES people(id),
@@ -1180,7 +1179,6 @@ CREATE TABLE exp_step_material
 	[des] TEXT, --comment
 	dt DATETIME, 
 	CONSTRAINT fk_exp_step_material_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
-	CONSTRAINT fk_exp_step_material_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id),
 	CONSTRAINT fk_exp_step_material_forward_primer_id FOREIGN KEY (forward_primer_id) REFERENCES primer(id),
 	CONSTRAINT fk_exp_step_material_reverse_primer_id FOREIGN KEY (reverse_primer_id) REFERENCES primer(id),
 	CONSTRAINT fk_exp_step_material_probe_id FOREIGN KEY (probe_id) REFERENCES probe(id),
@@ -1197,8 +1195,7 @@ CREATE TABLE exp_step_result
 	result_upload NVARCHAR(200),
 	result_des TEXT,
 	dt DATETIME, 
-	CONSTRAINT fk_exp_step_result_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
-	CONSTRAINT fk_exp_step_result_exp_step_id FOREIGN KEY (exp_step_id) REFERENCES exp_step(step_id)
+	CONSTRAINT fk_exp_step_result_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id)
 );
 
 --for form dropdown items--
