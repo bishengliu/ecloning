@@ -172,6 +172,7 @@ namespace ecloning.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult unShare(int? id)
         {

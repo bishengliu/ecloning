@@ -304,6 +304,7 @@
     <Compile Include="Controllers\pBundleController.cs" />
     <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\PrimerController.cs" />
+    <Compile Include="Controllers\ProbeController.cs" />
     <Compile Include="Controllers\RActivityController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RootController.cs" />
@@ -500,6 +501,7 @@
     <Compile Include="Models\probe.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProbeViewModel.cs" />
     <Compile Include="Models\project.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1107,6 +1109,10 @@
     <Content Include="Views\Fragment\Create.cshtml" />
     <Content Include="Views\Fragment\Edit.cshtml" />
     <Content Include="Views\Fragment\DVector.cshtml" />
+    <Content Include="Views\Probe\Create.cshtml" />
+    <Content Include="Views\Probe\Index.cshtml" />
+    <Content Include="Views\Probe\Edit.cshtml" />
+    <Content Include="Views\Probe\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
