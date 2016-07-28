@@ -520,6 +520,7 @@
     <Compile Include="Models\protocol.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProtocolVersion.cs" />
     <Compile Include="Models\ProtocolViewModel.cs" />
     <Compile Include="Models\ReplacerObj.cs" />
     <Compile Include="Models\RestoreMap.cs" />
@@ -1133,6 +1134,7 @@
     <Content Include="Views\Map\FileError.cshtml" />
     <Content Include="Views\Protocol\FileError.cshtml" />
     <Content Include="Views\Protocol\Index.cshtml" />
+    <Content Include="Views\Protocol\NewVersion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

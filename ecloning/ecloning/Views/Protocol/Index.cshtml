@@ -3,6 +3,7 @@
     ViewBag.Title = "Protocols";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int PersonId = (int)ViewBag.PersonId;
+    var Versions = (List<ecloning.Models.ProtocolVersion>)ViewBag.Versions;
 }
 
 <div class="row">
@@ -34,10 +35,11 @@
             </div>
         }
         else
-        {
+        {   
             <table id="protocolTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
+                        <th class="no-sort"></th>
                         <th>
                             Name
                         </th>
@@ -61,10 +63,24 @@
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
-                {
-                    //get people info
-                    var peopleInfo = new ecloning.Models.PeopleInfo((int)item.people_id);
+                    {
+                        var className = "backgroundCorlor" + item.type_id%20;
+                        //check whether allow to add new version
+                        //only the highest version allow adding new version
+                        bool isAllowed = false;
+                        foreach (var v in Versions)
+                        {
+                            if (v.typeId==(int)item.type_id && v.version == (int)item.version)
+                            {
+                                isAllowed = true;
+                                break;
+                            }
+                        }
+
+                        //get people info
+                        var peopleInfo = new ecloning.Models.PeopleInfo((int)item.people_id);
                         <tr>
+                            <td class="@className"></td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.name)
                             </td>
@@ -95,9 +111,9 @@
                                 @peopleInfo.Name
                             </td>
                             <td>
-                                @if (item.people_id == PersonId || (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")))
+                                @if (isAllowed && (item.people_id == PersonId || (User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))))
                                 {
-                                    <a href="@Url.Action("Delete", "Protocol", new { id= item.id})">
+                                    <a href="@Url.Action("Delete", "Protocol", new { id= item.id})" data-toggle="tooltip" data-placement="top" title="delete this protocol">
                                         <i class="glyphicon glyphicon-trash text-danger"></i>
                                         <span></span>
                                     </a>
@@ -105,7 +121,15 @@
                                 else
                                 {
                                     <i class="glyphicon glyphicon-trash text-muted"></i>
-                                }                                
+                                }
+                                @if (isAllowed)
+                                {
+                                    @:|
+                                    <a href="@Url.Action("NewVersion", "Protocol", new { id= item.id })" data-toggle="tooltip" data-placement="top" title="add a new version of this protocol">
+                                        <i class="fa fa-file-text-o text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }
@@ -124,6 +148,12 @@
                 { targets: 'no-sort', orderable: false }
             ]
         });
+
+        //tooltip
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+        //
     });
 </script>
 

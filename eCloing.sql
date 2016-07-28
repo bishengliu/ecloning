@@ -1057,9 +1057,8 @@ CREATE TABLE exp_type
 );
 
 INSERT INTO exp_type VALUES
-('Pick Colony', 'Pick Colony for expanding the plasmid'),
-('Plasmid Transduction', 'Plasmid Transduction'),
-('Plasmid Transfection', 'Plasmid Transfection'),
+('Pick Colonies', 'Pick Colonyines'),
+('Plasmid Transformation', 'Plasmid Transformation'),
 ('Plasmid Miniprep','Plasmid Miniprep'),
 ('Restriction Enzyme Digestion', 'Plasmid Enzyme Digestion'), 
 ('Fragment Gel Extraction', 'Fragment Gel Extraction'),
