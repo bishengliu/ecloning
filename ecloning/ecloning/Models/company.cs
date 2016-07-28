@@ -44,3 +44,4 @@ namespace ecloning.Models
         public virtual ICollection<restriction_company> restriction_company { get; set; }
     }
 }
+

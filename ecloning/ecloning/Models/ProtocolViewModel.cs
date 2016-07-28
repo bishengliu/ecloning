@@ -12,9 +12,7 @@ namespace ecloning.Models
         [Required(ErrorMessage = "Required")]
         public string name { get; set; }
         [Required(ErrorMessage = "Required")]
-        [Range(1, 100, ErrorMessage = "Version number must between 1 and 100, please enter valid integer Number")]
-        public int version { get; set; }
-        public int versionref { get; set; }
+        public string upload { get; set; }
         public string des { get; set; }
     }
 }

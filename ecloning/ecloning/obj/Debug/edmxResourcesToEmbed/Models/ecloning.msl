@@ -668,6 +668,8 @@
           <ScalarProperty Name="people_id" ColumnName="people_id" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="type_id" ColumnName="type_id" />
+          <ScalarProperty Name="upload" ColumnName="upload" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

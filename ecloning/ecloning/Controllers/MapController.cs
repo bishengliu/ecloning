@@ -10,6 +10,7 @@ using ecloning.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Identity;
 using System.Transactions;
+using System.IO;
 
 namespace ecloning.Controllers
 {
@@ -951,6 +952,55 @@ namespace ecloning.Controllers
                 }               
             }
             return View(feature);
+        }
+
+        [Authorize]
+        public ActionResult Download(string fileName)
+        {
+            if (eCloningSettings.AppHosting == "Cloud")
+            {
+                //download from azure
+                AzureBlob azureBlob = new AzureBlob();
+                azureBlob.directoryName = eCloningSettings.plasmidDir;
+                try
+                {
+                    if (azureBlob.AzureBlobUri(fileName) == "notFound")
+                    {
+                        return HttpNotFound();
+                    }
+                    else
+                    {
+                        azureBlob.AzureBlobDownload(fileName);
+                    }
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("FileError");
+                }
+            }
+            else
+            {
+                //download from local
+                try
+                {
+                    var plasmidPath = eCloningSettings.filePath + eCloningSettings.plasmidDir;
+                    var path = Path.Combine(Server.MapPath(plasmidPath), fileName);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(path);
+                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("FileError");
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult FileError()
+        {
+            return View();
         }
 
         [Authorize]

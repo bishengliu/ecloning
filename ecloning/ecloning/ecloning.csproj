@@ -1129,6 +1129,10 @@
     <Content Include="Views\Experiment\Index.cshtml" />
     <Content Include="Views\Experiment\Create.cshtml" />
     <Content Include="Views\Protocol\Create.cshtml" />
+    <Content Include="Views\Protocol\Delete.cshtml" />
+    <Content Include="Views\Map\FileError.cshtml" />
+    <Content Include="Views\Protocol\FileError.cshtml" />
+    <Content Include="Views\Protocol\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

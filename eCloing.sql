@@ -1027,6 +1027,7 @@ CREATE TABLE protocol
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	name NVARCHAR(500) NOT NULL,
+	upload NVARCHAR(500),
 	version INT,
 	versionref INT, --ref to previous version
 	people_id INT,

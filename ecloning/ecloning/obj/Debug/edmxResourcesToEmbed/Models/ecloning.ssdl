@@ -629,6 +629,8 @@
     <Property Name="people_id" Type="int" />
     <Property Name="des" Type="text" />
     <Property Name="dt" Type="datetime" />
+    <Property Name="type_id" Type="int" />
+    <Property Name="upload" Type="nvarchar" MaxLength="500" />
   </EntityType>
   <EntityType Name="restri_enzyme">
     <Key>

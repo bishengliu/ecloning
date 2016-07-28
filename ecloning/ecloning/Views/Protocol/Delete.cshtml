@@ -1,0 +1,106 @@
+﻿@model ecloning.Models.protocol
+@{
+    ViewBag.Title = "Delete Protocol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isAllowed = (bool)ViewBag.isAllowed;
+    //get people info
+    var peopleInfo = new ecloning.Models.PeopleInfo((int)Model.people_id);
+
+    //format protocol name
+    string fName = Model.upload.Split('$')[1];
+
+}
+
+<div class="row">
+    <br />
+    <div class="col-sm-6 col-sm-offset-4 col-xs-12">
+        <div class="text-danger head3-size">Are you sure you want to delete this?</div>
+    </div>
+    <div class="col-sm-2 col-xs-12">
+        <div>
+            @if (isAllowed)
+            {
+                using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Delete" class="btn btn-link" /> |
+                        @Html.ActionLink("Back", "Index", "Protocol", new { @class = "btn btn-link" })
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="form-actions no-color">
+                    <span class="text-danger">Deletion not allowed!</span> |
+                    @Html.ActionLink("Back", "Index", "Protocol", new { @class = "btn btn-link" })
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-lg-offset-1 col-sm-10">
+        <dl class="dl-horizontal">
+            <dt>
+                Name
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.name)
+            </dd>
+
+            <dt>
+                Version
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.version)
+            </dd>
+            <dt>
+                Protocol
+            </dt>
+            <dd>
+                <a href="@Url.Action("Download", "Protocol", new { fileName=Model.upload, avtionName = "Delete" })">
+                    <i class="fa fa-download"></i>
+                    <span>@fName</span>
+                </a>
+            </dd>
+
+            <dt>
+                Comment
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.des)
+            </dd>
+
+            <dt>
+                Date
+            </dt>
+
+            <dd>
+                @if (Model.dt != null)
+                {
+                    var day = Model.dt.Value.Day;
+                    var month = Model.dt.Value.Month;
+                    var year = Model.dt.Value.Year;
+                    var dc = new ecloning.Models.DateConvert();
+                    var outDate = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                    @outDate
+                }
+            </dd>
+
+            <dt>
+                People
+            </dt>
+
+            <dd>
+                @peopleInfo.Name
+            </dd>
+
+        </dl>
+    </div>
+</div>

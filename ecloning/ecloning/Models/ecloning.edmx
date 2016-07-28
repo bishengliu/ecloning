@@ -634,6 +634,8 @@
           <Property Name="people_id" Type="int" />
           <Property Name="des" Type="text" />
           <Property Name="dt" Type="datetime" />
+          <Property Name="type_id" Type="int" />
+          <Property Name="upload" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="restri_enzyme">
           <Key>
@@ -2610,6 +2612,8 @@
           <Property Name="people_id" Type="Int32" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="dt" Type="DateTime" Precision="3" />
+          <Property Name="type_id" Type="Int32" />
+          <Property Name="upload" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_protocol_id" FromRole="protocol" ToRole="exp_step" />
           <NavigationProperty Name="person" Relationship="Self.fk_protocol_people_id" FromRole="protocol" ToRole="people" />
         </EntityType>
@@ -4482,6 +4486,8 @@
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
+                <ScalarProperty Name="type_id" ColumnName="type_id" />
+                <ScalarProperty Name="upload" ColumnName="upload" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

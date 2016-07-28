@@ -27,6 +27,8 @@ namespace ecloning.Models
         public Nullable<int> people_id { get; set; }
         public string des { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
+        public Nullable<int> type_id { get; set; }
+        public string upload { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<exp_step> exp_step { get; set; }
