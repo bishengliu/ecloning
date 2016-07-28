@@ -1135,6 +1135,7 @@
     <Content Include="Views\Protocol\FileError.cshtml" />
     <Content Include="Views\Protocol\Index.cshtml" />
     <Content Include="Views\Protocol\NewVersion.cshtml" />
+    <Content Include="Views\Experiment\AddStep.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

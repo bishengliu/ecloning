@@ -1,0 +1,453 @@
+﻿@model ecloning.Models.ExpStep
+@{
+    ViewBag.Title = "Add Step";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int expId = ViewBag.expId;
+    var Plasmids = ViewBag.Plasmids;
+    var Protocols = ViewBag.Protocols;
+}
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment Step</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Details", "Experiment", new { id= expId })" class="btn btn-default">
+                <i class="fa fa-caret-left"></i>
+                <span>Experiments</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<div id="steps" class="">
+    <div class="clearfix"></div>
+    <div class="input-group col-xs-12 col-sm-offset-7 col-sm-4">
+        <span class="input-group-addon">EXPERIMENT STEPS</span>
+        @Html.DropDownList("types", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+        <span class="input-group-btn">
+            <button class="btn btn-secondary btn-danger" type="button" id="add_exp_step"><i class="fa fa-plus-circle"></i></button>
+        </span>
+    </div>
+    <div class="clearfix"></div>
+    <div class="input-group col-xs-12 col-sm-offset-7 col-sm-4 pull-right">        
+        <p class="text-danger" id="step-error"></p>
+    </div>
+</div>
+
+
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="type2">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Plasmid Transformation</i></h3>
+    <br/>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value="2" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add2"><i class="fa fa-plus-circle"></i><span> Transformation</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="type3">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Plasmid Miniprep</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "3" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add3"><i class="fa fa-plus-circle"></i><span> Miniprep</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="type8">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Plasmid Maxiprep</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "8" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add8"><i class="fa fa-plus-circle"></i><span> Maxiprep</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="type7">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Pick Colonies</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "7" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add7"><i class="fa fa-plus-circle"></i><span> Pick Colonies</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="type1">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Restriction Enzyme Digestion</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "1" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add1"><i class="fa fa-plus-circle"></i><span> Digestion</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@*
+    still need to add ligation and gel extraction
+*@
+@Scripts.Render("~/bundles/jquery")
+<script>
+
+    var Plasmids = ("@Plasmids");
+    document.getElementById("decodeIt").innerHTML = Plasmids;
+    Plasmids = document.getElementById("decodeIt").innerText;
+
+    var Protocols = ("@Protocols");
+    document.getElementById("decodeIt").innerHTML = Protocols;
+    Protocols = document.getElementById("decodeIt").innerText;
+    try{
+        Plasmids = JSON.parse(Plasmids);
+        Protocols = JSON.parse(Protocols);
+
+        $(document).ready(function () {
+            $(".token-input-list-facebook").addClass('token-input-list-facebook form-control text-box single-line');
+        });
+
+
+        $(document).ready(function () {
+            //show tooltip
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+
+            $(".plasmid").each(function (i, el) {
+                $(el).tokenInput(Plasmids, {
+                    theme: 'facebook',
+                    hintText: 'Type in plasmid name',
+                    tokenLimit: 1,
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+                });
+            });
+
+            $(".protocol").each(function (i, el) {
+                $(el).tokenInput(Protocols, {
+                    theme: 'facebook',
+                    hintText: 'Type in protcol name',
+                    tokenLimit: 1,
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" +" (V" +item.version + ")</span></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+                });
+            });
+
+        })
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+    
+
+    //add step
+    $("#add_exp_step").click(function () {
+        var exp_type = $("#types").val();
+        if (exp_type != "" || exp_type > 0) {
+            $("#steps").addClass("hidden");
+            addStep(exp_type);
+        }
+        else {
+            console.log("please select a value...");
+            $("#step-error").text("Please select a step!")
+        }
+    })
+
+    function addStep(exp_type) {
+        /*
+            type1.Name = "Restriction Enzyme Digestion";
+            type2.Name = "Plasmid Transformation";
+            type3.Name = "Plasmid Miniprep";
+            type4.Name = "Fragment Gel Extraction";
+            type5.Name = "PCR";
+            type6.Name = "Ligation";
+            type7.Name = "Pick Colonies";
+            type8.Name = "Plasmid Maxiprep";
+        */
+        var html = "";
+    }
+</script>

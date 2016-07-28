@@ -1064,7 +1064,6 @@ INSERT INTO exp_type VALUES
 ('Fragment Gel Extraction', 'Fragment Gel Extraction'),
 ('PCR', 'PCR'), 
 ('Ligation', 'ligate 2 fragments into a plasmid'),
-('Restriction Enzyme Digestion', 'Plasmid Enzyme Digestion'), 
 ('Plasmid Maxiprep', 'Plasmid Maxiprepp');
 
 
