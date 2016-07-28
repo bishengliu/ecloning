@@ -38,6 +38,9 @@ namespace ecloning.Models
         //upload bundle to azure dirctoryName
         public readonly static string bundleDir = "pbundle";
 
+        //upload protocol to azure directoryName
+        public readonly static string protocolDir = "protocol";
+
         //local data path
         public readonly static string filePath = "~/App_Data/";
 

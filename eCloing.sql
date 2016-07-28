@@ -1031,6 +1031,7 @@ CREATE TABLE protocol
 	versionref INT, --ref to previous version
 	people_id INT,
 	[des] TEXT,
+	type_id INT, --for keep the linked protocol together, should be the same for the linked ptotocol
 	dt DATETIME,
 	CONSTRAINT fk_protocol_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT uq_protocol_name_version UNIQUE ([name],[version])

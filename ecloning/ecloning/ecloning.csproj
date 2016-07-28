@@ -306,6 +306,7 @@
     <Compile Include="Controllers\PlasmidController.cs" />
     <Compile Include="Controllers\PrimerController.cs" />
     <Compile Include="Controllers\ProbeController.cs" />
+    <Compile Include="Controllers\ProtocolController.cs" />
     <Compile Include="Controllers\RActivityController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RootController.cs" />
@@ -519,6 +520,7 @@
     <Compile Include="Models\protocol.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProtocolViewModel.cs" />
     <Compile Include="Models\ReplacerObj.cs" />
     <Compile Include="Models\RestoreMap.cs" />
     <Compile Include="Models\RestrictionActivity.cs" />
@@ -1126,10 +1128,12 @@
     <Content Include="Views\Probe\Delete.cshtml" />
     <Content Include="Views\Experiment\Index.cshtml" />
     <Content Include="Views\Experiment\Create.cshtml" />
+    <Content Include="Views\Protocol\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
     <Folder Include="App_Data\plasmid\" />
+    <Folder Include="App_Data\protocol\" />
     <Folder Include="Areas\Admin\Views\Role\" />
     <Folder Include="Areas\Admin\Views\Root\" />
     <Folder Include="Areas\Admin\Views\SubRoot\" />
