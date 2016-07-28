@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-sm-offset-1 col-sm-5 col-xs-6">
-        <h3 class="text-warning"><i class="fa fa-plus-circle"></i> Experiment</h3>
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment</h3>
     </div>
     <div class="col-sm-5 col-xs-6">
         <h3 class="pull-right">
@@ -17,18 +17,112 @@
         </h3>
     </div>
 </div>
+<div class="">
+    @using (Html.BeginForm())
+    {
+        <div id="generalInfo" class="col-xs-12 col-sm-offset-1 col-sm-10">
+            <h3 class="text-info text-center"><i>General Information</i></h3>
+            <br/>
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-6 col-lg-4">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-6 col-lg-4">
+                        @Html.TextAreaFor(model => model.des, 4, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-6 col-lg-4">
+                        <div class="pull-left">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" title="create an experiment without adding steps" id="add_exp_no_step"><i class="fa fa-plus-circle"></i><span> Experiment</span></button>
+                        </div>
+                        <div class="pull-right">
+                            <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="add steps for current experiment" id="addStep"><i class="fa fa-plus-circle"></i><span> Steps</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                    
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
 
-<div class="class=" col-xs-12 col-sm-offset-1 col-sm-10"">
-    <div class="input-group col-xs-12 col-sm-offset-1 col-sm-10">
-        <hr class="tableTopLine" />
-    </div>    
-    <div class="input-group col-xs-12 col-sm-offset-7 col-sm-4">
+                </div>
+            </div>
+        </div>
+        <div class="input-group col-xs-12 col-sm-offset-1 col-sm-10">
+            <hr class="tableTopLine" />
+        </div>
+        <div class="expSteps">
+
+        </div>
         
+    }
+  
+</div>
+
+<div id="steps" class="hidden">
+    <div class="clearfix"></div>
+    <div class="input-group col-xs-12 col-sm-offset-7 col-sm-4">
         <span class="input-group-addon">EXPERIMENT STEPS</span>
         @Html.DropDownList("types", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
         <span class="input-group-btn">
-            <button class="btn btn-secondary btn-danger" type="button"><i class="fa fa-plus-circle"></i></button>
+            <button class="btn btn-secondary btn-danger" type="button" id="add_exp_step"><i class="fa fa-plus-circle"></i></button>
         </span>
     </div>
 </div>
 
+@Scripts.Render("~/bundles/jquery")
+<script>
+    //count the number of steps
+    var stepCount = 0;
+    $(document).ready(function () {
+        //show tooltip
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+        //add exp step
+        $("#addStep").click(function (e) {
+            e.preventDefault();
+            $("#add_exp_no_step").addClass("disabled");
+            $("#addStep").addClass("hidden");
+            $("#steps").removeClass("hidden");
+        })
+
+        //add step
+        $("#add_exp_step").click(function () {
+            var exp_type = $("#types").val();
+            if (exp_type != "" || exp_type > 0) {
+                addStep(exp_type, stepCount);
+            }
+            else {
+                console.log("please select a value...");
+            }
+        })
+    })
+
+    function addStep(exp_type, stepCount) {
+        /*
+        id	name
+        1	Pick Colony
+        2	Plasmid Transduction
+        3	Plasmid Transfection
+        4	Plasmid Miniprep
+        5	Restriction Enzyme Digestion
+        6	Fragment Gel Extraction
+        7	PCR
+        8	Ligation
+        9	Restriction Enzyme Digestion
+        10	Plasmid Maxiprep
+        */
+        
+    }
+</script>
