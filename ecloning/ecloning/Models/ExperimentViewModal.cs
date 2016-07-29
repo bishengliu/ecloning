@@ -18,7 +18,6 @@ namespace ecloning.Models
     public class ExpStep
     {
         public int types { get; set; }
-
         ////save to exp_step table
         public int id { get; set; }
         [Required(ErrorMessage = "Required")]
@@ -27,18 +26,18 @@ namespace ecloning.Models
         public int type_id { get; set; }
         [Required(ErrorMessage = "Required")]
         public int exp_id { get; set; }
-        public int protocol_id { get; set; }
+        public int? protocol_id { get; set; }
         public string des { get; set; } //save to exp_step table
         public Nullable<System.DateTime> dt { get; set; } //save to exp_step table
 
         //save to exp_step_material table
-        public int forward_primer_id { get; set; }
-        public int reverse_primer_id { get; set; }
-        public int probe_id { get; set; }
+        public int? forward_primer_id { get; set; }
+        public int? reverse_primer_id { get; set; }
+        public int? probe_id { get; set; }
         public string emzyme_id { get; set; }
-        public int plasmid_id { get; set; }
-        public int frag1_id { get; set; }
-        public int frag2_id { get; set; }
+        public int? plasmid_id { get; set; }
+        public int? frag1_id { get; set; }
+        public int? frag2_id { get; set; }
         public int ligation_direction { get; set; } //0 both direction, -1 negative direction, 1 postive direction
     }
     public class ExpType

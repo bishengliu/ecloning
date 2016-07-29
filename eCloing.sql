@@ -1082,7 +1082,7 @@ CREATE TABLE exp_step
 	dt DATETIME, --date of creation
 	CONSTRAINT fk_exp_step_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_exp_step_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
-	CONSTRAINT fk_exp_step_type_id FOREIGN KEY (type_id) REFERENCES exp_type(id),
+	--CONSTRAINT fk_exp_step_type_id FOREIGN KEY (type_id) REFERENCES exp_type(id),
 	CONSTRAINT fk_exp_step_protocol_id FOREIGN KEY (protocol_id) REFERENCES protocol(id),
 	CONSTRAINT uq_exp_step_exp_id_step_id UNIQUE ([exp_id],[step_id])
 );
