@@ -261,6 +261,40 @@ namespace ecloning.Controllers
             });
             ViewBag.Probes = JsonConvert.SerializeObject(probes.ToList());
 
+
+            //pass all restic-enzyme
+            var restrics = db.restri_enzyme.Select(r => new
+            {
+                id = r.id,
+                name = r.name
+            });
+            ViewBag.Restrics = JsonConvert.SerializeObject(restrics.ToList());
+
+            //pass cut prototype and cut properties
+            string symbol = "<span></span>";
+            var enzymeSybol = new RestrictionEnzyme();
+
+            var restric_property = db.restri_enzyme.OrderBy(n => n.name);
+            List<RestrictionObject> restrictons = new List<RestrictionObject>();
+            foreach (var item in restric_property)
+            {
+                var rObject = new RestrictionObject();
+                rObject.name = item.name;
+                rObject.Id = item.id;
+                rObject.prototype = (item.forward_cut2 != null && item.reverse_cut2 != null) ? (enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2)) : enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut);
+                rObject.startActivity = item.staractitivity == true ? enzymeSybol.StarActivitySymbol((bool)item.staractitivity) : symbol;
+                rObject.heatInactivation = item.inactivation != null ? enzymeSybol.InactivationSymbol((int)item.inactivation) : enzymeSybol.InactivationSymbol(0);
+                rObject.dam = item.dam == true ? enzymeSybol.DamSymbol((bool)item.dam) : symbol;
+                rObject.dcm = item.dcm == true ? enzymeSybol.DcmSymbol((bool)item.dcm) : symbol;
+                rObject.cpg = item.cpg == true ? enzymeSybol.CpGSymbol((bool)item.cpg) : symbol;
+                rObject.forward_cut = item.forward_cut;
+                rObject.reverse_cut = item.reverse_cut;
+                rObject.forward_cut2 = item.forward_cut2;
+                rObject.reverse_cut2 = item.reverse_cut2;
+                restrictons.Add(rObject);
+            }
+            ViewBag.restric_property = JsonConvert.SerializeObject(restrictons.ToList());
+
             ViewBag.ShownStep = -1;
             return View();
         }
@@ -474,13 +508,38 @@ namespace ecloning.Controllers
             });
             ViewBag.Probes = JsonConvert.SerializeObject(probes.ToList());
 
+            //pass all restic-enzyme
+            var restrics = db.restri_enzyme.Select(r => new
+            {
+                id = r.id,
+                name = r.name
+            });
+            ViewBag.Restrics = JsonConvert.SerializeObject(restrics.ToList());
 
+            //pass cut prototype and cut properties
+            string symbol = "<span></span>";
+            var enzymeSybol = new RestrictionEnzyme();
 
-
-
-
-
-
+            var restric_property = db.restri_enzyme.OrderBy(n => n.name);
+            List<RestrictionObject> restrictons = new List<RestrictionObject>();
+            foreach (var item in restric_property)
+            {
+                var rObject = new RestrictionObject();
+                rObject.name = item.name;
+                rObject.Id = item.id;
+                rObject.prototype = (item.forward_cut2 != null && item.reverse_cut2 != null) ? (enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2)) : enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut);
+                rObject.startActivity = item.staractitivity == true ? enzymeSybol.StarActivitySymbol((bool)item.staractitivity) : symbol;
+                rObject.heatInactivation = item.inactivation != null ? enzymeSybol.InactivationSymbol((int)item.inactivation) : enzymeSybol.InactivationSymbol(0);
+                rObject.dam = item.dam == true ? enzymeSybol.DamSymbol((bool)item.dam) : symbol;
+                rObject.dcm = item.dcm == true ? enzymeSybol.DcmSymbol((bool)item.dcm) : symbol;
+                rObject.cpg = item.cpg == true ? enzymeSybol.CpGSymbol((bool)item.cpg) : symbol;
+                rObject.forward_cut = item.forward_cut;
+                rObject.reverse_cut = item.reverse_cut;
+                rObject.forward_cut2 = item.forward_cut2;
+                rObject.reverse_cut2 = item.reverse_cut2;
+                restrictons.Add(rObject);
+            }
+            ViewBag.restric_property = JsonConvert.SerializeObject(restrictons.ToList());
 
 
 
@@ -595,6 +654,94 @@ namespace ecloning.Controllers
             return View();
         }
 
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult RetrievePlasmidMap(int? plasmid_id)
+        {
+            if (plasmid_id == null)
+            {
+                
+                return Content(JsonConvert.SerializeObject(new { result = "Failed" }));
+            }
+            plasmid plasmid = db.plasmids.Find(plasmid_id);
+            if (plasmid == null || plasmid.sequence == null)
+            {
+                return Content(JsonConvert.SerializeObject(new { result = "Failed" }));
+            }
+            //pass json
+            //all the methylation
+            var methylation = db.methylations.Where(m => m.plasmid_id == plasmid_id);
+            var Methylation = methylation.OrderBy(n => n.name).Select(m => new { pId = m.plasmid_id, name = m.name, cut = m.cut, clockwise = m.clockwise, dam_cm = m.dam_complete, dam_ip = m.dam_impaired, dcm_cm = m.dcm_complete, dcm_ip = m.dcm_impaired });
+            //ViewBag.Methylation = JsonConvert.SerializeObject(Methylation.ToList());
+            //display all enzyme cuts of the current plasmid
+            var plasmid_map = db.plasmid_map.OrderBy(s => s.start).Where(p => p.plasmid_id == plasmid_id);
+            var Enzymes = plasmid_map.Where(f => f.feature_id == 4).OrderBy(n => n.common_feature != null ? n.common_feature.label : n.feature).OrderBy(s => s.cut).Select(f =>
+                new {
+                    pId = f.plasmid_id,
+                    name = f.common_feature != null ? f.common_feature.label : f.feature,
+                    start = f.start,
+                    end = f.end,
+                    cut = f.cut,
+                    clockwise = f.clockwise == 1 ? true : false,
+                    methylation = methylation.Where(m => m.name == (f.common_feature != null ? f.common_feature.label : f.feature) && m.cut == f.cut && m.clockwise == f.clockwise).Count() > 0 ? true : false
+                });
+            //ViewBag.Enzymes = JsonConvert.SerializeObject(Enzymes.ToList());
+            //all other features
+            //pass json
+            var features = plasmid_map.OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, cut = f.cut, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, common_id = f.common_id, start = f.start, clockwise = f.clockwise == 1 ? true : false });
+            //ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+            //pass json for feature viewers
+            var fvFeatures = plasmid_map.OrderBy(f => f.feature_id).OrderBy(s => s.start).Select(f => new { x = f.feature_id == 4 ? f.cut : f.start, y = f.feature_id == 4 ? f.cut : f.end, description = f.common_feature != null ? f.common_feature.label : f.feature, id = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, color = "black" });
+            //ViewBag.fvFeatures = JsonConvert.SerializeObject(fvFeatures.ToList());
+            
+            //get the enzyms activities
+            var activity = db.activity_restriction.Select(a => new {
+                name = a.restri_enzyme.name,
+                company = a.company.shortName,
+                companyFN = a.company.fullName,
+                buffer = a.buffer.name,
+                activity = a.activity,
+                temprature = a.temprature
+            });
+            //ViewBag.activity = JsonConvert.SerializeObject(activity.ToList());
+
+            //get the DNA ladders
+            var ladder = db.ladders.Where(l => l.ladder_type == "DNA");
+            //get json data
+            var ladderId = ladder.Select(i => i.id);
+            var ladderSize = db.ladder_size.Where(l => ladderId.Contains(l.ladder_id)).OrderBy(l => l.ladder_id).OrderBy(r => r.Rf).Select(l => new {
+                id = l.ladder_id,
+                size = l.size,
+                mass = l.mass,
+                Rf = l.Rf,
+                name = l.ladder.name
+            });
+            //ViewBag.ladders= JsonConvert.SerializeObject(ladderSize.ToList());
+
+            //get the previous saved bands
+            var bands = db.fragments.Where(p => p.plasmid_id == (int)plasmid_id).Select(n => n.name);
+            //ViewBag.SavedBands = JsonConvert.SerializeObject(bands.ToList());
+
+            var data = new
+            {
+                result = "OK",
+                plasmidId = plasmid_id,
+                name = plasmid.name,
+                Sequence = plasmid.sequence,
+                seqCount = plasmid.seq_length,
+                saveBands = JsonConvert.SerializeObject(bands.ToList()),
+                ladders = JsonConvert.SerializeObject(ladderSize.ToList()),
+                activity = JsonConvert.SerializeObject(activity.ToList()),
+                fvFeatures = JsonConvert.SerializeObject(fvFeatures.ToList()),
+                features = JsonConvert.SerializeObject(features.ToList()),
+                enzymes = JsonConvert.SerializeObject(Enzymes.ToList()),
+                methylation = JsonConvert.SerializeObject(Methylation.ToList())
+            };
+            return Content(
+                JsonConvert.SerializeObject(data)            
+            );
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
