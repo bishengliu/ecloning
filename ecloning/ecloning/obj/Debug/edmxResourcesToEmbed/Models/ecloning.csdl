@@ -244,7 +244,6 @@
     <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_exp_id" FromRole="exp_step" ToRole="experiment" />
     <NavigationProperty Name="person" Relationship="Self.fk_exp_step_people_id" FromRole="exp_step" ToRole="people" />
     <NavigationProperty Name="protocol" Relationship="Self.fk_exp_step_protocol_id" FromRole="exp_step" ToRole="protocol" />
-    <NavigationProperty Name="exp_type" Relationship="Self.fk_exp_step_type_id" FromRole="exp_step" ToRole="exp_type" />
   </EntityType>
   <EntityType Name="exp_step_material">
     <Key>
@@ -262,6 +261,8 @@
     <Property Name="frag2_id" Type="Int32" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="dt" Type="DateTime" Precision="3" />
+    <Property Name="ligation_method" Type="Int32" />
+    <Property Name="ligation_direction" Type="Int32" />
     <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_material_exp_id" FromRole="exp_step_material" ToRole="experiment" />
     <NavigationProperty Name="primer" Relationship="Self.fk_exp_step_material_forward_primer_id" FromRole="exp_step_material" ToRole="primer" />
     <NavigationProperty Name="fragment" Relationship="Self.fk_exp_step_material_frag1_id" FromRole="exp_step_material" ToRole="fragment" />
@@ -290,7 +291,6 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_type_id" FromRole="exp_type" ToRole="exp_step" />
   </EntityType>
   <EntityType Name="experiment">
     <Key>
@@ -1174,18 +1174,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_exp_step_type_id">
-    <End Role="exp_type" Type="Self.exp_type" Multiplicity="1" />
-    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="exp_type">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="exp_step">
-        <PropertyRef Name="type_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_exp_step_material_exp_id">
     <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
     <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
@@ -1796,10 +1784,6 @@
     </AssociationSet>
     <AssociationSet Name="fk_exp_step_protocol_id" Association="Self.fk_exp_step_protocol_id">
       <End Role="protocol" EntitySet="protocols" />
-      <End Role="exp_step" EntitySet="exp_step" />
-    </AssociationSet>
-    <AssociationSet Name="fk_exp_step_type_id" Association="Self.fk_exp_step_type_id">
-      <End Role="exp_type" EntitySet="exp_type" />
       <End Role="exp_step" EntitySet="exp_step" />
     </AssociationSet>
     <AssociationSet Name="fk_exp_step_material_exp_id" Association="Self.fk_exp_step_material_exp_id">

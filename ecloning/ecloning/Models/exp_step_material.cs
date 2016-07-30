@@ -26,6 +26,8 @@ namespace ecloning.Models
         public Nullable<int> frag2_id { get; set; }
         public string des { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
+        public Nullable<int> ligation_method { get; set; }
+        public Nullable<int> ligation_direction { get; set; }
     
         public virtual experiment experiment { get; set; }
         public virtual primer primer { get; set; }

@@ -14,17 +14,8 @@ namespace ecloning.Models
     
     public partial class exp_type
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public exp_type()
-        {
-            this.exp_step = new HashSet<exp_step>();
-        }
-    
         public int id { get; set; }
         public string name { get; set; }
         public string des { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<exp_step> exp_step { get; set; }
     }
 }

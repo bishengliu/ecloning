@@ -27,6 +27,5 @@ namespace ecloning.Models
         public virtual experiment experiment { get; set; }
         public virtual person person { get; set; }
         public virtual protocol protocol { get; set; }
-        public virtual exp_type exp_type { get; set; }
     }
 }

@@ -227,6 +227,8 @@
     <Property Name="frag2_id" Type="int" />
     <Property Name="des" Type="text" />
     <Property Name="dt" Type="datetime" />
+    <Property Name="ligation_method" Type="int" />
+    <Property Name="ligation_direction" Type="int" />
   </EntityType>
   <EntityType Name="exp_step_result">
     <Key>
@@ -1086,18 +1088,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_exp_step_type_id">
-    <End Role="exp_type" Type="Self.exp_type" Multiplicity="1" />
-    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="exp_type">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="exp_step">
-        <PropertyRef Name="type_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_experiment_people_id">
     <End Role="people" Type="Self.people" Multiplicity="1" />
     <End Role="experiment" Type="Self.experiment" Multiplicity="*" />
@@ -1706,10 +1696,6 @@
     <AssociationSet Name="fk_exp_step_result_exp_id" Association="Self.fk_exp_step_result_exp_id">
       <End Role="experiment" EntitySet="experiment" />
       <End Role="exp_step_result" EntitySet="exp_step_result" />
-    </AssociationSet>
-    <AssociationSet Name="fk_exp_step_type_id" Association="Self.fk_exp_step_type_id">
-      <End Role="exp_type" EntitySet="exp_type" />
-      <End Role="exp_step" EntitySet="exp_step" />
     </AssociationSet>
     <AssociationSet Name="fk_experiment_people_id" Association="Self.fk_experiment_people_id">
       <End Role="people" EntitySet="people" />

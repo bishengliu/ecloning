@@ -235,6 +235,8 @@
           <ScalarProperty Name="frag2_id" ColumnName="frag2_id" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="ligation_method" ColumnName="ligation_method" />
+          <ScalarProperty Name="ligation_direction" ColumnName="ligation_direction" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
