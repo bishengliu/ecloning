@@ -38,7 +38,8 @@ namespace ecloning.Models
         public int? plasmid_id { get; set; }
         public int? frag1_id { get; set; }
         public int? frag2_id { get; set; }
-        public int ligation_direction { get; set; } //0 both direction, -1 negative direction, 1 postive direction
+        public int? ligation_method { get; set; } // 0 is direct ligation, 1 is first blunting then ligation
+        public int? ligation_direction { get; set; } //0 both direction, -1 negative direction, 1 postive direction
     }
     public class ExpType
     {
