@@ -113,7 +113,6 @@
     }
 </div>
 
-
 <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type3">
     <hr class="tableTopLine" />
     <h3 class="text-capitalize text-center text-info"><i>Plasmid Miniprep</i></h3>
@@ -182,7 +181,6 @@
     }
 </div>
 
-
 <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type8">
     <hr class="tableTopLine" />
     <h3 class="text-capitalize text-center text-info"><i>Plasmid Maxiprep</i></h3>
@@ -250,7 +248,6 @@
         </div>
     }
 </div>
-
 
 <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type7">
     <hr class="tableTopLine" />
@@ -561,8 +558,107 @@
  
 </div>
 
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type6">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Fragment Ligation</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id = "nameLig" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameLig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "6" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.frag1_id, "Fragment 1", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.frag1_id, new { htmlAttributes = new { @class = "form-control fragment", id = "fragment1Lig" } })
+                        @Html.ValidationMessageFor(model => model.frag1_id, "", new { @class = "text-danger" })
+                        <p id="fragment1Lig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.frag2_id, "Fragment 2", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.frag2_id, new { htmlAttributes = new { @class = "form-control fragment", id = "fragment2Lig" } })
+                        @Html.ValidationMessageFor(model => model.frag2_id, "", new { @class = "text-danger" })
+                        <p id="fragment2Lig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.ligation_method, "Ligation method", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.ligation_method, new { htmlAttributes = new { @class = "form-control fragment", id = "methodLig" } })
+                        @Html.ValidationMessageFor(model => model.ligation_method, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.ligation_direction, "Ligation Direction", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.ligation_direction, new { htmlAttributes = new { @class = "form-control fragment", id = "directionLig" } })
+                        @Html.ValidationMessageFor(model => model.ligation_direction, "", new { @class = "text-danger" })
+                    </div>
+                </div>             
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 5, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger disabled" id="add6" name="StepButton" value="add6" data-toggle="tooltip" data-placement="top" title="Please select below how the fragments can be ligated"><i class="fa fa-plus-circle"></i><span> Ligation</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 @*fragment div*@
+<div class="clearfix"></div>
+<br/>
+<br/>
 <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+    <div class="panel panel-color0 hidden" id="frag-line">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center"><em><strong>Selected fragment(s)</strong></em></h3>
+        </div>
+    </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 hidden" id="fragment1">
         <div class="panel panel-primary" id="frag1">
             <div class="panel-heading text-center" id="frag1-header"></div>
@@ -645,7 +741,6 @@
                         <h3 class="panel-title text-center"><em><strong>Select one or more enzymes to start digestion</strong></em></h3>
                     </div>
                 </div>
-                @*<hr class="black-line" />*@
                 <div id="enzyme-list" class="col-xs-4 col-sm-3 col-md-2 col-lg-2">
                     <h4 class="text-primary">Enzymes</h4>
                 </div>
@@ -794,6 +889,20 @@
     </div>
 </div>
 
+@*ligation*@
+<div class="clearfix"></div>
+<div id="ligationDiv" class="hidden">
+    <div class="panel panel-color5 col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center"><em><strong>Please choose how to ligate the fragments</strong></em></h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div id="ligation-method">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method1"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method2"></div>
+    </div>
+</div>
 
 
 @*
@@ -1059,7 +1168,7 @@
 
     function addStep(exp_type) {
         /*
-                type1.Name = "Restriction Enzyme Digestion";
+            type1.Name = "Restriction Enzyme Digestion";
             type2.Name = "Plasmid Transformation";
             type3.Name = "Plasmid Miniprep";
             type4.Name = "Fragment Gel Extraction";
@@ -1070,41 +1179,40 @@
         */
         if (exp_type == 1) {
             $("#type1").removeClass("hidden");
-            //$("#enzymeDiges").prop('required', true);
-            //$("#plasmidDiges").prop('required', true);
         }
         if (exp_type == 2) {
             $("#type2").removeClass("hidden");
-
         }
         if (exp_type == 3) {
             $("#type3").removeClass("hidden");
-
+        }
+        if (exp_type == 4) {
+            $("#type4").removeClass("hidden");
+        }
+        if (exp_type == 5) {
+            $("#type5").removeClass("hidden");
+        }
+        if (exp_type == 6) {
+            $("#type6").removeClass("hidden");
         }
         if (exp_type == 7) {
             $("#type7").removeClass("hidden");
         }
         if (exp_type == 8) {
             $("#type8").removeClass("hidden");
-
-        }
-        if (exp_type == 4) {
-            $("#type4").removeClass("hidden");
-
-        }
-        if (exp_type == 5) {
-            $("#type5").removeClass("hidden");
-        }
+        }        
     }
 
     function drawFragment(fragId) {
         //fisr check which fragment is it now
+        $("#frag-line").removeClass("hidden");
         var currentFrag = 0;
         if ($("#fragment1").hasClass("hidden")) {
             currentFrag = 1;
         }
         else if (!$("#fragment1").hasClass("hidden") && $("#fragment2").hasClass("hidden")) {
             currentFrag = 2;
+            $("#ligationDiv").removeClass("hidden");
         }
         else {
             currentFrag = 0;
@@ -1157,6 +1265,7 @@
         }
         else {
             currentFrag = 1;
+            $("#frag-line").addClass("hidden");
         }
 
         $("#fragment" + currentFrag).addClass("hidden");
@@ -1267,6 +1376,21 @@
         return true;
     })
 
+    $("#type6").find("form").on("submit", function () {
+        if ($("#nameLig").val() == "" || $("#nameLig").val() == null) {
+            $("#nameLig-msg").text("Required");
+            return false;
+        }
+        if ($("#fragment1Lig").val() == "" || $("#fragment1Lig").val() == null) {
+            $("#fragment1Lig-msg").text("Required");
+            return false;
+        }
+        if ($("#fragment2Lig").val() == "" || $("#fragment2Lig").val() == null) {
+            $("#fragment2Lig-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
 
     function drawPlasmid(plasmid_id){
         $.ajax({
@@ -1587,5 +1711,21 @@
             }
         });
     }
+
+    function removePlasmid() {
+        $("#digestionDiv").addClass("hidden");
+        $("#plasmid-feature").empty();
+        $("#enzyme-list").find('h3').next().empty();
+        $("#cut-map").empty();
+        $("#enzyme-info").empty();
+        $("#activity-info").empty();
+        $("#gel-single").empty();
+        $("#band-feature-single").empty();
+        $("#band-ends-single").empty();
+        $("#gel-multiple").empty();
+        $("#band-feature-multiple").empty();
+        $("#band-ends-multiple").empty();        
+    }
+
 
 </script>

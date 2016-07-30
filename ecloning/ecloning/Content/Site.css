@@ -287,8 +287,13 @@ textarea {
 
 .tableTopLine{
     border-top: 4px solid #4CAF50;
+    border-radius: 25px;
 }
 
+.topBlueLine{
+    border-top: 10px solid rgba(79, 148, 247, 0.55);
+    border-radius: 25px;
+}
 
 .enzymeItem{
     background-color:#e3dfe0;

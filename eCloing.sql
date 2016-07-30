@@ -1099,8 +1099,8 @@ CREATE TABLE exp_step_material
 	plasmid_id INT, --if plasmid is used
 	frag1_id INT, --1st fragment for ligation
 	frag2_id INT,--2nd fragment for ligation
-	ligation_method INT, -- 0 is direct ligation, 1 is first blunting then ligation
-	ligation_direction INT,	--0 both direction, -1 negative direction, 1 postive direction
+	ligation_method INT, -- 1 is direct ligation, 2 is first blunting then ligation
+	ligation_direction INT,	--1 both direction, 2 postive direction, 3 negative direction, 
 	[des] TEXT, --comment
 	dt DATETIME, 
 	CONSTRAINT fk_exp_step_material_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),

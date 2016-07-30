@@ -303,7 +303,7 @@ namespace ecloning.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddStep(string StepButton, [Bind(Include = "id,types,name,type_id,exp_id,protocol_id,forward_primer_id,reverse_primer_id,probe_id,emzyme_id,plasmid_id,frag1_id,frag2_id, ligation_direction,des")] ExpStep step)
+        public ActionResult AddStep(string StepButton, [Bind(Include = "id,types,name,type_id,exp_id,protocol_id,forward_primer_id,reverse_primer_id,probe_id,emzyme_id,plasmid_id,frag1_id,frag2_id,ligation_method,ligation_direction,des")] ExpStep step)
         {
             if (StepButton == "add1")
             {
@@ -633,6 +633,22 @@ namespace ecloning.Controllers
                         else
                         {
                             material.frag2_id = step.frag2_id;
+                        }
+                        if(step.ligation_method == 0)
+                        {
+                            material.ligation_method = null;
+                        }
+                        else
+                        {
+                            material.ligation_method = step.ligation_method;
+                        }
+                        if (step.ligation_direction == 0)
+                        {
+                            material.ligation_direction = null;
+                        }
+                        else
+                        {
+                            material.ligation_direction = step.ligation_direction;
                         }
                         material.dt = DateTime.Now;
                         db.exp_step_material.Add(material);
