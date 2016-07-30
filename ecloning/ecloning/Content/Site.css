@@ -894,3 +894,7 @@ svg text tspan{
  .backgroundCorlor20{
     background-color:#3b3eac;
 }
+
+ .fixedHeight{
+     height:100px;
+ }

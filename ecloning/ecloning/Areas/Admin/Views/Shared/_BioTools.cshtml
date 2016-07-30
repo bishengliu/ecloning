@@ -3,7 +3,10 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <li>
-                    <a href="@Url.Action("Index", "Dashboard")"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    <a href="@Url.Action("Index", "Company")"><i class="fa fa-building-o fa-fw"></i> Companies</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Buffer")"><i class="fa fa-flask fa-fw"></i> Buffers</a>
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-list-alt fa-fw"></i> Enzymes<span class="fa arrow"></span></a>
@@ -13,10 +16,6 @@
                         </li>
                         <li>
                             <a href="@Url.Action("Index", "MEnzyme")"><i class="fa fa-exchange fa-fw"></i> Modifying Enzymes</a>
-                        </li>
-
-                        <li>
-                            <a href="@Url.Action("Index", "Buffer")"><i class="fa fa-flask fa-fw"></i> Enzyme Buffer</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-star-half-empty fa-fw"></i> Enzyme Activity<span class="fa arrow"></span></a>
@@ -46,63 +45,14 @@
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a href="@Url.Action("Index", "Company")"><i class="fa fa-building-o fa-fw"></i> Companies</a>
-                </li>
+
                 @if (User.IsInRole("appAdmin") || User.IsInRole("InstAdmin"))
                 {
                     <li>
                         <a href="@Url.Action("Index", "Users")"><i class="fa fa-users fa-fw"></i> Application Users</a>
                     </li>
                 }
-                
-                <li>
-                    <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="#">Second Level Item</a>
-                        </li>
-                        <li>
-                            <a href="#">Second Level Item</a>
-                        </li>
-                        <li>
-                            <a href="#">Third Level <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <li>
-                                    <a href="#">Third Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level Item</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-third-level -->
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-flag fa-fw"></i> Miscellaneous Tools<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="@Url.Action("ORFFinder", "Miscellaneous")"><i class="fa fa-search fa-fw"></i>ORF Finder</a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("FormatSeq", "Miscellaneous")">Format Sequence</a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("ReVerseSeq", "Miscellaneous")">Reverse Sequence</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
             </ul>
         </div>
-        <!-- /.sidebar-collapse -->
     </div>
 

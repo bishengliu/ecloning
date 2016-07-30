@@ -17,20 +17,16 @@
             <div class="row">
                 <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7 col-sm-offset-1">
                     <div class="row">
-                        @*<img class="img-responsive" src="~/logo/eCloning-new1.jpg" height="60" style="height:60px !important" />*@
-                        @*<span class="hidden-xs appdescription"><span>Complete solutions</span> <br/><span>for Molecualr Cloning!</span></span>*@
+                        <img class="img-responsive" src="~/logo/eCloning-new1.jpg" height="60" style="height:60px !important" />
+                        <span class="hidden-xs appdescription"><span>Complete solutions</span> <br/><span>for Molecualr Cloning!</span></span>
                     </div>
                 </div>
                 <div class="col-xs-6 col-sm-3 col-md-3">
                     <div class="row">
                         <div class="col-md-12">
                             <div style="position:relative; left:15px;">
-                                @*<img class="hidden-xs img-responsive" src="~/logo/lumc.png" height="40" style="height:40px !important"/>*@
+                                <img class="hidden-xs img-responsive" src="~/logo/lumc.png" height="40" style="height:40px !important"/>
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <br class="hidden-xs"/>
-                            @Html.Partial("_LoginPartial")
                         </div>
                     </div>
                 </div>
@@ -64,17 +60,6 @@
                                         <span class="">My Experiments</span>
                                     </a>
                                 </li>
-                                @*<li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-flask">&ensp;</span>Experiments<span class="caret"></span></a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li>
-                                                <a href="@Url.Action("Index", "Ligation")">
-                                                    <i class="fa fa-chain-broken text-info"></i>
-                                                    <span class="">Ligation</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                </li>*@
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-genderless fa-lg">&ensp;</span>Plasmids<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
@@ -118,23 +103,6 @@
                                         </li>
                                     </ul>
                                 </li>
-                                @*<li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-scissors">&ensp;</span>Enzymes<span class="caret"></span></a>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li>
-                                            <a href="@Url.Action("Index", "RActivity")">
-                                                <i class="fa fa-scissors text-info"></i>
-                                                <span class="text-text-info">Restriction Enzymes</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="@Url.Action("Index", "MActivity")">
-                                                <i class="fa fa-exchange text-info"></i>
-                                                <span class="text-text-info">Modifying Enzymes</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>*@
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-server">&ensp;</span>Resources<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
@@ -254,9 +222,18 @@
                                             <span class="">People</span>
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "Dashboard", new { area="Admin"})">
+                                            <i class="fa fa-dashboard"></i>
+                                            <span class="">Admin Dashboard</span>
+                                        </a>
+                                    </li>
                                 }
                             }
                         </ul>
+                        <div class="pull-right">                            
+                            @Html.Partial("_LoginPartial")
+                        </div>
                     </div>
                 </div>
             </div>
