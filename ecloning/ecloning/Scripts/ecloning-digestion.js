@@ -1784,7 +1784,7 @@ function calOverhangLenth(clockwise, enzymeAttr, cutLength, end) {
 
 //generate complementary seq
 function gencSeq(seq){
-    var seqArray = seq.split('');
+    var seqArray = seq.toUpperCase().split('');
     var cseqArray = [];
     $.each(seqArray, function (i, d) {
         var letter;
