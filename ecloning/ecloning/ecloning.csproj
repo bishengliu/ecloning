@@ -652,6 +652,7 @@
     <Content Include="Scripts\ecloning-compare.js" />
     <Content Include="Scripts\ecloning-digestion.js" />
     <Content Include="Scripts\ecloning-fragment.js" />
+    <Content Include="Scripts\ecloning-ligation.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.nextprot.js" />
     <Content Include="Scripts\feature-viewer\fv.nextprot.js" />

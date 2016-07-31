@@ -43,8 +43,6 @@
     </div>
 </div>
 
-
-
 <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type2">
     <hr class="tableTopLine" />
     <h3 class="text-capitalize text-center text-info"><i>Plasmid Transformation</i></h3>
@@ -504,9 +502,6 @@
                     </div>
                 </div>
                 <div class="form-group hidden">
-                    <p id="frag-save">NO</p>
-                </div>
-                <div class="form-group hidden">
                     @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
                     <div class="col-md-8 col-lg-6">
                         @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
@@ -557,7 +552,6 @@
     }
  
 </div>
-
 
 <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type6">
     <hr class="tableTopLine" />
@@ -665,6 +659,7 @@
             <div class="panel-body fixed-panel">
                 <div id="frag1-map" class="col-xs-12 max-width"></div>
                 <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                    <p id="frag1Id"></p>
                     <input id="frag1-fId" value="" />
                     <input id="frag1-cId" value="" />
                 </div>
@@ -688,6 +683,7 @@
             <div class="panel-body fixed-panel">
                 <div id="frag2-map" class="col-xs-12 max-width"></div>
                 <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                    <p id="frag2Id"></p>
                     <input id="frag2-fId" value="" />
                     <input id="frag2-cId" value="" />
                 </div>
@@ -713,12 +709,14 @@
 <div class="clearfix"></div>
 <div id="digestionDiv" class="hidden">
     <br />
-    <br /> 
-    <div class="panel panel-color5 col-xs-12 col-sm-offset-1 col-sm-10">
-        <div class="panel-heading">
-            <h3 class="panel-title text-center"><em><strong>Use the tool below to find the enzymes and save fragment(s)</strong></em></h3>
+    <br />
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-color5">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center"><em><strong>Use the tool below to find the enzymes and save fragment(s)</strong></em></h3>
+            </div>
         </div>
-    </div>
+    </div>    
     <div class="clearfix"></div>
     <br />
     <br /> 
@@ -891,24 +889,45 @@
 
 @*ligation*@
 <div class="clearfix"></div>
-<div id="ligationDiv" class="hidden">
-    <div class="panel panel-color5 col-xs-12 col-sm-offset-1 col-sm-10">
+<div id="ligationDiv" class="hidden col-xs-12 col-sm-offset-1 col-sm-10">
+    <div class="panel panel-color5">
         <div class="panel-heading">
             <h3 class="panel-title text-center"><em><strong>Please choose how to ligate the fragments</strong></em></h3>
         </div>
-    </div>
-    <div class="clearfix"></div>
-    <div id="ligation-method">
-        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method1"></div>
-        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method2"></div>
-    </div>
+        <div class="panel-body">
+            <div id="ligation-method">
+                <ul class="nav nav-pills">
+                    <li class=""><a data-toggle="pill" href="#method1">Direct Ligation</a></li>
+                    <li><a data-toggle="pill" href="#method2">Blunt Ends then Ligation</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="method1" class="tab-pane fade">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method1-clockwise">
+                            <div></div>
+                            <div class="method1-cw-map"></div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method1-anticlockwise">
+                            <div></div>
+                            <div class="method1-acw-map"></div>
+                        </div>
+                    </div>
+                    <div id="method2" class="tab-pane fade">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method2-clockwise">
+                            <div></div>
+                            <div class="method2-cw-map"></div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 xScrollable" id="method2-anticlockwise">
+                            <div></div>
+                            <div class="method2-acw-map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>
 
 
-@*
-    still need to add ligation and gel extraction
-//need to validate form
-*@
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
 @Scripts.Render("~/bundles/d3")
@@ -919,6 +938,8 @@
 @*feature viewer*@
 <script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
 <script src="~/Scripts/ecloning-digestion.js"></script>
+@*show ligation methods*@
+<script src="~/Scripts/ecloning-ligation.js"></script>
 <script>
     //for enzyme digesiton 
 
@@ -1001,8 +1022,6 @@
     });
 
     //end of enzyem digesiton
-
-
 
     var stepShown = +$("#ShownStep").text();
     if (stepShown != -1 && stepShown != "") {
@@ -1209,10 +1228,17 @@
         var currentFrag = 0;
         if ($("#fragment1").hasClass("hidden")) {
             currentFrag = 1;
+            $("#frag1Id").text(fragId);
         }
         else if (!$("#fragment1").hasClass("hidden") && $("#fragment2").hasClass("hidden")) {
             currentFrag = 2;
+            $("#frag2Id").text(fragId);
             $("#ligationDiv").removeClass("hidden");
+            //show ligation methods
+            //get the first frag1 id 
+            var f1Id = +$("#frag1Id").text();
+            var f2Id = +fragId;
+            show_ligation(f1Id, f2Id);
         }
         else {
             currentFrag = 0;
@@ -1403,311 +1429,311 @@
                     console.log("retrieve data failed for digestion");
                 }
                 else {
-                        //plasmid data is retrieved from server
-                        try
-                        {
-                            $("#seqCount").text(obj.seqCount);
-                            $("#sequence").text(obj.Sequence);
-                            $("#plasmidName").text(obj.Name); //name id is not unique
-                            $("#plasmidId").text(obj.plasmidId);
-                            plasmidId = +$("#plasmidId").text().trim();
+                    //plasmid data is retrieved from server
+                    try
+                    {
+                        $("#seqCount").text(obj.seqCount);
+                        $("#sequence").text(obj.Sequence);
+                        $("#plasmidName").text(obj.Name); //name id is not unique
+                        $("#plasmidId").text(obj.plasmidId);
+                        plasmidId = +$("#plasmidId").text().trim();
 
-                            //get full sequence
-                            sequence = $('#sequence').text().trim();
-                            //get complementary seq
-                            cSequence = gencSeq(sequence);
-                            seqCount = parseInt($('#seqCount').text().trim())
-                            //get plasmid name
-                            name = $('#plasmidName').text().trim();
-                            //get plasmid id
-                            pId = +$("#plasmidId").text().trim();
+                        //get full sequence
+                        sequence = $('#sequence').text().trim();
+                        //get complementary seq
+                        cSequence = gencSeq(sequence);
+                        seqCount = parseInt($('#seqCount').text().trim())
+                        //get plasmid name
+                        name = $('#plasmidName').text().trim();
+                        //get plasmid id
+                        pId = +$("#plasmidId").text().trim();
 
-                            //draw linear map
-                            features = JSON.parse(LoadData(obj.features));
-                            allFeatures = features;
+                        //draw linear map
+                        features = JSON.parse(LoadData(obj.features));
+                        allFeatures = features;
 
-                            //draw features on top
-                            fvFeatures = JSON.parse(LoadData(obj.fvFeatures));
-                            drawFeatures(fvFeatures, sequence, 'plasmid-feature');
+                        //draw features on top
+                        fvFeatures = JSON.parse(LoadData(obj.fvFeatures));
+                        drawFeatures(fvFeatures, sequence, 'plasmid-feature');
 
-                            //display enzyme checkbox
-                            enzymes = JSON.parse(LoadData(obj.enzymes));
-                            methylation = JSON.parse(LoadData(obj.methylation));
-                            displayEnzymeList(enzymes, "enzyme-list");
+                        //display enzyme checkbox
+                        enzymes = JSON.parse(LoadData(obj.enzymes));
+                        methylation = JSON.parse(LoadData(obj.methylation));
+                        displayEnzymeList(enzymes, "enzyme-list");
 
-                            //parse json for restricProperty
-                            restricProperty = JSON.parse(restricProperty);
+                        //parse json for restricProperty
+                        restricProperty = JSON.parse(restricProperty);
 
-                            //parse json for enzyme activity
-                            activity = JSON.parse(LoadData(obj.activity));
+                        //parse json for enzyme activity
+                        activity = JSON.parse(LoadData(obj.activity));
 
-                            //show enzyme companies and activities
-                            activity = FormatActivity(activity);
+                        //show enzyme companies and activities
+                        activity = FormatActivity(activity);
 
-                            //get company list
-                            var companies = findCompany(activity);
-                            //parse ladders
-                            ladders = JSON.parse(LoadData(obj.ladders));
-                            //format ladder data
-                            ladders = formatLadder(ladders);
+                        //get company list
+                        var companies = findCompany(activity);
+                        //parse ladders
+                        ladders = JSON.parse(LoadData(obj.ladders));
+                        //format ladder data
+                        ladders = formatLadder(ladders);
 
-                            //update global ladder name and is array
-                            allLadders = getLadderNameId(ladders);
-                            //parse saved bands
-                            savedBands = JSON.parse(LoadData(obj.saveBands));
-                            //capture user selection of enzyme
-                            $(":checkbox").change(function () {
-                                //allow max 3 selection
-                                var maxSelection = 3;
-                                if ($('input[type=checkbox]:checked').length > maxSelection) {
-                                    $(this).prop('checked', false);
-                                    //show msg
-                                    $("#success-alert").show();
+                        //update global ladder name and is array
+                        allLadders = getLadderNameId(ladders);
+                        //parse saved bands
+                        savedBands = JSON.parse(LoadData(obj.saveBands));
+                        //capture user selection of enzyme
+                        $(":checkbox").change(function () {
+                            //allow max 3 selection
+                            var maxSelection = 3;
+                            if ($('input[type=checkbox]:checked').length > maxSelection) {
+                                $(this).prop('checked', false);
+                                //show msg
+                                $("#success-alert").show();
+                            }
+                            else {
+                                $("#success-alert").hide();
+                            }
+                            //change some div setting
+                            $("#gel-single").empty();
+                            $("#band-feature-single").empty();
+                            $("#band-ends-single").empty();
+                            $("#gel-info-single").addClass("hidden");
+
+                            $("#gel-multiple").empty();
+                            $("#gel-panel-multiple").addClass("hidden");
+                            $("#band-feature-multiple").empty();
+                            $("#band-ends-multiple").empty();
+                            $("#gel-info-multiple").addClass("hidden");
+
+                            //update enzymeArray
+                            if (this.checked) {
+                                //add enzyme to enzyArray
+                                enzyArray = updateArray($(this).val(), enzyArray, "add");
+                                //add digesiton enzyme array
+                                //digestArray = updateDigest($(this).val(), digestArray, "add");
+                            }
+                            else {
+                                //remove enzyme to enzyArray
+                                enzyArray = updateArray($(this).val(), enzyArray, "remove");
+                                //add digesiton enzyme array
+                                //digestArray = updateDigest($(this).val(), digestArray, "remove");
+                            }
+                            //=======================================================================
+                            //show cut overview for multiple enzymes
+                            //show panel title
+                            genCutTitle("cut-title", enzyArray);
+                            //generate plasmid cut-map overview using giraffe
+                            drawCuts("cut-map", enzymes, enzyArray, features, seqCount, name);
+                            //show cut info with tabs
+                            //==========================================================================
+                            genEnzymeTabs(enzyArray, 'enzyme-info');
+                            //genCutMap for each enzyme using giraffe
+                            drawCutMap(enzymes, enzyArray, features, seqCount, name);
+                            //show cut positions and methylation info in panel-body
+                            showDigestInfo(enzymes, enzyArray, methylation);
+                            //show cut prototype and property
+                            showRestricProperty(enzyArray, restricProperty);
+
+                            //=========================================================================
+                            //show activity tabs
+                            genActivityTab(enzyArray, 'activity-info', companies);
+                            //show enzyme activities
+                            showActivity(enzyArray, activity, companies);
+                            //===============================
+                            //match enzyme-info and activity-info
+                            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                                var target = $(e.target).attr("href") // activated tab
+                                if (target.length > 9 && target.substring(0, 9) == "#activity") {
+                                    //this is the activity tab
+                                    var tab = target.substring(10, target.length);
+                                    if (tab != "" || tab != "undefined") {
+                                        $('a[href="#' + tab + '"]').tab('show');
+                                    }
                                 }
                                 else {
-                                    $("#success-alert").hide();
-                                }
-                                //change some div setting
-                                $("#gel-single").empty();
-                                $("#band-feature-single").empty();
-                                $("#band-ends-single").empty();
-                                $("#gel-info-single").addClass("hidden");
-
-                                $("#gel-multiple").empty();
-                                $("#gel-panel-multiple").addClass("hidden");
-                                $("#band-feature-multiple").empty();
-                                $("#band-ends-multiple").empty();
-                                $("#gel-info-multiple").addClass("hidden");
-
-                                //update enzymeArray
-                                if (this.checked) {
-                                    //add enzyme to enzyArray
-                                    enzyArray = updateArray($(this).val(), enzyArray, "add");
-                                    //add digesiton enzyme array
-                                    //digestArray = updateDigest($(this).val(), digestArray, "add");
-                                }
-                                else {
-                                    //remove enzyme to enzyArray
-                                    enzyArray = updateArray($(this).val(), enzyArray, "remove");
-                                    //add digesiton enzyme array
-                                    //digestArray = updateDigest($(this).val(), digestArray, "remove");
-                                }
-                                //=======================================================================
-                                //show cut overview for multiple enzymes
-                                //show panel title
-                                genCutTitle("cut-title", enzyArray);
-                                //generate plasmid cut-map overview using giraffe
-                                drawCuts("cut-map", enzymes, enzyArray, features, seqCount, name);
-                                //show cut info with tabs
-                                //==========================================================================
-                                genEnzymeTabs(enzyArray, 'enzyme-info');
-                                //genCutMap for each enzyme using giraffe
-                                drawCutMap(enzymes, enzyArray, features, seqCount, name);
-                                //show cut positions and methylation info in panel-body
-                                showDigestInfo(enzymes, enzyArray, methylation);
-                                //show cut prototype and property
-                                showRestricProperty(enzyArray, restricProperty);
-
-                                //=========================================================================
-                                //show activity tabs
-                                genActivityTab(enzyArray, 'activity-info', companies);
-                                //show enzyme activities
-                                showActivity(enzyArray, activity, companies);
-                                //===============================
-                                //match enzyme-info and activity-info
-                                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                                    var target = $(e.target).attr("href") // activated tab
-                                    if (target.length > 9 && target.substring(0, 9) == "#activity") {
-                                        //this is the activity tab
-                                        var tab = target.substring(10, target.length);
-                                        if (tab != "" || tab != "undefined") {
-                                            $('a[href="#' + tab + '"]').tab('show');
-                                        }
+                                    var tab = target.substring(1, target.length);
+                                    if (tab != "" || tab != "undefined") {
+                                        $('a[href="#activity-' + tab + '"]').tab('show');
                                     }
-                                    else {
-                                        var tab = target.substring(1, target.length);
-                                        if (tab != "" || tab != "undefined") {
-                                            $('a[href="#activity-' + tab + '"]').tab('show');
-                                        }
-                                    }
-                                });
+                                }
+                            });
 
-                                //===========================================================================
-                                //draw gel
-                                //generate single enzyme digestion bands======******************==============
-                                var SEbands = enzyArray.length > 0 ? genSEBands(enzyArray, enzymes, methylation, seqCount) : [];
+                            //===========================================================================
+                            //draw gel
+                            //generate single enzyme digestion bands======******************==============
+                            var SEbands = enzyArray.length > 0 ? genSEBands(enzyArray, enzymes, methylation, seqCount) : [];
+                            //draw gel stimulation
+                            if (SEbands.length > 0) {
+                                //choose ladder based on the band sizes
+                                var SEladder = chooseLadder(SEbands, ladders);
+                                //set global ladderId
+                                sLadderId = +SEladder[0].id;
+                                //add selection box
+                                LadderSelection("ladder-selection-single", sLadderId, allLadders);
                                 //draw gel stimulation
-                                if (SEbands.length > 0) {
-                                    //choose ladder based on the band sizes
-                                    var SEladder = chooseLadder(SEbands, ladders);
-                                    //set global ladderId
-                                    sLadderId = +SEladder[0].id;
-                                    //add selection box
-                                    LadderSelection("ladder-selection-single", sLadderId, allLadders);
-                                    //draw gel stimulation
-                                    drawGel("#gel-single", SEladder, SEbands, gelHeightSingle); //change 300 to change the gel height == runing lognger
+                                drawGel("#gel-single", SEladder, SEbands, gelHeightSingle); //change 300 to change the gel height == runing lognger
 
-                                    //ladder selection box change========================================
-                                    $('#ladder-selection-single-selection').change(function () {
-                                        //change the sLadderId
-                                        sLadderId = +$(this).val();
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === sLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-single").empty();
-                                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
-                                    });
-                                    //plus/minus button====================================================
-                                    $('#increase-single').click(function () {
-                                        //change the gelHeightSingle
-                                        gelHeightSingle = gelHeightSingle + stepHeight;
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === sLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-single").empty();
-                                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                //ladder selection box change========================================
+                                $('#ladder-selection-single-selection').change(function () {
+                                    //change the sLadderId
+                                    sLadderId = +$(this).val();
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
                                     })
-                                    $('#decrease-single').click(function () {
-                                        //change the gelHeightSingle
-                                        gelHeightSingle = gelHeightSingle - stepHeight > 0 ? gelHeightSingle - stepHeight : 0;
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === sLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-single").empty();
-                                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                });
+                                //plus/minus button====================================================
+                                $('#increase-single').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightSingle = gelHeightSingle + stepHeight;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
                                     })
-                                    $('#default-single').click(function () {
-                                        gelHeightSingle = defaultHeight; //default value
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === sLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-single").empty();
-                                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
-                                    });
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                })
+                                $('#decrease-single').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightSingle = gelHeightSingle - stepHeight > 0 ? gelHeightSingle - stepHeight : 0;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                })
+                                $('#default-single').click(function () {
+                                    gelHeightSingle = defaultHeight; //default value
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                });
+                            }
+                            //deal with multiple enzyme digestion==================***************============
+                            //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
+                            var MEDigestArray = genMEDigestion(enzyArray);
+                            var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
+                            if (MEbands.length > 0) {
+                                $("#gel-panel-multiple").removeClass("hidden");
+                                var MEladder = chooseLadder(MEbands, ladders);
+                                //set global ladderId
+                                mLadderId = +MEladder[0].id;
+                                //add selection box
+                                LadderSelection("ladder-selection-multiple", mLadderId, allLadders);
+                                //draw gel stimulation                    
+                                drawGel("#gel-multiple", MEladder, MEbands, gelHeightMultiple); //change 300 to change the gel height == runing lognger
+                                //ladder selection box change==================================================
+                                $('#ladder-selection-multiple-selection').change(function () {
+                                    mLadderId = +$(this).val();
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                });
+                                //plus/minus button====================================================
+                                $('#increase-multiple').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightMultiple = gelHeightMultiple + stepHeight;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                })
+                                $('#decrease-multiple').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightMultiple = gelHeightMultiple - stepHeight > 0 ? gelHeightMultiple - stepHeight : 0;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                })
+                                $('#default-multiple').click(function () {
+                                    gelHeightMultiple = defaultHeight; //default value
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                });
+                            }
+                            //show the result div
+                            if (enzyArray.length > 0) {
+                                //show the result panel
+                                if ($("#result").hasClass("hidden")) {
+                                    $("#result").removeClass("hidden");
+                                };
+                            }
+                            else {
+                                //hide the result panel
+                                if (!$("#result").hasClass("hidden")) {
+                                    $("#result").addClass("hidden");
                                 }
-                                //deal with multiple enzyme digestion==================***************============
-                                //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
-                                var MEDigestArray = genMEDigestion(enzyArray);
-                                var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
-                                if (MEbands.length > 0) {
-                                    $("#gel-panel-multiple").removeClass("hidden");
-                                    var MEladder = chooseLadder(MEbands, ladders);
-                                    //set global ladderId
-                                    mLadderId = +MEladder[0].id;
-                                    //add selection box
-                                    LadderSelection("ladder-selection-multiple", mLadderId, allLadders);
-                                    //draw gel stimulation                    
-                                    drawGel("#gel-multiple", MEladder, MEbands, gelHeightMultiple); //change 300 to change the gel height == runing lognger
-                                    //ladder selection box change==================================================
-                                    $('#ladder-selection-multiple-selection').change(function () {
-                                        mLadderId = +$(this).val();
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === mLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-multiple").empty();
-                                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
-                                    });
-                                    //plus/minus button====================================================
-                                    $('#increase-multiple').click(function () {
-                                        //change the gelHeightSingle
-                                        gelHeightMultiple = gelHeightMultiple + stepHeight;
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === mLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-multiple").empty();
-                                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
-                                    })
-                                    $('#decrease-multiple').click(function () {
-                                        //change the gelHeightSingle
-                                        gelHeightMultiple = gelHeightMultiple - stepHeight > 0 ? gelHeightMultiple - stepHeight : 0;
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === mLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-multiple").empty();
-                                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
-                                    })
-                                    $('#default-multiple').click(function () {
-                                        gelHeightMultiple = defaultHeight; //default value
-                                        var newLadder = $.grep(ladders, function (d, i) {
-                                            return d.id === mLadderId;
-                                        })
-                                        //redraw gel stimulation
-                                        $("#gel-multiple").empty();
-                                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
-                                    });
-                                }
-                                //show the result div
-                                if (enzyArray.length > 0) {
-                                    //show the result panel
-                                    if ($("#result").hasClass("hidden")) {
-                                        $("#result").removeClass("hidden");
-                                    };
+                            }
+                        });
+                    }
+                    catch (e)
+                    {
+                        console.log(e);
+                    }
+
+                    //save fragment
+                    $('#band-button-single').on("click", function () {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveFragment", "Map")',
+                            data: { 'band': JSON.stringify(singleData) },
+                            success: function (data) {
+                                if (data.result == true) {
+                                    savedBands.push(data.band);
+                                    $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                                    $('#band-button-single').addClass('disabled');
+                                    //scrollTo('#band-single-msg');
+                                    $('#band-single-msg').text("Fragment Saved!");
+                                    setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
                                 }
                                 else {
-                                    //hide the result panel
-                                    if (!$("#result").hasClass("hidden")) {
-                                        $("#result").addClass("hidden");
-                                    }
+                                    //scrollTo('#band-single-msg');
+                                    $('#band-single-msg').text("Fragment NOT Saved!");
+                                    setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
                                 }
-                            });
-                        }
-                        catch (e)
-                        {
-                            console.log(e);
-                        }
-
-                        //save fragment
-                        $('#band-button-single').on("click", function () {
-                            $.ajax({
-                                type: "POST",
-                                url: '@Url.Action("SaveFragment", "Map")',
-                                data: { 'band': JSON.stringify(singleData) },
-                                success: function (data) {
-                                    if (data.result == true) {
-                                        savedBands.push(data.band);
-                                        $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
-                                        $('#band-button-single').addClass('disabled');
-                                        //scrollTo('#band-single-msg');
-                                        $('#band-single-msg').text("Fragment Saved!");
-                                        setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
-                                    }
-                                    else {
-                                        //scrollTo('#band-single-msg');
-                                        $('#band-single-msg').text("Fragment NOT Saved!");
-                                        setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
-                                    }
-                                }
-                            });
+                            }
                         });
-                        $('#band-button-multiple').on("click", function () {
-                            $.ajax({
-                                type: "POST",
-                                url: '@Url.Action("SaveFragment", "Map")',
-                                data: { 'band': JSON.stringify(multipleData) },
-                                success: function (data) {
-                                    if (data.result == true) {
-                                        savedBands.push(data.band);
-                                        $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
-                                        $('#band-button-multiple').addClass("disabled");
-                                        //scrollTo('#band-multiple-msg');
-                                        $('#band-multiple-msg').text("Fragment Saved!");
-                                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
-                                    } else {
-                                        //scrollTo('#band-multiple-msg');
-                                        $('#band-multiple-msg').text("Fragment NOT Saved!");
-                                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
-                                    }
+                    });
+                    $('#band-button-multiple').on("click", function () {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveFragment", "Map")',
+                            data: { 'band': JSON.stringify(multipleData) },
+                            success: function (data) {
+                                if (data.result == true) {
+                                    savedBands.push(data.band);
+                                    $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                                    $('#band-button-multiple').addClass("disabled");
+                                    //scrollTo('#band-multiple-msg');
+                                    $('#band-multiple-msg').text("Fragment Saved!");
+                                    setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
+                                } else {
+                                    //scrollTo('#band-multiple-msg');
+                                    $('#band-multiple-msg').text("Fragment NOT Saved!");
+                                    setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
                                 }
-                            });
+                            }
                         });
-                }
+                    });
+                };
             }
         });
     }
@@ -1726,6 +1752,4 @@
         $("#band-feature-multiple").empty();
         $("#band-ends-multiple").empty();        
     }
-
-
 </script>
