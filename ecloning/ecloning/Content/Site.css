@@ -172,7 +172,9 @@ textarea {
     font-size: 12px;
     text-align: center;
 }
-
+.seqFont{
+    font-family: courier !important;
+}
 .giraffe-seq-count {
     width: 95%;
     height: auto;

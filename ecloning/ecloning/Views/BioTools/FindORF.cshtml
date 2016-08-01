@@ -34,7 +34,6 @@
                                 <option value="1">Frame 1</option>
                                 <option value="2">Frame 2</option>
                                 <option value="3">Frame 3</option>
-                                <option value="0">Frame 1, 2, and 3</option>
                             </select>
                         </div>                        
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" style="display: inline-block">
@@ -67,13 +66,13 @@
         </div>
     </div>
 </div>
+<div class="hidden" id="font-size">ATGC</div>
 <br />
 <div class="row hidden" id="resultDiv">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <div class="panel panel-primary">
             <div class="panel-heading text-center" id="result-header">ORF Found</div>
-            <div class="panel-body" id="result-body">
-            </div>
+            <div class="panel-body" id="result-body"></div>
         </div>
     </div>
 </div>
@@ -89,7 +88,9 @@
         $('#dna').val(after);
         $('#find-orf').removeClass("disabled");
 
-        $("#find-orf").click(function(){
+        $("#find-orf").click(function () {
+            //empty dom
+            $('#result-body').empty();
             //find the orf
             //prepare the options
             var frame = $('#frame').val();
@@ -107,34 +108,44 @@
             var ORFs = findROF(options);
             console.log(ORFs);
             if (ORFs.length > 0) {
-                //$('#result').prop("rows", 10 * (ORFs.length));
-                //show the ORF in the div
-                /*
-                var html = '<textarea class="form-control" rows="15" readonly>';
+                //get div width
+                var fontwidth = $('#font-size').css('font-size');
+                var width = Math.floor(1.68 * $('#dna').width() / parseInt(fontwidth));
+                //warp the outout text
+                var seqArray = wrap(seq, width);
+                console.log(seqArray);
+                var html = '';
                 $.each(ORFs, function (i, d) {
-                    if (+d.frame === 1) {
-                        html = html + '> frame 1 (' + d.start + '-' + d.stop + ')';
-                        var frontSeq = seq.substring(0, d.start);
-                        var midSeq = seq.substring(d.start, d.stop);
-                        var endSeq = seq.substring(d.stop);
-                        html = html + frontSeq + '<span class="text-danger"><i>' + midSeq + '</i></span>' + endSeq + '</textarea>';
+                    html = '<div class="seqFont">';
+                        html = html + '>>> frame '+ d.frame+' (' + d.start + '-' + d.stop + ')<br/>';
+                        var lineStartNum = Math.floor(d.start / width);
+                        var lineStartPos = d.start % width;
+                        var lineStopNum = Math.floor((d.stop+3) / width);
+                        var lineStopPos = (d.stop + 3) % width;
+                        $.each(seqArray, function (si, s) {
+                            if (si == lineStartNum && si == lineStopNum)
+                            {
+                                html = html + seqArray[si].substring(0, lineStartPos) + '<span class="text-danger"><i>' + seqArray[si].substring(lineStartPos, lineStopPos) + '</i></span>' + seqArray[si].substring(lineStopPos);
+                            }
+                            else if (si == lineStartNum && si < lineStopNum) {
+                                html = html + seqArray[si].substring(0, lineStartPos) + '<span class="text-danger"><i>' + seqArray[si].substring(lineStartPos);
+                            }
+                            else if (si > lineStartNum && si == lineStopNum) {
+                                html = html + seqArray[si].substring(0, lineStopPos) + '</i></span>' + seqArray[si].substring(lineStopPos);
+                            }
+                            else {
+                                html = html + seqArray[si];
+                            }
+                            html = html + '<br/>';
+                        })
+                        html = html + '</div>';
                         $('#result-body').append(html);
-                    }
-                })
-                */
-                var html = '<div class="col-xs-12"><p>';
-                $.each(ORFs, function (i, d) {
-                    if (+d.frame === 1) {
-                        html = html + '>>> frame 1 (' + d.start + '-' + d.stop + ')<br/>';
-                        var frontSeq = seq.substring(0, d.start);
-                        var midSeq = seq.substring(d.start, d.stop);
-                        var endSeq = seq.substring(d.stop);
-                        html = html + frontSeq + '<span class="text-danger"><i>' + midSeq + '</i></span>' + endSeq + '</p></div>';
-                        $('#result-body').append(html);
-                    }
-                })
-                $('#resultDiv').removeClass("hidden");
+                })   
             }
+            else {
+                $('#result-body').append('<p>No ORF found!</p>');
+            }
+            $('#resultDiv').removeClass("hidden");
         })
         
     });

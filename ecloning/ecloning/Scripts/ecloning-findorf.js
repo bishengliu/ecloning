@@ -99,7 +99,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
                 }
             }
         }
-
         if (startCodon == 1) {
             // "GTG", "TTG", "CTG"
             for (var i = 0; i < (tempSeq.length - 2) ; i += 3) {
@@ -109,7 +108,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
                 }
             }
         }
-
         if (startCodon == 2) {
             //all
             for (var i = 0; i < (tempSeq.length - 2) ; i += 3) {
@@ -130,7 +128,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
                 }
             }
         }
-
         if (startCodon == 1) {
             // "GTG", "TTG", "CTG"
             for (var i = 0; i < (tempSeq.length - 2) ; i += 3) {
@@ -140,7 +137,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
                 }
             }
         }
-
         if (startCodon == 2) {
             //all
             for (var i = 0; i < (tempSeq.length - 2) ; i += 3) {
@@ -162,7 +158,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
                 }
             }
         }
-
         if (startCodon == 1) {
             // "GTG", "TTG", "CTG"
             for (var i = 0; i < (tempSeq.length - 2) ; i += 3) {
@@ -172,7 +167,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
                 }
             }
         }
-
         if (startCodon == 2) {
             //all
             for (var i = 0; i < (tempSeq.length - 2) ; i += 3) {
@@ -304,7 +298,6 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
         }
     }
 
-
     startPos1.sort();
     startPos2.sort();
     startPos3.sort();
@@ -401,4 +394,24 @@ function ForwardORF(frame, sequence, startCodon, stopCodon, minSize)
     else {
         return f3Array;
     }
+}
+
+
+
+// Returns array of sequence, split from input sequence
+function wrap(seq_string, width) {
+    if (seq_string) {
+        var res = [];
+        var line = '';
+        for (var i = 0; i < seq_string.length; i++) {
+            line += seq_string.charAt(i);
+            if (line.length >= width) {
+                res.push(line);
+                line = '';
+            }
+        }
+        if (line.length > 0) { res.push(line); }
+        return res;
+    }
+    return [];
 }
