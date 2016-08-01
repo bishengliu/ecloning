@@ -651,6 +651,7 @@
     <Content Include="Scripts\ecloning-ali2seq.js" />
     <Content Include="Scripts\ecloning-compare.js" />
     <Content Include="Scripts\ecloning-digestion.js" />
+    <Content Include="Scripts\ecloning-findorf.js" />
     <Content Include="Scripts\ecloning-fragment.js" />
     <Content Include="Scripts\ecloning-ligation.js" />
     <Content Include="Scripts\feature-viewer\feature-viewer.bundle.js" />
@@ -793,6 +794,7 @@
     <Content Include="Scripts\needleman-Wunsch.js" />
     <Content Include="Scripts\ntseq\ntseq.js" />
     <Content Include="Scripts\ecloning-seqeditor.js" />
+    <Content Include="Scripts\ecloning-translation.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.bundle.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.js" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -1138,6 +1140,8 @@
     <Content Include="Views\Protocol\NewVersion.cshtml" />
     <Content Include="Views\Experiment\AddStep.cshtml" />
     <Content Include="Views\BioTools\Convert.cshtml" />
+    <Content Include="Views\BioTools\Transcript.cshtml" />
+    <Content Include="Views\BioTools\Translator.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

@@ -44,6 +44,14 @@ namespace ecloning.Controllers
         {
             return View();
         }
+        public ActionResult Transcript()
+        {
+            return View();
+        }
+        public ActionResult Translator()
+        {
+            return View();
+        }
 
         protected override void Dispose(bool disposing)
         {
