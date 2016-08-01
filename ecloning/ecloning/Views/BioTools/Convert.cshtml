@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "FormatSeq";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning">Convert DNA Sequence</h3>
+    </div>
+</div>
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    Convert DNA Sequence only accepts <span><em>single-stranded DNA</em></span> sequence. Non "a/A", "t/T", "g/G", "c/C" and "u/U" letters, space, line break, number etc. nonprintable and printable ASCII characters will be automatically removed.
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Provide a single-stranded DNA sequence
+            </div>
+            <div class="panel-body">
+                <textarea class="form-control" id="dna" rows="15"></textarea>
+            </div>
+            <div class="panel-footer clearfix">
+                <button class="btn btn-default disabled" id="reverse"><span>Reverse</span></button>
+                <button class="btn btn-default disabled" id="complement"><span>Complement</span></button>
+                <button class="btn btn-default disabled" id="reverse-complement"><span>Reverse Complement</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row hidden" id="resultDiv">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center" id="result-header">
+            </div>
+            <div class="panel-body">
+                <textarea class="form-control" rows="15" id="result" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    //remove all non letter in the seqeuce input
+    $('#dna').change(function () {
+        var before = $('#dna').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#dna').val(after);
+        $('button').each(function () {
+            $(this).removeClass("disabled");
+        })
+    });
+
+    $("#reverse").click(function () {
+        $("#resultDiv").removeClass("hidden");
+        $("#result").val(genRevSeq($("#dna").val()));
+    })
+
+    $("#complement").click(function () {
+        $("#resultDiv").removeClass("hidden");
+        $("#result").val(gencomSeq($("#dna").val()));
+    })
+
+    $("#reverse-complement").click(function () {
+        $("#resultDiv").removeClass("hidden");
+        $("#result").val(genRevSeq(gencomSeq($("#dna").val())));
+    })
+
+
+
+    function gencomSeq(seq) {
+        var seqArray = seq.toUpperCase().split('');
+        var cseqArray = [];
+        $.each(seqArray, function (i, d) {
+            var letter;
+            if (d == "A") {
+                letter = "T";
+            } else if (d == "T") {
+                letter = "A";
+            } else if (d == "G") {
+                letter = "C";
+            } else {
+                letter = "G";
+            }
+            cseqArray.push(letter);
+        })
+        return cseqArray.join('');
+    }
+
+    function genRevSeq(seq) {
+        var seqArray = seq.toUpperCase().split('');
+        var rseqArray = seqArray.reverse();
+        return rseqArray.join('');
+    }
+</script>
