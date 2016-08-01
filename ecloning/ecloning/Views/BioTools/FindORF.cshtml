@@ -122,14 +122,14 @@
                     }
                 })
                 */
-                var html = '<div class="xScrollable">';
+                var html = '<div class="col-xs-12"><p>';
                 $.each(ORFs, function (i, d) {
                     if (+d.frame === 1) {
                         html = html + '>>> frame 1 (' + d.start + '-' + d.stop + ')<br/>';
                         var frontSeq = seq.substring(0, d.start);
                         var midSeq = seq.substring(d.start, d.stop);
                         var endSeq = seq.substring(d.stop);
-                        html = html + frontSeq + '<span class="text-danger"><i>' + midSeq + '</i></span>' + endSeq + '</div>';
+                        html = html + frontSeq + '<span class="text-danger"><i>' + midSeq + '</i></span>' + endSeq + '</p></div>';
                         $('#result-body').append(html);
                     }
                 })
