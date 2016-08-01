@@ -1,0 +1,141 @@
+﻿
+@{
+    ViewBag.Title = "ORF Finder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning">ORF Finder</h3>
+    </div>
+</div>
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    ORF Finder only accepts <span><em>the single-stranded DNA</em></span> sequence. Non "a/A", "t/T", "g/G", "c/C" and "u/U" letters, space, line break, number etc. nonprintable and printable ASCII characters will be automatically removed.
+    <br/> This tool won't check the ORFs in the reverse complement DNA sequence.
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Provide a single-stranded DNA sequence
+            </div>
+            <div class="panel-body">
+                <div>
+                    <textarea class="form-control" id="dna" rows="15"></textarea>
+                </div>
+                <div id="finder-form" class="row">
+                    <form>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" style="display: inline-block">
+                            <label class="control-label" for="frame">Frame: </label>
+                            <select id="frame" class="form-control">
+                                <option value="1">Frame 1</option>
+                                <option value="2">Frame 2</option>
+                                <option value="3">Frame 3</option>
+                                <option value="0">Frame 1, 2, and 3</option>
+                            </select>
+                        </div>                        
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" style="display: inline-block">
+                            <label class="control-label" for="minisize">Minimum Size: </label>
+                            <input id="minisize" value="30" class="form-control" />                            
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" style="display: inline-block">
+                            <label class="control-label" for="start">Start Codon: </label>
+                            <select id="start" class="form-control">
+                                <option value="0">ATG</option>
+                                <option value="1">GTG, TTG or CTG</option>
+                                <option value="2">All</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" style="display: inline-block">                            
+                            <label class="control-label" for="stop">Stop Codon: </label>
+                            <select id="stop" class="form-control">
+                                <option value="1">TAA</option>
+                                <option value="2">TAG</option>
+                                <option value="3">TGA</option>
+                                <option value="0">All</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-footer clearfix">
+                <button class="btn btn-default disabled pull-right" id="find-orf"><i class="fa fa-search"></i><span>Find ORF</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row hidden" id="resultDiv">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center" id="result-header">ORF Found</div>
+            <div class="panel-body" id="result-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/ecloning-findorf.js"></script>
+<script>
+    $('#dna').change(function () {
+        var before = $('#dna').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#dna').val(after);
+        $('#find-orf').removeClass("disabled");
+
+        $("#find-orf").click(function(){
+            //find the orf
+            //prepare the options
+            var frame = $('#frame').val();
+            var minisize =$('#minisize').val();
+            var start = $('#start').val();
+            var stop  = $('#stop').val();
+            var seq = $('#dna').val();
+            var options = {
+                'startCodon' : start,
+                'stopCodon' : stop,
+                'frame' : frame,
+                'minSize': minisize,
+                'sequence' : seq
+            }
+            var ORFs = findROF(options);
+            console.log(ORFs);
+            if (ORFs.length > 0) {
+                //$('#result').prop("rows", 10 * (ORFs.length));
+                //show the ORF in the div
+                /*
+                var html = '<textarea class="form-control" rows="15" readonly>';
+                $.each(ORFs, function (i, d) {
+                    if (+d.frame === 1) {
+                        html = html + '> frame 1 (' + d.start + '-' + d.stop + ')';
+                        var frontSeq = seq.substring(0, d.start);
+                        var midSeq = seq.substring(d.start, d.stop);
+                        var endSeq = seq.substring(d.stop);
+                        html = html + frontSeq + '<span class="text-danger"><i>' + midSeq + '</i></span>' + endSeq + '</textarea>';
+                        $('#result-body').append(html);
+                    }
+                })
+                */
+                var html = '<div class="xScrollable">';
+                $.each(ORFs, function (i, d) {
+                    if (+d.frame === 1) {
+                        html = html + '>>> frame 1 (' + d.start + '-' + d.stop + ')<br/>';
+                        var frontSeq = seq.substring(0, d.start);
+                        var midSeq = seq.substring(d.start, d.stop);
+                        var endSeq = seq.substring(d.stop);
+                        html = html + frontSeq + '<span class="text-danger"><i>' + midSeq + '</i></span>' + endSeq + '</div>';
+                        $('#result-body').append(html);
+                    }
+                })
+                $('#resultDiv').removeClass("hidden");
+            }
+        })
+        
+    });
+</script>

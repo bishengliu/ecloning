@@ -1142,6 +1142,7 @@
     <Content Include="Views\BioTools\Convert.cshtml" />
     <Content Include="Views\BioTools\Transcript.cshtml" />
     <Content Include="Views\BioTools\Translator.cshtml" />
+    <Content Include="Views\BioTools\FindORF.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
