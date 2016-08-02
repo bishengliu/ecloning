@@ -67,7 +67,7 @@ namespace ecloning.Controllers
             {
                 var exp = new experiment();
                 exp.name = experiment.name;
-                exp.des = experiment.des;
+                exp.des = lnbrConvert.ln2br(experiment.des);
                 exp.people_id = userInfo.PersonId;
                 exp.dt = DateTime.Now;
                 db.experiments.Add(exp);
@@ -244,7 +244,7 @@ namespace ecloning.Controllers
             var Fragments = fragments.Select(f => new {
                 id = f.id,
                 name = f.fName.Split('[')[0],
-                pos = "["+f.fName.Split('[')[1]
+                pos = f.fName.IndexOf('[') != -1 ? "["+f.fName.Split('[')[1] : ""
             });
             ViewBag.Fragments = JsonConvert.SerializeObject(Fragments.ToList());
 
@@ -491,7 +491,7 @@ namespace ecloning.Controllers
             var Fragments = fragments.Select(f => new {
                 id = f.id,
                 name = f.fName.Split('[')[0],
-                pos = "[" + f.fName.Split('[')[1]
+                pos = f.fName.IndexOf('[') != -1 ? "[" + f.fName.Split('[')[1] : ""
             });
             ViewBag.Fragments = JsonConvert.SerializeObject(Fragments.ToList());
 
@@ -570,7 +570,7 @@ namespace ecloning.Controllers
                         {
                             expStep.protocol_id = step.protocol_id;
                         }
-                        expStep.des = step.des;
+                        expStep.des =lnbrConvert.ln2br(step.des);
                         expStep.dt = DateTime.Now;
                         expStep.people_id = userInfo.PersonId;
                         expStep.step_id = newStepId;
@@ -667,6 +667,13 @@ namespace ecloning.Controllers
                 }
             }
 
+            return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult DrawPlasmid()
+        {
             return View();
         }
 

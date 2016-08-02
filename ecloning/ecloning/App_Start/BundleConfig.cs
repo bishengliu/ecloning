@@ -71,6 +71,9 @@ namespace ecloning
                       "~/Scripts/nv.d3.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3.min.js"));
+            //include angular js
+            bundles.Add(new ScriptBundle("~/bundles/AngularJS").Include(
+                      "~/Scripts/angular-*"));
 
             //feature viewer and sequence viewer
             bundles.Add(new ScriptBundle("~/bundles/bioviewer").Include(

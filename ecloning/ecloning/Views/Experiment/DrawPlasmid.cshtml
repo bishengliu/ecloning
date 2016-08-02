@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "DrawPlasmid";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<plasmid sequencelength="130" plasmidheight="375" plasmidwidth="375" class="plasmid-font">
+    <plasmidtrack trackstyle="fill:none;stroke:none" radius="110">
+
+        <!-- track labels -->
+        <tracklabel labelstyle="font-weight:700;fill:#369" text="pBCA-RLuc"></tracklabel>
+        <tracklabel labelstyle="font-size:14px;font-weight:300;fill:#036" text="130 bp" vadjust="20"></tracklabel>
+
+        <!-- count -->
+        <trackscale interval="5" style="stroke:#999" labelclass="smlabel gray" labelvadjust="12" showlabels="0"></trackscale>
+
+        <!-- shaded regions -->
+        <!-- right ligation, 23 in middle, span 7x2 =14-->
+        <trackmarker start="16" end="30" class="greenregion" vadjust="-6" wadjust="5"></trackmarker>
+        <!-- left ligation, 104 in middle -->
+        <trackmarker start="97" end="111" class="greenregion" vadjust="-6" wadjust="5"></trackmarker>
+
+
+        <!-- fragment 1 -->
+        <trackmarker start="120" end="10" markerstyle="fill:rgba(64,64,192,0.4)" vadjust="50" wadjust="-23" arrowendlength="5" arrowendwidth="0.5">
+            <markerlabel type="path" text="fragment1, clockwise (+)" valign="outer" labelclass="mdlabel blue" vadjust="5"></markerlabel>
+        </trackmarker>
+
+        <!-- fragment 1, anticlockwise
+
+        <trackmarker start="120" end="10" markerstyle="fill:rgba(64,64,192,0.4)" vadjust="50" wadjust="-23" arrowstartlength="5" arrowstartwidth="0.5">
+            <markerlabel type="path" text="fragment1, anticlockwise (-)" valign="outer" labelclass="mdlabel blue" vadjust="5"></markerlabel>
+        </trackmarker>
+
+         -->
+        <!-- fragment 2 -->
+        <trackmarker start="55" end="75" markerstyle="fill:rgba(64,64,192,0.4)" vadjust="50" wadjust="-23" arrowendlength="5" arrowendwidth="0.5">
+            <markerlabel type="path" text="fragment2, clockwise (+)" valign="outer" labelclass="mdlabel blue" vadjust="5"></markerlabel>
+        </trackmarker>
+
+        <!-- nucleotide list and ticks marks between nucleotides-->
+        <trackmarker start="0" end="130">
+            <markerlabel type="path" labelstyle="font-size:8px;font-weight:400;kerning:1.1" text="GGAAAAGGAGGCCAGTGCATCAGAGAGACGCTGAAACTGTATGCGGAAAAGGAGGCCAGTGCATCAGAGAGTCGCAAACAGCTGTGAAGTCGCGTTCTCAAGAATTTGCAGCAGGCTGTGGCCACTTCGCCGGAAAAGGAGGCCAGTGCATCAGAGAGCAAGATCACAGCTGTGAAGTCGCTTC" halign="start" vadjust="5"></markerlabel>
+            <markerlabel type="path" labelstyle="font-size:8px;font-weight:400" text="CCTTTTCCTCCGGTCACGTAGTCTCTCTGCGACTTTGACATACGCCTTTTCCTCCGGTCACGTAGTCTCTCAGCGTTTGTCGACACTTCAGCGCAAGAGTTCTTAAACGTCGTCCGACACCGGTGAAGCGGCCTTTTCCTCCGGTCACGTAGTCTCTCGTTCTAGTGTCGACACTTCAGCGAAG" halign="start" vadjust="-10"></markerlabel>
+        </trackmarker>
+        <trackscale interval="1" style="stroke:#c99" ticksize="5" vadjust="-18"></trackscale>
+
+
+        <!-- left ligation -->
+        <trackmarker start="104" markerstyle="stroke:rgba(255,0,0,1);stroke-width:1px" vadjust="-6" wadjust="5">
+            <markerlabel type="path" text="Ligation Site" class="mdlabel red" valign="outer" vadjust="25"></markerlabel>
+        </trackmarker>
+
+        <trackmarker start="104" end="111" class="blue" vadjust="30" wadjust="-23" arrowstartlength="5" arrowstartwidth="1">
+            <markerlabel type="path" text="f1-blunting" halign="start" vadjust="15" labelclass="smlabel blue"></markerlabel>
+        </trackmarker>
+
+        <trackmarker start="97" end="104" class="purple" vadjust="-13" wadjust="-23" arrowendlength="5" arrowendwidth="1">
+            <markerlabel type="path" text="f2-blunting" halign="end" vadjust="-5" labelclass="smlabel purple"></markerlabel>
+        </trackmarker>
+
+        <!-- right ligation -->
+        <trackmarker start="23" markerstyle="stroke:rgba(255,0,0,1);stroke-width:1px" vadjust="-6" wadjust="5">
+            <markerlabel type="path" text="Ligation Site" class="mdlabel red" valign="outer" vadjust="25"></markerlabel>
+        </trackmarker>
+
+        <trackmarker start="16" end="23" class="blue" vadjust="-13" wadjust="-23" arrowendlength="5" arrowendwidth="1">
+            <markerlabel type="path" text="f1-blunting" halign="end" vadjust="-5" labelclass="smlabel blue"></markerlabel>
+        </trackmarker>
+
+        <trackmarker start="23" end="30" class="purple" vadjust="30" wadjust="-23" arrowstartlength="5" arrowstartwidth="1">
+            <markerlabel type="path" text="f2-blunting" halign="start" vadjust="15" labelclass="smlabel purple"></markerlabel>
+        </trackmarker>
+    </plasmidtrack>
+</plasmid>
+
+@Scripts.Render("~/bundles/jquery")
+@*include angular js*@
+<script src="~/Scripts/angular.min.js"></script>
+@*include angular plasmid*@
+<script src="~/Scripts/angularplasmid.complete.min.js"></script>
+@*show ligation methods*@
+<script src="~/Scripts/ecloning-ligation.js"></script>

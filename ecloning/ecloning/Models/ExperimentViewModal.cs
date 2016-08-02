@@ -40,6 +40,7 @@ namespace ecloning.Models
         public int? frag2_id { get; set; }
         public int? ligation_method { get; set; } // 1 is direct ligation, 2 is first blunting then ligation
         public int? ligation_direction { get; set; } //1 both direction, 2 postive direction, 3 negative direction
+        public string plasmidName { get; set; }
     }
     public class ExpType
     {

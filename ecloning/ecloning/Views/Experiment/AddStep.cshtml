@@ -601,6 +601,14 @@
                         <p id="fragment2Lig-msg" class="text-danger"></p>
                     </div>
                 </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmidName, "New Plasmind Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmidName, new { htmlAttributes = new { @class = "form-control", id = "plasmidNameLig" } })
+                        @Html.ValidationMessageFor(model => model.plasmidName, "", new { @class = "text-danger" })
+                        <p id="plasmidNameLig-msg" class="text-danger"></p>
+                    </div>
+                </div>
                 <div class="form-group hidden">
                     @Html.LabelFor(model => model.ligation_method, "Ligation method", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
                     <div class="col-md-8 col-lg-6">
@@ -627,14 +635,17 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
                     <div class="col-md-8 col-lg-6">
-                        @Html.TextAreaFor(model => model.des, 5, 150, new { @class = "form-control" })
+                        @Html.TextAreaFor(model => model.des, 7, 150, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-left">
+                            <button class="btn btn-danger" id="show_ligation" data-toggle="tooltip" data-placement="top" title="Display below how the fragments can be ligated"><i class="fa fa-eye"></i><span> Ligation</span></button>
+                        </div>
                         <div class="pull-right">
-                            <button class="btn btn-danger disabled" id="add6" name="StepButton" value="add6" data-toggle="tooltip" data-placement="top" title="Please select below how the fragments can be ligated"><i class="fa fa-plus-circle"></i><span> Ligation</span></button>
+                            <button class="btn btn-default disabled noEvent" id="add6" name="StepButton" value="add6" data-toggle="tooltip" data-placement="top" title="Please select below how the fragments can be ligated"><i class="fa fa-plus-circle"></i><span> Ligation</span></button>
                         </div>
                     </div>
                 </div>
@@ -937,9 +948,14 @@
 <script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
 @*feature viewer*@
 <script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
+@*include angular js*@
+<script src="~/Scripts/angular.min.js"></script>
+@*include angular plasmid*@
+<script src="~/Scripts/angularplasmid.complete.min.js"></script>
 <script src="~/Scripts/ecloning-digestion.js"></script>
 @*show ligation methods*@
 <script src="~/Scripts/ecloning-ligation.js"></script>
+
 <script>
     //for enzyme digesiton 
 
@@ -1233,12 +1249,6 @@
         else if (!$("#fragment1").hasClass("hidden") && $("#fragment2").hasClass("hidden")) {
             currentFrag = 2;
             $("#frag2Id").text(fragId);
-            $("#ligationDiv").removeClass("hidden");
-            //show ligation methods
-            //get the first frag1 id 
-            var f1Id = +$("#frag1Id").text();
-            var f2Id = +fragId;
-            show_ligation(f1Id, f2Id);
         }
         else {
             currentFrag = 0;
@@ -1415,7 +1425,41 @@
             $("#fragment2Lig-msg").text("Required");
             return false;
         }
+        if ($("#plasmidNameLig").val() == "" || $("#plasmidNameLig").val() == null) {
+            $("#plasmidNameLig-msg").text("Required");
+            return false;
+        }
         return true;
+    })
+
+    $('#show_ligation').click(function (e) {
+        e.preventDefault();
+        var showLigation = 0;
+        if ($("#nameLig").val() == "" || $("#nameLig").val() == null) {
+            $("#nameLig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($("#fragment1Lig").val() == "" || $("#fragment1Lig").val() == null) {
+            $("#fragment1Lig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($("#fragment2Lig").val() == "" || $("#fragment2Lig").val() == null) {
+            $("#fragment2Lig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($("#plasmidNameLig").val() == "" || $("#plasmidNameLig").val() == null) {
+            $("#plasmidNameLig-msg").text("Required");
+            showLigation = -1;
+        }
+        if (showLigation === 0) {
+            //show ligation
+            //show ligation methods
+            //get the first frag1 id 
+            var f1Id = +$("#frag1Id").text();
+            var f2Id = +$("#frag2Id").text()
+            show_ligation(f1Id, f2Id);
+            $("#ligationDiv").removeClass("hidden");
+        }
     })
 
     function drawPlasmid(plasmid_id){

@@ -85,7 +85,7 @@
                                 </a>
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.des)
+                                @Html.Raw(item.des)
                             </td>
                             <td>
                                 @if (item.dt != null)
