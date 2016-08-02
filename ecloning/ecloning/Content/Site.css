@@ -1047,4 +1047,8 @@ text.value {
     stroke: rgba(64,64,192,0.4);
     fill: rgba(192,192,255,0.4);
 }
+.grayregion{
+    stroke: rgba(153, 153, 153, 0.5);
+    fill: rgba(153, 153, 153, 0.1);
+}
 /* end for plasmid using angular JS and angular plasmid*/
