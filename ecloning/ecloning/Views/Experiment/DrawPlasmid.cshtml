@@ -4,86 +4,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-@*<plasmid sequencelength="130" plasmidheight="375" plasmidwidth="375" class="plasmid-font">
-    <plasmidtrack trackstyle="fill:none;stroke:none" radius="110">
-
-        <!-- track labels -->
-        <tracklabel labelstyle="font-weight:700;fill:#369" text="pBCA-RLuc"></tracklabel>
-        <tracklabel labelstyle="font-size:14px;font-weight:300;fill:#036" text="130 bp" vadjust="20"></tracklabel>
-
-        <!-- count -->
-        <trackscale interval="5" style="stroke:#999" labelclass="smlabel gray" labelvadjust="12" showlabels="0"></trackscale>
-
-        <!-- shaded regions -->
-        <!-- right ligation, 23 in middle, span 7x2 =14-->
-        <!-- f2 -->
-        <trackmarker start="16" end="30" class="purpleregion" vadjust="9" wadjust="-10"></trackmarker>        
-        <!-- f1 -->
-        <trackmarker start="16" end="30" class="greenregion" vadjust="-6" wadjust="-10"></trackmarker>
-
-        <!-- left ligation, 104 in middle -->
-        <!-- f2 -->
-        <trackmarker start="97" end="111" class="purpleregion" vadjust="-6" wadjust="-10"></trackmarker>
-        <!-- f1 -->
-        <trackmarker start="97" end="111" class="greenregion" vadjust="9" wadjust="-10"></trackmarker>
-
-
-        <!-- middle part-->
-        <!-- f2 -->
-        <trackmarker start="30" end="97" class="purpleregion" vadjust="-6" wadjust="5"></trackmarker>
-        <!-- f1 -->
-        <trackmarker start="111" end="16" class="greenregion" vadjust="-6" wadjust="5"></trackmarker>
-
-        <!-- fragment 1 -->
-        <trackmarker start="120" end="10" markerstyle="fill:green" vadjust="50" wadjust="-23" arrowendlength="5" arrowendwidth="0.5">
-            <markerlabel type="path" text="fragment1, clockwise (+)" valign="outer" labelclass="mdlabel green" vadjust="5"></markerlabel>
-        </trackmarker>
-
-        <!-- fragment 1, anticlockwise
-
-        <trackmarker start="120" end="10" markerstyle="fill:green" vadjust="50" wadjust="-23" arrowstartlength="5" arrowstartwidth="0.5">
-            <markerlabel type="path" text="fragment1, anticlockwise (-)" valign="outer" labelclass="mdlabel green" vadjust="5"></markerlabel>
-        </trackmarker>
-
-         -->
-        <!-- fragment 2 -->
-        <trackmarker start="55" end="75" markerstyle="fill:rgba(64,64,192,0.4)" vadjust="50" wadjust="-23" arrowendlength="5" arrowendwidth="0.5">
-            <markerlabel type="path" text="fragment2, clockwise (+)" valign="outer" labelclass="mdlabel blue" vadjust="5"></markerlabel>
-        </trackmarker>
-
-        <!-- nucleotide list and ticks marks between nucleotides-->
-        <trackmarker start="0" end="130">
-            <markerlabel type="path" labelstyle="font-size:8px;font-weight:400;kerning:1.1" text="GGAAAAGGAGGCCAGTGCATCAGAGAGACGCTGAAACTGTATGCGGAAAAGGAGGCCAGTGCATCAGAGAGTCGCAAACAGCTGTGAAGTCGCGTTCTCAAGAATTTGCAGCAGGCTGTGGCCACTTCGCCGGAAAAGGAGGCCAGTGCATCAGAGAGCAAGATCACAGCTGTGAAGTCGCTTC" halign="start" vadjust="5"></markerlabel>
-            <markerlabel type="path" labelstyle="font-size:8px;font-weight:400" text="CCTTTTCCTCCGGTCACGTAGTCTCTCTGCGACTTTGACATACGCCTTTTCCTCCGGTCACGTAGTCTCTCAGCGTTTGTCGACACTTCAGCGCAAGAGTTCTTAAACGTCGTCCGACACCGGTGAAGCGGCCTTTTCCTCCGGTCACGTAGTCTCTCGTTCTAGTGTCGACACTTCAGCGAAG" halign="start" vadjust="-10"></markerlabel>
-        </trackmarker>
-        <trackscale interval="1" style="stroke:#c99" ticksize="5" vadjust="-18"></trackscale>
-
-
-        <!-- left ligation -->
-
-        <trackmarker start="104" markerstyle="stroke:gray;stroke-width:1px" vadjust="-6" wadjust="5">
-            <markerlabel type="path" text="Ligation Site" class="mdlabel red" valign="outer" vadjust="25"></markerlabel>
-        </trackmarker>
-
-
-        <!-- right ligation -->
-        <trackmarker start="23" markerstyle="stroke:gray;stroke-width:1px" vadjust="-6" wadjust="5">
-            <markerlabel type="path" text="Ligation Site" class="mdlabel red" valign="outer" vadjust="25"></markerlabel>
-        </trackmarker>
-
-    </plasmidtrack>
-</plasmid>*@
-
-
-<plasmid sequencelength="130" plasmidheight="375" plasmidwidth="375" class="plasmid-font"><plasmidtrack trackstyle="fill:none;stroke:none" radius="110"><tracklabel labelstyle="font-weight:700;fill:#369" text=""></tracklabel><tracklabel labelstyle="font-size:14px;font-weight:300;fill:#036" text="9988 bp" vadjust="20"></tracklabel><trackmarker start="102" end="106" class="greenregion" vadjust="-6" wadjust="5"></trackmarker><trackmarker start="21" end="27" class="greenregion" vadjust="-6" wadjust="5"></trackmarker><trackmarker start="120" end="10" markerstyle="fill:green" vadjust="50" wadjust="-23" arrowendlength="5" arrowendwidth="0.5"><markerlabel type="path" text="fragment1, clockwise (+)" valign="outer" labelclass="mdlabel green" vadjust="5"></markerlabel></trackmarker><trackmarker start="55" end="75" markerstyle="fill:rgba(64,64,192,0.4)" vadjust="50" wadjust="-23" arrowendlength="5" arrowendwidth="0.5"><markerlabel type="path" text="fragment2, clockwise (+)" valign="outer" labelclass="mdlabel blue" vadjust="5"></markerlabel> </trackmarker><trackmarker start="0" end="130"><markerlabel type="path" labelstyle="font-size:8px;font-weight:400;kerning:1.1" text="...AAATGCATGCTCTTCAACCTCAATAATCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAG......GTTAATAAACAATTTTCCATAATACATTTAACAACATGCGTTCTTCGGGGCGAAAACTCTCA..." halign="start" vadjust="5"></markerlabel><markerlabel type="path" labelstyle="font-size:8px;font-weight:400" text="...TTTACGTACGAGAAGTTGGAGTTATTAGTTCAGTCTCCACCGCTTTGGGCTGTCCTGATATTTC......CAATTATTTGTTAAAAGGTATTATGTAAATTGTTGTACGCAAGAAGCCCCGCTTTTGAGAGT..." halign="start" vadjust="-10"></markerlabel></trackmarker><trackscale interval="1" style="stroke:#c99" ticksize="5" vadjust="-18"></trackscale><trackmarker start="104" markerstyle="stroke:rgba(255,0,0,1);stroke-width:1px" vadjust="-6" wadjust="5"><markerlabel type="path" text="Ligation Site" class="mdlabel red" valign="outer" vadjust="35"></markerlabel></trackmarker><trackmarker start="104" end="106" class="blue" vadjust="30" wadjust="-23" arrowstartlength="5" arrowstartwidth="1"><markerlabel type="path" text="f1-blunting" halign="start" vadjust="15" labelclass="smlabel blue"></markerlabel></trackmarker><trackmarker start="102" end="104" class="purple" vadjust="-13" wadjust="-23" arrowendlength="5" arrowendwidth="1"><markerlabel type="path" text="f2-blunting" halign="end" vadjust="-5" labelclass="smlabel purple"></markerlabel></trackmarker><trackmarker start="23" markerstyle="stroke:rgba(255,0,0,1);stroke-width:1px" vadjust="-6" wadjust="5"><markerlabel type="path" text="Ligation Site" class="mdlabel red" valign="outer" vadjust="35"></markerlabel></trackmarker><trackmarker start="21" end="23" class="blue" vadjust="-13" wadjust="-23" arrowendlength="5" arrowendwidth="1"><markerlabel type="path" text="f1-blunting" halign="end" vadjust="-5" labelclass="smlabel blue"></markerlabel></trackmarker><trackmarker start="23" end="27" class="purple" vadjust="-13" wadjust="-23" arrowstartlength="5" arrowstartwidth="1"><markerlabel type="path" text="f2-blunting" halign="start" vadjust="-5" labelclass="smlabel purple"></markerlabel></trackmarker></plasmidtrack></plasmid>
-
+<div id="plasmid"></div>
 
 @Scripts.Render("~/bundles/jquery")
-@*include angular js*@
-<script src="~/Scripts/angular.min.js"></script>
-@*include angular plasmid*@
-<script src="~/Scripts/angularplasmid.complete.min.js"></script>
+@Scripts.Render("~/bundles/d3")
+
 @*show ligation methods*@
 <script src="~/Scripts/ecloning-ligation.js"></script>
+
+<script>
+    var fSeqFront = '---AAAGGAGGCCAGT'; //f1
+    var fSeqMiddle = 'GCATCAGAGAGACGCTGAAACTGTATGCGGAAAAGGAGGCCAGTGCATCAGAGAGTCGCAAACAGCTGTGAAGTCGCGTT'; //f2
+    var fSeqEnd = 'CTCAAGAATTTGCAGCAGGCT---'; //f1
+
+    var cSeqFront = '---TTTCCTCCGGTCACGTA'; //f1
+    var cSeqMiddle = 'GTCTCTCTGCGACTTTGACATACGCCTTTTCCTCCGGTCACGTAGTCTCTCAGCGTTTGTCGACACTTCAGCGCAAGAGT'; //f2
+    var cSeqEnd = 'TCTTAAACGTCGTCCGA---'; //f1
+
+    var fSeqArray = [fSeqFront, fSeqMiddle, fSeqEnd];
+    var cSeqArray = [cSeqFront, cSeqMiddle, cSeqEnd];
+    var fBluntingArray = [10, 20];
+    var cBluntingArray = [40, 60];
+
+    DrawPlasmid(fSeqArray, cSeqArray, false, fBluntingArray, cBluntingArray,"pACK-Luc", 1000, "#plasmid");
+
+
+</script>

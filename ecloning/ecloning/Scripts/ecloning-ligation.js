@@ -370,6 +370,7 @@ function drawDirectLigation(fragment1, fragment2, idClock, idAntiClock, directio
 
 
 
+
 function genIndrectfSeq(fragment1, fragment2, clockwise) {
     var f1fSeq = '';
     var f2fSeq = fragment2.fSeq;
@@ -459,7 +460,7 @@ function genIndrectfSeq(fragment1, fragment2, clockwise) {
 }
 
 
-function genIndrectcSeq(fSeq)
+function genLigationcSeq(fSeq)
 {
     var array = fSeq.split('');
     var outArray = [];
@@ -481,12 +482,229 @@ function genIndrectcSeq(fSeq)
     })
     return outArray.join('');
 }
-function genDot(num) {
+function genDash(num) {
     var out = "";
     if (num > 0) {
         for (i = 0; i <= num; i++) {
-            out += ".";
+            out += "-";
         }
     }
     return out;
+}
+
+
+
+//draw ligation plasmid
+function DrawPlasmid(fSeqArray, cSeqArray, clockwise, fBluntingArray, cBluntingArray, plasmidName, plasmidLength, id) {
+    //check the length of the seq
+    var fSeq = fSeqArray[0] + fSeqArray[1] + fSeqArray[2];
+    var cSeq = cSeqArray[0] + cSeqArray[1] + cSeqArray[2];
+
+
+    if (fSeq.length != 120 || cSeq.length != 120) {
+        console.log('invalid sequence! Sequence must contain 120bp!');
+    }
+    else {
+        //generate array of objects
+        var space = 360 / 120;
+        var data1 = genArray(fSeq, fSeqArray, fBluntingArray, space);
+        var data2 = genArray(cSeq, cSeqArray, cBluntingArray, space);
+        //draw canvas
+        var margin = { top: 20, right: 20, bottom: 20, left: 20 },
+        width = 500 - margin.left - margin.right,
+        height = width;
+
+        var radius = width / 2, step = 20;
+
+
+        //forward seq
+        var farc = d3.svg.arc()
+            .outerRadius(radius - step)
+            .innerRadius(radius - step * 2);
+        var fpie = d3.layout.pie()
+                .sort(null)
+                .value(function (d) { return d.space; });
+        //complement seq
+        var carc = d3.svg.arc()
+            .outerRadius(radius - step * 2)
+            .innerRadius(radius - step * 3);
+        var cpie = d3.layout.pie()
+                .sort(null)
+                .value(function (d) { return d.space; });
+        //symbol
+
+        var s1arc = d3.svg.arc()
+            .outerRadius(radius - step * 2.3)
+            .innerRadius(radius - step * 2.1);
+        var s2arc = d3.svg.arc()
+            .outerRadius(radius - step * 1.9)
+            .innerRadius(radius - step * 1.7);
+
+        //draw arrow
+        var f1arc;
+        if (clockwise) {
+            f1arc = d3.svg.arc()
+                        .innerRadius(radius - 4 * step - 2)
+                        .outerRadius(radius - 4 * step)
+                        .startAngle(0)
+                        .endAngle(-2 * Math.PI * 1 / 6);
+        }
+        else {
+            f1arc = d3.svg.arc()
+                        .innerRadius(radius - 4 * step - 2)
+                        .outerRadius(radius - 4 * step)
+                        .startAngle(-2 * Math.PI * 1 / 6)
+                        .endAngle(0);
+        }
+
+        var f2arc = d3.svg.arc()
+                        .innerRadius(radius - 4 * step - 2)
+                        .outerRadius(radius - 4 * step)
+                        .startAngle(2 * Math.PI * 3 / 6)
+                        .endAngle(2 * Math.PI * 2 / 6);
+
+
+        //draw svg container
+        var svg = d3.select(id).append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                  .append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        svg.append("text")
+              .attr("dy", ".35em")
+              .attr("text-anchor", "middle")
+              .attr("class", "pName")
+              .text(plasmidName);
+
+        svg.append("text")
+              .attr("y", 25)
+              .attr("dy", ".35em")
+              .attr("text-anchor", "middle")
+              .text(plasmidLength + " bp");
+
+        //forward
+        var fg = svg.selectAll(".farc")
+              .data(fpie(data1))
+            .enter().append("g")
+              .attr("class", "farc");
+
+
+        fg.append("path")
+            .attr("d", farc)
+            .style("stroke", function (d) { return d.data.fragment == "f1" ? "rgba(192,255,192,0.2)" : "rgba(192,192,255,0.2)" })
+            .style("fill", function (d) { return d.data.fragment == "f1" ? "rgba(64,192,64,0.2)" : "rgba(64,64,192,0.2)" });
+
+        fg.append("text")
+              .attr("transform", function (d) { return "translate(" + farc.centroid(d) + ")rotate(" + angle(d) + ")"; })
+              .attr("dy", ".35em")
+              .attr("fill", function (d) { return d.data.blunting ? "red" : "black" })
+              .text(function (d) { return d.data.letter; });
+
+        //complement
+        var cg = svg.selectAll(".carc")
+              .data(cpie(data2))
+            .enter().append("g")
+              .attr("class", "carc");
+
+
+        cg.append("path")
+            .attr("d", carc)
+            .style("stroke", function (d) { return d.data.fragment == "f1" ? "rgba(192,255,192,0.2)" : "rgba(192,192,255,0.2)" })
+            .style("fill", function (d) { return d.data.fragment == "f1" ? "rgba(64,192,64,0.2)" : "rgba(64,64,192,0.2)" });
+
+        cg.append("text")
+              .attr("transform", function (d) { return "translate(" + carc.centroid(d) + ")rotate(" + angle(d) + ")"; })
+              .attr("dy", ".35em")
+              .attr("fill", function (d) { return d.data.blunting ? "red" : "black" })
+              .text(function (d) { return d.data.letter; });
+
+        cg.append("polyline")
+             .attr("points", function (d) {
+                 return [s1arc.centroid(d), s2arc.centroid(d)];
+             })
+            .attr("stroke", function (d) {
+                return "gray";
+            });
+
+
+        svg.append("text")
+                .attr("y", -120)
+                .attr("dy", ".35em")
+                .attr("text-anchor", "middle")
+                .style("stroke", "rgba(192,255,192,0.2)")
+                .text(function () { return clockwise ? "fragment1 (+)" : "fragment1 (-)"; });
+
+        svg.append("text")
+                 .attr("y", 120)
+                 .attr("dy", ".35em")
+                 .attr("text-anchor", "middle")
+                 .style("stroke", "rgba(192,192,255,0.2)")
+                 .text("fragment2 (+)");
+
+
+        //f1 arrow
+        var f1Arrow = svg.append("svg:defs").append("svg:marker")
+            .attr("id", "f1_triangle")
+            .attr("refX", 6)
+            .attr("refY", function () { return clockwise ? 4 : 8; })
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 30)
+            .attr("orient", function () { return clockwise ? "0deg" : "110deg"; })
+            .append("path")
+            .attr("d", "M 0 0 12 6 0 12 3 6")
+            .style("fill", "rgba(64,192,64,1)");
+
+        svg.append("path")
+                        .attr("d", f1arc)
+                        .attr("stroke-width", 1)
+                        .attr("stroke", "black")
+                        .attr("marker-end", "url(#f1_triangle)")
+                          .style("stroke", "rgba(192,255,192,0.2)")
+                          .style("fill", "rgba(64,192,64,1)")
+                          .attr("transform", function (d) { return "rotate(" + 30 + ")"; });
+
+        //f2 arrow
+        var f2Arrow = svg.append("svg:defs").append("svg:marker")
+            .attr("id", "f2_triangle")
+            .attr("refX", 6)
+            .attr("refY", 5)
+            .attr("markerWidth", 30)
+            .attr("markerHeight", 30)
+            .attr("orient", "180deg")
+            .append("path")
+            .attr("d", "M 0 0 12 6 0 12 3 6")
+            .style("fill", "rgba(192,192,255,1)");
+
+        svg.append("path")
+                        .attr("d", f2arc)
+                        .attr("stroke-width", 1)
+                        .attr("stroke", "black")
+                        .attr("marker-end", "url(#f2_triangle)")
+                          .style("stroke", "rgba(192,255,192,0.2)")
+                          .style("fill", "rgba(192,192,255,1)")
+                          .attr("transform", function (d) { return "rotate(" + 30 + ")"; });
+    }
+
+}
+
+function genArray(seq, array, bluntingArray, space) {
+    //process forwar seq
+    var letterArray = seq.split('');
+    var data = [];
+    $.each(letterArray, function (i, d) {
+        var obj = {};
+        obj.blunting = (bluntingArray.length > 0 && $.inArray(i, bluntingArray) != -1) ? true : false;
+        obj.fragment = (i <= array[0].length || i >= (120 - array[2].length)) ? "f1" : "f2";
+        obj.id = i;
+        obj.letter = d.toUpperCase();
+        obj.space = space;
+        data.push(obj);
+    })
+    return data;
+}
+
+function angle(d) {
+    var a = (d.startAngle + d.endAngle) * 90 / Math.PI + 180;
+    return a > 90 ? a - 180 : a;
 }

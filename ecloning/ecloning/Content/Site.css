@@ -1052,3 +1052,20 @@ text.value {
     fill: rgba(153, 153, 153, 0.1);
 }
 /* end for plasmid using angular JS and angular plasmid*/
+
+.farc text {
+  font: 12px Lato;
+  text-anchor: middle;
+}
+
+
+.carc text {
+  font: 12px Lato;
+  text-anchor: middle;
+}
+.pName
+{
+      font: 20px Lato;
+      text-anchor: middle;
+      font-weight: 400;
+}
