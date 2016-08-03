@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div id="plasmid"></div>
+<div id="plasmid" class="noEvent"></div>
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/d3")
@@ -23,8 +23,8 @@
 
     var fSeqArray = [fSeqFront, fSeqMiddle, fSeqEnd];
     var cSeqArray = [cSeqFront, cSeqMiddle, cSeqEnd];
-    var fBluntingArray = [10, 20];
-    var cBluntingArray = [40, 60];
+    var fBluntingArray = [100, 20];
+    var cBluntingArray = [21, 99];
 
     DrawPlasmid(fSeqArray, cSeqArray, false, fBluntingArray, cBluntingArray,"pACK-Luc", 1000, "#plasmid");
 

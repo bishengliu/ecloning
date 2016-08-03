@@ -72,7 +72,7 @@ function show_ligation(f1Id, f2Id) {
                         && 
                     Math.abs(fragment2[0].overhangs[1]) === Math.abs(fragment1[0].overhangs[1])
                         &&
-                    gencomSeq(fragment2[0].cSeq.substring(fragment2[0].cSeq.length - fragment2[0].overhangs[1])) === genRevSeq(fragment1[0].cSeq.substring(cSeq.length - fragment1[0].overhangs[1])))
+                    gencomSeq(fragment2[0].cSeq.substring(fragment2[0].cSeq.length - fragment2[0].overhangs[1])) === genRevSeq(fragment1[0].cSeq.substring(fragment1[0].cSeq.length - fragment1[0].overhangs[1])))
                 {
                     //check whether fragment2 left matches with fragment1 left
                     if (fragment2[0].overhangs[0] === fragment1[0].overhangs[0]) {
@@ -353,8 +353,16 @@ function genRevSeq(seq) {
 function drawInDirectLigation(fragment1, fragment2, idClock, idAntiClock, direction) {
     //indirect ligation always has 2 direction
     console.log("I am trying to draw the indirect ligation for you...")
+    console.log([idClock, idAntiClock])
     var plasmidName = $("#plasmidName").val();
     var plasmidLength = Math.max(fragment1.cSeq.length, fragment1.fSeq.length) + Math.max(fragment2.cSeq.length, fragment2.fSeq.length);
+    //generate seq proper for clockwise
+    var obj1 = genIndrectSeqProperty(fragment1, fragment2, true);
+    //draw plasmid
+    DrawPlasmid(obj1.fSeqArray, obj1.cSeqArray, true, obj1.fBluntingArray, obj1.cBluntingArray, plasmidName, plasmidLength, "#" + idClock);
+    //generate seq proper for anticlockwise
+    var obj2 = genIndrectSeqProperty(fragment1, fragment2, false);
+    DrawPlasmid(obj2.fSeqArray, obj2.cSeqArray, false, obj2.fBluntingArray, obj2.cBluntingArray, plasmidName, plasmidLength, "#" + idAntiClock);
 }
 
 //"method1-cw-map", "method1-acw-map"
@@ -367,96 +375,234 @@ function drawDirectLigation(fragment1, fragment2, idClock, idAntiClock, directio
 }
 
 
+function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
+    var fSeqArray = []; //fSeqFront, fSeqMiddle, fSeqEnd
+    var cSeqArray = []; //cSeqFront, cSeqMiddle, cSeqEnd
+    var cBluntingArray = [];
+    var fBluntingArray = [];
 
-
-
-
-function genIndrectfSeq(fragment1, fragment2, clockwise) {
     var f1fSeq = '';
-    var f2fSeq = fragment2.fSeq;
+    var c1fSeq = '';
+    var f2fSeq = genRevSeq(fragment2.fSeq);
+    var c2fSeq = genRevSeq(fragment2.cSeq);
+
+    //f1
     if (clockwise) {
         //generate fSeq
         f1fSeq = fragment1.fSeq;
+        c1fSeq = fragment1.cSeq;
         //process right of fragment1
         if (fragment1.overhangs[1] < 0) {
-            var f1RightBlunting = gencomSeq(fragment1.cSeq.substring(fragment1.cSeq.length + fragment1.overhangs[1]));
-            f1fSeq = f1fSeq + f1RightBlunting;
+            var c1RightBlunting = gencomSeq(fragment1.fSeq.substring(fragment1.fSeq.length + fragment1.overhangs[1]));
+            c1fSeq = c1fSeq + c1RightBlunting;
+            //append cBluntingArray
+            for (i = 20; i > (20 + fragment1.overhangs[1]) ; i--) {
+                cBluntingArray.push(i);
+            }
         }
+        if (fragment1.overhangs[1] > 0) {
+            var f1RightBlunting = gencomSeq(fragment1.cSeq.substring(fragment1.cSeq.length - fragment1.overhangs[1]));
+            f1fSeq = f1fSeq + f1RightBlunting;
+            //append fBluntingArray
+            for (i = 20; i > (20 - fragment1.overhangs[1]) ; i--) {
+                fBluntingArray.push(i);
+            }
+        }
+
         //left of fragment1
         if (fragment1.overhangs[0] > 0) {
             var f1LeftBlunting = gencomSeq(fragment1.cSeq.substring(0, fragment1.overhangs[0]));
             f1fSeq = f1LeftBlunting + f1fSeq;
+            //append fBluntingArray
+            for (i = 100; i > (100 + fragment1.overhangs[0]) ; i++) {
+                fBluntingArray.push(i);
+            }
+        }
+        if (fragment1.overhangs[0] < 0) {
+            var c1LeftBlunting = gencomSeq(fragment1.fSeq.substring(0, -fragment1.overhangs[0]));
+            c1fSeq = c1LeftBlunting + c1fSeq;
+            //append cBluntingArray
+            for (i = 100; i > (100 - fragment1.overhangs[1]) ; i++) {
+                cBluntingArray.push(i);
+            }
         }
     }
     else
     {
         //anticlock
-        f1fSeq =genRevSeq(fragment1.fSeq);
+        f1fSeq = genRevSeq(fragment1.cSeq);
+        c1fSeq = genRevSeq(fragment1.fSeq);
         //process right of fragment1
-        if (fragment1.overhangs[0] > 0) {
-            var f1RightBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(fragment1.cSeq.length - fragment1.overhangs[0]));
+        if (fragment1.overhangs[0] < 0) {
+            var f1RightBlunting = gencomSeq(genRevSeq(fragment1.fSeq).substring(0, -fragment1.overhangs[0]));
             f1fSeq = f1fSeq + f1RightBlunting;
+            //append fBluntingArray
+            for (i = 20; i > (20 + fragment1.overhangs[0]) ; i--) {
+                fBluntingArray.push(i);
+            }
         }
+        if (fragment1.overhangs[0] > 0) {
+            var c1RightBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(0, fragment1.overhangs[0]));
+            c1fSeq = c1fSeq + c1RightBlunting;
+            //append cBluntingArray
+            for (i = 20; i > (20 - fragment1.overhangs[0]) ; i--) {
+                cBluntingArray.push(i);
+            }
+        }
+
+
         //left of fragment1
         if (fragment1.overhangs[1] > 0) {
-            var f1LeftBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(0, fragment1.overhangs[0]));
-            f1fSeq = f1LeftBlunting + f1fSeq;
+            var c1LeftBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(fragment1.cSeq.length - fragment1.overhangs[1]));
+            c1fSeq = c1LeftBlunting + c1fSeq;
+            //append cBluntingArray
+            for (i = 100; i > (100 + fragment1.overhangs[1]) ; i++) {
+                cBluntingArray.push(i);
+            }
         }
+        if (fragment1.overhangs[1] < 0) {
+            var f1LeftBlunting = gencomSeq(genRevSeq(fragment1.fSeq).substring(fragment1.fSeq.length + fragment1.overhangs[1]));
+            f1fSeq = f1LeftBlunting + f1fSeq;
+
+            //append fBluntingArray
+            for (i = 100; i > (100 - fragment1.overhangs[1]) ; i++) {
+                fBluntingArray.push(i);
+            }
+        }
+
     }
 
-        //process right of fragment2
-        if (fragment2.overhangs[0] > 0) {
-            var f2RightBlunting = gencomSeq(fragment2.cSeq.substring(0, fragment2.overhangs[0]));
-            f2fSeq = f2RightBlunting + f2fSeq;
-        }
-        //left of fragment 2
+
+    //f2
+        //process left of fragment2
         if (fragment2.overhangs[1] > 0) {
-            var f2LeftBlunting = gencomSeq(fragment2.cSeq.substring(fragment2.cSeq.length - fragment2.overhangs[1]));
+            var f2RightBlunting = gencomSeq(genRevSeq(fragment2.cSeq).substring(0, fragment2.overhangs[1]));
+            f2fSeq = f2RightBlunting + f2fSeq;
+            //append fBluntingArray
+            for (i = 99; i > (99 - fragment2.overhangs[1]) ; i--) {
+                fBluntingArray.push(i);
+            }
+        }
+        if (fragment2.overhangs[1] < 0) {
+            var c2RightBlunting = gencomSeq(genRevSeq(fragment2.fSeq).substring(0, -fragment2.overhangs[1]));
+            c2fSeq = c2RightBlunting + c2fSeq;
+            //append cBluntingArray
+            for (i = 99; i > (99 + fragment2.overhangs[1]) ; i--) {
+                cBluntingArray.push(i);
+            }
+        }
+
+        //right of fragment 2
+        if (fragment2.overhangs[0] > 0) {
+            var f2LeftBlunting = gencomSeq(genRevSeq(fragment2.cSeq).substring(fragment2.cSeq.length - fragment2.overhangs[0]));
             f2fSeq = f2fSeq + f2LeftBlunting;
+            //append fBluntingArray
+            for (i = 21; i > (21 + fragment2.overhangs[0]) ; i++) {
+                fBluntingArray.push(i);
+            }
+        }
+        if (fragment2.overhangs[0] < 0) {
+            var c2LeftBlunting = gencomSeq(genRevSeq(fragment2.fSeq).substring(fragment2.fSeq.length + fragment2.overhangs[0]));
+            c2fSeq = c2fSeq + c2LeftBlunting;
+            //append cBluntingArray
+            for (i = 21; i > (21 - fragment2.overhangs[0]) ; i++) {
+                cBluntingArray.push(i);
+            }
         }
 
 
-        //fragment 104 - 23 // total 130
-        var result = '';
-        f1fSeqFront = '';
-        f1fSeqEnd = '';
-        f2fSeqFront = '';
-        f2fSeqEnd = '';
 
-        var f1MinLen = 130-104 +1 + 23;
+
+
+        //genrate fSeqArray and cSeqArray
+        var fSeqFront, fSeqMiddle, fSeqEnd;
+        var cSeqFront, cSeqMiddle, cSeqEnd;
+
+    //fragment1
+    //fseq
+        var f1MinLen = 40;
         if (f1fSeq.length == f1MinLen) {
-            f1fSeqFront = f1fSeq.substring(f1fSeq.length - 23);
-            f1fSeqEnd = f1fSeq.substring(0, 27);
+            fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+            fSeqEnd = f1fSeq.substring(0, 20);
         }
         else if (f1fSeq.length > f1MinLen) {
-            f1fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 26);
-            f1fSeqEnd = f1fSeq.substring(0, 24) + '...';
+            fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+            fSeqEnd = f1fSeq.substring(0, 17) + '...';
         }
         else {
             //too short
             var length = Math.floor(f1fSeq.length / 2);
-            f1fSeqFront = genDot(f1MinLen - length) + f1fSeq.substring(f1fSeq.length - length);
-            f1fSeqEnd = f1fSeq.substring(0, f1fSeq.length - length) + genDot(f1MinLen - length);
+            fSeqFront = genDash(f1MinLen - length) + f1fSeq.substring(f1fSeq.length - length);
+            fSeqEnd = f1fSeq.substring(0, f1fSeq.length - length) + genDash(f1MinLen - length);
         }
-        //64 and 66
-        var f2MinLen = 104 - 23 + 1;
+    //cSfq
+        var c1MinLen = 40;
+        if (c1fSeq.length == c1MinLen) {
+            cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+            cSeqEnd = c1fSeq.substring(0, 20);
+        }
+        else if (c1fSeq.length > c1MinLen) {
+            cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+            cSeqEnd = c1fSeq.substring(0, 17) + '...';
+        }
+        else {
+            //too short
+            var length = Math.floor(c1fSeq.length / 2);
+            cSeqFront = genDash(c1MinLen - length) + c1fSeq.substring(c1fSeq.length - length);
+            cSeqEnd = c1fSeq.substring(0, c1fSeq.length - length) + genDash(c1MinLen - length);
+        }
+
+
+    //fragemnt2
+    //fseq
+        var f2MinLen = 80;
         if (f2fSeq.length == f2MinLen) {
-            result = f1fSeqFront + f2fSeq + f1fSeqEnd;
+            fSeqMiddle = f2fSeq;
         }
         else if (f2fSeq.length > f2MinLen) {
-            f2fSeqFront = f2fSeq.substring(0, 38)+ '...';
-            f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 38)
-            result = f1fSeqFront + f2fSeqFront + f2fSeqEnd + f1fSeqEnd;
+            f2fSeqFront = f2fSeq.substring(0, 37)+ '...';
+            f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+            fSeqMiddle = f2fSeqFront + f2fSeqEnd;
         }
         else {
             //too short
             var length = Math.floor(f1fSeq.length / 2);
-            f2fSeqFront = f2fSeq.substring(0, f2fSeq.length - length) + genDot(f2MinLen - length);
-            f2fSeqEnd = genDot(f2MinLen - length) + f2fSeq.substring(f2fSeq.length - length);
-            result = f1fSeqFront + f2fSeqFront + f2fSeqEnd + f1fSeqEnd;           
+            f2fSeqFront = f2fSeq.substring(0, f2fSeq.length - length) + genDash(f2MinLen - length);
+            f2fSeqEnd = genDash(f2MinLen - length) + f2fSeq.substring(f2fSeq.length - length);
+            fSeqMiddle = f2fSeqFront + f2fSeqEnd;
         }
-    
-        return result;
+    //cseq
+        var c2MinLen = 80;
+        if (c2fSeq.length == c2MinLen) {
+            cSeqMiddle = c2fSeq;
+        }
+        else if (c2fSeq.length > c2MinLen) {
+            c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+            c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+            cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+        }
+        else {
+            //too short
+            var length = Math.floor(c1fSeq.length / 2);
+            c2fSeqFront = c2fSeq.substring(0, c2fSeq.length - length) + genDash(c2MinLen - length);
+            c2fSeqEnd = genDash(c2MinLen - length) + c2fSeq.substring(c2fSeq.length - length);
+            cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+        }
+
+
+
+    //prepare for output
+        fSeqArray = [fSeqFront, fSeqMiddle, fSeqEnd]; 
+        cSeqArray = [cSeqFront, cSeqMiddle, cSeqEnd]; 
+        cBluntingArray;
+        fBluntingArray;
+        var obj = {};
+        obj.fSeqArray = fSeqArray;
+        obj.cSeqArray = cSeqArray;
+        obj.cBluntingArray = cBluntingArray;
+        obj.fBluntingArray = fBluntingArray;
+
+        return obj;
 }
 
 
@@ -493,13 +639,11 @@ function genDash(num) {
 }
 
 
-
 //draw ligation plasmid
 function DrawPlasmid(fSeqArray, cSeqArray, clockwise, fBluntingArray, cBluntingArray, plasmidName, plasmidLength, id) {
     //check the length of the seq
     var fSeq = fSeqArray[0] + fSeqArray[1] + fSeqArray[2];
     var cSeq = cSeqArray[0] + cSeqArray[1] + cSeqArray[2];
-
 
     if (fSeq.length != 120 || cSeq.length != 120) {
         console.log('invalid sequence! Sequence must contain 120bp!');
@@ -509,6 +653,7 @@ function DrawPlasmid(fSeqArray, cSeqArray, clockwise, fBluntingArray, cBluntingA
         var space = 360 / 120;
         var data1 = genArray(fSeq, fSeqArray, fBluntingArray, space);
         var data2 = genArray(cSeq, cSeqArray, cBluntingArray, space);
+
         //draw canvas
         var margin = { top: 20, right: 20, bottom: 20, left: 20 },
         width = 500 - margin.left - margin.right,
@@ -563,7 +708,7 @@ function DrawPlasmid(fSeqArray, cSeqArray, clockwise, fBluntingArray, cBluntingA
                         .startAngle(2 * Math.PI * 3 / 6)
                         .endAngle(2 * Math.PI * 2 / 6);
 
-
+        debugger;
         //draw svg container
         var svg = d3.select(id).append("svg")
                     .attr("width", width)
