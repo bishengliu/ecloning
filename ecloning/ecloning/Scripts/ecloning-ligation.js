@@ -291,8 +291,8 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
 
     var f1fSeq = '';
     var c1fSeq = '';
-    var f2fSeq = genRevSeq(fragment2.fSeq);
-    var c2fSeq = genRevSeq(fragment2.cSeq);
+    var f2fSeq = fragment2.fSeq;
+    var c2fSeq = fragment2.cSeq;
 
     //f1
     if (clockwise) {
@@ -304,7 +304,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             var c1RightBlunting = gencomSeq(fragment1.fSeq.substring(fragment1.fSeq.length + fragment1.overhangs[1]));
             c1fSeq = c1fSeq + c1RightBlunting;
             //append cBluntingArray
-            for (i = 20; i > (20 + fragment1.overhangs[1]) ; i--) {
+            for (i = 19; i > (19 + fragment1.overhangs[1]) ; i--) {
                 cBluntingArray.push(i);
             }
         }
@@ -312,7 +312,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             var f1RightBlunting = gencomSeq(fragment1.cSeq.substring(fragment1.cSeq.length - fragment1.overhangs[1]));
             f1fSeq = f1fSeq + f1RightBlunting;
             //append fBluntingArray
-            for (i = 20; i > (20 - fragment1.overhangs[1]) ; i--) {
+            for (i = 19; i > (19 - fragment1.overhangs[1]) ; i--) {
                 fBluntingArray.push(i);
             }
         }
@@ -345,7 +345,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             var f1RightBlunting = gencomSeq(genRevSeq(fragment1.fSeq).substring(0, -fragment1.overhangs[0]));
             f1fSeq = f1fSeq + f1RightBlunting;
             //append fBluntingArray
-            for (i = 20; i > (20 + fragment1.overhangs[0]) ; i--) {
+            for (i = 19; i > (19 + fragment1.overhangs[0]) ; i--) {
                 fBluntingArray.push(i);
             }
         }
@@ -353,7 +353,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             var c1RightBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(0, fragment1.overhangs[0]));
             c1fSeq = c1fSeq + c1RightBlunting;
             //append cBluntingArray
-            for (i = 20; i > (20 - fragment1.overhangs[0]) ; i--) {
+            for (i = 19; i > (19 - fragment1.overhangs[0]) ; i--) {
                 cBluntingArray.push(i);
             }
         }
@@ -381,19 +381,19 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
     }
 
 
-    //f2
+    ///////////////////////f2 is perfect and checked to be correct///////////////////
         //process left of fragment2
         if (fragment2.overhangs[1] > 0) {
-            var f2RightBlunting = gencomSeq(genRevSeq(fragment2.cSeq).substring(0, fragment2.overhangs[1]));
-            f2fSeq = f2RightBlunting + f2fSeq;
+            var f2RightBlunting = gencomSeq(fragment2.cSeq.substring(fragment2.cSeq.length - fragment2.overhangs[1]));
+            f2fSeq =  f2fSeq + f2RightBlunting;
             //append fBluntingArray
             for (i = 99; i > (99 - fragment2.overhangs[1]) ; i--) {
                 fBluntingArray.push(i);
             }
         }
         if (fragment2.overhangs[1] < 0) {
-            var c2RightBlunting = gencomSeq(genRevSeq(fragment2.fSeq).substring(0, -fragment2.overhangs[1]));
-            c2fSeq = c2RightBlunting + c2fSeq;
+            var c2RightBlunting = gencomSeq(fragment2.fSeq.substring(fragment2.fSeq.length + fragment2.overhangs[1]));
+            c2fSeq = c2fSeq + c2RightBlunting;
             //append cBluntingArray
             for (i = 99; i > (99 + fragment2.overhangs[1]) ; i--) {
                 cBluntingArray.push(i);
@@ -402,18 +402,18 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
 
         //right of fragment 2
         if (fragment2.overhangs[0] > 0) {
-            var f2LeftBlunting = gencomSeq(genRevSeq(fragment2.cSeq).substring(fragment2.cSeq.length - fragment2.overhangs[0]));
-            f2fSeq = f2fSeq + f2LeftBlunting;
+            var f2LeftBlunting = gencomSeq(fragment2.cSeq.substring(0, fragment2.overhangs[0]));
+            f2fSeq =  f2LeftBlunting+ f2fSeq;
             //append fBluntingArray
-            for (i = 21; i > (21 + fragment2.overhangs[0]) ; i++) {
+            for (i = 20; i < (20 + fragment2.overhangs[0]) ; i++) {
                 fBluntingArray.push(i);
             }
         }
         if (fragment2.overhangs[0] < 0) {
-            var c2LeftBlunting = gencomSeq(genRevSeq(fragment2.fSeq).substring(fragment2.fSeq.length + fragment2.overhangs[0]));
-            c2fSeq = c2fSeq + c2LeftBlunting;
+            var c2LeftBlunting = gencomSeq(fragment2.fSeq.substring(0, -fragment2.overhangs[0]));
+            c2fSeq = c2LeftBlunting+ c2fSeq;
             //append cBluntingArray
-            for (i = 21; i > (21 - fragment2.overhangs[0]) ; i++) {
+            for (i = 20; i < (20 - fragment2.overhangs[0]) ; i++) {
                 cBluntingArray.push(i);
             }
         }
@@ -748,7 +748,7 @@ function genArray(seq, array, bluntingArray, space) {
     $.each(letterArray, function (i, d) {
         var obj = {};
         obj.blunting = (bluntingArray.length > 0 && $.inArray(i, bluntingArray) != -1) ? true : false;
-        obj.fragment = (i <= array[0].length || i >= (120 - array[2].length)) ? "f1" : "f2";
+        obj.fragment = (i < array[0].length || i >= (120 - array[2].length)) ? "f1" : "f2";
         obj.id = i;
         obj.letter = d.toUpperCase();
         obj.space = space;
