@@ -1931,6 +1931,7 @@
     <Content Include="Views\BioTools\FindORF.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Experiment\DrawPlasmid.cshtml" />
+    <Content Include="Views\BioTools\AlignMultiple2Seq.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />

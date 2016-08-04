@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewBag.Title = "Multiple 2 Sequence Alignment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    You can use this tool to align multiple seqeucens of DNA against ONE seqeucens (subject sequence). <br/> 1) Please provide the subject sequence in the text box below, the names of the sequence is optional. 2) The multiple query sequences must be separately saved in'.seq' files (one sequence per file). 3) The '.seq' is normally exported from sequencing file and contains ONLY nucleotides. 
+</div>
+<div class="row" id="sequences">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return uploadSize();" }))
+        {
+            <div class="form-horizontal">
+                <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block">
+                    <h4 class="text-primary">Subject Sequence:</h4>
+                    <div class="form-group">
+                        <div class="pull-left">
+                            @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-12" })
+                        </div>
+                        <div class="col-md-12">
+                            @Html.Editor("seq1Name", new { htmlAttributes = new { @class = "form-control", @placeholder = "Optional" } })
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <div class="pull-left">
+                            @Html.Label("Sequence", htmlAttributes: new { @class = "control-label col-md-6" })
+                        </div>
+                        <p id="error1" class="text-danger text-center"></p>
+                        <div class="col-md-12">
+                            <p id="seq-error" class="text-danger text-center"></p>
+                            <textarea id="seq1" cols="10" rows="10" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block" id="query">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="text-primary pull-left">Query Sequences:</h4>
+                        </div>
+                        <div class="col-md-6 pull-right">
+                            <button class="btn btn-danger pull-left" id="addSeq" data-toggle="tooltip" data-placement="top" title="Add another sequence file"><i class="fa fa-plus-circle"></i></button>
+                            <button class="btn btn-danger pull-right" id="removeSeq" data-toggle="tooltip" data-placement="top" title="Remove the last sequence file"><i class="fa fa-minus-circle"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group required query-seq">
+                        <div class="pull-left">
+                            @Html.Label("Sequence 1", htmlAttributes: new { @class = "control-label col-md-12" })
+                        </div>
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="seq1_name" readonly>
+                                <span class="input-group-btn">
+                                    <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="seq1_fn" id="seq1_fn" accept=".seq" class="uploadSeq" onchange="getFilePath('seq1')" /></span>
+                                </span>
+                            </div>
+                        </div>
+                        <input class="hidden" id="seq1-sequence" value="">
+                        <p id="seq1-msg" class="text-danger text-center"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-5 col-sm-2">
+                        <input type="submit" value="Align Sequences" class="btn btn-block btn-primary" id="showResult" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+
+    $(document).ready(function () {
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    })
+
+    $('#seq1').change(function () {
+        var before = $('#seq1').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#seq1').val(after);
+    });
+
+    function getFilePath(name) {
+        var fullPath = document.getElementById(name+'_fn').value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById(name + "_name").value = fileName;
+    }
+
+    //form
+    $('#showResult').click(function (e) {
+        e.preventDefault();
+        var result = false;
+        if ($("#seq1").val() == null || $("#seq1").val() == "") {
+            $("#seq-error").text("Required");
+        }
+
+        var len = $('.query-seq').length;
+        for (i = 1; i <= len; i++) {
+            var id = "#seq" + i + "_name";
+            if ($(id).val() == "" || $(id).val() == null) {
+                $("#seq" + i + "-msg").text("Please first select a \".seq\" file!");
+            }
+            else {
+                result = true;
+                //get the file content
+                var seqId = "#seq" + i + "-sequence";
+                var inputId = "seq" + i + "_fn";
+                handleFileSelect(inputId, seqId);
+            }
+        }
+        if (result) {
+            //alignment here ...
+
+        }
+    })
+
+    $('#addSeq').click(function (e) {
+        e.preventDefault();
+        var num = $('.query-seq').length;
+        addSeq(num+1);
+
+    })
+
+    $('#removeSeq').click(function (e) {
+        e.preventDefault();
+        var num = $('.query-seq').length;
+        if (num <= 1) {
+            alert("The last cannot be removed!");
+        }
+        else {
+            removeSeq();
+        }
+    })
+
+    function addSeq(num) {
+        var html = "";
+        html += '<div class="form-group required query-seq">';
+
+            html += '<div class="pull-left">';
+                html += '<label class="control-label col-md-12" for="Sequence_'+num+'">Sequence '+num+'</label>';
+            html += '</div>';
+
+            html += '<div class="col-md-12">';
+                html += '<div class="input-group">';
+                    html += '<input type="text" class="form-control" id="seq'+num+'_name" readonly="">';
+                        html += '<span class="input-group-btn">';
+                        html += '<span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="seq' + num + '_fn" id="seq' + num + '_fn" class="uploadSeq" accept=".seq" onchange="getFilePath(\'' + 'seq' + num + '\')"></span>';
+                        html += '</span>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<input class="hidden" id="seq' + num + '-sequence" value=""/>';
+                html += '<p id="seq' + num + '-msg" class="text-danger text-center"></p>';
+            html += '</div>';
+            html += '</div>';
+
+            $("#query").append(html);
+    }
+    function removeSeq() {
+        $(".query-seq").last().remove();
+    }
+
+    function handleFileSelect(inputId, seqId) {
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+            alert('The File APIs are not fully supported in this browser.');
+            return;
+        }
+        var input = document.getElementById(inputId);
+        if (!input) {
+            alert("Um, couldn't find the fileinput element.");
+        }
+        else if (!input.files) {
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!input.files[0]) {
+            alert("Please select a file before clicking 'Load'");
+        }
+        else {
+
+            var file = input.files[0];
+            debugger;
+            (function (file) {
+                var fr = new FileReader();
+
+                fr.onload = function (e) {
+                    var text = fr.result;
+                    $(seqId).val(text);
+                }
+                fr.readAsText(file);
+            })(file);           
+        }
+    }
+
+
+</script>

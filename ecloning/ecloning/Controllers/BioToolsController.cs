@@ -30,6 +30,10 @@ namespace ecloning.Controllers
             return View();
         }
 
+        public ActionResult AlignMultiple2Seq()
+        {
+            return View();
+        }
         public ActionResult SeqEditor(string type)
         {
             ViewBag.Type = type;
