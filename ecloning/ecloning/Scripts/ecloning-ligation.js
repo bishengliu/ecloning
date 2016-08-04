@@ -261,15 +261,16 @@ function genRevSeq(seq) {
 function drawInDirectLigation(fragment1, fragment2, idClock, idAntiClock, direction) {
     //indirect ligation always has 2 direction
     console.log("I am trying to draw the indirect ligation for you...")
-    console.log([idClock, idAntiClock])
-    var plasmidName = $("#plasmidName").val();
+    var plasmidName = $("#plasmidNameLig").val();
     var plasmidLength = Math.max(fragment1.cSeq.length, fragment1.fSeq.length) + Math.max(fragment2.cSeq.length, fragment2.fSeq.length);
     //generate seq proper for clockwise
     var obj1 = genIndrectSeqProperty(fragment1, fragment2, true);
-    //draw plasmid
+    //draw plasmidc
+    $("#" + idClock).empty();
     DrawPlasmid(obj1.fSeqArray, obj1.cSeqArray, true, obj1.fBluntingArray, obj1.cBluntingArray, plasmidName, plasmidLength, "#" + idClock);
     //generate seq proper for anticlockwise
     var obj2 = genIndrectSeqProperty(fragment1, fragment2, false);
+    $("#" + idAntiClock).empty();
     DrawPlasmid(obj2.fSeqArray, obj2.cSeqArray, false, obj2.fBluntingArray, obj2.cBluntingArray, plasmidName, plasmidLength, "#" + idAntiClock);
 }
 
@@ -279,6 +280,18 @@ function drawDirectLigation(fragment1, fragment2, idClock, idAntiClock, directio
     //2: clockwise
     //3 antiClockwise
     console.log("I am trying to draw the direct ligation for you...")
+    var plasmidName = $("#plasmidNameLig").val();
+    var plasmidLength = Math.max(fragment1.cSeq.length, fragment1.fSeq.length) + Math.max(fragment2.cSeq.length, fragment2.fSeq.length);
+    if (direction == 2) {
+        //clockwise
+    }
+    else if (direction == 3) {
+        //anticlockwise
+    }
+    else {
+        //1, both direction
+    }
+    
 
 }
 
