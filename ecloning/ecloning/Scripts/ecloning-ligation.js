@@ -294,7 +294,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
     var f2fSeq = fragment2.fSeq;
     var c2fSeq = fragment2.cSeq;
 
-    //f1
+    ///////////////////////f1 is perfect and checked to be correct///////////////////
     if (clockwise) {
         //generate fSeq
         f1fSeq = fragment1.fSeq;
@@ -342,7 +342,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
         c1fSeq = genRevSeq(fragment1.fSeq);
         //process right of fragment1
         if (fragment1.overhangs[0] < 0) {
-            var f1RightBlunting = gencomSeq(genRevSeq(fragment1.fSeq).substring(0, -fragment1.overhangs[0]));
+            var f1RightBlunting = gencomSeq(genRevSeq(fragment1.fSeq.substring(0, -fragment1.overhangs[0])));
             f1fSeq = f1fSeq + f1RightBlunting;
             //append fBluntingArray
             for (i = 19; i > (19 + fragment1.overhangs[0]) ; i--) {
@@ -350,7 +350,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             }
         }
         if (fragment1.overhangs[0] > 0) {
-            var c1RightBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(0, fragment1.overhangs[0]));
+            var c1RightBlunting = gencomSeq(genRevSeq(fragment1.cSeq.substring(0, fragment1.overhangs[0])));
             c1fSeq = c1fSeq + c1RightBlunting;
             //append cBluntingArray
             for (i = 19; i > (19 - fragment1.overhangs[0]) ; i--) {
@@ -361,26 +361,24 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
 
         //left of fragment1
         if (fragment1.overhangs[1] > 0) {
-            var c1LeftBlunting = gencomSeq(genRevSeq(fragment1.cSeq).substring(fragment1.cSeq.length - fragment1.overhangs[1]));
+            var c1LeftBlunting = gencomSeq(genRevSeq(fragment1.cSeq.substring(fragment1.cSeq.length - fragment1.overhangs[1])));
             c1fSeq = c1LeftBlunting + c1fSeq;
             //append cBluntingArray
-            for (i = 100; i > (100 + fragment1.overhangs[1]) ; i++) {
+            for (i = 100; i < (100 + fragment1.overhangs[1]) ; i++) {
                 cBluntingArray.push(i);
             }
         }
         if (fragment1.overhangs[1] < 0) {
-            var f1LeftBlunting = gencomSeq(genRevSeq(fragment1.fSeq).substring(fragment1.fSeq.length + fragment1.overhangs[1]));
+            var f1LeftBlunting = gencomSeq(genRevSeq(fragment1.fSeq.substring(fragment1.fSeq.length + fragment1.overhangs[1])));
             f1fSeq = f1LeftBlunting + f1fSeq;
 
             //append fBluntingArray
-            for (i = 100; i > (100 - fragment1.overhangs[1]) ; i++) {
+            for (i = 100; i < (100 - fragment1.overhangs[1]) ; i++) {
                 fBluntingArray.push(i);
             }
         }
 
     }
-
-
     ///////////////////////f2 is perfect and checked to be correct///////////////////
         //process left of fragment2
         if (fragment2.overhangs[1] > 0) {
