@@ -322,7 +322,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             var f1LeftBlunting = gencomSeq(fragment1.cSeq.substring(0, fragment1.overhangs[0]));
             f1fSeq = f1LeftBlunting + f1fSeq;
             //append fBluntingArray
-            for (i = 100; i > (100 + fragment1.overhangs[0]) ; i++) {
+            for (i = 100; i < (100 + fragment1.overhangs[0]) ; i++) {
                 fBluntingArray.push(i);
             }
         }
@@ -330,7 +330,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             var c1LeftBlunting = gencomSeq(fragment1.fSeq.substring(0, -fragment1.overhangs[0]));
             c1fSeq = c1LeftBlunting + c1fSeq;
             //append cBluntingArray
-            for (i = 100; i > (100 - fragment1.overhangs[1]) ; i++) {
+            for (i = 100; i < (100 - fragment1.overhangs[0]) ; i++) {
                 cBluntingArray.push(i);
             }
         }
