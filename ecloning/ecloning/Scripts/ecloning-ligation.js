@@ -17,7 +17,6 @@ function show_ligation(f1Id, f2Id) {
         //ligation directly, 
         //can be clockwise and anticlockwise
         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 1); //1: direction, both colockwise and anticolockwise
-        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
     }
 
     if (fragment1[0].overhangs[0] != 0 && fragment1[0].overhangs[1] != 0 && fragment2[0].overhangs[0] != 0 && fragment2[0].overhangs[1] != 0) {
@@ -48,7 +47,6 @@ function show_ligation(f1Id, f2Id) {
                         {
                             //both end match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
                         else if (fragment2[0].overhangs[0] > 0
                                 &&
@@ -56,14 +54,8 @@ function show_ligation(f1Id, f2Id) {
                         {
                             //both ends match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
-                        else {
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                        }
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
+
                     }
 
                 }
@@ -82,7 +74,6 @@ function show_ligation(f1Id, f2Id) {
                         {
                             //both end match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //3: direction, anticolockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
                         else if (fragment2[0].overhangs[0] > 0
                                     &&
@@ -90,21 +81,10 @@ function show_ligation(f1Id, f2Id) {
                         {
                             //both end match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //3: direction, anticolockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
-                        else {
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                        }
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
                     }
 
-                }
-                else {
-                    //if match not found, need first ligation
-                    drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                }                
+                }              
             }
             else {
                 //fragment2 right overhangs < 0
@@ -123,23 +103,15 @@ function show_ligation(f1Id, f2Id) {
                            fragment2[0].fSeq.substring(0, -fragment2[0].overhangs[0]) === gencomSeq(fragment1[0].cSeq.substring(cSeq.length - fragment1[0].overhangs[1]))) {
                             //both end match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
                         else if (fragment2[0].overhangs[0] > 0
                                 &&
                                 gencomSeq(fragment2[0].cSeq.substring(0, fragment2[0].overhangs[0])) === fragment1[0].fSeq.substring(fSeq.length + fragment1[0].overhangs[1])) {
                             //both ends match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
-                        else {
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                        }
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                    }
 
+                    }
                 }
                 //fragment2 right end matches with fragment1 right end
                 else if (fragment1[0].overhangs[1] < 0
@@ -155,32 +127,18 @@ function show_ligation(f1Id, f2Id) {
                             fragment2[0].fSeq.substring(0, -fragment2[0].overhangs[0]).toUpperCase() === gencomSeq(genRevSeq(fragment1[0].fSeq.substring(0, fragment1[0].overhangs[0])))) {
                             //both end match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //3: direction, anticolockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
                         else if (fragment2[0].overhangs[0] > 0
                                     &&
                                 fragment2[0].cSeq.substring(0, fragment2[0].overhangs[0]).toUpperCase() === gencomSeq(genRevSeq(fragment1[0].cSeq.substring(0, fragment1[0].overhangs[0])))) {
                             //both end match
                             drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //3: direction, anticolockwise of fragment1
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                         }
-                        else {
-                            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                        }
+
                     }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
-                    }
-                }
-                else {
-                    //if match not found, need first ligation
-                    drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
+
                 }
             }
-        }
-        else {
-            //if the overhangs don't match, it must be first extended before ligation
-            drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1); //1: direction, both colockwise and anticolockwise
         }
     }
 
@@ -201,10 +159,6 @@ function show_ligation(f1Id, f2Id) {
                     if (fragment1[0].overhangs[1] < 0 && fragment1[0].fSeq.substring(fragment1[0].fSeq.length + fragment1[0].overhangs[1]).toUpperCase() === gencomSeq(fragment2[0].cSeq.substring(0, fragment2[0].overhangs[0]))) {
                         //fragment 2 left matches with fragment1 right end
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
                 //fragment2.overhangs[0] < 0
@@ -212,10 +166,6 @@ function show_ligation(f1Id, f2Id) {
                     if (fragment1[0].overhangs[1] > 0 && gencomSeq(fragment1[0].cSeq.substring(fragment1[0].fSeq.length - fragment1[0].overhangs[1])) === fragment2[0].fSeq.substring(0, -fragment2[0].overhangs[0]).toUpperCase()) {
                         //fragment 2 left matches with fragment1 right end
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
             }
@@ -227,10 +177,6 @@ function show_ligation(f1Id, f2Id) {
                     if (fragment1[0].overhangs[0] > 0 && genRevSeq(fragment1[0].cSeq.substring(0, fragment1[0].overhangs[0])) == gencomSeq(fragment2[0].cSeq.substring(0, fragment2[0].overhangs[0]))) {
                         //fragment2 left matches with fragment 1 left
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //3: direction, anticolockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
                 //fragment2.overhangs[0] < 0
@@ -239,15 +185,8 @@ function show_ligation(f1Id, f2Id) {
                     if (fragment1[0].overhangs[0] < 0 && gencomSeq(genRevSeq(fragment1[0].fSeq.substring(0, -fragment1[0].overhangs[0]))) == fragment2[0].fSeq.substring(0, -fragment2[0].overhangs[0]).toUpperCase()) {
                         //fragment2 left matches with fragment 1 left
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //3: direction, anticolockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
-            }
-            else {
-                drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
             }
         }
         //fragment2 left end is blunt and right end not
@@ -259,10 +198,6 @@ function show_ligation(f1Id, f2Id) {
                 if (fragment2[0].overhangs[1] > 0) {
                     if (fragment1[0].overhangs[0] < 0 && fragment1[0].fSeq.substring(0, -fragment1[0].overhangs[0]).toUpperCase() === gencomSeq(fragment2[0].cSeq.substring(fragment2[0].cSeq.length - fragment2[0].overhangs[1]))) {
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
                 //fragment2.overhangs[1] < 0
@@ -270,10 +205,6 @@ function show_ligation(f1Id, f2Id) {
                 {
                     if (fragment1[0].overhangs[0] > 0 && gencomSeq(fragment1[0].cSeq.substring(0, fragment1[0].overhangs[0]).toUpperCase()) === fragment2[0].fSeq.substring(fragment2[0].fSeq.length + fragment2[0].overhangs[1]).toUpperCase()) {
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 2); //2: direction, colockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
             }
@@ -284,43 +215,20 @@ function show_ligation(f1Id, f2Id) {
                 if (fragment2[0].overhangs[1] > 0) {
                     if (fragment1[0].overhangs[1] > 0 && genRevSeq(fragment1[0].cSeq.substring(fragment1[0].cSeq.length - fragment1[0].overhangs[1])) === gencomSeq(fragment2[0].cSeq.substring(fragment2[0].cSeq.length - fragment2[0].overhangs[1]))) {
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //2: direction, anticolockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
                 //fragment2.overhangs[1] < 0
                 else {
                     if (fragment1[0].overhangs[1] < 0 && gencomSeq(genRevSeq(fragment1[0].fSeq.substring(fragment1[0].fSeq.length + fragment1[0].overhangs[1]))) === fragment2[0].fSeq.substring(fragment2[0].fSeq.length + fragment2[0].overhangs[1]).toUpperCase()) {
                         drawDirectLigation(fragment1[0], fragment2[0], "method1-cw-map", "method1-acw-map", 3); //2: direction, anticolockwise of fragment1
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-                    }
-                    else {
-                        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
                     }
                 }
-            }
-            else {
-                drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
             }
         }
     }
 
-    if (((fragment1[0].overhangs[0] == 0 && fragment1[0].overhangs[1] != 0) || (fragment1[0].overhangs[0] != 0 && fragment1[0].overhangs[1] == 0)) && (fragment2[0].overhangs[0] != 0 && fragment2[0].overhangs[1] != 0)) {
-        //fragment1: one stick-end and one blunt-end
-        //fragment2: 2 stick-ends
-        //can only be extended first and then ligate
-        //can be clockwise and anticlockwise
-        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-    }
-    if (((fragment2[0].overhangs[0] == 0 && fragment2[0].overhangs[1] != 0) || (fragment2[0].overhangs[0] != 0 && fragment2[0].overhangs[1] == 0)) && (fragment1[0].overhangs[0] != 0 && fragment1[0].overhangs[1] != 0)) {
-        //fragment2: one stick-end and one blunt-end
-        //fragment1: 2 stick-ends
-        //can only be extended first and then ligate
-        //can be clockwise and anticlockwise
-        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-    }
+    //draw indriect always
+    drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
 
 }
 
