@@ -540,12 +540,12 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
     var fSeqFront, fSeqMiddle, fSeqEnd;
     var cSeqFront, cSeqMiddle, cSeqEnd;
 
+    var f1MinLen = 40;
+    var c1MinLen = 40;
     if (clockwise) {
         //process fragment1
         f1fSeq = fragment1.fSeq;
         c1fSeq = fragment1.cSeq;
-        var f1MinLen = 40;
-        var c1MinLen = 40;
         //fseq
         if (fragment1.overhangs[0] == 0) {
             //there is no shift of the sequence
@@ -860,6 +860,323 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
     else {
         /////////////need to work on anticlocwise
         //anticlockwise
+        f1fSeq =genRevSeq(fragment1.cfSeq);
+        c1fSeq =genRevSeq(fragment1.fSeq);
+
+        if (fragment1.overhangs[1] == 0) {
+            if (fragment1.overhangs[0] == 0) {
+
+                //fseq
+                if (f1fSeq.length == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(f1fSeq.length / 2);
+                    fSeqEnd = f1fSeq.substring(0, length) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length - length);
+                }
+
+
+                //cSeq
+                if (c1fSeq.length == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+                }
+                else if (c1fSeq.length > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(c1fSeq.length / 2);
+                    cSeqEnd = c1fSeq.substring(0, length) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - length);
+                }
+
+            }
+            else if (fragment1.overhangs[0] > 0) {
+
+                //fseq
+                if (f1fSeq.length == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(f1fSeq.length / 2);
+                    fSeqEnd = f1fSeq.substring(0, length) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length - fragment1.overhangs[0]== c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 20);
+                }
+                else if (c1fSeq.length - fragment1.overhangs[0] > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((c1fSeq.length - fragment1.overhangs[0]) / 2);
+                    cSeqEnd = c1fSeq.substring(0, length) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - length);
+                }
+
+            }
+            else {
+                //fragment1.overhangs <0
+                //fseq
+                if (f1fSeq.length + fragment1.overhangs[0] == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length + fragment1.overhangs[0] > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((f1fSeq.length + fragment1.overhangs[0]) / 2);
+                    fSeqEnd = f1fSeq.substring(0, length) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+                }
+                else if (c1fSeq.length > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(c1fSeq.length / 2);
+                    cSeqEnd = c1fSeq.substring(0, length) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - length);
+                }
+            }
+        }
+        else if (fragment1.overhangs[1] > 0) {
+            if (fragment1.overhangs[0] == 0) {
+                //fseq
+                if (f1fSeq.length == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(f1fSeq.length / 2);
+                    fSeqEnd = f1fSeq.substring(0, length) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length - fragment1.overhangs[1] == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20 + fragment1.overhangs[1]);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+                }
+                else if (c1fSeq.length - fragment1.overhangs[1] > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((c1fSeq.length - fragment1.overhangs[1]) / 2);
+                    cSeqEnd = c1fSeq.substring(0, length + fragment1.overhangs[1]) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - length);
+                }
+            }
+            else if (fragment1.overhangs[0] > 0) {
+                //fSeq
+                if (f1fSeq.length == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(f1fSeq.length / 2);
+                    fSeqEnd = f1fSeq.substring(0, length) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length - fragment1.overhangs[1] - fragment1.overhangs[0] == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20 + fragment1.overhangs[1]);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 20);
+                }
+                else if (c1fSeq.length - fragment1.overhangs[1] - fragment1.overhangs[0] > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((c1fSeq.length - fragment1.overhangs[1] - fragment1.overhangs[0]) / 2);
+                    cSeqEnd = c1fSeq.substring(0, length + fragment1.overhangs[1]) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - length);
+                }
+
+            }
+            else {
+                //fragment1.overhangs[0] <0
+                //fSeq
+                if (f1fSeq.length + fragment1.overhangs[0]== f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length + fragment1.overhangs[0] > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((f1fSeq.length + fragment1.overhangs[0]) / 2);
+                    fSeqEnd = f1fSeq.substring(0, length) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length - fragment1.overhangs[1] == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20 + fragment1.overhangs[1]);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+                }
+                else if (c1fSeq.length - fragment1.overhangs[1] > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((c1fSeq.length - fragment1.overhangs[1]) / 2);
+                    cSeqEnd = c1fSeq.substring(0, length + fragment1.overhangs[1]) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - length);
+                }
+            }
+        }
+        else {
+            //fragment1.overhangs[1] < 0
+            if (fragment1.overhangs[0] == 0) {
+                //fSeq
+                if (f1fSeq.length + fragment1.overhangs[1] == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20 - fragment1.overhangs[1]);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length + fragment1.overhangs[1] > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((f1fSeq.length + fragment1.overhangs[1]) / 2);
+                    fSeqEnd = f1fSeq.substring(0, length - fragment1.overhangs[1]) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+                }
+                else if (c1fSeq.length > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(c1fSeq.length / 2);
+                    cSeqEnd = c1fSeq.substring(0, length) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - length);
+                }
+
+            }
+            else if (fragment1.overhangs[0] > 0) {
+                //fSeq
+                if (f1fSeq.length + fragment1.overhangs[1] == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20 - fragment1.overhangs[1]);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
+                }
+                else if (f1fSeq.length + fragment1.overhangs[1] > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((f1fSeq.length + fragment1.overhangs[1]) / 2);
+                    fSeqEnd = f1fSeq.substring(0, length - fragment1.overhangs[1]) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length  - fragment1.overhangs[0] == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 20);
+                }
+                else if (c1fSeq.length - fragment1.overhangs[0] > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17); + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((c1fSeq.length - fragment1.overhangs[0]) / 2);
+                    cSeqEnd = c1fSeq.substring(0, length ) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - length);
+                }
+            }
+            else {
+                //fragment1.overhangs <0
+                //fSeq
+                if (f1fSeq.length + fragment1.overhangs[1] + fragment1.overhangs[0] == f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 20 - fragment1.overhangs[1]);
+                    fSeqFront = f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 20);
+                }
+                else if (f1fSeq.length + fragment1.overhangs[1] + fragment1.overhangs[0] > f1MinLen) {
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + '...';
+                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor((f1fSeq.length + fragment1.overhangs[1] + fragment1.overhangs[0]) / 2);
+                    fSeqEnd = f1fSeq.substring(0, length - fragment1.overhangs[1]) + genDash(f1MinLen / 2 - length);
+                    fSeqFront = genDash(f1MinLen / 2 - length) + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - length);
+                }
+
+                //cSeq
+                if (c1fSeq.length == c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 20);
+                    cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
+                }
+                else if (c1fSeq.length > c1MinLen) {
+                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
+                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                }
+                else {
+                    //too short
+                    var length = Math.floor(c1fSeq.length / 2);
+                    cSeqEnd = c1fSeq.substring(0, length) + genDash(c1MinLen / 2 - length);
+                    cSeqFront = genDash(c1MinLen / 2 - length) + c1fSeq.substring(c1fSeq.length - length);
+                }
+            }
+        }
 
     }
 
