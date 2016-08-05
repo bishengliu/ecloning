@@ -140,6 +140,9 @@ function show_ligation(f1Id, f2Id) {
                 }
             }
         }
+
+        //draw indriect always
+        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
     }
 
     if (((fragment1[0].overhangs[0] == 0 && fragment1[0].overhangs[1] != 0) || (fragment1[0].overhangs[0] != 0 && fragment1[0].overhangs[1] == 0)) && ((fragment2[0].overhangs[0] == 0 && fragment2[0].overhangs[1] != 0) || (fragment2[0].overhangs[0] != 0 && fragment2[0].overhangs[1] == 0))) {
@@ -225,11 +228,10 @@ function show_ligation(f1Id, f2Id) {
                 }
             }
         }
+
+        //draw indriect always
+        drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
     }
-
-    //draw indriect always
-    drawInDirectLigation(fragment1[0], fragment2[0], "method2-cw-map", "method2-acw-map", 1);//1: direction, both colockwise and anticolockwise
-
 }
 
 function gencomSeq(seq) {
@@ -272,10 +274,17 @@ function drawInDirectLigation(fragment1, fragment2, idClock, idAntiClock, direct
     var obj2 = genIndrectSeqProperty(fragment1, fragment2, false);
     $("#" + idAntiClock).empty();
     DrawPlasmid(obj2.fSeqArray, obj2.cSeqArray, false, obj2.fBluntingArray, obj2.cBluntingArray, plasmidName, plasmidLength, "#" + idAntiClock);
+
+    //this is hard-coded
+    //map3, div for clockwise
+    //map4, div for anticlockwise
+    $('#map3').removeClass("hidden");
+    $('#map4').removeClass("hidden");
 }
 
 //"method1-cw-map", "method1-acw-map"
 function drawDirectLigation(fragment1, fragment2, idClock, idAntiClock, direction) {
+
     //1: both directions
     //2: clockwise
     //3 antiClockwise
@@ -285,15 +294,40 @@ function drawDirectLigation(fragment1, fragment2, idClock, idAntiClock, directio
     if (direction == 2) {
         //clockwise
         var obj1 = genDrectSeqProperty(fragment1, fragment2, true);
+        $("#" + idClock).empty();
+        DrawPlasmid(obj1.fSeqArray, obj1.cSeqArray, true, obj1.fBluntingArray, obj1.cBluntingArray, plasmidName, plasmidLength, "#" + idClock);
+        //this is hard-coded
+        //map1, div for clockwise
+        $('#map1').removeClass("hidden");
     }
     else if (direction == 3) {
         //anticlockwise
+        var obj2 = genDrectSeqProperty(fragment1, fragment2, false);
+        $("#" + idAntiClock).empty();
+        DrawPlasmid(obj2.fSeqArray, obj2.cSeqArray, false, obj2.fBluntingArray, obj2.cBluntingArray, plasmidName, plasmidLength, "#" + idAntiClock);
+        //this is hard-coded
+        //map2, div for anticlockwise
+        $('#map2').removeClass("hidden");
     }
     else {
-        //1, both direction
-    }
-    
 
+        //1, both direction
+        //clockwise
+        var obj1 = genDrectSeqProperty(fragment1, fragment2, true);
+        $("#" + idClock).empty();
+        DrawPlasmid(obj1.fSeqArray, obj1.cSeqArray, true, obj1.fBluntingArray, obj1.cBluntingArray, plasmidName, plasmidLength, "#" + idClock);
+
+        //anticlockwise
+        var obj2 = genDrectSeqProperty(fragment1, fragment2, false);
+        $("#" + idAntiClock).empty();
+        DrawPlasmid(obj2.fSeqArray, obj2.cSeqArray, false, obj2.fBluntingArray, obj2.cBluntingArray, plasmidName, plasmidLength, "#" + idAntiClock);
+
+        //this is hard-coded
+        //map1, div for clockwise
+        //map2, div for anticlockwise
+        $('#map1').removeClass("hidden");
+        $('#map2').removeClass("hidden");
+    }
 }
 
 
@@ -537,7 +571,7 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
     var f2fSeq = fragment2.fSeq;
     var c2fSeq = fragment2.cSeq;
 
-
+    var symbol = "---";
     //genrate fSeqArray and cSeqArray
     var fSeqFront, fSeqMiddle, fSeqEnd;
     var cSeqFront, cSeqMiddle, cSeqEnd;
@@ -862,7 +896,7 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
     else {
         /////////////need to work on anticlocwise
         //anticlockwise
-        f1fSeq =genRevSeq(fragment1.cfSeq);
+        f1fSeq =genRevSeq(fragment1.cSeq);
         c1fSeq =genRevSeq(fragment1.fSeq);
 
         if (fragment1.overhangs[1] == 0) {
@@ -1648,7 +1682,6 @@ function DrawPlasmid(fSeqArray, cSeqArray, clockwise, fBluntingArray, cBluntingA
                         .startAngle(2 * Math.PI * 3 / 6)
                         .endAngle(2 * Math.PI * 2 / 6);
 
-        debugger;
         //draw svg container
         var svg = d3.select(id).append("svg")
                     .attr("width", width)

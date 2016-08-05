@@ -95,12 +95,13 @@
     </div>
 </div>
 
+
+
 @Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/bootstrap")
+@*@Scripts.Render("~/bundles/bootstrap")*@
 @Scripts.Render("~/bundles/giraffe")
 <script src="~/Scripts/msa/msa.min.gz.js"></script>
 <script src="~/Scripts/needleman-Wunsch.js"></script>
-@*cust funcitons*@
 <script src="~/Scripts/ecloning-ali2seq.js"></script>
 <script>
     //define array to hold the matches and changes
@@ -405,8 +406,6 @@
     
 </script>
 
-
-
 <script>
     function scrollTo(id) {
         $('html, body').animate({
@@ -469,7 +468,6 @@
     //check match button
     function checkMatchSaveButton(isSelected, id)
     {
-
         //enable button
         if (isSelected) {
             if ($("#"+id).hasClass("disabled")) {
