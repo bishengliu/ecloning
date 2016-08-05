@@ -857,24 +857,353 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
             }
         }
     }
+    else {
+        /////////////need to work on anticlocwise
+        //anticlockwise
+
+    }
 
 
 
+    //fragment2
+    //always clockwise
+    var f2MinLen = 80;
+    var c2MinLen = 80;
+
+    if (fragment2.overhangs[0] == 0) {
+        //fSeqMiddle
+        //cSeqMiddle
+
+        if (fragment2.overhangs[1] == 0) {
+            
+            if (f2fSeq.length == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor(f1fSeq.length / 2);
+                f2fSeqFront = f2fSeq.substring(0, length) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
 
 
-    /////////////need to work on anticlocwise
+            //cseq
+            if (c2fSeq.length == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor(c1fSeq.length / 2);
+                c2fSeqFront = c2fSeq.substring(0, length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
 
-    ////////////need to work on fragment2
+        }
+        else if (fragment2.overhangs[1] > 0) {
+
+            //fSeq
+            if (f2fSeq.length == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor(f1fSeq.length / 2);
+                f2fSeqFront = f2fSeq.substring(0, length) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+
+            //cSeq
+            if (c2fSeq.length - fragment2.overhangs[1] == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length - fragment2.overhangs[1] > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c1fSeq.length - fragment2.overhangs[1]) / 2);
+                c2fSeqFront = c2fSeq.substring(0, length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+
+        }
+        else {
+            //fragment2.overhangs[1] <0
+            //fSeq
+            if (f2fSeq.length + fragment2.overhangs[1] == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length + fragment2.overhangs[1] > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((f1fSeq.length + fragment2.overhangs[1]) / 2);
+                f2fSeqFront = f2fSeq.substring(0, length) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
 
 
+            //cSeq
+            if (c2fSeq.length == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor(c1fSeq.length / 2);
+                c2fSeqFront = c2fSeq.substring(0, length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+        }
+    }
+    else if (fragment2.overhangs[0] > 0) {
 
+        if (fragment2.overhangs[1] == 0) {
+            //fSeq
+            if (f2fSeq.length == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor(f1fSeq.length / 2);
+                f2fSeqFront = f2fSeq.substring(0, length) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            //cSeq
+            if (c2fSeq.length - fragment2.overhangs[0] == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length - fragment2.overhangs[0] > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c1fSeq.length - fragment2.overhangs[0]) / 2);
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+        }
+        else if (fragment2.overhangs[1] > 0) {
+            //fSeq
+            if (f2fSeq.length == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor(f1fSeq.length / 2);
+                f2fSeqFront = f2fSeq.substring(0, length) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
 
+            //cSeq
+            if (c2fSeq.length - fragment2.overhangs[0] - fragment2.overhangs[1] == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length - fragment2.overhangs[0] - fragment2.overhangs[1] > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c2fSeq.length - fragment2.overhangs[0] - fragment2.overhangs[1]) / 2);
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+        }
+        else {
+            //fragment2.overhangs[1] <0
+            //fSeq
+            if (f2fSeq.length + fragment2.overhangs[1]== f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length + fragment2.overhangs[1] > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((f1fSeq.length + fragment2.overhangs[1]) / 2);
+                f2fSeqFront = f2fSeq.substring(0, length) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
 
+            //cSeq
+            if (c2fSeq.length - fragment2.overhangs[0] == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length - fragment2.overhangs[0] > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c2fSeq.length - fragment2.overhangs[0]) / 2);
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+        }
+    }
+    else
+    {
+        //fragment2.overhangs[0] < 0
+        if (fragment2.overhangs[1] == 0) {
+            //fSeq
+            if (f2fSeq.length + fragment2.overhangs[0] == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length + fragment2.overhangs[0] > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37 - fragment2.overhangs[0]) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((f1fSeq.length + fragment2.overhangs[0]) / 2);
+                f2fSeqFront = f2fSeq.substring(0, length - fragment2.overhangs[0]) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            //cSeq
+            if (c2fSeq.length == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c2fSeq.length) / 2);
+                c2fSeqFront = c2fSeq.substring(0, length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
 
+        }
+        else if (fragment2.overhangs[1] > 0) {
+            //fSeq
+            if (f2fSeq.length + fragment2.overhangs[0] == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length + fragment2.overhangs[0] > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37 + fragment2.overhangs[0]) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((f1fSeq.length + fragment2.overhangs[0]) / 2);
+                f2fSeqFront = f2fSeq.substring(0, length - fragment2.overhangs[0]) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            //cSeq
+            if (c2fSeq.length - fragment2.overhangs[1] == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length - fragment2.overhangs[1] > c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c2fSeq.length - fragment2.overhangs[1]) / 2);
+                c2fSeqFront = c2fSeq.substring(0, length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - -fragment2.overhangs[1] - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+        }
+        else {
+            //fragment2.overhangs[1] <0
+            //fSeq
+            if (f2fSeq.length + fragment2.overhangs[0] + fragment2.overhangs[1] == f2MinLen) {
+                fSeqMiddle = f2fSeq;
+            }
+            else if (f2fSeq.length + fragment2.overhangs[0] + fragment2.overhangs[1] > f2MinLen) {
+                f2fSeqFront = f2fSeq.substring(0, 37 - fragment2.overhangs[0]) + '...';
+                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((f2fSeq.length + fragment2.overhangs[0] + fragment2.overhangs[1]) / 2);
+                f2fSeqFront = f2fSeq.substring(0, length - fragment2.overhangs[0]) + genDash(f2MinLen / 2 - length);
+                f2fSeqEnd = genDash(f2MinLen / 2 - length) + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - length);
+                fSeqMiddle = f2fSeqFront + f2fSeqEnd;
+            }
 
-
-
-
+            //cSeq
+            //cSeq
+            if (c2fSeq.length == c2MinLen) {
+                cSeqMiddle = c2fSeq;
+            }
+            else if (c2fSeq.length> c2MinLen) {
+                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
+                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+            else {
+                //too short
+                var length = Math.floor((c2fSeq.length) / 2);
+                c2fSeqFront = c2fSeq.substring(0, length) + genDash(c2MinLen / 2 - length);
+                c2fSeqEnd = genDash(c2MinLen / 2 - length) + c2fSeq.substring(c2fSeq.length - length);
+                cSeqMiddle = c2fSeqFront + c2fSeqEnd;
+            }
+        }
+    }
 
 
 
