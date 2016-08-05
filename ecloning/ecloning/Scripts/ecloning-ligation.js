@@ -308,6 +308,8 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
     var f2fSeq = fragment2.fSeq;
     var c2fSeq = fragment2.cSeq;
 
+    var symbol = "---";
+
     ///////////////////////f1 is perfect and checked to be correct///////////////////
     if (clockwise) {
         //generate fSeq
@@ -444,8 +446,8 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             fSeqEnd = f1fSeq.substring(0, 20);
         }
         else if (f1fSeq.length > f1MinLen) {
-            fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
-            fSeqEnd = f1fSeq.substring(0, 17) + '...';
+            fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
+            fSeqEnd = f1fSeq.substring(0, 17) + symbol;
         }
         else {
             //too short
@@ -460,8 +462,8 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             cSeqEnd = c1fSeq.substring(0, 20);
         }
         else if (c1fSeq.length > c1MinLen) {
-            cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
-            cSeqEnd = c1fSeq.substring(0, 17) + '...';
+            cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
+            cSeqEnd = c1fSeq.substring(0, 17) + symbol;
         }
         else {
             //too short
@@ -478,8 +480,8 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             fSeqMiddle = f2fSeq;
         }
         else if (f2fSeq.length > f2MinLen) {
-            f2fSeqFront = f2fSeq.substring(0, 37)+ '...';
-            f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+            f2fSeqFront = f2fSeq.substring(0, 37)+ symbol;
+            f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
             fSeqMiddle = f2fSeqFront + f2fSeqEnd;
         }
         else {
@@ -495,8 +497,8 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             cSeqMiddle = c2fSeq;
         }
         else if (c2fSeq.length > c2MinLen) {
-            c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-            c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+            c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+            c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
             cSeqMiddle = c2fSeqFront + c2fSeqEnd;
         }
         else {
@@ -556,8 +558,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront ='...'+ f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront =symbol+ f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -572,8 +574,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -589,8 +591,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront ='...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront =symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -605,8 +607,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length -fragment1.overhangs[1] - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[1] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[1] - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[1] - 17);
                 }
                 else {
                     //too short
@@ -623,8 +625,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[1] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length -Math.abs(fragment1.overhangs[1]) - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length -Math.abs(fragment1.overhangs[1]) - 17);
                 }
                 else {
                     //too short
@@ -639,8 +641,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -658,8 +660,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront ='...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront =symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -674,8 +676,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[0] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[0]) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[0]) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -691,8 +693,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -707,8 +709,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length -fragment1.overhangs[1] - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[0] - fragment1.overhangs[1] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[0]) + '...';
-                    cSeqFront ='...'+ c1fSeq.substring(c1fSeq.length - fragment1.overhangs[1] - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[0]) + symbol;
+                    cSeqFront =symbol+ c1fSeq.substring(c1fSeq.length - fragment1.overhangs[1] - 17);
                 }
                 else {
                     //too short
@@ -725,8 +727,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[1] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront ='...'+ f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront =symbol+ f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -741,8 +743,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[0] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[0]) + '...';
-                    cSeqFront ='...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[0]) + symbol;
+                    cSeqFront =symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -762,8 +764,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[0] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[0]) + '...';
-                    fSeqFront ='...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[0]) + symbol;
+                    fSeqFront =symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -778,8 +780,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -795,8 +797,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[0] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[0]) + '...';
-                    fSeqFront ='...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[0]) + symbol;
+                    fSeqFront =symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -811,8 +813,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length -fragment1.overhangs[1] - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[1] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront ='...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[1] - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront =symbol + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[1] - 17);
                 }
                 else {
                     //too short
@@ -829,8 +831,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - fragment1.overhangs[1] - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[0] + fragment1.overhangs[1] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[0]) + '...';
-                    fSeqFront = '...'+ f1fSeq.substring(f1fSeq.length - fragment1.overhangs[1] - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[0]) + symbol;
+                    fSeqFront = symbol+ f1fSeq.substring(f1fSeq.length - fragment1.overhangs[1] - 17);
                 }
                 else {
                     //too short
@@ -845,8 +847,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -872,8 +874,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -889,8 +891,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -908,8 +910,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -924,8 +926,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[0] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -943,8 +945,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[0] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -959,8 +961,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -978,8 +980,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -994,8 +996,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[1] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1011,8 +1013,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1027,8 +1029,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[1] - fragment1.overhangs[0] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -1046,8 +1048,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[0] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -1062,8 +1064,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[1] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17 + fragment1.overhangs[1]); + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1082,8 +1084,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[1] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1098,8 +1100,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1116,8 +1118,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[1] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1132,8 +1134,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 20);
                 }
                 else if (c1fSeq.length - fragment1.overhangs[0] > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17); + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17); + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -1150,8 +1152,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     fSeqFront = f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 20);
                 }
                 else if (f1fSeq.length + fragment1.overhangs[1] + fragment1.overhangs[0] > f1MinLen) {
-                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + '...';
-                    fSeqFront = '...' + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
+                    fSeqEnd = f1fSeq.substring(0, 17 - fragment1.overhangs[1]) + symbol;
+                    fSeqFront = symbol + f1fSeq.substring(f1fSeq.length + fragment1.overhangs[0] - 17);
                 }
                 else {
                     //too short
@@ -1166,8 +1168,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                     cSeqFront = c1fSeq.substring(c1fSeq.length - 20);
                 }
                 else if (c1fSeq.length > c1MinLen) {
-                    cSeqEnd = c1fSeq.substring(0, 17) + '...';
-                    cSeqFront = '...' + c1fSeq.substring(c1fSeq.length - 17);
+                    cSeqEnd = c1fSeq.substring(0, 17) + symbol;
+                    cSeqFront = symbol + c1fSeq.substring(c1fSeq.length - 17);
                 }
                 else {
                     //too short
@@ -1179,7 +1181,6 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
         }
 
     }
-
 
 
     //fragment2
@@ -1197,8 +1198,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1215,8 +1216,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1235,8 +1236,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1252,8 +1253,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length - fragment2.overhangs[1] > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
+                c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1272,8 +1273,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length + fragment2.overhangs[1] > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1290,8 +1291,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1311,8 +1312,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1327,8 +1328,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length - fragment2.overhangs[0] > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1345,8 +1346,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1362,8 +1363,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length - fragment2.overhangs[0] - fragment2.overhangs[1] > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1381,8 +1382,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length + fragment2.overhangs[1] > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1398,8 +1399,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length - fragment2.overhangs[0] > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                c2fSeqFront = c2fSeq.substring(0, fragment2.overhangs[0] + 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1420,8 +1421,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length + fragment2.overhangs[0] > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37 - fragment2.overhangs[0]) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37 - fragment2.overhangs[0]) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1436,8 +1437,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1455,8 +1456,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length + fragment2.overhangs[0] > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37 + fragment2.overhangs[0]) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37 + fragment2.overhangs[0]) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1471,8 +1472,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length - fragment2.overhangs[1] > c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
+                c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - fragment2.overhangs[1] - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
@@ -1490,8 +1491,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 fSeqMiddle = f2fSeq;
             }
             else if (f2fSeq.length + fragment2.overhangs[0] + fragment2.overhangs[1] > f2MinLen) {
-                f2fSeqFront = f2fSeq.substring(0, 37 - fragment2.overhangs[0]) + '...';
-                f2fSeqEnd = '...' + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
+                f2fSeqFront = f2fSeq.substring(0, 37 - fragment2.overhangs[0]) + symbol;
+                f2fSeqEnd = symbol + f2fSeq.substring(f2fSeq.length + fragment2.overhangs[1] - 37);
                 fSeqMiddle = f2fSeqFront + f2fSeqEnd;
             }
             else {
@@ -1508,8 +1509,8 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 cSeqMiddle = c2fSeq;
             }
             else if (c2fSeq.length> c2MinLen) {
-                c2fSeqFront = c2fSeq.substring(0, 37) + '...';
-                c2fSeqEnd = '...' + c2fSeq.substring(c2fSeq.length - 37);
+                c2fSeqFront = c2fSeq.substring(0, 37) + symbol;
+                c2fSeqEnd = symbol + c2fSeq.substring(c2fSeq.length - 37);
                 cSeqMiddle = c2fSeqFront + c2fSeqEnd;
             }
             else {
