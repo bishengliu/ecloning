@@ -938,89 +938,6 @@ CREATE TABLE ladder_size
 );
 
 
----------------------------------------------------------------
---storage, plasmids, bacterial, etc.
-
---container
-CREATE TABLE container
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	category NVARCHAR(100), -- -20, -80, -180, liquid nitrogen
-	[des] TEXT,
-	CONSTRAINT uq_container_name UNIQUE (category),
-);
-
-CREATE TABLE minus20
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	name NVARCHAR(100) NOT NULL,
-
-	--4 degree
-	drawer_up INT NOT NULL, --drawer num
-	-- minu 20 degree
-	drawer_down INT NOT NULL,
-	location NVARCHAR(100),
-	[des] TEXT,
-	CONSTRAINT uq_minus20_name UNIQUE (name),
-);
-
-CREATE TABLE minus80
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	name NVARCHAR(100) NOT NULL,
-	tower_num INT NOT NULL, --how many towers
-	drawer_num INT NOT NULL, --how many drawers in each tower
-	box_num INT NOT NULL, --how many boxes in each drawer
-	location NVARCHAR(100),
-	[des] TEXT,
-	CONSTRAINT uq_minus80_name UNIQUE (name),
-);
-
-
-CREATE TABLE minus180_liquid_nitrogen --for both
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	name NVARCHAR(100) NOT NULL,
-	tower_num INT NOT NULL, --how many towers
-	drawer_num INT NOT NULL, --how many drawers in each tower
-	location NVARCHAR(100),
-	[des] TEXT,
-	CONSTRAINT uq_minus180_liquid_nitrogen_name UNIQUE (name),
-);
-
-
-------------------------------------------
---store plasmid
-
-
---store primers
-
---store oligo
-
---store enzyme, nuclease
-
---store bacteria
-
---store cells
-
---store virus
---should support tower, container, box and drawer moves
-CREATE TABLE storage --for above all
-(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	type NVARCHAR(100) NOT NULL, --plamsid, primers etc. all above
-	ref_id NVARCHAR(100) NOT NULL, --ref to all tables above, refer to a plasmid, so that all info can be linked, such as name
-	container_id INT NOT NULL, 
-	tower_id INT, -- -80, -180 and liquid nitrogen
-	drawer_id INT, -- for all
-	box_id INT,
-	box_label NVARCHAR(500),
-	vial_label NVARCHAR(500) NOT NULL,
-	parent_link INT, --link to parents in the same table
-	dt DATETIME, --freezing date
-	[des] TEXT,
-);
-
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------tables for adding experiments---------------------------------------------------------------------------
 CREATE TABLE protocol 
@@ -1122,6 +1039,21 @@ CREATE TABLE exp_step_result
 	dt DATETIME, 
 	CONSTRAINT fk_exp_step_result_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id)
 );
+
+--for exp_share
+CREATE TABLE exp_share
+(
+	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	exp_id INT NOT NULL,
+	people_id INT NOT NULL,
+	dt DATETIME,
+	CONSTRAINT fk_exp_share_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
+	CONSTRAINT fk_exp_share_epeople_id FOREIGN KEY (people_id) REFERENCES people(id)
+);
+
+
+
+
 
 --for form dropdown items--
 CREATE TABLE dropdownitem
