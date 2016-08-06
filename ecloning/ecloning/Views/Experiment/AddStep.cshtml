@@ -609,14 +609,14 @@
                         <p id="plasmidNameLig-msg" class="text-danger"></p>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group hidden">
                     @Html.LabelFor(model => model.ligation_method, "Ligation method", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
                     <div class="col-md-8 col-lg-6">
                         @Html.EditorFor(model => model.ligation_method, new { htmlAttributes = new { @class = "form-control", id = "methodLig" } })
                         @Html.ValidationMessageFor(model => model.ligation_method, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group hidden">
                     @Html.LabelFor(model => model.ligation_direction, "Ligation Direction", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
                     <div class="col-md-8 col-lg-6">
                         @Html.EditorFor(model => model.ligation_direction, new { htmlAttributes = new { @class = "form-control", id = "directionLig" } })
@@ -951,9 +951,7 @@
     //"XX" is not selected, direct ligation (first pos): "BX" both direction, "CX" postive direction, "AX" negative direction; --indirect ligation (2nd pos): "XB" both direction, "XC" postive direction, "XA" negative direction \\\\
     $(document).ready(function () {
         //for selection ligation
-
         ///////////////////////////////////need to upda teht e method and direction//////////////////////////////////
-        debugger;
         $("#map1").on('click', function () {
             //check the div
             if ($("#map1").hasClass("ligUnselected")) {
@@ -1015,7 +1013,7 @@
             }
 
             if ($("#add6").hasClass("disabled")) {
-                $("#add6").removeClass("disabled").removeClass("noEvent");                
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
             }
             if (!$("#show_ligation").hasClass("disabled")) {
                 $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
@@ -1080,7 +1078,7 @@
                 $('#directionLig').val(direction);
             }
             if ($("#add6").hasClass("disabled")) {
-                $("#add6").removeClass("disabled").removeClass("noEvent");
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
             }
             if (!$("#show_ligation").hasClass("disabled")) {
                 $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
@@ -1142,7 +1140,7 @@
                 $('#directionLig').val(direction);
             }
             if ($("#add6").hasClass("disabled")) {
-                $("#add6").removeClass("disabled").removeClass("noEvent");
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
             }
             if (!$("#show_ligation").hasClass("disabled")) {
                 $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
@@ -1203,7 +1201,7 @@
             }
 
             if ($("#add6").hasClass("disabled")) {
-                $("#add6").removeClass("disabled").removeClass("noEvent");
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
             }
             if (!$("#show_ligation").hasClass("disabled")) {
                 $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
@@ -1684,6 +1682,20 @@
         }
         return true;
     })
+    //check ligation plasmid name
+    $("#plasmidNameLig").keyup(function () {
+        if ($(this).val().trim() != "" || $(this).val().trim() != null) {
+            $.each(Plasmids, function (i, d) {
+                if (d.name === $(this).val().trim()) {
+                    result = false;
+                }
+            });
+            if (!result) {
+                $("#plasmidNameLig-msg").text("Plasmid name already exists!");
+            }
+        }
+    })
+
 
     $('#show_ligation').click(function (e) {
         e.preventDefault();
@@ -1703,6 +1715,18 @@
         if ($("#plasmidNameLig").val() == "" || $("#plasmidNameLig").val() == null) {
             $("#plasmidNameLig-msg").text("Required");
             showLigation = -1;
+        }
+        if ($('#plasmidNameLig').val().trim() != "" && $("#plasmidNameLig").val().trim() != null) {
+            var result = true;
+            $.each(Plasmids, function (i, d) {
+                if (d.name === $('#plasmidNameLig').val().trim()) {
+                    result = false;
+                }
+            });
+            if (!result) {
+                $("#plasmidNameLig-msg").text("Plasmid name already exists!");
+                showLigation = -1;
+            }
         }
         if (showLigation === 0) {
             //show ligation
