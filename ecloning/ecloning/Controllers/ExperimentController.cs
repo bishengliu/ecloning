@@ -24,11 +24,12 @@ namespace ecloning.Controllers
             var groupInfo = new GroupInfo(userInfo.PersonId);
             ViewBag.PersonId = userInfo.PersonId;
             //show shared experiment
-            var sharedExps= db.group_shared.Where(p => p.category == "experiment").Where(g => groupInfo.groupId.Contains(g.group_id)).OrderByDescending(r=>r.resource_id);
+            //exp shared with a person, not with a group
+            var sharedExps = db.exp_share.Where(s => s.people_id == userInfo.PersonId);
             List<int> sharedIds = new List<int>();
             if (sharedExps.Count() > 0)
             {
-                sharedIds = sharedExps.Select(r => r.resource_id).ToList();
+                sharedIds = sharedExps.Select(r => r.exp_id).ToList();
             }
             ViewBag.SharedId = sharedIds;
             //show my experiment
@@ -43,6 +44,153 @@ namespace ecloning.Controllers
             //get all exps
             var exps = db.experiments.Where(e => combinedIds.Contains(e.id)).ToList();
             return View(exps);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Details(int? id)
+        {
+            //id is the experiment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            experiment exp = db.experiments.Find(id);
+            if (exp == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.expId = id;
+
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+            var isMine = false;
+            var isShared = false;
+            if(exp.people_id == userInfo.PersonId)
+            {
+                isMine = true;
+            }
+            //check whether is shared
+            var sharedExp = db.exp_share.Where(e => e.exp_id == exp.id);
+            if (sharedExp.Count() > 0)
+            {
+                isShared = true;
+            }
+            var allowedAction = "Nothing";
+            if(isMine && isShared)
+            {
+                allowedAction = "unShare";
+            }
+            if (isMine && !isShared)
+            {
+                allowedAction = "Share";
+            }
+            ViewBag.AllowedAction = allowedAction;
+            return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Share(int? id)
+        {
+            //id is the experiment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            experiment exp = db.experiments.Find(id);
+            if (exp == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.expId = id;
+
+            //get the group info
+            //get current login email
+            var userId = User.Identity.GetUserId();
+            //get people id
+            var userInfo = new UserInfo(userId);
+            int peopleId = userInfo.PersonId;
+
+            //get person id and name 
+            List<PeopleIdName> pIdNames  = new List<PeopleIdName>();
+            var people = db.people.Where(p=>p.id != userInfo.PersonId);
+            if (people.Count() > 0)
+            {
+                foreach(var p in people)
+                {
+                    PeopleIdName pIdName = new PeopleIdName();
+                    pIdName.id = p.id;
+                    pIdName.Name = p.first_name + " " + p.last_name;
+                    pIdNames.Add(pIdName);
+                }
+            }
+            var listItems = pIdNames.OrderBy(g => g.Name);
+            ViewBag.person = new SelectList(listItems, "id", "name");
+
+            return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult unShare(int? id)
+        {
+            //id is the experiment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            experiment exp = db.experiments.Find(id);
+            if (exp == null)
+            {
+                return HttpNotFound();
+            }
+
+            var shared = db.exp_share.Where(s => s.exp_id == exp.id);
+            if (shared.Count() > 0)
+            {
+                foreach (var item in shared)
+                {
+                    db.exp_share.Remove(item);                    
+                }
+                db.SaveChanges();
+                TempData["msg"] = "Experiment is not shared anymore!";
+                return RedirectToAction("Details", "Experiment", new { id = exp.id });
+            }
+            else
+            {
+                TempData["msg"] = "Something went wrong, this experiment is still shared!";
+                return RedirectToAction("Details", "Experiment", new { id = exp.id });
+            }
+
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Share([Bind(Include = "id,exp_id,person")] CollaborationExp colExp)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var share = new exp_share();
+                    share.exp_id = colExp.exp_id;
+                    share.people_id = colExp.person;
+                    share.dt = DateTime.Now;
+                    db.exp_share.Add(share);
+                    db.SaveChanges();
+                    TempData["msg"] = "Experiment Shared!";
+                    return RedirectToAction("Details", "Experiment", new { id = colExp.exp_id });
+
+                }
+                catch (Exception)
+                {
+                    TempData["msg"] = "Share experiment failed! please try again";
+                    return RedirectToAction("Details", "Experiment", new { id = colExp.exp_id });
+                }
+            }
+            return RedirectToAction("Details", "Experiment", new { id = colExp.exp_id });
         }
 
 

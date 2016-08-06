@@ -101,8 +101,7 @@
                             <td>
                                 @peopleInfo.Name
                             </td>
-                            <td>
-                                
+                            <td>                                
                                 @if ((item.people_id == PeopleId && !SharedIds.Contains(item.id)) || (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")))
                                 {
                                     <a href="@Url.Action("Edit", "Experiment", new { id= item.id})">
@@ -126,7 +125,7 @@
                                     <i class="fa fa-pencil-square-o text-muted"></i>
                                     <i class="glyphicon glyphicon-trash text-muted"></i>
                                 }
-                                @if (!SharedIds.Contains(item.id))
+                                @*@if (!SharedIds.Contains(item.id))
                                 {
                                     if (item.people_id == PeopleId)
                                     {
@@ -147,7 +146,7 @@
                                             </span>
                                         </a>
                                     }
-                                }
+                                }*@
                             </td>
                         </tr>
                     }

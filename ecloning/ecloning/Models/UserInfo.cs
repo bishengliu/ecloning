@@ -55,4 +55,9 @@ namespace ecloning.Models
         }
     }
 
+    public class PeopleIdName
+    {
+        public int id { get; set; }
+        public string Name { get; set; }
+    }
 }

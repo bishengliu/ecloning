@@ -342,6 +342,7 @@
     <Compile Include="Models\buffer.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CollaborationExp.cs" />
     <Compile Include="Models\common_feature.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1935,6 +1936,8 @@
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Experiment\DrawPlasmid.cshtml" />
     <Content Include="Views\BioTools\AlignMultiple2Seq.cshtml" />
+    <Content Include="Views\Experiment\Details.cshtml" />
+    <Content Include="Views\Experiment\Share.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
