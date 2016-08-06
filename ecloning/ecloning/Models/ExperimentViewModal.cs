@@ -38,8 +38,12 @@ namespace ecloning.Models
         public int? plasmid_id { get; set; }
         public int? frag1_id { get; set; }
         public int? frag2_id { get; set; }
-        public int? ligation_method { get; set; } // 1 is direct ligation, 2 is first blunting then ligation, 3 both direct and indirect ligation
-        public int? ligation_direction { get; set; } //direct ligation (first pos):10 both direction, 20 postive direction, 30 negative direction; --indirect ligation (2nd pos): 01 both direction, 02 postive direction, 03 negative direction \\\\
+
+        public string ligation_method { get; set; } // "X" is not selected, "D" is direct ligation; "I" is first blunting then ligation; "B" both direct and indirect ligation
+        public string ligation_direction { get; set; } //"XX" is not selected, direct ligation (first pos): "BX" both direction, "CX" postive direction, "AX" negative direction; --indirect ligation (2nd pos): "XB" both direction, "XC" postive direction, "XA" negative direction \\\\
+
+        //public int? ligation_method { get; set; } // 1 is direct ligation, 2 is first blunting then ligation, 3 both direct and indirect ligation
+        //public int? ligation_direction { get; set; } //direct ligation (first pos):10 both direction, 20 postive direction, 30 negative direction; --indirect ligation (2nd pos): 01 both direction, 02 postive direction, 03 negative direction \\\\
         public string plasmidName { get; set; }
     }
     public class ExpType

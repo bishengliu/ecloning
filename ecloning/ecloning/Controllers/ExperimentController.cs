@@ -634,7 +634,7 @@ namespace ecloning.Controllers
                         {
                             material.frag2_id = step.frag2_id;
                         }
-                        if(step.ligation_method == 0)
+                        if(step.ligation_method == "")
                         {
                             material.ligation_method = null;
                         }
@@ -642,7 +642,7 @@ namespace ecloning.Controllers
                         {
                             material.ligation_method = step.ligation_method;
                         }
-                        if (step.ligation_direction == 0)
+                        if (step.ligation_direction == "")
                         {
                             material.ligation_direction = null;
                         }
