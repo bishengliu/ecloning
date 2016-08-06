@@ -22,8 +22,8 @@
             @if (AllowedAction == "unShare")
             {
                 <a data-toggle="modal" href="@Url.Action("unShare", "Experiment", new { id = Model.id })" data-target="#share_exp" class="btn btn-warning">
-                    <i class="fa fa-share-alt"></i>
-                    <span>Collaboration</span>
+                    <i class="fa fa-times-circle"></i>
+                    <span>Unshare</span>
                 </a>
             }
         </h3>

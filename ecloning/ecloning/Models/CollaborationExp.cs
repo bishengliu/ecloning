@@ -12,6 +12,6 @@ namespace ecloning.Models
         [Required(ErrorMessage = "Required")]
         public int exp_id { get; set; }
         [Required(ErrorMessage = "Required")]
-        public int person { get; set; }
+        public int[] person { get; set; }
     }
 }

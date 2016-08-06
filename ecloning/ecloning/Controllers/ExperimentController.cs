@@ -174,11 +174,14 @@ namespace ecloning.Controllers
             {
                 try
                 {
-                    var share = new exp_share();
-                    share.exp_id = colExp.exp_id;
-                    share.people_id = colExp.person;
-                    share.dt = DateTime.Now;
-                    db.exp_share.Add(share);
+                    foreach(var p in colExp.person.ToList())
+                    {
+                        var share = new exp_share();
+                        share.exp_id = colExp.exp_id;
+                        share.people_id = p;
+                        share.dt = DateTime.Now;
+                        db.exp_share.Add(share);
+                    }                   
                     db.SaveChanges();
                     TempData["msg"] = "Experiment Shared!";
                     return RedirectToAction("Details", "Experiment", new { id = colExp.exp_id });
