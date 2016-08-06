@@ -43,6 +43,7 @@ namespace ecloning.Models
         public virtual DbSet<Dcm> Dcms { get; set; }
         public virtual DbSet<department> departments { get; set; }
         public virtual DbSet<dropdownitem> dropdownitems { get; set; }
+        public virtual DbSet<exp_share> exp_share { get; set; }
         public virtual DbSet<exp_step> exp_step { get; set; }
         public virtual DbSet<exp_step_material> exp_step_material { get; set; }
         public virtual DbSet<exp_step_result> exp_step_result { get; set; }

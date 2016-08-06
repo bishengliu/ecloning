@@ -17,6 +17,7 @@ namespace ecloning.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public experiment()
         {
+            this.exp_share = new HashSet<exp_share>();
             this.exp_step = new HashSet<exp_step>();
             this.exp_step_material = new HashSet<exp_step_material>();
             this.exp_step_result = new HashSet<exp_step_result>();
@@ -28,6 +29,8 @@ namespace ecloning.Models
         public int people_id { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<exp_share> exp_share { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<exp_step> exp_step { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

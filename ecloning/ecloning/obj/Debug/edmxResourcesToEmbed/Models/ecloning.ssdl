@@ -197,6 +197,15 @@
     <Property Name="text" Type="nvarchar" MaxLength="100" />
     <Property Name="category" Type="nvarchar" MaxLength="100" />
   </EntityType>
+  <EntityType Name="exp_share">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="exp_id" Type="int" Nullable="false" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
   <EntityType Name="exp_step">
     <Key>
       <PropertyRef Name="id" />
@@ -227,8 +236,8 @@
     <Property Name="frag2_id" Type="int" />
     <Property Name="des" Type="text" />
     <Property Name="dt" Type="datetime" />
-    <Property Name="ligation_method" Type="int" />
-    <Property Name="ligation_direction" Type="int" />
+    <Property Name="ligation_method" Type="nvarchar" MaxLength="20" />
+    <Property Name="ligation_direction" Type="nvarchar" MaxLength="20" />
   </EntityType>
   <EntityType Name="exp_step_result">
     <Key>
@@ -956,6 +965,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_exp_share_epeople_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="exp_share" Type="Self.exp_share" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_share">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_share_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_share" Type="Self.exp_share" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_share">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_exp_step_exp_id">
     <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
     <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
@@ -1528,6 +1561,7 @@
     <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="exp_share" EntityType="Self.exp_share" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="exp_step" EntityType="Self.exp_step" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="exp_step_material" EntityType="Self.exp_step_material" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="exp_step_result" EntityType="Self.exp_step_result" Schema="dbo" store:Type="Tables" />
@@ -1652,6 +1686,14 @@
     <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_share_epeople_id" Association="Self.fk_exp_share_epeople_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="exp_share" EntitySet="exp_share" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_share_exp_id" Association="Self.fk_exp_share_exp_id">
+      <End Role="experiment" EntitySet="experiment" />
+      <End Role="exp_share" EntitySet="exp_share" />
     </AssociationSet>
     <AssociationSet Name="fk_exp_step_exp_id" Association="Self.fk_exp_step_exp_id">
       <End Role="experiment" EntitySet="experiment" />

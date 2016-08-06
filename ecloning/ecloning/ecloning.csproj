@@ -397,6 +397,9 @@
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ExperimentViewModal.cs" />
+    <Compile Include="Models\exp_share.cs">
+      <DependentUpon>ecloning.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\exp_step.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
@@ -1752,13 +1755,6 @@
     <Content Include="Areas\Admin\Views\Manage\ChangePassword.cshtml" />
     <Content Include="Areas\Admin\Views\Manage\ViewAccount.cshtml" />
     <Content Include="Areas\Admin\Views\Manage\EditAccount.cshtml" />
-    <EntityDeploy Include="Models\ecloning.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\ecloning.edmx.diagram">
-      <DependentUpon>ecloning.edmx</DependentUpon>
-    </Content>
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\angular-sanitize.min.js.map" />
@@ -1772,6 +1768,13 @@
     <Content Include="Scripts\angular-aria.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular.min.js.map" />
+    <EntityDeploy Include="Models\ecloning.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ecloning.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\ecloning.edmx.diagram">
+      <DependentUpon>ecloning.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />

@@ -205,6 +205,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="exp_share">
+      <EntityTypeMapping TypeName="ecloningModel.exp_share">
+        <MappingFragment StoreEntitySet="exp_share">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="exp_id" ColumnName="exp_id" />
+          <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="exp_step">
       <EntityTypeMapping TypeName="ecloningModel.exp_step">
         <MappingFragment StoreEntitySet="exp_step">
