@@ -454,7 +454,7 @@ namespace ecloning.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddStep(string StepButton, [Bind(Include = "id,types,name,type_id,exp_id,protocol_id,forward_primer_id,reverse_primer_id,probe_id,emzyme_id,plasmid_id,frag1_id,frag2_id,ligation_method,ligation_direction,des")] ExpStep step)
+        public ActionResult AddStep(string StepButton, [Bind(Include = "id,types,name,type_id,exp_id,protocol_id,forward_primer_id,reverse_primer_id,probe_id,emzyme_id,plasmid_id,frag1_id,frag2_id,ligation_method,ligation_direction,des,map1_seq,map2_seq,map3_seq,map4_seq,plasmidName")] ExpStep step)
         {
             if (StepButton == "add1")
             {
@@ -702,6 +702,265 @@ namespace ecloning.Controllers
                 {
                     try
                     {
+                        string nPlasmids = ""; //should be '-' seperately plasmid id
+                        // if the step is ligation
+                        if(StepButton == "add6")
+                        {
+                            //ligation, need to first to save plasmid
+                            var method = step.ligation_method; //D, I, B
+                            var direction = step.ligation_direction; //CX, AX, BX, XC, XA, XB
+                            var plasmidName = step.plasmidName;
+                            if(method == "D")
+                            {
+                                var sub_direction = direction.Substring(0, 1);
+                                if (sub_direction == "C")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_DC";
+                                    plasmid.sequence = step.map1_seq;
+                                    plasmid.seq_length = step.map1_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids = plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else if(sub_direction == "A")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_DA";
+                                    plasmid.sequence = step.map2_seq;
+                                    plasmid.seq_length = step.map2_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids = plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else
+                                {
+                                    //B
+                                    //C
+                                    var plasmid1 = new plasmid();
+                                    plasmid1.name = plasmidName + "_DC";
+                                    plasmid1.sequence = step.map1_seq;
+                                    plasmid1.seq_length = step.map1_seq.Length;
+                                    db.plasmids.Add(plasmid1);
+                                    nPlasmids = plasmid1.id.ToString();
+                                    if (plasmid1.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid1.id, plasmid1.sequence, groupInfo.groupId);
+                                    }
+                                    //A
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_DA";
+                                    plasmid.sequence = step.map2_seq;
+                                    plasmid.seq_length = step.map2_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                            }
+                            else if(method == "I")
+                            {
+                                var sub_direction = direction.Substring(1, 1);
+                                if (sub_direction == "C")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_IC";
+                                    plasmid.sequence = step.map3_seq;
+                                    plasmid.seq_length = step.map3_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids = plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else if (sub_direction == "A")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_IA";
+                                    plasmid.sequence = step.map4_seq;
+                                    plasmid.seq_length = step.map4_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids = plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else
+                                {
+                                    //B
+                                    //C
+                                    var plasmid1 = new plasmid();
+                                    plasmid1.name = plasmidName + "_IC";
+                                    plasmid1.sequence = step.map3_seq;
+                                    plasmid1.seq_length = step.map3_seq.Length;
+                                    db.plasmids.Add(plasmid1);
+                                    nPlasmids = plasmid1.id.ToString();
+                                    if (plasmid1.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid1.id, plasmid1.sequence, groupInfo.groupId);
+                                    }
+                                    //A
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_IA";
+                                    plasmid.sequence = step.map4_seq;
+                                    plasmid.seq_length = step.map4_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //B
+                                //D
+                                var sub_direction = direction.Substring(0, 1);
+                                if (sub_direction == "C")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_DC";
+                                    plasmid.sequence = step.map1_seq;
+                                    plasmid.seq_length = step.map1_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids = plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else if (sub_direction == "A")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_DA";
+                                    plasmid.sequence = step.map2_seq;
+                                    plasmid.seq_length = step.map2_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids = plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else
+                                {
+                                    //B
+                                    //C
+                                    var plasmid1 = new plasmid();
+                                    plasmid1.name = plasmidName + "_DC";
+                                    plasmid1.sequence = step.map1_seq;
+                                    plasmid1.seq_length = step.map1_seq.Length;
+                                    db.plasmids.Add(plasmid1);
+                                    nPlasmids = plasmid1.id.ToString();
+                                    if (plasmid1.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid1.id, plasmid1.sequence, groupInfo.groupId);
+                                    }
+                                    //A
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_DA";
+                                    plasmid.sequence = step.map2_seq;
+                                    plasmid.seq_length = step.map2_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+
+                                //I
+                                var sub_direction1 = direction.Substring(1, 1);
+                                if (sub_direction1 == "C")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_IC";
+                                    plasmid.sequence = step.map3_seq;
+                                    plasmid.seq_length = step.map3_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else if (sub_direction1 == "A")
+                                {
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_IA";
+                                    plasmid.sequence = step.map4_seq;
+                                    plasmid.seq_length = step.map4_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                                else
+                                {
+                                    //B
+                                    //C
+                                    var plasmid1 = new plasmid();
+                                    plasmid1.name = plasmidName + "_IC";
+                                    plasmid1.sequence = step.map3_seq;
+                                    plasmid1.seq_length = step.map3_seq.Length;
+                                    db.plasmids.Add(plasmid1);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid1.id.ToString();
+                                    if (plasmid1.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid1.id, plasmid1.sequence, groupInfo.groupId);
+                                    }
+                                    //A
+                                    var plasmid = new plasmid();
+                                    plasmid.name = plasmidName + "_IA";
+                                    plasmid.sequence = step.map4_seq;
+                                    plasmid.seq_length = step.map4_seq.Length;
+                                    db.plasmids.Add(plasmid);
+                                    nPlasmids += "-";
+                                    nPlasmids += plasmid.id.ToString();
+                                    if (plasmid.sequence != null)
+                                    {
+                                        //auto generate features
+                                        var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
+                                    }
+                                }
+                            }
+                            db.SaveChanges();
+                        }
+
                         //get the new step_d 
                         var newStepId = 1;
                         var latestStep = db.exp_step.Where(s => s.exp_id == step.exp_id);
@@ -801,6 +1060,7 @@ namespace ecloning.Controllers
                         {
                             material.ligation_direction = step.ligation_direction;
                         }
+                        //new plasmid id, sep by '-'
                         material.dt = DateTime.Now;
                         db.exp_step_material.Add(material);
                         //need to add ligaiton direction data

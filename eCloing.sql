@@ -1018,7 +1018,8 @@ CREATE TABLE exp_step_material
 	frag2_id INT,--2nd fragment for ligation
 	ligation_method NVARCHAR(20), -- "X" is not selected, "D" is direct ligation; "I" is first blunting then ligation; "B" both direct and indirect ligation
 	ligation_direction NVARCHAR(20),	--"XX" is not selected, direct ligation (first pos): "BX" both direction, "CX" postive direction, "AX" negative direction; --indirect ligation (2nd pos): "XB" both direction, "XC" postive direction, "XA" negative direction \\\\
-    [des] TEXT, --comment
+    nplasmid_id NVARCHAR(200),
+	[des] TEXT, --comment
 	dt DATETIME, 
 	CONSTRAINT fk_exp_step_material_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
 	CONSTRAINT fk_exp_step_material_forward_primer_id FOREIGN KEY (forward_primer_id) REFERENCES primer(id),

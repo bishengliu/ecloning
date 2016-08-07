@@ -622,6 +622,12 @@
                         @Html.EditorFor(model => model.ligation_direction, new { htmlAttributes = new { @class = "form-control", id = "directionLig" } })
                         @Html.ValidationMessageFor(model => model.ligation_direction, "", new { @class = "text-danger" })
                     </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.EditorFor(model => model.map1_seq, new { htmlAttributes = new { @class = "form-control", id = "map1_seq" } })
+                    @Html.EditorFor(model => model.map2_seq, new { htmlAttributes = new { @class = "form-control", id = "map2_seq" } })
+                    @Html.EditorFor(model => model.map3_seq, new { htmlAttributes = new { @class = "form-control", id = "map3_seq" } })
+                    @Html.EditorFor(model => model.map4_seq, new { htmlAttributes = new { @class = "form-control", id = "map4_seq" } })
                 </div>             
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
@@ -646,6 +652,9 @@
                         </div>
                         <div class="pull-right">
                             <button class="btn btn-default disabled noEvent" id="add6" name="StepButton" value="add6" data-toggle="tooltip" data-placement="top" title="Please select below how the fragments can be ligated"><i class="fa fa-plus-circle"></i><span> Ligation</span></button>
+                        </div>
+                        <div class="pull-right">
+                            <p class="text-center text-danger" id="msgLig"></p>
                         </div>
                     </div>
                 </div>
@@ -949,6 +958,10 @@
     //"X" is not selected, "D" is direct ligation; "I" is first blunting then ligation; "B" both direct and indirect ligation
     var direction = "XX";
     //"XX" is not selected, direct ligation (first pos): "BX" both direction, "CX" postive direction, "AX" negative direction; --indirect ligation (2nd pos): "XB" both direction, "XC" postive direction, "XA" negative direction \\\\
+
+    //map1 - map4, sequence
+    var map1_seq = null, map2_seq = null, map3_seq = null, map4_seq = null;
+
     $(document).ready(function () {
         //for selection ligation
         ///////////////////////////////////need to upda teht e method and direction//////////////////////////////////
@@ -983,6 +996,10 @@
                 console.log([method, direction]);
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                //seq
+                if (map1_seq != null) {                    
+                    $("#map1_seq").val(map1_seq);
+                }
             }
             else
             {
@@ -1010,6 +1027,8 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                //seq
+                $("#map1_seq").val(null);
             }
 
             if ($("#add6").hasClass("disabled")) {
@@ -1018,8 +1037,6 @@
             if (!$("#show_ligation").hasClass("disabled")) {
                 $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
             }
-
-
 
         });
         $("#map2").click(function () {
@@ -1051,6 +1068,10 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                //seq
+                if (map2_seq != null) {
+                    $("#map2_seq").val(map2_seq);
+                }
             }
             else {
                 $("#map2").removeClass("ligSelected").addClass('ligUnselected');
@@ -1076,6 +1097,7 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                $("#map2_seq").val(null);
             }
             if ($("#add6").hasClass("disabled")) {
                 $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
@@ -1112,6 +1134,10 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                //seq
+                if (map3_seq != null) {
+                    $("#map3_seq").val(map3_seq);
+                }
 
             }
             else {
@@ -1138,6 +1164,7 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                $("#map3_seq").val(null);
             }
             if ($("#add6").hasClass("disabled")) {
                 $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
@@ -1173,6 +1200,10 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                //seq
+                if (map4_seq != null) {
+                    $("#map4_seq").val(map4_seq);
+                }
             }
             else {
                 $("#map4").removeClass("ligSelected").addClass('ligUnselected');
@@ -1198,6 +1229,8 @@
                 ////////////////////////////////////////////////////////////
                 $('#methodLig').val(method);
                 $('#directionLig').val(direction);
+                //seq
+                $("#map4_seq").val(null);
             }
 
             if ($("#add6").hasClass("disabled")) {
@@ -1209,7 +1242,6 @@
         });
     })
     
-
     //hide the alert
     $("#success-alert").hide();
 
@@ -1678,6 +1710,10 @@
         }
         if ($("#plasmidNameLig").val() == "" || $("#plasmidNameLig").val() == null) {
             $("#plasmidNameLig-msg").text("Required");
+            return false;
+        }
+        if ($("#methodLig").val() == "X" || $("#directionLig").val() == "XX") {
+            $("#msgLig").text("Please select how the fragments are ligated below!");
             return false;
         }
         return true;

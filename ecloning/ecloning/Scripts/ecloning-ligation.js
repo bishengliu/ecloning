@@ -384,6 +384,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
                 cBluntingArray.push(i);
             }
         }
+        map3_seq = f1fSeq;
     }
     else
     {
@@ -427,7 +428,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
                 fBluntingArray.push(i);
             }
         }
-
+        map4_seq = f1fSeq;
     }
     ///////////////////////f2 is perfect and checked to be correct///////////////////
         //process left of fragment2
@@ -556,6 +557,9 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
         obj.cBluntingArray = cBluntingArray;
         obj.fBluntingArray = fBluntingArray;
 
+        //set the global seq for map3 and map4
+        map3_seq += f2fSeq;
+        map4_seq += f2fSeq;
         return obj;
 }
 
@@ -892,6 +896,10 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
                 }
             }
         }
+
+        //update plasmid seq
+        map1_seq = f1fSeq;
+        map1_seq += f2fSeq;
     }
     else {
         /////////////need to work on anticlocwise
@@ -1214,6 +1222,9 @@ function genDrectSeqProperty(fragment1, fragment2, clockwise) {
             }
         }
 
+        //update plasmid seq
+        map2_seq = f1fSeq;
+        map2_seq += f2fSeq;
     }
 
 
