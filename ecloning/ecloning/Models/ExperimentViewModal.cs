@@ -27,6 +27,7 @@ namespace ecloning.Models
         [Required(ErrorMessage = "Required")]
         public int exp_id { get; set; }
         public int? protocol_id { get; set; }
+        public string step_owner { get; set; }
         public string des { get; set; } //save to exp_step table
         public Nullable<System.DateTime> dt { get; set; } //save to exp_step table
 
@@ -47,6 +48,12 @@ namespace ecloning.Models
         public string map4_seq { get; set; }
         public string plasmidName { get; set; }
         public string nplasmid_id { get; set; } //generated plasmids id
+
+        //saved result
+        public int result_id { get; set; }
+        public string result_upload { get; set; }
+        public string result_des { get; set; }
+        public Nullable<System.DateTime> result_dt { get; set; }
     }
 
     public class ViewExp

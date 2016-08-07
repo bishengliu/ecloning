@@ -93,7 +93,30 @@ namespace ecloning.Controllers
             data.des = exp.des;
             data.name = exp.name;
             data.dt = exp.dt;
+            var peopleInfo = new PeopleInfo(exp.people_id);
+            data.owner = peopleInfo.Name;
 
+            //get steps
+            var steps = new List<ExpStep>();
+            var expStep = db.exp_step.Where(e => e.exp_id == exp.id);
+            if (expStep.Count() > 0)
+            {
+                foreach(var s in expStep)
+                {
+                    var step = new ExpStep();
+                    step.id = s.id;
+                    step.name = s.name;
+                    step.type_id = s.type_id;
+                    step.exp_id = exp.id;
+                    step.protocol_id = s.protocol_id;
+                    step.des = s.des;
+                    step.dt = s.dt;
+                    var steppeopleInfo = new PeopleInfo(s.people_id);
+                    step.step_owner = steppeopleInfo.Name;
+                    steps.Add(step);
+                }
+            }
+            data.steps = steps;
             return View(data);
         }
 
