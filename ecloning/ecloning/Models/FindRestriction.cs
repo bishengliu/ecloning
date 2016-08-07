@@ -1380,7 +1380,7 @@ namespace ecloning.Models
                 {
                     //check rightSeq
                     int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
-                    if(rightIndex > fullSeq.Length - 1)
+                    if(rightIndex + r2SeqObject.rightSeq.Length > fullSeq.Length - 1)
                     {
                         //out of the range at the end, deal this when it is circular
                         continue;
@@ -1552,7 +1552,7 @@ namespace ecloning.Models
                 {
                     //check rightSeq
                     int rightIndex = index + r2SeqObject.leftSeq.Length + r2SeqObject.innerLength;
-                    if (rightIndex > cfullSeq.Length - 1)
+                    if (rightIndex + r2SeqObject.rightSeq.Length > cfullSeq.Length - 1)
                     {
                         //out of the range at the end, deal this when it is circular
                         continue;

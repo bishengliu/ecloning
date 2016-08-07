@@ -86,7 +86,15 @@ namespace ecloning.Controllers
                 allowedAction = "Share";
             }
             ViewBag.AllowedAction = allowedAction;
-            return View();
+
+            //load data into view model
+            var data = new ViewExp();
+            data.id = exp.id;
+            data.des = exp.des;
+            data.name = exp.name;
+            data.dt = exp.dt;
+
+            return View(data);
         }
 
         [Authorize]
