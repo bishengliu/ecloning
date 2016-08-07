@@ -467,7 +467,17 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
             }
         }
 
+    //set the global seq for map3 and map4
 
+        if (clockwise)
+        {
+            map3_seq += f2fSeq;
+            console.log("map3: "+ map3_seq.length);
+        }
+        else {
+            map4_seq += f2fSeq;
+            console.log("map4: " + map4_seq.length);
+        }
 
         //genrate fSeqArray and cSeqArray
         var fSeqFront, fSeqMiddle, fSeqEnd;
@@ -557,9 +567,7 @@ function genIndrectSeqProperty(fragment1, fragment2, clockwise) {
         obj.cBluntingArray = cBluntingArray;
         obj.fBluntingArray = fBluntingArray;
 
-        //set the global seq for map3 and map4
-        map3_seq += f2fSeq;
-        map4_seq += f2fSeq;
+
         return obj;
 }
 

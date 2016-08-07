@@ -243,6 +243,7 @@
           <Property Name="dt" Type="datetime" />
           <Property Name="ligation_method" Type="nvarchar" MaxLength="20" />
           <Property Name="ligation_direction" Type="nvarchar" MaxLength="20" />
+          <Property Name="nplasmid_id" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="exp_step_result">
           <Key>
@@ -2164,6 +2165,7 @@
           <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="ligation_method" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ligation_direction" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="nplasmid_id" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_material_exp_id" FromRole="exp_step_material" ToRole="experiment" />
           <NavigationProperty Name="primer" Relationship="Self.fk_exp_step_material_forward_primer_id" FromRole="exp_step_material" ToRole="primer" />
           <NavigationProperty Name="fragment" Relationship="Self.fk_exp_step_material_frag1_id" FromRole="exp_step_material" ToRole="fragment" />
@@ -4123,6 +4125,7 @@
                 <ScalarProperty Name="dt" ColumnName="dt" />
                 <ScalarProperty Name="ligation_method" ColumnName="ligation_method" />
                 <ScalarProperty Name="ligation_direction" ColumnName="ligation_direction" />
+                <ScalarProperty Name="nplasmid_id" ColumnName="nplasmid_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

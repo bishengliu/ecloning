@@ -28,6 +28,7 @@ namespace ecloning.Models
         public Nullable<System.DateTime> dt { get; set; }
         public string ligation_method { get; set; }
         public string ligation_direction { get; set; }
+        public string nplasmid_id { get; set; }
     
         public virtual experiment experiment { get; set; }
         public virtual primer primer { get; set; }

@@ -274,6 +274,7 @@
     <Property Name="dt" Type="DateTime" Precision="3" />
     <Property Name="ligation_method" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="ligation_direction" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="nplasmid_id" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_material_exp_id" FromRole="exp_step_material" ToRole="experiment" />
     <NavigationProperty Name="primer" Relationship="Self.fk_exp_step_material_forward_primer_id" FromRole="exp_step_material" ToRole="primer" />
     <NavigationProperty Name="fragment" Relationship="Self.fk_exp_step_material_frag1_id" FromRole="exp_step_material" ToRole="fragment" />

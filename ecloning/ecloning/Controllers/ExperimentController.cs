@@ -719,7 +719,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_DC";
                                     plasmid.sequence = step.map1_seq;
                                     plasmid.seq_length = step.map1_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid.id.ToString();
                                     if (plasmid.sequence != null)
                                     {
@@ -733,7 +735,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_DA";
                                     plasmid.sequence = step.map2_seq;
                                     plasmid.seq_length = step.map2_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid.id.ToString();
                                     if (plasmid.sequence != null)
                                     {
@@ -749,7 +753,9 @@ namespace ecloning.Controllers
                                     plasmid1.name = plasmidName + "_DC";
                                     plasmid1.sequence = step.map1_seq;
                                     plasmid1.seq_length = step.map1_seq.Length;
+                                    plasmid1.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid1);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid1.id.ToString();
                                     if (plasmid1.sequence != null)
                                     {
@@ -761,7 +767,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_DA";
                                     plasmid.sequence = step.map2_seq;
                                     plasmid.seq_length = step.map2_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid.id.ToString();
                                     if (plasmid.sequence != null)
@@ -780,7 +788,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_IC";
                                     plasmid.sequence = step.map3_seq;
                                     plasmid.seq_length = step.map3_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid.id.ToString();
                                     if (plasmid.sequence != null)
                                     {
@@ -794,7 +804,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_IA";
                                     plasmid.sequence = step.map4_seq;
                                     plasmid.seq_length = step.map4_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid.id.ToString();
                                     if (plasmid.sequence != null)
                                     {
@@ -810,7 +822,9 @@ namespace ecloning.Controllers
                                     plasmid1.name = plasmidName + "_IC";
                                     plasmid1.sequence = step.map3_seq;
                                     plasmid1.seq_length = step.map3_seq.Length;
+                                    plasmid1.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid1);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid1.id.ToString();
                                     if (plasmid1.sequence != null)
                                     {
@@ -822,7 +836,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_IA";
                                     plasmid.sequence = step.map4_seq;
                                     plasmid.seq_length = step.map4_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid.id.ToString();
                                     if (plasmid.sequence != null)
@@ -843,7 +859,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_DC";
                                     plasmid.sequence = step.map1_seq;
                                     plasmid.seq_length = step.map1_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid.id.ToString();
                                     if (plasmid.sequence != null)
                                     {
@@ -857,7 +875,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_DA";
                                     plasmid.sequence = step.map2_seq;
                                     plasmid.seq_length = step.map2_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid.id.ToString();
                                     if (plasmid.sequence != null)
                                     {
@@ -873,7 +893,9 @@ namespace ecloning.Controllers
                                     plasmid1.name = plasmidName + "_DC";
                                     plasmid1.sequence = step.map1_seq;
                                     plasmid1.seq_length = step.map1_seq.Length;
+                                    plasmid1.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid1);
+                                    db.SaveChanges();
                                     nPlasmids = plasmid1.id.ToString();
                                     if (plasmid1.sequence != null)
                                     {
@@ -885,7 +907,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_DA";
                                     plasmid.sequence = step.map2_seq;
                                     plasmid.seq_length = step.map2_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid.id.ToString();
                                     if (plasmid.sequence != null)
@@ -903,7 +927,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_IC";
                                     plasmid.sequence = step.map3_seq;
                                     plasmid.seq_length = step.map3_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid.id.ToString();
                                     if (plasmid.sequence != null)
@@ -918,7 +944,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_IA";
                                     plasmid.sequence = step.map4_seq;
                                     plasmid.seq_length = step.map4_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid.id.ToString();
                                     if (plasmid.sequence != null)
@@ -935,7 +963,9 @@ namespace ecloning.Controllers
                                     plasmid1.name = plasmidName + "_IC";
                                     plasmid1.sequence = step.map3_seq;
                                     plasmid1.seq_length = step.map3_seq.Length;
+                                    plasmid1.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid1);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid1.id.ToString();
                                     if (plasmid1.sequence != null)
@@ -948,7 +978,9 @@ namespace ecloning.Controllers
                                     plasmid.name = plasmidName + "_IA";
                                     plasmid.sequence = step.map4_seq;
                                     plasmid.seq_length = step.map4_seq.Length;
+                                    plasmid.people_id = userInfo.PersonId;
                                     db.plasmids.Add(plasmid);
+                                    db.SaveChanges();
                                     nPlasmids += "-";
                                     nPlasmids += plasmid.id.ToString();
                                     if (plasmid.sequence != null)
@@ -957,8 +989,7 @@ namespace ecloning.Controllers
                                         var autoFeatures = new PlasmidFeature(plasmid.id, plasmid.sequence, groupInfo.groupId);
                                     }
                                 }
-                            }
-                            db.SaveChanges();
+                            }                            
                         }
 
                         //get the new step_d 
@@ -1061,6 +1092,7 @@ namespace ecloning.Controllers
                             material.ligation_direction = step.ligation_direction;
                         }
                         //new plasmid id, sep by '-'
+                        material.nplasmid_id = nPlasmids;
                         material.dt = DateTime.Now;
                         db.exp_step_material.Add(material);
                         //need to add ligaiton direction data

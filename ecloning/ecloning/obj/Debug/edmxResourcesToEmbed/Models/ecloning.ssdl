@@ -238,6 +238,7 @@
     <Property Name="dt" Type="datetime" />
     <Property Name="ligation_method" Type="nvarchar" MaxLength="20" />
     <Property Name="ligation_direction" Type="nvarchar" MaxLength="20" />
+    <Property Name="nplasmid_id" Type="nvarchar" MaxLength="200" />
   </EntityType>
   <EntityType Name="exp_step_result">
     <Key>

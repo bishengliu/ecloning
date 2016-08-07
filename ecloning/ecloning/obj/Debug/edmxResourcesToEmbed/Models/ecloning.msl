@@ -247,6 +247,7 @@
           <ScalarProperty Name="dt" ColumnName="dt" />
           <ScalarProperty Name="ligation_method" ColumnName="ligation_method" />
           <ScalarProperty Name="ligation_direction" ColumnName="ligation_direction" />
+          <ScalarProperty Name="nplasmid_id" ColumnName="nplasmid_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
