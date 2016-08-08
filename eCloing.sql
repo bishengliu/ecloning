@@ -996,6 +996,7 @@ CREATE TABLE exp_step
 	protocol_id INT,
 	[des] TEXT,
 	people_id INT NOT NULL,
+	sort_id INT,
 	dt DATETIME, --date of creation
 	CONSTRAINT fk_exp_step_people_id FOREIGN KEY (people_id) REFERENCES people(id),
 	CONSTRAINT fk_exp_step_exp_id FOREIGN KEY (exp_id) REFERENCES experiment(id),
