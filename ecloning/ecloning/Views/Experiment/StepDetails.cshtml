@@ -1,0 +1,800 @@
+﻿@model ecloning.Models.ExpStep
+@{
+    ViewBag.Title = "Step Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Features = ViewBag.Features;
+    var Fragment1 = ViewBag.Fragment1;
+    var Fragment2 = ViewBag.Fragment2;
+    var db = new ecloning.Models.ecloningEntities();
+    var outDate = "";
+    if (Model.dt != null)
+    {
+        var day = Model.dt.Value.Day;
+        var month = Model.dt.Value.Month;
+        var year = Model.dt.Value.Year;
+        var dc = new ecloning.Models.DateConvert();
+        outDate = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+    }
+    //get the protocol
+    var protocol = db.protocols.Find(Model.protocol_id);
+    var protocolName = "";
+    if (protocol != null)
+    {
+        protocolName = protocol.name;
+    }
+    
+    //get th plasmid    
+    var plasmid = db.plasmids.Find(Model.plasmid_id);
+    
+    //parse enzymes
+    var enzymeId = new List<int>();
+    List<ecloning.Models.EnzymeIdName> enzymeIdName = new List<ecloning.Models.EnzymeIdName>();
+    if (Model.emzyme_id != null)
+    {
+       var enzymeString = Model.emzyme_id.Split('-');
+       foreach (var id in enzymeString)
+       {
+           enzymeId.Add(Int32.Parse(id));
+       }        
+       //get the enzyme name       
+       var enzyme = new ecloning.Models.EnzymeIdName();
+       foreach (var item in enzymeId)
+       {
+           var eIdName = new ecloning.Models.EnzymeIdName();
+           eIdName.id = item;
+           eIdName.Name = enzyme.getName(item);
+           enzymeIdName.Add(eIdName);
+       }
+    }
+    
+    //get the primers and probe
+    var FPrimer = "";
+    var RPrimer = "";
+    var Probe = "";
+    if (Model.forward_primer_id != null)
+    {
+        var primer = db.primers.Find(Model.forward_primer_id);
+        FPrimer = primer.name + " (" + primer.sequence + ")";
+    }
+    if (Model.reverse_primer_id != null)
+    {
+        var primer = db.primers.Find(Model.reverse_primer_id);
+        RPrimer = primer.name + " (" + primer.sequence + ")";
+    }
+    if (Model.probe_id != null)
+    {
+        var probe = db.probes.Find(Model.probe_id);
+        Probe = probe.name + " (" + probe.sequence + ")";
+    }
+}
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-12">
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment #@Model.exp_id</h3>
+    </div>
+    <div class="col-sm-5 col-xs-12">
+        <div class="col-xs-6">
+            <h3 class="pull-left">
+                <a href="@Url.Action("StepResults", "Experiment", new { id = Model.id })" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Add Experiment Results">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Results</span>
+                </a>
+            </h3>
+        </div>
+        <div class="col-xs-6">
+            <h3 class="pull-right">
+                <a href="@Url.Action("Details", "Experiment", new { id = Model.exp_id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Go Back to Experiment Details">
+                    <i class="fa fa-caret-left"></i>
+                    <span>Experiments</span>
+                </a>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        @if (Model.type_id == 1)
+        {
+            //Restriction Enzyme Digestion
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Restriction Enzyme Digestion
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Enzymes
+                    </dt>
+                    <dd>
+                        @if (enzymeIdName.Count() > 0)
+                        {
+                            foreach (var e in enzymeIdName)
+                            {
+                                <i class="fa fa-scissors text-danger"></i>
+                                <span class="text-primary">@e.Name</span>
+                                @:&nbsp;&nbsp;
+                            }
+
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+        else if (Model.type_id == 2)
+        {
+            //Plasmid Transformation
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Plasmid Transformation
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+        else if (Model.type_id == 3)
+        {
+            //Plasmid Miniprep
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Plasmid Miniprep
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+        else if (Model.type_id == 4)
+        {
+            //Fragment Gel Extraction
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Fragment Gel Extraction
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Fragment
+                    </dt>
+                    <dd>
+                        @if (Model.frag1_id != null)
+                        {
+                            var id = "fragment-" + Model.frag1_id;
+                            var headId = "fragment-header-" + Model.frag1_id;
+                            var mapId = "fragment-map-" + Model.frag1_id;
+                            var endId = "fragment-end-" + Model.frag1_id;
+
+                            var fId = "fragment-fSeq-" + Model.frag1_id;
+                            var cId = "fragment-cSeq-" + Model.frag1_id;
+
+                            var fIdRef = "#fragment-fSeq-" + Model.frag1_id;
+                            var cIdRef = "#fragment-cSeq-" + Model.frag1_id;
+
+                            var fIdCopy = "copy-fragment-fSeq-" + Model.frag1_id;
+                            var cIdCopy = "copy-fragment-cSeq-" + Model.frag1_id;
+                            var cIdMsg = "copy-msg-" + Model.frag1_id;
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <div class="panel panel-primary" id="@id">
+                                    <div class="panel-heading text-center" id="@headId"></div>
+                                    <div class="panel-body fixed-panel">
+                                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                            <input id="@fId" value="" />
+                                            <input id="@cId" value="" />
+                                        </div>
+                                        <div id="@endId" class="col-xs-12"></div>
+                                        <br />
+                                        <p id="@cIdMsg" class="text-info"></p>
+                                    </div>
+                                    <div class="panel-footer clearfix">
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                            <i class="fa fa-copy text-danger"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                            <i class="fa fa-copy text-primary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+        else if (Model.type_id == 5)
+        {
+            //PCR
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Restriction Enzyme Digestion
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Forward Primer
+                    </dt>
+                    <dd>
+                        @FPrimer
+                    </dd>
+                    <dt>
+                        Reverse Primer
+                    </dt>
+                    <dd>
+                        @RPrimer
+                    </dd>
+                    <dt>
+                        Probe
+                    </dt>
+                    <dd>
+                        @Probe
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+        else if (Model.type_id == 6)
+        {
+            //Ligation
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Ligation
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Fragment1
+                    </dt>
+                    <dd>
+                        @if (Model.frag1_id != null)
+                        {
+                            var id = "fragment-" + Model.frag1_id;
+                            var headId = "fragment-header-" + Model.frag1_id;
+                            var mapId = "fragment-map-" + Model.frag1_id;
+                            var endId = "fragment-end-" + Model.frag1_id;
+
+                            var fId = "fragment-fSeq-" + Model.frag1_id;
+                            var cId = "fragment-cSeq-" + Model.frag1_id;
+
+                            var fIdRef = "#fragment-fSeq-" + Model.frag1_id;
+                            var cIdRef = "#fragment-cSeq-" + Model.frag1_id;
+
+                            var fIdCopy = "copy-fragment-fSeq-" + Model.frag1_id;
+                            var cIdCopy = "copy-fragment-cSeq-" + Model.frag1_id;
+                            var cIdMsg = "copy-msg-" + Model.frag1_id;
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <div class="panel panel-primary" id="@id">
+                                    <div class="panel-heading text-center" id="@headId"></div>
+                                    <div class="panel-body fixed-panel">
+                                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                            <input id="@fId" value="" />
+                                            <input id="@cId" value="" />
+                                        </div>
+                                        <div id="@endId" class="col-xs-12"></div>
+                                        <br />
+                                        <p id="@cIdMsg" class="text-info"></p>
+                                    </div>
+                                    <div class="panel-footer clearfix">
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                            <i class="fa fa-copy text-danger"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                            <i class="fa fa-copy text-primary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Fragment2
+                    </dt>
+                    <dd>
+                        @if (Model.frag2_id != null)
+                        {
+                            var id = "fragment-" + Model.frag2_id;
+                            var headId = "fragment-header-" + Model.frag2_id;
+                            var mapId = "fragment-map-" + Model.frag2_id;
+                            var endId = "fragment-end-" + Model.frag2_id;
+
+                            var fId = "fragment-fSeq-" + Model.frag2_id;
+                            var cId = "fragment-cSeq-" + Model.frag2_id;
+
+                            var fIdRef = "#fragment-fSeq-" + Model.frag2_id;
+                            var cIdRef = "#fragment-cSeq-" + Model.frag2_id;
+
+                            var fIdCopy = "copy-fragment-fSeq-" + Model.frag2_id;
+                            var cIdCopy = "copy-fragment-cSeq-" + Model.frag2_id;
+                            var cIdMsg = "copy-msg-" + Model.frag2_id;
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <div class="panel panel-primary" id="@id">
+                                    <div class="panel-heading text-center" id="@headId"></div>
+                                    <div class="panel-body fixed-panel">
+                                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                            <input id="@fId" value="" />
+                                            <input id="@cId" value="" />
+                                        </div>
+                                        <div id="@endId" class="col-xs-12"></div>
+                                        <br />
+                                        <p id="@cIdMsg" class="text-info"></p>
+                                    </div>
+                                    <div class="panel-footer clearfix">
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                            <i class="fa fa-copy text-danger"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                            <i class="fa fa-copy text-primary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+        else if (Model.type_id == 7)
+        {
+            //Pick Colonies
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Pick Colonies
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+            <div>
+
+            </div>
+        }
+        else
+        {
+            //Model.type_id == 8
+            //Plasmid Maxiprep
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Plasmid Maxiprep
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }                        
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="clearfix"></div>
+            <div class="tableTopLine"></div>
+            <div class="clearfix"></div>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+<script src="~/Scripts/ecloning-fragment.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function () {
+        //get fearues
+        var Features = ("@Features");
+        document.getElementById("decodeIt").innerHTML = Features;
+        Features = document.getElementById("decodeIt").innerText;
+        //get Fragment1
+        var Fragment1 = ("@Fragment1");
+        document.getElementById("decodeIt").innerHTML = Fragment1;
+        Fragment1 = document.getElementById("decodeIt").innerText;
+        //get Fragment2
+        var Fragment2 = ("@Fragment2");
+        document.getElementById("decodeIt").innerHTML = Fragment2;
+        Fragment2 = document.getElementById("decodeIt").innerText;
+        try
+        {
+            Features = JSON.parse(Features);
+            Fragment1 = JSON.parse(Fragment1);
+            Fragment2 = JSON.parse(Fragment2);
+            //draw the map
+            if (Features != null)
+            {
+                var fData = [Features[0].pSeqCount, Features];
+                var gd = GiraffeDraw();
+                gd.read(fData);
+                gd.CircularMap({
+                    'map_dom_id': "plasmid-map",
+                    'map_width': 450,
+                    'map_height': 250
+                });
+            }
+            if (Fragment1 != null) {
+                //draw fragment1
+                var size = +Fragment1.fSeq.length;
+                var features = Fragment1.featureArray;
+                var id = "fragment-map-" + Fragment1.id;
+                var enzymes = Fragment1.enzymes[0] == Fragment1.enzymes[1] ? Fragment1.enzymes[0] : Fragment1.enzymes[0] + ", " + Fragment1.enzymes[1];
+                var fname = name + " (" + enzymes + ", " + Fragment1.f_start + "-" + Fragment1.f_end + ")";
+                var width = 450;
+                drawLinearMap(features, id, fname, size, width);
+                //set panel name header
+                $('#fragment-header-' + Fragment1.id).text(fname);
+
+                //set fSeq and cSeq
+                $('#fragment-fSeq-' + Fragment1.id).val(Fragment1.fSeq);
+                $('#fragment-cSeq-' + Fragment1.id).val(Fragment1.cSeq);
+                //prepare to copy seq
+                //copy seq using clipboard.min.js
+                var clipboard = new Clipboard('#copy-fragment-fSeq-' + Fragment1.id);
+                clipboard.on('success', function (e) {
+                    $('#copy-msg-' + Fragment1.id).text("Sequence Copied!");
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    setTimeout(function () { $('#copy-msg-' + Fragment1.id).text(null); }, 2000);
+                });
+
+                var clipboard = new Clipboard('#copy-fragment-cSeq-' + Fragment1.id);
+                clipboard.on('success', function (e) {
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    $('#copy-msg-' + Fragment1.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg-' + Fragment1.id).text(null); }, 2000);
+                });
+                //draw end
+                drawEndSeq("fragment-end-" + Fragment1.id, Fragment1.fSeq, Fragment1.cSeq, Fragment1.overhangs, 10);
+            }
+            debugger;
+            console.log(Fragment2);
+            if (Fragment2 != null) {
+                //draw fragment2
+                var size = +Fragment2.fSeq.length;
+                var features = Fragment2.featureArray;
+                var id = "fragment-map-" + Fragment2.id;
+                var enzymes = Fragment2.enzymes[0] == Fragment2.enzymes[1] ? Fragment2.enzymes[0] : Fragment2.enzymes[0] + ", " + Fragment2.enzymes[1];
+                var fname = name + " (" + enzymes + ", " + Fragment2.f_start + "-" + Fragment2.f_end + ")";
+                var width = 450;
+                drawLinearMap(features, id, fname, size, width);
+                //set panel name header
+                $('#fragment-header-' + Fragment2.id).text(fname);
+
+                //set fSeq and cSeq
+                $('#fragment-fSeq-' + Fragment2.id).val(Fragment2.fSeq);
+                $('#fragment-cSeq-' + Fragment2.id).val(Fragment2.cSeq);
+                //prepare to copy seq
+                //copy seq using clipboard.min.js
+                var clipboard = new Clipboard('#copy-fragment-fSeq-' + Fragment2.id);
+                clipboard.on('success', function (e) {
+                    $('#copy-msg-' + Fragment2.id).text("Sequence Copied!");
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    setTimeout(function () { $('#copy-msg-' + Fragment2.id).text(null); }, 2000);
+                });
+
+                var clipboard = new Clipboard('#copy-fragment-cSeq-' + Fragment2.id);
+                clipboard.on('success', function (e) {
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    $('#copy-msg-' + Fragment2.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg-' + Fragment2.id).text(null); }, 2000);
+                });
+                //draw end
+                drawEndSeq("fragment-end-" + Fragment2.id, Fragment2.fSeq, Fragment2.cSeq, Fragment2.overhangs, 10);
+            }
+        }
+        catch(e)
+        {
+
+        }
+    })
+</script>

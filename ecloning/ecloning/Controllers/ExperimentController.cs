@@ -163,6 +163,182 @@ namespace ecloning.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet]
+        public ActionResult StepDetails(int? id)
+        {
+            //id is the step id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var step = db.exp_step.Find(id);
+            if (step == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.expId = step.exp_id;
+            //get the material
+            var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
+            //get results
+            var results = db.exp_step_result.Where(r => r.exp_id == step.exp_id && r.exp_step_id == step.exp_id);
+            
+            //load data into ViewModel
+            var model = new ExpStep();
+            model.id = step.id;
+            model.name = step.name;
+            model.type_id = step.type_id;
+            model.exp_id = step.exp_id;
+            model.protocol_id = step.protocol_id;
+            model.des = step.des;
+            model.dt = step.dt;
+
+            model.forward_primer_id = material.forward_primer_id;
+            model.reverse_primer_id = material.reverse_primer_id;
+            model.probe_id = material.probe_id;
+            model.emzyme_id = material.emzyme_id;
+            model.plasmid_id = material.plasmid_id;
+            model.frag1_id = material.frag1_id;
+            model.frag2_id = material.frag2_id;
+            model.ligation_method = material.ligation_method;
+            model.ligation_direction = material.ligation_direction;
+            model.nplasmid_id = material.nplasmid_id;
+
+            //load results
+            var resultData = new List<ExpResult>();
+            if (resultData.Count() > 0)
+            {
+                foreach (var item in results)
+                {
+                    var result = new ExpResult();
+                    result.id = item.id;
+                    result.result_id = item.result_id;
+                    result.result_upload = item.result_upload;
+                    result.result_des = item.result_des;
+                    result.result_dt = item.dt;
+                    resultData.Add(result);
+                }
+            }
+            //get the plasmid feautures
+            dynamic features = null;
+            if (model.plasmid_id != null)
+            {
+                features = db.plasmid_map.Where(p => p.plasmid_id == (int)model.plasmid_id).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false }).ToList();
+            }
+            ViewBag.Features = JsonConvert.SerializeObject(features);
+
+            //get the fragments features
+            var fragment1 = new FragmentViewModel();
+            if (model.frag1_id != null)
+            {
+                var frag1 = db.fragments.Find(model.frag1_id);
+                //convert enzyme id into enzyme names
+                var enzymeIds = new List<int>();
+                var enzymes = new List<string>();
+                var enzymeIdStringArray = frag1.enzyme_id.Split(',');
+                enzymeIds.Add(Int32.Parse(enzymeIdStringArray[0]));
+                enzymeIds.Add(Int32.Parse(enzymeIdStringArray[1]));
+                var enzyme1 = db.restri_enzyme.Find(enzymeIds[0]).name;
+                enzymes.Add(enzyme1);
+                var enzyme2 = db.restri_enzyme.Find(enzymeIds[1]).name;
+                enzymes.Add(enzyme2);
+
+                //find the features
+                IList<fragmentFeatures> featuresArray = new List<fragmentFeatures>();
+                var fragFeatures = db.fragment_map.Where(f => f.fragment_id == frag1.id).OrderBy(s => s.start);
+                if (fragFeatures.Count() > 0)
+                {
+                    foreach (var feature in fragFeatures)
+                    {
+                        var fObj = new fragmentFeatures();
+                        fObj.clockwise = feature.clockwise == 1 ? true : false;
+                        fObj.cut = feature.cut;
+                        fObj.common_id = feature.common_id;
+                        fObj.end = feature.end;
+                        fObj.feature = feature.feature;
+                        fObj.show_feature = feature.show_feature;
+                        fObj.start = feature.start;
+                        fObj.type_id = feature.feature_id;
+                        featuresArray.Add(fObj);
+                    }
+                }
+                fragment1.featureArray = featuresArray;
+                fragment1.id = frag1.id;
+                fragment1.fName = frag1.name;
+                fragment1.plasmid_id = (int)id;
+                fragment1.enzymes = enzymes;
+                fragment1.f_start = (int)frag1.forward_start;
+                fragment1.f_end = (int)frag1.forward_end;
+                fragment1.fSeq = frag1.forward_seq;
+                //overhangs
+                var overhangs = new List<int>();
+                overhangs.Add((int)frag1.rc_left_overhand);
+                overhangs.Add((int)frag1.rc_right_overhand);
+                fragment1.overhangs = overhangs;
+                fragment1.cSeq = frag1.rc_seq;
+
+            }
+            ViewBag.Fragment1 = JsonConvert.SerializeObject(fragment1);
+
+
+            //fragment2
+            var fragment2 = new FragmentViewModel();
+            if (model.frag2_id != null)
+            {
+                var frag2 = db.fragments.Find(model.frag1_id);
+                //convert enzyme id into enzyme names
+                var enzymeIds = new List<int>();
+                var enzymes = new List<string>();
+                var enzymeIdStringArray = frag2.enzyme_id.Split(',');
+                enzymeIds.Add(Int32.Parse(enzymeIdStringArray[0]));
+                enzymeIds.Add(Int32.Parse(enzymeIdStringArray[1]));
+                var enzyme1 = db.restri_enzyme.Find(enzymeIds[0]).name;
+                enzymes.Add(enzyme1);
+                var enzyme2 = db.restri_enzyme.Find(enzymeIds[1]).name;
+                enzymes.Add(enzyme2);
+
+                //find the features
+                IList<fragmentFeatures> featuresArray = new List<fragmentFeatures>();
+                var fragFeatures = db.fragment_map.Where(f => f.fragment_id == frag2.id).OrderBy(s => s.start);
+                if (fragFeatures.Count() > 0)
+                {
+                    foreach (var feature in fragFeatures)
+                    {
+                        var fObj = new fragmentFeatures();
+                        fObj.clockwise = feature.clockwise == 1 ? true : false;
+                        fObj.cut = feature.cut;
+                        fObj.common_id = feature.common_id;
+                        fObj.end = feature.end;
+                        fObj.feature = feature.feature;
+                        fObj.show_feature = feature.show_feature;
+                        fObj.start = feature.start;
+                        fObj.type_id = feature.feature_id;
+                        featuresArray.Add(fObj);
+                    }
+                }
+                fragment2.featureArray = featuresArray;
+                fragment2.id = frag2.id;
+                fragment2.fName = frag2.name;
+                fragment2.plasmid_id = (int)id;
+                fragment2.enzymes = enzymes;
+                fragment2.f_start = (int)frag2.forward_start;
+                fragment2.f_end = (int)frag2.forward_end;
+                fragment2.fSeq = frag2.forward_seq;
+                //overhangs
+                var overhangs = new List<int>();
+                overhangs.Add((int)frag2.rc_left_overhand);
+                overhangs.Add((int)frag2.rc_right_overhand);
+                fragment2.overhangs = overhangs;
+                fragment2.cSeq = frag2.rc_seq;
+
+            }
+            ViewBag.Fragment2 = JsonConvert.SerializeObject(fragment2);
+
+
+            model.results = resultData;
+            return View(model);
+        }
+
 
         [Authorize]
         [HttpGet]
@@ -186,15 +362,59 @@ namespace ecloning.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteStepConfirmed(int id)
-        {            
+        {
             var step = db.exp_step.Find(id);
-            //find material
-            var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
-            db.exp_step_material.Remove(material);
-            db.exp_step.Remove(step);
-            db.SaveChanges();
-            return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
+            try 
+            {                
+                //find material
+                var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
+                db.exp_step_material.Remove(material);
+                db.exp_step.Remove(step);
+                db.SaveChanges();
+                return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
+            }
         }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Edit(int? id)
+        {
+            //id is the experiment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            experiment exp = db.experiments.Find(id);
+            if (exp == null)
+            {
+                return HttpNotFound();
+            }
+            var view = new ExperimentViewModal();
+            view.id = exp.id;
+            view.name = exp.name;
+            view.des = lnbrConvert.br2ln(exp.des);
+            return View(view);
+        }
+        [Authorize]
+        [HttpPost]
+        public ActionResult Edit([Bind(Include = "id,name,des")] ExperimentViewModal experiment)
+        {
+            if (ModelState.IsValid)
+            {
+                //convert break                
+                var exp = db.experiments.Find(experiment.id);
+                exp.name = experiment.name;
+                exp.des = lnbrConvert.ln2br(experiment.des);
+                exp.dt = DateTime.Now;
+                db.SaveChanges();
+            }
+            return View(experiment);
+        }
+
 
         [Authorize]
         [HttpGet]
@@ -1220,13 +1440,46 @@ namespace ecloning.Controllers
             return View();
         }
 
+        //[Authorize]
+        //[HttpGet]
+        //public ActionResult DrawPlasmid()
+        //{
+        //    return View();
+        //}
         [Authorize]
         [HttpGet]
-        public ActionResult DrawPlasmid()
+        public ActionResult Delete(int? id)
         {
-            return View();
+            //id is the experiment id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var exp = db.experiments.Find(id);
+            if (exp == null)
+            {
+                return HttpNotFound();
+            }
+            return View(exp);
         }
 
+        [Authorize, ActionName("Delete")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            try
+            {
+                var exp = db.experiments.Find(id);          
+                db.experiments.Remove(exp);
+                db.SaveChanges();
+                return RedirectToAction("Index", "Experiment");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index", "Experiment");
+            }            
+        }
 
         [Authorize]
         [HttpGet]

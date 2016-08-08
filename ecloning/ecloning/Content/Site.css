@@ -1098,3 +1098,7 @@ text.value {
       text-anchor: middle;
       font-weight: 400;
 }
+
+.fixedWidth{
+    width: 450px;
+}

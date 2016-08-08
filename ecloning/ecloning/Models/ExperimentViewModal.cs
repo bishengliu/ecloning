@@ -51,10 +51,7 @@ namespace ecloning.Models
 
         //saved result
         public bool hasResult { get; set; }
-        public int result_id { get; set; }
-        public string result_upload { get; set; }
-        public string result_des { get; set; }
-        public Nullable<System.DateTime> result_dt { get; set; }
+        public List<ExpResult> results { get; set;}
     }
 
     public class ViewExp
@@ -68,6 +65,14 @@ namespace ecloning.Models
         public List<ExpStep> steps { get; set; }        
     }
 
+    public class ExpResult
+    {
+        public int id { get; set; }
+        public int result_id { get; set; }
+        public string result_upload { get; set; }
+        public string result_des { get; set; }
+        public Nullable<System.DateTime> result_dt { get; set; }
+    }
 
     public class ExpType
     {

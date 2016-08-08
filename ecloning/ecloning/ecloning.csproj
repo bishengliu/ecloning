@@ -1154,6 +1154,9 @@
     <Content Include="Views\Experiment\Details.cshtml" />
     <Content Include="Views\Experiment\Share.cshtml" />
     <Content Include="Views\Experiment\DeleteStep.cshtml" />
+    <Content Include="Views\Experiment\Delete.cshtml" />
+    <Content Include="Views\Experiment\Edit.cshtml" />
+    <Content Include="Views\Experiment\StepDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
