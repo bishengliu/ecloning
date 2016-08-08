@@ -50,6 +50,7 @@ namespace ecloning.Models
         public string nplasmid_id { get; set; } //generated plasmids id
 
         //saved result
+        public bool hasResult { get; set; }
         public int result_id { get; set; }
         public string result_upload { get; set; }
         public string result_des { get; set; }
@@ -64,7 +65,7 @@ namespace ecloning.Models
         public string des { get; set; }
         public string owner { get; set; }
         public Nullable<System.DateTime> dt { get; set; }
-        public List<ExpStep> steps { get; set; }
+        public List<ExpStep> steps { get; set; }        
     }
 
 

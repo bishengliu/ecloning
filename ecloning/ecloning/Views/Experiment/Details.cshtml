@@ -123,7 +123,7 @@
             <table class="table table-hover table-striped table-condensed" id="step_table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th class="hidden">#</th>
                         <th>
                             Category
                         </th>
@@ -172,7 +172,7 @@
                             outDate = dc.GetDate(day, month, year, "ddMMyyyy", "/");                            
                         }
                         <tr>
-                            <td>@item.id</td>
+                            <td class="hidden">@item.id</td>
                             <td>
                                 @type
                             </td>
@@ -191,15 +191,26 @@
                             <td>
                                 @outDate
                             </td>
-                            <td>                                
-                                <a href="@Url.Action("Index", "Experiment", new { id = item.id })" data-toggle="tooltip" data-placement="bottom" title="Add results and view details" class="btn btn-danger">
+                            <td>
+                                <a href="@Url.Action("StepDetails", "Experiment", new { id = item.id })" data-toggle="tooltip" data-placement="bottom" title="Add results and view details" class="btn btn-danger">
                                     <i class="fa fa-plus-circle"></i>
                                     <span></span>
-                                </a> |
-                                <a href="@Url.Action("Index", "Experiment", new { id = item.id })" data-toggle="tooltip" data-placement="bottom" title="Remove this step" class="btn btn-default">
-                                    <i class="fa fa-trash-o"></i>
-                                    <span></span>
                                 </a>
+                                |
+                                @if (!item.hasResult)
+                                {
+                                    <a href="@Url.Action("DeleteStep", "Experiment", new { id = item.id })" data-toggle="tooltip" data-placement="bottom" title="Remove this step" class="btn btn-default">
+                                        <i class="fa fa-trash-o"></i>
+                                        <span></span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("DeleteStep", "Experiment", new { id = item.id })" data-toggle="tooltip" data-placement="bottom" title="Remove this step" class="btn btn-danger text-muted disabled noEvent">
+                                        <i class="fa fa-trash-o"></i>
+                                        <span></span>
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }

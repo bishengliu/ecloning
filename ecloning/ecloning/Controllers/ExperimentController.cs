@@ -113,10 +113,23 @@ namespace ecloning.Controllers
                     step.dt = s.dt;
                     var steppeopleInfo = new PeopleInfo(s.people_id);
                     step.step_owner = steppeopleInfo.Name;
+
+                    //check whether the step has results
+                    var results = db.exp_step_result.Where(r => r.exp_step_id == s.step_id);
+                    if (results.Count() > 0)
+                    {
+                        step.hasResult = true;
+                    }
+                    else
+                    {
+                        step.hasResult = false;
+                    }
+
                     steps.Add(step);
                 }
             }
             data.steps = steps;
+            
             return View(data);
         }
 
@@ -148,6 +161,39 @@ namespace ecloning.Controllers
                     return Json(new { result = false });
                 }
             }
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult DeleteStep(int? id)
+        {
+            //id is the step id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var step = db.exp_step.Find(id);
+            if (step == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.expId = step.exp_id;
+            return View(step);
+        }
+
+        [Authorize, ActionName("DeleteStep")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteStepConfirmed(int id)
+        {            
+            var step = db.exp_step.Find(id);
+            //find material
+            var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
+            db.exp_step_material.Remove(material);
+            db.exp_step.Remove(step);
+            db.SaveChanges();
+            return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
         }
 
         [Authorize]

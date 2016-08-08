@@ -1153,6 +1153,7 @@
     <Content Include="Views\BioTools\AlignMultiple2Seq.cshtml" />
     <Content Include="Views\Experiment\Details.cshtml" />
     <Content Include="Views\Experiment\Share.cshtml" />
+    <Content Include="Views\Experiment\DeleteStep.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\pbundle\" />
