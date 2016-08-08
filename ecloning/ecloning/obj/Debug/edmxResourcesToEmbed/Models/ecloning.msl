@@ -227,6 +227,7 @@
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="people_id" ColumnName="people_id" />
           <ScalarProperty Name="dt" ColumnName="dt" />
+          <ScalarProperty Name="sort_id" ColumnName="sort_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

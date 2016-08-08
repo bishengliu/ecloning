@@ -98,7 +98,7 @@ namespace ecloning.Controllers
 
             //get steps
             var steps = new List<ExpStep>();
-            var expStep = db.exp_step.Where(e => e.exp_id == exp.id).OrderBy(s=>s.step_id); //need to order by another column
+            var expStep = db.exp_step.Where(e => e.exp_id == exp.id).OrderBy(s=>s.step_id).OrderBy(s=> s.sort_id == null? -1: s.sort_id); //need to order by another column
             if (expStep.Count() > 0)
             {
                 foreach(var s in expStep)
@@ -152,6 +152,12 @@ namespace ecloning.Controllers
                 {
                     var IdArray = JsonConvert.DeserializeObject<int[]>(stepId);
                     //need to add a column to sort table
+                    for(var i=0; i<IdArray.Length; i++)
+                    {
+                        var step = db.exp_step.Find(IdArray[i]);
+                        step.sort_id = i + 1;
+                        db.SaveChanges();
+                    }
                     scope.Complete();
                     return Json(new { result = true});
                 }

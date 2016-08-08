@@ -219,6 +219,7 @@
     <Property Name="des" Type="text" />
     <Property Name="people_id" Type="int" Nullable="false" />
     <Property Name="dt" Type="datetime" />
+    <Property Name="sort_id" Type="int" />
   </EntityType>
   <EntityType Name="exp_step_material">
     <Key>

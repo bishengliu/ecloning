@@ -224,6 +224,7 @@
           <Property Name="des" Type="text" />
           <Property Name="people_id" Type="int" Nullable="false" />
           <Property Name="dt" Type="datetime" />
+          <Property Name="sort_id" Type="int" />
         </EntityType>
         <EntityType Name="exp_step_material">
           <Key>
@@ -2143,6 +2144,7 @@
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="people_id" Type="Int32" Nullable="false" />
           <Property Name="dt" Type="DateTime" Precision="3" />
+          <Property Name="sort_id" Type="Int32" />
           <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_exp_id" FromRole="exp_step" ToRole="experiment" />
           <NavigationProperty Name="person" Relationship="Self.fk_exp_step_people_id" FromRole="exp_step" ToRole="people" />
           <NavigationProperty Name="protocol" Relationship="Self.fk_exp_step_protocol_id" FromRole="exp_step" ToRole="protocol" />
@@ -4105,6 +4107,7 @@
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
                 <ScalarProperty Name="dt" ColumnName="dt" />
+                <ScalarProperty Name="sort_id" ColumnName="sort_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
