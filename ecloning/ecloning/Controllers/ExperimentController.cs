@@ -98,7 +98,7 @@ namespace ecloning.Controllers
 
             //get steps
             var steps = new List<ExpStep>();
-            var expStep = db.exp_step.Where(e => e.exp_id == exp.id);
+            var expStep = db.exp_step.Where(e => e.exp_id == exp.id).OrderBy(s=>s.step_id); //need to order by another column
             if (expStep.Count() > 0)
             {
                 foreach(var s in expStep)
@@ -118,6 +118,36 @@ namespace ecloning.Controllers
             }
             data.steps = steps;
             return View(data);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SortStep(int? id, string stepId)
+        {
+            if (id == null)
+            {
+                return Json(new { result = false });
+            }
+            experiment exp = db.experiments.Find(id);
+            if (exp == null)
+            {
+                return Json(new { result = false });
+            }
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    var IdArray = JsonConvert.DeserializeObject<int[]>(stepId);
+                    //need to add a column to sort table
+                    scope.Complete();
+                    return Json(new { result = true});
+                }
+                catch(Exception)
+                {
+                    scope.Dispose();
+                    return Json(new { result = false });
+                }
+            }
         }
 
         [Authorize]

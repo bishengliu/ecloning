@@ -125,28 +125,6 @@
                                     <i class="fa fa-pencil-square-o text-muted"></i>
                                     <i class="glyphicon glyphicon-trash text-muted"></i>
                                 }
-                                @*@if (!SharedIds.Contains(item.id))
-                                {
-                                    if (item.people_id == PeopleId)
-                                    {
-                                        <a href="@Url.Action("Share", "Experiment", new { id = item.id })">
-                                            <i class="fa fa-share-alt text-info"></i>
-                                            <span></span>
-                                        </a>
-                                    }
-                                }
-                                else
-                                {
-                                    if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant") || User.IsInRole("appAdmin"))
-                                    {
-                                        <a href="@Url.Action("unShare", "Experiment", new { id = item.id })">
-                                            <span class="fa-stack fa-lg">
-                                                <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
-                                                <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
-                                            </span>
-                                        </a>
-                                    }
-                                }*@
                             </td>
                         </tr>
                     }

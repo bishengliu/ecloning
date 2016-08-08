@@ -73,4 +73,46 @@ namespace ecloning.Models
         public int id { get; set; }
         public string Name { get; set; }
     }
+
+    public class ExpTypes
+    {
+        public string getName(int id)
+        {
+            var name = "";
+            switch (id)
+            {
+                case 1:
+                    name = "Restriction Enzyme Digestion";
+                    break;
+                case 2:
+                    name = "Plasmid Transformation";
+                    break;
+                case 3:
+                    name = "Plasmid Miniprep";
+                    break;
+                case 4:
+                    name = "Fragment Gel Extraction";
+                    break;
+                case 5:
+                    name = "PCR";
+                    break;
+                case 6:
+                    name = "Ligation";
+                    break;
+                case 7:
+                    name = "Pick Colonies";
+                    break;
+                case 8:
+                    name = "Plasmid Maxiprep";
+                    break;
+                default:
+                    name = "";
+                    break;
+
+            }
+
+            return name;
+
+        }
+    }
 }
