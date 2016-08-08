@@ -3,8 +3,11 @@
     ViewBag.Title = "Step Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var Features = ViewBag.Features;
+    var nFeatures = ViewBag.nFeatures;
+    var nPlasmid = ViewBag.nPlasmid;
     var Fragment1 = ViewBag.Fragment1;
     var Fragment2 = ViewBag.Fragment2;
+    var npIdNames = (List<ecloning.Models.pIdName>)ViewBag.npIdNames;
     var db = new ecloning.Models.ecloningEntities();
     var outDate = "";
     if (Model.dt != null)
@@ -23,31 +26,31 @@
     {
         protocolName = protocol.name;
     }
-    
+
     //get th plasmid    
     var plasmid = db.plasmids.Find(Model.plasmid_id);
-    
+
     //parse enzymes
     var enzymeId = new List<int>();
     List<ecloning.Models.EnzymeIdName> enzymeIdName = new List<ecloning.Models.EnzymeIdName>();
     if (Model.emzyme_id != null)
     {
-       var enzymeString = Model.emzyme_id.Split('-');
-       foreach (var id in enzymeString)
-       {
-           enzymeId.Add(Int32.Parse(id));
-       }        
-       //get the enzyme name       
-       var enzyme = new ecloning.Models.EnzymeIdName();
-       foreach (var item in enzymeId)
-       {
-           var eIdName = new ecloning.Models.EnzymeIdName();
-           eIdName.id = item;
-           eIdName.Name = enzyme.getName(item);
-           enzymeIdName.Add(eIdName);
-       }
+        var enzymeString = Model.emzyme_id.Split('-');
+        foreach (var id in enzymeString)
+        {
+            enzymeId.Add(Int32.Parse(id));
+        }
+        //get the enzyme name       
+        var enzyme = new ecloning.Models.EnzymeIdName();
+        foreach (var item in enzymeId)
+        {
+            var eIdName = new ecloning.Models.EnzymeIdName();
+            eIdName.id = item;
+            eIdName.Name = enzyme.getName(item);
+            enzymeIdName.Add(eIdName);
+        }
     }
-    
+
     //get the primers and probe
     var FPrimer = "";
     var RPrimer = "";
@@ -66,6 +69,90 @@
     {
         var probe = db.probes.Find(Model.probe_id);
         Probe = probe.name + " (" + probe.sequence + ")";
+    }
+
+    //ligation method
+    var method = "";
+    if(Model.ligation_method != null)
+    {
+        if (Model.ligation_method == "D")
+        {
+            method = "Direct Ligation";
+        }
+        else if (Model.ligation_method == "I")
+        {
+            method = "Indirect Ligation";
+        }
+        else if (Model.ligation_method == "B")
+        {
+            method = "Direct and Indirect Ligation";
+        }
+        else
+        {
+            method = "";
+        }
+    }
+
+    //ligation direction
+    var direction = "";
+    if(Model.ligation_direction != null)
+    {
+        var direction1 = Model.ligation_direction.Substring(0, 1);
+        var direction2 = Model.ligation_direction.Substring(1, 1);
+        if (direction1 == "C")
+        {
+            direction = "Direct Ligation, Clockwise";
+        }
+        else if(direction1 == "A")
+        {
+            direction = "Direct Ligation, Anticlockwise";
+        }
+        else if (direction1 == "B")
+        {
+            direction = "Direct Ligation, Clockwise and Anticlockwise";
+        }
+        else
+        {
+            direction = "";
+        }
+
+        if (direction2 == "C")
+        {
+            if(direction != "")
+            {
+                direction += "; Direct Ligation, Clockwise";
+            }
+            else
+            {
+                direction += "; Direct Ligation, Clockwise";
+            }
+        }
+        else if (direction2 == "A")
+        {
+            if (direction != "")
+            {
+                direction += "; Direct Ligation, Anticlockwise";
+            }
+            else
+            {
+                direction += " Direct Ligation, Anticlockwise";
+            }
+        }
+        else if (direction2 == "B")
+        {
+            if (direction != "")
+            {
+                direction += "; Direct Ligation, Clockwise and Anticlockwise";
+            }
+            else
+            {
+                direction += " Direct Ligation, Clockwise and Anticlockwise";
+            }
+        }
+        else
+        {
+            direction = "";
+        }
     }
 }
 <span id="decodeIt" class="hidden"></span>
@@ -95,6 +182,8 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-center text-danger">EXPERIMENT STEP</h3>
+        <hr class="topDangerLine"/>
         @if (Model.type_id == 1)
         {
             //Restriction Enzyme Digestion
@@ -164,8 +253,15 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br/>
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else if (Model.type_id == 2)
         {
@@ -221,8 +317,15 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else if (Model.type_id == 3)
         {
@@ -278,8 +381,15 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else if (Model.type_id == 4)
         {
@@ -310,20 +420,20 @@
                     <dd>
                         @if (Model.frag1_id != null)
                         {
-                            var id = "fragment-" + Model.frag1_id;
-                            var headId = "fragment-header-" + Model.frag1_id;
-                            var mapId = "fragment-map-" + Model.frag1_id;
-                            var endId = "fragment-end-" + Model.frag1_id;
+                            var id = "fragment1-" + Model.frag1_id;
+                            var headId = "fragment1-header-" + Model.frag1_id;
+                            var mapId = "fragment1-map-" + Model.frag1_id;
+                            var endId = "fragment1-end-" + Model.frag1_id;
 
-                            var fId = "fragment-fSeq-" + Model.frag1_id;
-                            var cId = "fragment-cSeq-" + Model.frag1_id;
+                            var fId = "fragment1-fSeq-" + Model.frag1_id;
+                            var cId = "fragment1-cSeq-" + Model.frag1_id;
 
-                            var fIdRef = "#fragment-fSeq-" + Model.frag1_id;
-                            var cIdRef = "#fragment-cSeq-" + Model.frag1_id;
+                            var fIdRef = "#fragment1-fSeq-" + Model.frag1_id;
+                            var cIdRef = "#fragment1-cSeq-" + Model.frag1_id;
 
-                            var fIdCopy = "copy-fragment-fSeq-" + Model.frag1_id;
-                            var cIdCopy = "copy-fragment-cSeq-" + Model.frag1_id;
-                            var cIdMsg = "copy-msg-" + Model.frag1_id;
+                            var fIdCopy = "copy-fragment1-fSeq-" + Model.frag1_id;
+                            var cIdCopy = "copy-fragment1-cSeq-" + Model.frag1_id;
+                            var cIdMsg = "copy-msg1-" + Model.frag1_id;
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <div class="panel panel-primary" id="@id">
                                     <div class="panel-heading text-center" id="@headId"></div>
@@ -364,8 +474,15 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else if (Model.type_id == 5)
         {
@@ -439,14 +556,21 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else if (Model.type_id == 6)
         {
             //Ligation
-            <div>
-                <dl class="dl-horizontal">
+            <div class="col-xs-12 col-sm-12 col-lg-6">
+                <dl class="">
                     <dt>
                         Category
                     </dt>
@@ -471,21 +595,21 @@
                     <dd>
                         @if (Model.frag1_id != null)
                         {
-                            var id = "fragment-" + Model.frag1_id;
-                            var headId = "fragment-header-" + Model.frag1_id;
-                            var mapId = "fragment-map-" + Model.frag1_id;
-                            var endId = "fragment-end-" + Model.frag1_id;
+                            var id = "fragment1-" + Model.frag1_id;
+                            var headId = "fragment1-header-" + Model.frag1_id;
+                            var mapId = "fragment1-map-" + Model.frag1_id;
+                            var endId = "fragment1-end-" + Model.frag1_id;
 
-                            var fId = "fragment-fSeq-" + Model.frag1_id;
-                            var cId = "fragment-cSeq-" + Model.frag1_id;
+                            var fId = "fragment1-fSeq-" + Model.frag1_id;
+                            var cId = "fragment1-cSeq-" + Model.frag1_id;
 
-                            var fIdRef = "#fragment-fSeq-" + Model.frag1_id;
-                            var cIdRef = "#fragment-cSeq-" + Model.frag1_id;
+                            var fIdRef = "#fragment1-fSeq-" + Model.frag1_id;
+                            var cIdRef = "#fragment1-cSeq-" + Model.frag1_id;
 
-                            var fIdCopy = "copy-fragment-fSeq-" + Model.frag1_id;
-                            var cIdCopy = "copy-fragment-cSeq-" + Model.frag1_id;
-                            var cIdMsg = "copy-msg-" + Model.frag1_id;
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            var fIdCopy = "copy-fragment1-fSeq-" + Model.frag1_id;
+                            var cIdCopy = "copy-fragment1-cSeq-" + Model.frag1_id;
+                            var cIdMsg = "copy-msg1-" + Model.frag1_id;
+                            <div class="">
                                 <div class="panel panel-primary" id="@id">
                                     <div class="panel-heading text-center" id="@headId"></div>
                                     <div class="panel-body fixed-panel">
@@ -508,6 +632,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="clearfix"></div>
                         }
                     </dd>
                     <dt>
@@ -516,21 +641,21 @@
                     <dd>
                         @if (Model.frag2_id != null)
                         {
-                            var id = "fragment-" + Model.frag2_id;
-                            var headId = "fragment-header-" + Model.frag2_id;
-                            var mapId = "fragment-map-" + Model.frag2_id;
-                            var endId = "fragment-end-" + Model.frag2_id;
+                            var id = "fragment2-" + Model.frag2_id;
+                            var headId = "fragment2-header-" + Model.frag2_id;
+                            var mapId = "fragment2-map-" + Model.frag2_id;
+                            var endId = "fragment2-end-" + Model.frag2_id;
 
-                            var fId = "fragment-fSeq-" + Model.frag2_id;
-                            var cId = "fragment-cSeq-" + Model.frag2_id;
+                            var fId = "fragment2-fSeq-" + Model.frag2_id;
+                            var cId = "fragment2-cSeq-" + Model.frag2_id;
 
-                            var fIdRef = "#fragment-fSeq-" + Model.frag2_id;
-                            var cIdRef = "#fragment-cSeq-" + Model.frag2_id;
+                            var fIdRef = "#fragment2-fSeq-" + Model.frag2_id;
+                            var cIdRef = "#fragment2-cSeq-" + Model.frag2_id;
 
-                            var fIdCopy = "copy-fragment-fSeq-" + Model.frag2_id;
-                            var cIdCopy = "copy-fragment-cSeq-" + Model.frag2_id;
-                            var cIdMsg = "copy-msg-" + Model.frag2_id;
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            var fIdCopy = "copy-fragment2-fSeq-" + Model.frag2_id;
+                            var cIdCopy = "copy-fragment2-cSeq-" + Model.frag2_id;
+                            var cIdMsg = "copy-msg2-" + Model.frag2_id;
+                            <div class="">
                                 <div class="panel panel-primary" id="@id">
                                     <div class="panel-heading text-center" id="@headId"></div>
                                     <div class="panel-body fixed-panel">
@@ -553,6 +678,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="clearfix"></div>
                         }
                     </dd>
                     <dt>
@@ -569,9 +695,56 @@
                     </dd>
                 </dl>
             </div>
+            <div class="col-xs-12 col-sm-12 col-lg-6">
+                <dl>
+                    <dt>
+                        Method
+                    </dt>
+                    <dd>
+                        @method
+                    </dd>
+                    <dt>
+                        Direction
+                    </dt>
+                    <dd>
+                        @direction
+                    </dd>
+                    <dt>
+                        New Plasmid(s)
+                    </dt>
+                    <dd>
+                        @if (npIdNames.Count() > 0)
+                        {
+                            int i = 0;
+                            foreach (var np in npIdNames)
+                            {
+                                var id = "plasmid-map-"+ i;
+                                <div class="col-xs-6">
+                                    <div class="plasmidDiv">
+                                        <div class="col-xs-12 noPadding text-center text-primary">@np.name</div>
+                                        <div class="col-xs-12">
+                                            <a href="@Url.Action("Index", "Map", new { id = np.id, tag = "personDispaly" })" target="_blank">
+                                                <div id="@id"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                i++;
+                            }
+                        }                        
+                    </dd>
+                </dl>
+            </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else if (Model.type_id == 7)
         {
@@ -611,11 +784,15 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
-            <div>
-
-            </div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
         else
         {
@@ -672,8 +849,15 @@
                 </dl>
             </div>
             <div class="clearfix"></div>
-            <div class="tableTopLine"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
         }
     </div>
 </div>
@@ -702,9 +886,21 @@
         var Fragment2 = ("@Fragment2");
         document.getElementById("decodeIt").innerHTML = Fragment2;
         Fragment2 = document.getElementById("decodeIt").innerText;
+
+        //get fearues
+        var nFeatures = ("@nFeatures");
+        document.getElementById("decodeIt").innerHTML = nFeatures;
+        nFeatures = document.getElementById("decodeIt").innerText;
+        //get plasmid id
+        //nPlasmid
+        var nPlasmid = ("@nPlasmid");
+        document.getElementById("decodeIt").innerHTML = nPlasmid;
+        nPlasmid = document.getElementById("decodeIt").innerText;
         try
         {
             Features = JSON.parse(Features);
+            nFeatures = JSON.parse(nFeatures);
+            nPlasmid = JSON.parse(nPlasmid);
             Fragment1 = JSON.parse(Fragment1);
             Fragment2 = JSON.parse(Fragment2);
             //draw the map
@@ -723,73 +919,90 @@
                 //draw fragment1
                 var size = +Fragment1.fSeq.length;
                 var features = Fragment1.featureArray;
-                var id = "fragment-map-" + Fragment1.id;
+                var id = "fragment1-map-" + Fragment1.id;
                 var enzymes = Fragment1.enzymes[0] == Fragment1.enzymes[1] ? Fragment1.enzymes[0] : Fragment1.enzymes[0] + ", " + Fragment1.enzymes[1];
                 var fname = name + " (" + enzymes + ", " + Fragment1.f_start + "-" + Fragment1.f_end + ")";
                 var width = 450;
                 drawLinearMap(features, id, fname, size, width);
                 //set panel name header
-                $('#fragment-header-' + Fragment1.id).text(fname);
+                $('#fragment1-header-' + Fragment1.id).text(fname);
 
                 //set fSeq and cSeq
-                $('#fragment-fSeq-' + Fragment1.id).val(Fragment1.fSeq);
-                $('#fragment-cSeq-' + Fragment1.id).val(Fragment1.cSeq);
+                $('#fragment1-fSeq-' + Fragment1.id).val(Fragment1.fSeq);
+                $('#fragment1-cSeq-' + Fragment1.id).val(Fragment1.cSeq);
                 //prepare to copy seq
                 //copy seq using clipboard.min.js
-                var clipboard = new Clipboard('#copy-fragment-fSeq-' + Fragment1.id);
+                var clipboard = new Clipboard('#copy-fragment1-fSeq-' + Fragment1.id);
                 clipboard.on('success', function (e) {
-                    $('#copy-msg-' + Fragment1.id).text("Sequence Copied!");
+                    $('#copy-msg1-' + Fragment1.id).text("Sequence Copied!");
                     console.info('Action:', e.action);
                     e.clearSelection();
-                    setTimeout(function () { $('#copy-msg-' + Fragment1.id).text(null); }, 2000);
+                    setTimeout(function () { $('#copy-msg1-' + Fragment1.id).text(null); }, 2000);
                 });
 
-                var clipboard = new Clipboard('#copy-fragment-cSeq-' + Fragment1.id);
+                var clipboard = new Clipboard('#copy-fragment1-cSeq-' + Fragment1.id);
                 clipboard.on('success', function (e) {
                     console.info('Action:', e.action);
                     e.clearSelection();
-                    $('#copy-msg-' + Fragment1.id).text("Sequence Copied!");
-                    setTimeout(function () { $('#copy-msg-' + Fragment1.id).text(null); }, 2000);
+                    $('#copy-msg1-' + Fragment1.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg1-' + Fragment1.id).text(null); }, 2000);
                 });
                 //draw end
-                drawEndSeq("fragment-end-" + Fragment1.id, Fragment1.fSeq, Fragment1.cSeq, Fragment1.overhangs, 10);
+                drawEndSeq("fragment1-end-" + Fragment1.id, Fragment1.fSeq, Fragment1.cSeq, Fragment1.overhangs, 10);
             }
-            debugger;
-            console.log(Fragment2);
             if (Fragment2 != null) {
                 //draw fragment2
                 var size = +Fragment2.fSeq.length;
                 var features = Fragment2.featureArray;
-                var id = "fragment-map-" + Fragment2.id;
+                var id = "fragment2-map-" + Fragment2.id;
                 var enzymes = Fragment2.enzymes[0] == Fragment2.enzymes[1] ? Fragment2.enzymes[0] : Fragment2.enzymes[0] + ", " + Fragment2.enzymes[1];
                 var fname = name + " (" + enzymes + ", " + Fragment2.f_start + "-" + Fragment2.f_end + ")";
                 var width = 450;
                 drawLinearMap(features, id, fname, size, width);
                 //set panel name header
-                $('#fragment-header-' + Fragment2.id).text(fname);
+                $('#fragment2-header-' + Fragment2.id).text(fname);
 
                 //set fSeq and cSeq
-                $('#fragment-fSeq-' + Fragment2.id).val(Fragment2.fSeq);
-                $('#fragment-cSeq-' + Fragment2.id).val(Fragment2.cSeq);
+                $('#fragment2-fSeq-' + Fragment2.id).val(Fragment2.fSeq);
+                $('#fragment2-cSeq-' + Fragment2.id).val(Fragment2.cSeq);
                 //prepare to copy seq
                 //copy seq using clipboard.min.js
-                var clipboard = new Clipboard('#copy-fragment-fSeq-' + Fragment2.id);
+                var clipboard = new Clipboard('#copy-fragment2-fSeq-' + Fragment2.id);
                 clipboard.on('success', function (e) {
-                    $('#copy-msg-' + Fragment2.id).text("Sequence Copied!");
+                    $('#copy-msg2-' + Fragment2.id).text("Sequence Copied!");
                     console.info('Action:', e.action);
                     e.clearSelection();
-                    setTimeout(function () { $('#copy-msg-' + Fragment2.id).text(null); }, 2000);
+                    setTimeout(function () { $('#copy-msg2-' + Fragment2.id).text(null); }, 2000);
                 });
 
-                var clipboard = new Clipboard('#copy-fragment-cSeq-' + Fragment2.id);
+                var clipboard = new Clipboard('#copy-fragment2-cSeq-' + Fragment2.id);
                 clipboard.on('success', function (e) {
                     console.info('Action:', e.action);
                     e.clearSelection();
-                    $('#copy-msg-' + Fragment2.id).text("Sequence Copied!");
-                    setTimeout(function () { $('#copy-msg-' + Fragment2.id).text(null); }, 2000);
+                    $('#copy-msg2-' + Fragment2.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg2-' + Fragment2.id).text(null); }, 2000);
                 });
                 //draw end
-                drawEndSeq("fragment-end-" + Fragment2.id, Fragment2.fSeq, Fragment2.cSeq, Fragment2.overhangs, 10);
+                drawEndSeq("fragment2-end-" + Fragment2.id, Fragment2.fSeq, Fragment2.cSeq, Fragment2.overhangs, 10);
+            }
+            //new plasmids from ligation
+            if (nPlasmid.length >0) {
+                //draw maps
+                //nFeatures
+                $.each(nPlasmid, function (i, d) {
+                    var id = "plasmid-map-" + i;
+                    var nfeatures = $.grep(nFeatures, function (n, ni) {
+                        return n.pId === +d;
+                    });
+                    var fData = [nfeatures[0].pSeqCount, nfeatures];
+                    var gd = GiraffeDraw();
+                    gd.read(fData);
+                    gd.CircularMap({
+                        'map_dom_id': id,
+                        'map_width': 400,
+                        'map_height': 250
+                    });
+                })
             }
         }
         catch(e)

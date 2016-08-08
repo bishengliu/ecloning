@@ -291,7 +291,7 @@ namespace ecloning.Controllers
             var fragment2 = new FragmentViewModel();
             if (model.frag2_id != null)
             {
-                var frag2 = db.fragments.Find(model.frag1_id);
+                var frag2 = db.fragments.Find(model.frag2_id);
                 //convert enzyme id into enzyme names
                 var enzymeIds = new List<int>();
                 var enzymes = new List<string>();
@@ -340,7 +340,47 @@ namespace ecloning.Controllers
             }
             ViewBag.Fragment2 = JsonConvert.SerializeObject(fragment2);
 
+            //parse plasmids generated form ligation
+            var nPlasmid = new List<int>();
+            var npIdNames = new List<ecloning.Models.pIdName>();
+            if(model.nplasmid_id != null)
+            {
+                if (model.nplasmid_id != null)
+                {
+                    if (model.nplasmid_id.IndexOf("-") != -1)
+                    {
+                        var nplasmidId = model.nplasmid_id.Split('-');
+                        foreach (var item in nplasmidId)
+                        {
+                            nPlasmid.Add(Int32.Parse(item));
+                        }
+                    }
+                    else
+                    {
+                        //only one plasmid
+                        var pid = Int32.Parse(model.nplasmid_id);
+                        nPlasmid.Add(pid);
+                    }
+                }
+                //convert id and name
+                foreach (var p in nPlasmid)
+                {
+                    var npIdName = new ecloning.Models.pIdName();
+                    npIdName.id = p;
+                    npIdName.name = npIdName.getName(p);
+                    npIdNames.Add(npIdName);
+                }
+            }            
+            ViewBag.npIdNames = npIdNames;
 
+            //get the nplasmid feautures
+            dynamic nfeatures = null;
+            if (model.nplasmid_id != null)
+            {
+                nfeatures = db.plasmid_map.Where(p => nPlasmid.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false }).ToList();
+            }
+            ViewBag.nFeatures = JsonConvert.SerializeObject(nfeatures);
+            ViewBag.nPlasmid = JsonConvert.SerializeObject(nPlasmid);
             model.results = resultData;
             return View(model);
         }

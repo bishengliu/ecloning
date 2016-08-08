@@ -78,8 +78,8 @@
                                 </a>                                
                             </td>
                             <td>
-                                @stepCount |
-                                <a href="@Url.Action("AddStep", "Experiment", new { id = item.id })">
+                                <span class="text-danger">@stepCount</span> |
+                                <a href="@Url.Action("AddStep", "Experiment", new { id = item.id })" data-toggle="tooltip" data-placement="top" title="click to add steps">
                                     <i class="fa fa-plus-circle text-danger"></i>
                                     <span>Step</span>
                                 </a>

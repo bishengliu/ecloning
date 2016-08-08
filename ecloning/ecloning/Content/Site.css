@@ -1102,3 +1102,11 @@ text.value {
 .fixedWidth{
     width: 450px;
 }
+.topDangerLine {
+    border-top: 5px solid #A94442;
+    border-radius: 5px;
+}
+.topPrimaryLine {
+    border-top: 5px solid #337AB7;
+    border-radius: 5px;
+}

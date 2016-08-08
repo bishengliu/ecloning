@@ -32,4 +32,16 @@ namespace ecloning.Models
             return plasmid.name;
         }
     }
+
+    public class pIdName
+    {
+        private ecloningEntities db = new ecloning.Models.ecloningEntities();
+        public int id { get; set; }
+        public string name { get; set; }
+
+        public string getName(int? id)
+        {
+            return db.plasmids.Find(id).name;
+        }
+    }
 }
