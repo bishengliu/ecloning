@@ -316,7 +316,7 @@ textarea {
 .enzymeItem {
     background-color: #e3dfe0;
     width: 72px;
-    height: 52px;
+    height: 56px;
     margin: 4px;
     cursor: pointer;
     float: left;
@@ -1109,4 +1109,8 @@ text.value {
 .topPrimaryLine {
     border-top: 5px solid #337AB7;
     border-radius: 5px;
+}
+.smallFont {
+    font-size: 11px;
+    color:#537489;
 }

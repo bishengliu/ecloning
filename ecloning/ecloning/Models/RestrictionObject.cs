@@ -20,4 +20,27 @@ namespace ecloning.Models
         public int? forward_cut2 { get; set; }
         public int? reverse_cut2 { get; set; }
     }
+
+    public static class REnzyme
+    {
+        public static string FormatName(string name)
+        {
+            var eName = "";
+            if(name.IndexOf('(') != -1 && name.IndexOf(')') != -1)
+            {
+                //get indexof of the first '('
+                var idx = name.IndexOf('(');
+                var front = name.Substring(0, idx - 1);
+                var end = name.Substring(idx);
+                eName =front + "<br/><p class=\"smallFont text-center\">" +  end + "</p>";
+            }
+            else
+            {
+                eName =  name;
+            }
+
+
+            return eName;
+        }
+    }
 }
