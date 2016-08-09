@@ -428,7 +428,7 @@ namespace ecloning.Controllers
                 else
                 {
                     //upload to local plasmid folder
-                    var plasmidPath =eCloningSettings.filePath + eCloningSettings.plasmidDir;
+                    var plasmidPath = eCloningSettings.filePath + eCloningSettings.plasmidDir;
                     if (file != null && file.FileName != null && file.ContentLength > 0)
                     {
                         try
@@ -445,7 +445,6 @@ namespace ecloning.Controllers
                         }
                     }
                 }
-
                 //var errors = ModelState
                 //.Where(x => x.Value.Errors.Count > 0)
                 //.Select(x => new { x.Key, x.Value.Errors })

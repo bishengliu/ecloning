@@ -600,13 +600,37 @@ namespace ecloning.Controllers
                         return View("ForgotPasswordConfirmation");
                     }
                 }
-                else
+                else if (eCloningSettings.AppHosting != "Cloud")
                 {
                     var msg = new SendGridMessage();
                     msg.From = new MailAddress(eCloningSettings.iEmail, eCloningSettings.iFirstName +" "+eCloningSettings.iLastName);
                     msg.AddTo(model.Email);
                     msg.Subject = "Reset your password";
                 
+                    msg.Html = "<h3><b>Reset Password</b></h3><br/>Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                    //var username = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
+                    //var pswd = "boL5MRQUCtbM1K8";
+                    //var username = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
+                    var username = eCloningSettings.SendgridLoginName;
+                    //var pswd = "boL5MRQUCtbM1K8";
+                    var pswd = eCloningSettings.SendgridPsw;
+                    var credentials = new NetworkCredential(username, pswd);
+
+                    // Create an Web transport for sending email.
+                    var transportWeb = new Web(credentials);
+                    // Send the email.
+                    // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                    await transportWeb.DeliverAsync(msg);
+                    return View("ForgotPasswordConfirmation");
+                }
+                else
+                {
+                    //hybrid
+                    var msg = new SendGridMessage();
+                    msg.From = new MailAddress(eCloningSettings.iEmail, eCloningSettings.iFirstName + " " + eCloningSettings.iLastName);
+                    msg.AddTo(model.Email);
+                    msg.Subject = "Reset your password";
+
                     msg.Html = "<h3><b>Reset Password</b></h3><br/>Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
                     //var username = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
                     //var pswd = "boL5MRQUCtbM1K8";

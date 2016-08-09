@@ -206,7 +206,7 @@ namespace ecloning.Controllers
                 await transportWeb.DeliverAsync(msg);
                 TempData["msg"] = "Invitation Sent!";
             }
-            if (eCloningSettings.AppHosting == "Local")
+            else if (eCloningSettings.AppHosting == "Local")
             {
                 //send email using local smtp
                 var message = new MailMessage();
@@ -230,6 +230,27 @@ namespace ecloning.Controllers
                     await smtp.SendMailAsync(message);
                     TempData["msg"] = "Invitation Sent!";
                 }
+            }
+            else
+            {
+                //hybrid
+                //send email using send grid
+                var msg = new SendGridMessage();
+                msg.From = new MailAddress(leaderEmail, leaderName);
+                msg.AddTo(email);
+                msg.Subject = leaderName + " invites you to register on our website";
+
+                msg.Html = html;
+                var username = eCloningSettings.SendgridLoginName;
+                var pswd = eCloningSettings.SendgridPsw;
+                var credentials = new NetworkCredential(username, pswd);
+
+                // Create an Web transport for sending email.
+                var transportWeb = new Web(credentials);
+                // Send the email.
+                // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                await transportWeb.DeliverAsync(msg);
+                TempData["msg"] = "Invitation Sent!";
             }
             return RedirectToAction("Index");
         }

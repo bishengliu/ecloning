@@ -13,6 +13,7 @@ namespace ecloning.Models
     {
         //set app hosting
         //public readonly static string AppHosting = "Cloud";
+        //public readonly static string AppHosting = "Hybrid"; //store upload in local root path, but use send grid as smtp
         public readonly static string AppHosting = "Local";
         //set env
         public readonly static string AppEnv = "Developement";
@@ -45,9 +46,14 @@ namespace ecloning.Models
         public readonly static string filePath = "~/App_Data/";
 
         //set the min length of cut band
-        public readonly static int bLength = 100;
+        //public readonly static int bLength = 100;
 
         //set the max num of restriction cuts to find
         public readonly static int cutNum = 10;
+
+        //set how the restriction is found
+        //true ==> find all restriction enzymes
+        //false ==> find first saved faviroute enzymes in the group, if not then find all
+        public readonly static bool enzymeScope = true;
     }
 }

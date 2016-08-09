@@ -46,7 +46,7 @@ namespace ecloning.Models
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                findRestri(eCloningSettings.cutNum, PlasmidId, GroupId, Sequence, true);
+                findRestri(eCloningSettings.cutNum, PlasmidId, GroupId, Sequence, eCloningSettings.enzymeScope);
             }).Start();
         }
 
@@ -519,7 +519,7 @@ namespace ecloning.Models
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                findRestri(eCloningSettings.cutNum, FragmentId, GroupId, Sequence, true);
+                findRestri(eCloningSettings.cutNum, FragmentId, GroupId, Sequence, eCloningSettings.enzymeScope);
             }).Start();
 
         }

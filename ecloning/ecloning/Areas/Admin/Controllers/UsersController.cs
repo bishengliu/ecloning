@@ -233,7 +233,7 @@ namespace ecloning.Areas.Admin.Controllers
                 await transportWeb.DeliverAsync(msg);
                 TempData["msg"] = "Invitation Sent!";
             }
-            if (eCloningSettings.AppHosting == "Local")
+            else if (eCloningSettings.AppHosting == "Local")
             {
                 //send email using local smtp
                 var message = new MailMessage();
@@ -258,6 +258,29 @@ namespace ecloning.Areas.Admin.Controllers
                     TempData["msg"] = "Invitation Sent!";
                 }
             }
+            else
+            {
+                //hybrid
+                //send email using send grid
+                var msg = new SendGridMessage();
+                msg.From = new MailAddress(leaderEmail, leaderName);
+                msg.AddTo(email);
+                msg.Subject = leaderName + " invites you to register on our website";
+
+                msg.Html = html;
+                var username = eCloningSettings.SendgridLoginName;
+                var pswd = eCloningSettings.SendgridPsw;
+                var credentials = new NetworkCredential(username, pswd);
+
+                // Create an Web transport for sending email.
+                var transportWeb = new Web(credentials);
+                // Send the email.
+                // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                await transportWeb.DeliverAsync(msg);
+                TempData["msg"] = "Invitation Sent!";
+            }
+
+
             return RedirectToAction("Index");
         }
 
@@ -313,7 +336,7 @@ namespace ecloning.Areas.Admin.Controllers
                     // You can also use the **DeliverAsync** method, which returns an awaitable task.
                     await transportWeb.DeliverAsync(msg);
                 }
-                if (eCloningSettings.AppHosting == "Local")
+                else if (eCloningSettings.AppHosting == "Local")
                 {
                     //send email using local smtp
                     var message = new MailMessage();
@@ -336,6 +359,26 @@ namespace ecloning.Areas.Admin.Controllers
                         smtp.EnableSsl = LocalSMTP.EnableSsl;
                         await smtp.SendMailAsync(message);
                     }
+                }
+                else
+                {
+                    //hybrid
+                    //send email using send grid
+                    var msg = new SendGridMessage();
+                    msg.From = new MailAddress(AdminEmail, AdminName);
+                    msg.AddTo(group.email);
+                    msg.Subject = "Your Group Created";
+
+                    msg.Html = html;
+                    var username = eCloningSettings.SendgridLoginName;
+                    var pswd = eCloningSettings.SendgridPsw;
+                    var credentials = new NetworkCredential(username, pswd);
+
+                    // Create an Web transport for sending email.
+                    var transportWeb = new Web(credentials);
+                    // Send the email.
+                    // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                    await transportWeb.DeliverAsync(msg);
                 }
                 return RedirectToAction("Index");
             }
@@ -390,7 +433,7 @@ namespace ecloning.Areas.Admin.Controllers
                     TempData["codeMsg"] = "Registration Code Sent!";
 
                 }
-                if (eCloningSettings.AppHosting == "Local")
+                else if (eCloningSettings.AppHosting == "Local")
                 {
                     //send email using local smtp
                     var message = new MailMessage();
@@ -414,6 +457,27 @@ namespace ecloning.Areas.Admin.Controllers
                         await smtp.SendMailAsync(message);
                         TempData["codeMsg"] = "Registration Code Sent!";
                     }
+                }
+                else
+                {
+                    //hybrid
+                    //send email using send grid
+                    var msg = new SendGridMessage();
+                    msg.From = new MailAddress(AdminEmail, AdminName);
+                    msg.AddTo(group.email);
+                    msg.Subject = "Registration Code";
+
+                    msg.Html = html;
+                    var username = eCloningSettings.SendgridLoginName;
+                    var pswd = eCloningSettings.SendgridPsw;
+                    var credentials = new NetworkCredential(username, pswd);
+
+                    // Create an Web transport for sending email.
+                    var transportWeb = new Web(credentials);
+                    // Send the email.
+                    // You can also use the **DeliverAsync** method, which returns an awaitable task.
+                    await transportWeb.DeliverAsync(msg);
+                    TempData["codeMsg"] = "Registration Code Sent!";
                 }
 
                 return RedirectToAction("Index");
