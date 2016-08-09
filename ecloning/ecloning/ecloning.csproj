@@ -975,7 +975,6 @@
     <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
     <Content Include="Content\bootstrap-datepicker.min.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
-    <Content Include="App_Data\data\msa_data.clustal" />
     <Content Include="Areas\Admin\Views\Ladder\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Ladder\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Ladder\Details.cshtml" />
@@ -1157,8 +1156,10 @@
     <Content Include="Views\Experiment\Delete.cshtml" />
     <Content Include="Views\Experiment\Edit.cshtml" />
     <Content Include="Views\Experiment\StepDetails.cshtml" />
+    <Content Include="Views\Experiment\AddResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\exp_data\" />
     <Folder Include="App_Data\pbundle\" />
     <Folder Include="App_Data\plasmid\" />
     <Folder Include="App_Data\protocol\" />

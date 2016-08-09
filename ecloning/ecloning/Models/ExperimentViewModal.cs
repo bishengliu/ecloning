@@ -68,9 +68,16 @@ namespace ecloning.Models
     public class ExpResult
     {
         public int id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int exp_id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int exp_step_id { get; set; }
+        [Required(ErrorMessage = "Required")]
+        public int type_id { get; set; }
         public int result_id { get; set; }
         public string result_upload { get; set; }
         public string result_des { get; set; }
+        [Required(ErrorMessage = "Required")]
         public Nullable<System.DateTime> result_dt { get; set; }
     }
 

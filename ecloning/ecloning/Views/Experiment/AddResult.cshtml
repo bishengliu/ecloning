@@ -1,0 +1,134 @@
+﻿@model ecloning.Models.ExpResult
+@{
+    ViewBag.Title = "Add Result";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int ExpId = (int)ViewBag.ExpId;
+    int StepId = (int)ViewBag.StepId;
+    int TypeId = (int)ViewBag.TypeId;
+    
+    //get the exp type
+    var type = new ecloning.Models.ExpTypes();
+}
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-12">
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment #@ExpId</h3>
+    </div>
+    <div class="col-sm-5 col-xs-12">
+        <div class="">
+            <h3 class="pull-right">
+                <a href="@Url.Action("StepDetails", "Experiment", new { id = StepId })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Go Back to Experiment Steps">
+                    <i class="fa fa-caret-left"></i>
+                    <span>Steps</span>
+                </a>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-center text-primary"><i>@type.getName(TypeId).ToUpper()</i></h3>
+        <br class="topPrimaryLine" />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                    @*<div class="form-group">
+                        @Html.LabelFor(model => model.result_upload, "Upload", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                        <div class="col-md-8 col-lg-6">
+                            @Html.EditorFor(model => model.result_upload, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.result_upload, "", new { @class = "text-danger" })
+                            <p id="nameMini-msg" class="text-danger"></p>
+                        </div>
+                    </div>*@
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.result_upload, "Upload", htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-6">
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="img_name" readonly>
+                                <span class="input-group-btn">
+                                    <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="img_fn" id="img_fn" onchange="getFilePath()" /></span>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.result_upload, "", new { @class = "text-danger" })
+                            <p id="max_size" class="text-danger" style="font-size:90%;"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-group required">
+                        @Html.LabelFor(model => model.result_dt, "Date", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                        <div class="col-md-8 col-lg-6">
+                            @Html.EditorFor(model => model.result_dt, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.result_dt, "", new { @class = "text-danger" })
+                            <p id="nameMini-msg" class="text-danger"></p>
+                        </div>
+                    </div>
+                    <div class="form-group hidden">
+                        @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                        <div class="col-md-8 col-lg-6">
+                            @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = TypeId } })
+                            @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group hidden">
+                        @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                        <div class="col-md-8 col-lg-6">
+                            @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = ExpId } })
+                            @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group hidden">
+                        @Html.LabelFor(model => model.exp_step_id, "StepId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                        <div class="col-md-8 col-lg-6">
+                            @Html.EditorFor(model => model.exp_step_id, new { htmlAttributes = new { @class = "form-control", @Value = StepId } })
+                            @Html.ValidationMessageFor(model => model.exp_step_id, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.result_des, "Remarks", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                        <div class="col-md-8 col-lg-6">
+                            @Html.TextAreaFor(model => model.result_des, 4, 150, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.result_des, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                            <div class="pull-right">
+                                <button class="btn btn-danger"><i class="fa fa-plus-circle"></i><span> Result</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    function uploadSize() {
+
+        if (typeof ($('#img_fn')[0].files) != "undefined") {
+            //check upload file size
+            var size = parseFloat($('#img_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+            if (size > 10) {
+                $('#max_size').text('Maximum upload file size is 10MB!');
+                return false;
+            }
+        }
+    }
+
+    function getFilePath() {
+        var fullPath = document.getElementById("img_fn").value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById("img_name").value = fileName;
+    }
+</script>

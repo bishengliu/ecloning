@@ -42,6 +42,9 @@ namespace ecloning.Models
         //upload protocol to azure directoryName
         public readonly static string protocolDir = "protocol";
 
+        //upload exp_data to azure directoryName
+        public readonly static string expDataDir = "exp_data";
+
         //local data path
         public readonly static string filePath = "~/App_Data/";
 

@@ -8,6 +8,7 @@ using ecloning.Models;
 using System.Net;
 using Newtonsoft.Json;
 using System.Transactions;
+using System.IO;
 
 namespace ecloning.Controllers
 {
@@ -343,7 +344,7 @@ namespace ecloning.Controllers
             //parse plasmids generated form ligation
             var nPlasmid = new List<int>();
             var npIdNames = new List<ecloning.Models.pIdName>();
-            if(model.nplasmid_id != null)
+            if (model.nplasmid_id != null && model.nplasmid_id != "")
             {
                 if (model.nplasmid_id != null)
                 {
@@ -385,6 +386,152 @@ namespace ecloning.Controllers
             return View(model);
         }
 
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult AddResult(int? id, int? type_id)
+        {
+            //id is the step id
+            //id is the step id
+            if (id == null || type_id == null || type_id < 1 || type_id > 8)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var step = db.exp_step.Find(id);
+            if (step == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.ExpId = step.exp_id; //exp_id
+            ViewBag.StepId = id; //step id
+            ViewBag.TypeId = type_id; //type_id
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddResult([Bind(Include = "id,exp_id,exp_step_id,type_id,result_upload,result_des,result_dt")] ExpResult result)
+        {
+            ViewBag.ExpId = result.exp_id; //exp_id
+            ViewBag.StepId = result.exp_step_id; //step id
+            ViewBag.TypeId = result.type_id; //type_id
+
+
+            //get current login email
+            var email = User.Identity.GetUserName();
+            var userId = User.Identity.GetUserId();
+            var userInfo = new UserInfo(userId);
+
+            if (ModelState.IsValid)
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    ///prepare upload
+                    //parse exp type name
+                    var type = new ecloning.Models.ExpTypes();
+                    var timeStamp = DateTime.Now.Millisecond.ToString() + "$" + type.getName(result.type_id) + "%"; //timestap+expType
+                    string fileName = null;
+
+                    try
+                    {
+                        var stepResult = new exp_step_result();
+                        stepResult.exp_id = result.exp_id;
+                        stepResult.exp_step_id = result.exp_step_id;
+                        stepResult.result_des = ecloning.Models.lnbrConvert.ln2br(result.result_des);
+                        stepResult.dt = result.result_dt;
+
+                        //get result id
+                        int ResultId = 1;
+                        var preResults = db.exp_step_result.Where(r => r.exp_id == result.exp_id && r.exp_step_id == result.exp_step_id);
+                        if (preResults.Count() > 0)
+                        {
+                            ResultId = preResults.OrderByDescending(r => r.result_id).FirstOrDefault().result_id + 1;
+                        }
+                        stepResult.result_id = ResultId;
+
+
+                        //upload img file
+                        HttpPostedFileBase file = null;
+                        file = Request.Files["img_fn"];
+
+
+                        if (eCloningSettings.AppHosting == "Cloud")
+                        {
+                            //upload to azure
+                            if (file != null && file.FileName != null && file.ContentLength > 0)
+                            {
+                                try
+                                {
+                                    fileName = timeStamp + Path.GetFileName(file.FileName);
+                                    AzureBlob azureBlob = new AzureBlob();
+                                    azureBlob.directoryName = eCloningSettings.expDataDir;
+                                    azureBlob.AzureBlobUpload(fileName, file);
+                                }
+                                catch (Exception)
+                                {
+                                    ModelState.AddModelError("", "File upload failed!");
+                                    return View(result);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //upload to local plasmid folder
+                            var expDataPath = eCloningSettings.filePath + eCloningSettings.expDataDir;
+                            if (file != null && file.FileName != null && file.ContentLength > 0)
+                            {
+                                try
+                                {
+                                    fileName = timeStamp + Path.GetFileName(file.FileName);
+                                    //fileExtension = Path.GetExtension(file.FileName);
+                                    var path = Path.Combine(Server.MapPath(expDataPath), fileName);
+                                    file.SaveAs(path);
+                                }
+                                catch (Exception)
+                                {
+                                    ModelState.AddModelError("", "File upload failed!");
+                                    return View(result);
+                                }
+                            }
+                        }
+
+                        stepResult.result_upload = fileName;
+                        db.exp_step_result.Add(stepResult);
+                        db.SaveChanges();
+                        scope.Complete();
+                        TempData["msg"] = "Result added!";
+                        return RedirectToAction("StepDetails", "Experiment", new { id = result.exp_step_id });
+
+                    }
+                    catch (Exception)
+                    {
+                        scope.Dispose();
+                        TempData["msg"] = "Something went wroing, result NOT added!";
+                        //remvoe upload
+                        if (eCloningSettings.AppHosting == "Cloud")
+                        {
+                            //delete from azure
+                            AzureBlob azureBlob = new AzureBlob();
+                            azureBlob.directoryName = eCloningSettings.expDataDir;
+                            azureBlob.AzureBlobDelete(fileName);
+                        }
+                        else
+                        {
+                            //delete from local
+                            string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/" + fileName);
+                            if (System.IO.File.Exists(path))
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                        }
+                        return RedirectToAction("StepDetails", "Experiment", new { id = result.exp_step_id });
+                    }
+                }  
+            }
+            
+            return View(result);
+        }
 
         [Authorize]
         [HttpGet]

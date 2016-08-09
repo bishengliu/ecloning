@@ -322,3 +322,4 @@ D:\ecloning\ecloning\ecloning\bin\Bio.Desktop.xml
 D:\ecloning\ecloning\ecloning\bin\Bio.Padena.xml
 D:\ecloning\ecloning\ecloning\bin\Bio.Pamsam.xml
 D:\ecloning\ecloning\ecloning\bin\Bio.WebServices.xml
+D:\ecloning\ecloning\ecloning\obj\Debug\ecloning.csprojResolveAssemblyReference.cache
