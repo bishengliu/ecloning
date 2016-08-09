@@ -35,7 +35,7 @@
     List<ecloning.Models.EnzymeIdName> enzymeIdName = new List<ecloning.Models.EnzymeIdName>();
     if (Model.emzyme_id != null)
     {
-        var enzymeString = Model.emzyme_id.Split('-');
+        var enzymeString = Model.emzyme_id.Split(',');
         foreach (var id in enzymeString)
         {
             enzymeId.Add(Int32.Parse(id));

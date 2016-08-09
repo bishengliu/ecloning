@@ -307,7 +307,7 @@ function drawCuts(id, enzymes, enzyArray, features, seqCount, name) {
     var cutArray = [];
     //find the max of the cuts
     var maxCuts = findMaxCuts(enzymes);
-    cutArray = genArray(maxCuts);
+    cutArray = generateArray(maxCuts);
 
     //map width
     var width = 450;
@@ -394,7 +394,7 @@ function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
     var cutArray = [];
     //find the max of the cuts
     var maxCuts = findMaxCuts(enzymes);
-    cutArray = genArray(maxCuts);
+    cutArray = generateArray(maxCuts);
     //draw cut map
     $.each(enzyArray, function (i, v) {
         var width = 350;
@@ -408,7 +408,7 @@ function drawCutMap(enzymes, enzyArray, features, seqCount, name) {
         drawMap(giraffeData, id, name + ': ' + vname, width, cutArray);
     });
 }
-function genArray(maxCuts) {
+function generateArray(maxCuts) {
     var array = [];
     for (var i = 1; i <= maxCuts; i++) {
         array.push(i);
