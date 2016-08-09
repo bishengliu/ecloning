@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "Display Image";
+    Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+    string fileName = ViewBag.fileName;
+    int Id = ViewBag.Id;
+    string Des = ViewBag.Des;
+    MemoryStream memoryStream = new MemoryStream();
+    string fileType = null;
+}
+
+@if (ecloning.Models.eCloningSettings.AppHosting == "Cloud")
+{
+    var azureBlob = new ecloning.Models.AzureBlob();
+    azureBlob.directoryName = ecloning.Models.eCloningSettings.expDataDir;
+
+    if (fileName != null)
+    {
+        //check file type to be image
+        if (ecloning.Models.ImageExtensionCheck.IsImage(fileName) == true)
+        {
+            //check the exisitence of the orignal image
+            if (azureBlob.AzureBlobUri(fileName) != "notFound")
+            {
+                //put in the mStream
+                memoryStream = azureBlob.AzureBlobDownloadToStream(fileName);
+            }
+        }
+        //get the fileType
+        var nameArray = fileName.Split('.');
+        fileType = nameArray[nameArray.Length - 1];
+    }
+}
+else
+{
+    
+}
+
+
+@if (memoryStream != null)
+{
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title text-center text-info">Result Image</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-7">
+                        <img width="700" height="700" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" />
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-3">
+                        <div style="border-left: 3px solid black;padding: 20px;">
+                            <span class="text-info"><strong>Remarks: </strong></span><br /><span>@Des</span><br /><br />
+                            <hr class="dotted-line" />
+                            <button class="btn btn-info" style="color:#E65C5C;">@Html.ActionLink("Download", "Download", "Experiment", new { fileName = fileName, actionName = "StepDetails", id = Id }, null)</button><br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+}

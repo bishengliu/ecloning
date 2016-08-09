@@ -629,6 +629,16 @@ namespace ecloning.Controllers
 
         [Authorize]
         [HttpGet]
+        public ActionResult DisplayImage(string fileName, string step_table_id, string des)
+        {
+            ViewBag.fileName = fileName;
+            ViewBag.Id = step_table_id;
+            ViewBag.Des = des;
+            return View();
+        }
+
+        [Authorize]
+        [HttpGet]
         public ActionResult DeleteResult(int? id)
         { 
             //id is the result id
