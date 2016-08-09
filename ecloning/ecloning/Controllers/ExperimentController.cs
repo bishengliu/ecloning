@@ -188,8 +188,6 @@ namespace ecloning.Controllers
             ViewBag.expId = step.exp_id;
             //get the material
             var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
-            //get results
-            var results = db.exp_step_result.Where(r => r.exp_id == step.exp_id && r.exp_step_id == step.exp_id);
             
             //load data into ViewModel
             var model = new ExpStep();
@@ -212,21 +210,6 @@ namespace ecloning.Controllers
             model.ligation_direction = material.ligation_direction;
             model.nplasmid_id = material.nplasmid_id;
 
-            //load results
-            var resultData = new List<ExpResult>();
-            if (resultData.Count() > 0)
-            {
-                foreach (var item in results)
-                {
-                    var result = new ExpResult();
-                    result.id = item.id;
-                    result.result_id = item.result_id;
-                    result.result_upload = item.result_upload;
-                    result.result_des = item.result_des;
-                    result.result_dt = item.dt;
-                    resultData.Add(result);
-                }
-            }
             //get the plasmid feautures
             dynamic features = null;
             if (model.plasmid_id != null)
@@ -383,7 +366,28 @@ namespace ecloning.Controllers
             }
             ViewBag.nFeatures = JsonConvert.SerializeObject(nfeatures);
             ViewBag.nPlasmid = JsonConvert.SerializeObject(nPlasmid);
-            model.results = resultData;
+
+            //load results
+            var res = new List<ExpResult>();
+            var stepResults = db.exp_step_result.Where(r => r.exp_id == step.exp_id && r.exp_step_id == step.step_id);
+            if (stepResults.Count() > 0)
+            {
+                model.hasResult = true;
+                foreach (var item in stepResults)
+                {
+                    var exp_res = new ExpResult();
+                    exp_res.id = item.id;
+                    exp_res.exp_id = step.exp_id;
+                    exp_res.exp_step_id = step.step_id;
+                    exp_res.result_des = lnbrConvert.br2ln(item.result_des);
+                    exp_res.result_dt = item.dt;
+                    exp_res.result_id = item.result_id;
+                    exp_res.result_upload = item.result_upload;
+                    exp_res.type_id = step.type_id;
+                    res.Add(exp_res);
+                }
+            }
+            model.results = res;
             return View(model);
         }
 
@@ -392,7 +396,6 @@ namespace ecloning.Controllers
         [HttpGet]
         public ActionResult AddResult(int? id, int? type_id)
         {
-            //id is the step id
             //id is the step id
             if (id == null || type_id == null || type_id < 1 || type_id > 8)
             {
@@ -404,8 +407,9 @@ namespace ecloning.Controllers
                 return HttpNotFound();
             }
             ViewBag.ExpId = step.exp_id; //exp_id
-            ViewBag.StepId = id; //step id
+            ViewBag.StepId = step.step_id; //step id
             ViewBag.TypeId = type_id; //type_id
+            ViewBag.Id = id; //step table id
             return View();
         }
 
@@ -417,12 +421,9 @@ namespace ecloning.Controllers
             ViewBag.ExpId = result.exp_id; //exp_id
             ViewBag.StepId = result.exp_step_id; //step id
             ViewBag.TypeId = result.type_id; //type_id
-
-
-            //get current login email
-            var email = User.Identity.GetUserName();
-            var userId = User.Identity.GetUserId();
-            var userInfo = new UserInfo(userId);
+            //get the step
+            var step = db.exp_step.Where(s => s.exp_id == result.exp_id && s.step_id == result.exp_step_id).FirstOrDefault();
+            ViewBag.Id = step.id;
 
             if (ModelState.IsValid)
             {
@@ -441,7 +442,6 @@ namespace ecloning.Controllers
                         stepResult.exp_step_id = result.exp_step_id;
                         stepResult.result_des = ecloning.Models.lnbrConvert.ln2br(result.result_des);
                         stepResult.dt = result.result_dt;
-
                         //get result id
                         int ResultId = 1;
                         var preResults = db.exp_step_result.Where(r => r.exp_id == result.exp_id && r.exp_step_id == result.exp_step_id);
@@ -502,11 +502,14 @@ namespace ecloning.Controllers
                                     var path = Path.Combine(Server.MapPath(expDataPath), fileName);
                                     file.SaveAs(path);
 
-
-                                    //generate thunmbnail and save tb
-                                    //thubnail add 'tb-' before fielName
-                                    var tb = new ThumbnailLocal();
-                                    tb.SaveLocal(expDataPath, fileName, "img_fn");
+                                    if (ImageExtensionCheck.IsImage(fileName) == true)
+                                    {
+                                        //generate thunmbnail and save tb
+                                        //thubnail add 'tb-' before fielName
+                                        var tb = new ThumbnailLocal();
+                                        tb.SaveLocal(expDataPath, fileName, "img_fn");
+                                    }
+                                    
                                 }
                                 catch (Exception)
                                 {
@@ -535,7 +538,7 @@ namespace ecloning.Controllers
                         db.SaveChanges();
                         scope.Complete();
                         TempData["msg"] = "Result added!";
-                        return RedirectToAction("StepDetails", "Experiment", new { id = result.exp_step_id });
+                        return RedirectToAction("StepDetails", "Experiment", new { id = step.id });
 
                     }
                     catch (Exception)
@@ -566,12 +569,130 @@ namespace ecloning.Controllers
                                 System.IO.File.Delete(path2);
                             }
                         }
-                        return RedirectToAction("StepDetails", "Experiment", new { id = result.exp_step_id });
+                        return RedirectToAction("StepDetails", "Experiment", new { id = step.id });
                     }
                 }  
             }
             
             return View(result);
+        }
+
+
+        [Authorize]
+        public ActionResult Download(string fileName, string actionName, int id)
+        {
+            if (eCloningSettings.AppHosting == "Cloud")
+            {
+                //download from azure
+                AzureBlob azureBlob = new AzureBlob();
+                azureBlob.directoryName = eCloningSettings.expDataDir;
+                try
+                {
+                    if (azureBlob.AzureBlobUri(fileName) == "notFound")
+                    {
+                        return HttpNotFound();
+                    }
+                    else
+                    {
+                        azureBlob.AzureBlobDownload(fileName);
+                    }
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("FileError");
+                }
+            }
+            else
+            {
+                //download from local
+                try
+                {
+                    var expDataPath = eCloningSettings.filePath + eCloningSettings.expDataDir;
+                    var path = Path.Combine(Server.MapPath(expDataPath), fileName);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(path);
+                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("FileError");
+                }
+            }
+            return RedirectToAction(actionName, "Experiment", new { id = id});
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult FileError()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult DeleteResult(int? id)
+        { 
+            //id is the result id
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var res = db.exp_step_result.Find(id);
+            if (res == null)
+            {
+                return HttpNotFound();
+            }
+            //step table id
+            var step = db.exp_step.Where(s => s.exp_id == res.exp_id && s.step_id == res.exp_step_id).FirstOrDefault();
+            ViewBag.Id = id;
+            ViewBag.StepTableId = step.id;
+            ViewBag.ExpId = step.exp_id;
+            return View(res);
+        }
+
+        [Authorize, ActionName("DeleteResult")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteResultConfirmed(int id)
+        {
+            var res = db.exp_step_result.Find(id);
+            try
+            {
+                db.exp_step_result.Remove(res);
+                db.SaveChanges();
+                //remvoe upload
+                if (eCloningSettings.AppHosting == "Cloud")
+                {
+                    //delete from azure
+                    AzureBlob azureBlob = new AzureBlob();
+                    azureBlob.directoryName = eCloningSettings.expDataDir;
+                    azureBlob.AzureBlobDelete(res.result_upload);
+                    azureBlob.AzureBlobDelete("tb-" + res.result_upload);
+                }
+                else
+                {
+                    //delete from local the original file
+                    string path1 = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/" + res.result_upload);
+                    if (System.IO.File.Exists(path1))
+                    {
+                        System.IO.File.Delete(path1);
+                    }
+                    //thunbnail
+                    string path2 = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/tb-" + res.result_upload);
+                    if (System.IO.File.Exists(path2))
+                    {
+                        System.IO.File.Delete(path2);
+                    }
+                }
+                TempData["msg"] = "Result deleted!";
+                var sId = db.exp_step.Where(s => s.exp_id == res.exp_id && s.step_id == res.exp_step_id).FirstOrDefault().id;
+                return RedirectToAction("StepDetails", "Experiment", new { id = sId });
+            }
+            catch (Exception)
+            {
+                TempData["msg"] = "Result NOT deleted!";
+                var sId = db.exp_step.Where(s => s.exp_id == res.exp_id && s.step_id == res.exp_step_id).FirstOrDefault().id;
+                return RedirectToAction("StepDetails", "Experiment", new { id = sId });
+            }
         }
 
         [Authorize]

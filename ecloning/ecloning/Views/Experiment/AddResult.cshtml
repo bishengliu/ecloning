@@ -5,6 +5,7 @@
     int ExpId = (int)ViewBag.ExpId;
     int StepId = (int)ViewBag.StepId;
     int TypeId = (int)ViewBag.TypeId;
+    int Id = (int)ViewBag.Id;
     
     //get the exp type
     var type = new ecloning.Models.ExpTypes();
@@ -17,7 +18,7 @@
     <div class="col-sm-5 col-xs-12">
         <div class="">
             <h3 class="pull-right">
-                <a href="@Url.Action("StepDetails", "Experiment", new { id = StepId })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Go Back to Experiment Steps">
+                <a href="@Url.Action("StepDetails", "Experiment", new { id = Id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Go Back to Experiment Steps">
                     <i class="fa fa-caret-left"></i>
                     <span>Steps</span>
                 </a>
@@ -36,14 +37,6 @@
             <div class="form-horizontal">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
-                    @*<div class="form-group">
-                        @Html.LabelFor(model => model.result_upload, "Upload", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
-                        <div class="col-md-8 col-lg-6">
-                            @Html.EditorFor(model => model.result_upload, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.result_upload, "", new { @class = "text-danger" })
-                            <p id="nameMini-msg" class="text-danger"></p>
-                        </div>
-                    </div>*@
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.result_upload, "Upload", htmlAttributes: new { @class = "control-label col-md-4" })

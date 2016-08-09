@@ -252,8 +252,9 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
-            <br/>
+            <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
             <div class="topPrimaryLine"></div>
             <div class="clearfix"></div>
@@ -261,6 +262,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>                                        
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else if (Model.type_id == 2)
@@ -316,6 +359,7 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -325,6 +369,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else if (Model.type_id == 3)
@@ -380,6 +466,7 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -389,6 +476,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else if (Model.type_id == 4)
@@ -473,6 +602,7 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -482,6 +612,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else if (Model.type_id == 5)
@@ -555,6 +727,7 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -564,6 +737,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else if (Model.type_id == 6)
@@ -735,6 +950,7 @@
                     </dd>
                 </dl>
             </div>
+
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -744,6 +960,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else if (Model.type_id == 7)
@@ -783,6 +1041,7 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -792,6 +1051,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
         else
@@ -848,6 +1149,7 @@
                     </dd>
                 </dl>
             </div>
+            @*display result*@
             <div class="clearfix"></div>
             <br />
             <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
@@ -857,6 +1159,48 @@
             {
                 <br />
                 <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                            <i class="fa fa-download"></i>
+                                            <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                        </a>
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         }
     </div>

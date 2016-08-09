@@ -1160,6 +1160,8 @@
     <Content Include="Views\Experiment\Edit.cshtml" />
     <Content Include="Views\Experiment\StepDetails.cshtml" />
     <Content Include="Views\Experiment\AddResult.cshtml" />
+    <Content Include="Views\Experiment\DeleteResult.cshtml" />
+    <Content Include="Views\Experiment\FileError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\exp_data\" />

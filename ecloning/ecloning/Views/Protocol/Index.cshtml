@@ -88,7 +88,7 @@
                                 @Html.DisplayFor(modelItem => item.version)
                             </td>
                             <td>
-                                <a href="@Url.Action("Download", "Protocol", new { fileName=item.upload, avtionName = "Index" })">
+                                <a href="@Url.Action("Download", "Protocol", new { fileName=item.upload, actionName = "Index" })">
                                     <i class="fa fa-download"></i>
                                     <span>@item.upload.Split('$')[1]</span>
                                 </a>
