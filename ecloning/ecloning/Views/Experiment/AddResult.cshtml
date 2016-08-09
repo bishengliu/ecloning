@@ -30,7 +30,7 @@
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <h3 class="text-center text-primary"><i>@type.getName(TypeId).ToUpper()</i></h3>
         <br class="topPrimaryLine" />
-        @using (Html.BeginForm())
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return uploadSize();" }))
         {
             @Html.AntiForgeryToken()
             <div class="form-horizontal">

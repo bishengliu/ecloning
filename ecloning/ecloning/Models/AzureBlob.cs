@@ -24,7 +24,9 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.Configuration;
 
 using System.IO;
-using System.Web.UI.WebControls;
+//using System.Web.UI.WebControls;
+
+using System.Drawing;
 
 namespace ecloning.Models
 {
@@ -285,5 +287,65 @@ namespace ecloning.Models
 
 
         }
+
+
+        public void AzureBlobTBUpload(string FileName, string KeyName)
+        {
+            //for Azure storage
+            // Retrieve storage account from connection string.
+            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString;
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+
+            //A CloudBlobClient type allows you to retrieve objects that represent containers and blobs stored within the Blob Storage Service. 
+            //The following code creates a CloudBlobClient object using the storage account object we retrieved above:
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Retrieve a reference to a container.
+            directoryName = this.directoryName;
+            CloudBlobContainer container = blobClient.GetContainerReference(directoryName);
+
+
+            // Create the container if it doesn't already exist.
+            container.CreateIfNotExists();
+
+
+
+            // Retrieve reference to a blob named "myblob".
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference("tb-" + FileName);
+
+            // Create or overwrite the "myblob" blob with contents from a local file.
+            //System.IO.MemoryStream uploadFile = new System.IO.MemoryStream();
+
+
+            //only allow one file to be uploaded
+            HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[KeyName];
+            if (file.ContentLength != 0)
+            {
+                //copy file into memStream
+                //MemoryStream memStream = new MemoryStream();
+                //memStream.Flush();
+                //memStream.Seek(0, SeekOrigin.Begin);
+                //file.InputStream.CopyTo(memStream);
+                Image thumbNail = null;
+                Image image = Image.FromStream(file.InputStream, true, false);
+
+                //var ratio = image.Height / image.Width;
+                //var ratio = 1;
+                thumbNail = image.GetThumbnailImage(100, 100, () => false, IntPtr.Zero);
+
+                //save tb into memorystream
+                MemoryStream m = new MemoryStream();
+                //get image format
+                System.Drawing.Imaging.ImageFormat format = ImageFormat.GetImageFormatFromFile(FileName);
+                thumbNail.Save(m, format);
+
+
+                //save to azure
+                blockBlob.Properties.ContentType = file.ContentType;
+                blockBlob.UploadFromStream(m);
+            }
+        }
+
     }
 }

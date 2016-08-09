@@ -9,6 +9,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Transactions;
 using System.IO;
+using System.Drawing;
 
 namespace ecloning.Controllers
 {
@@ -467,10 +468,23 @@ namespace ecloning.Controllers
                                     AzureBlob azureBlob = new AzureBlob();
                                     azureBlob.directoryName = eCloningSettings.expDataDir;
                                     azureBlob.AzureBlobUpload(fileName, file);
+
+                                    if (ImageExtensionCheck.IsImage(fileName) == true)
+                                    {
+                                        //generate the thumbnail and upload azure
+                                        //thubnail add 'tb-' before fielName
+                                        azureBlob.AzureBlobTBUpload(fileName, "img_fn");
+                                    }                                    
                                 }
                                 catch (Exception)
                                 {
                                     ModelState.AddModelError("", "File upload failed!");
+                                    //delete from azure
+                                    AzureBlob azureBlob = new AzureBlob();
+                                    azureBlob.directoryName = eCloningSettings.expDataDir;
+                                    azureBlob.AzureBlobDelete(fileName);
+                                    azureBlob.AzureBlobDelete("tb-" + fileName);
+
                                     return View(result);
                                 }
                             }
@@ -487,10 +501,30 @@ namespace ecloning.Controllers
                                     //fileExtension = Path.GetExtension(file.FileName);
                                     var path = Path.Combine(Server.MapPath(expDataPath), fileName);
                                     file.SaveAs(path);
+
+
+                                    //generate thunmbnail and save tb
+                                    //thubnail add 'tb-' before fielName
+                                    var tb = new ThumbnailLocal();
+                                    tb.SaveLocal(expDataPath, fileName, "img_fn");
                                 }
                                 catch (Exception)
                                 {
                                     ModelState.AddModelError("", "File upload failed!");
+
+                                    //delete from local the original file
+                                    string path1 = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/" + fileName);
+                                    if (System.IO.File.Exists(path1))
+                                    {
+                                        System.IO.File.Delete(path1);
+                                    }
+                                    //thunbnail
+                                    string path2 = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/tb-" + fileName);
+                                    if (System.IO.File.Exists(path2))
+                                    {
+                                        System.IO.File.Delete(path2);
+                                    }
+
                                     return View(result);
                                 }
                             }
@@ -515,14 +549,21 @@ namespace ecloning.Controllers
                             AzureBlob azureBlob = new AzureBlob();
                             azureBlob.directoryName = eCloningSettings.expDataDir;
                             azureBlob.AzureBlobDelete(fileName);
+                            azureBlob.AzureBlobDelete("tb-"+fileName);
                         }
                         else
                         {
-                            //delete from local
-                            string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/" + fileName);
-                            if (System.IO.File.Exists(path))
+                            //delete from local the original file
+                            string path1 = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/" + fileName);
+                            if (System.IO.File.Exists(path1))
                             {
-                                System.IO.File.Delete(path);
+                                System.IO.File.Delete(path1);
+                            }
+                            //thunbnail
+                            string path2 = Request.MapPath(eCloningSettings.filePath + eCloningSettings.expDataDir + "/tb-" + fileName);
+                            if (System.IO.File.Exists(path2))
+                            {
+                                System.IO.File.Delete(path2);
                             }
                         }
                         return RedirectToAction("StepDetails", "Experiment", new { id = result.exp_step_id });
