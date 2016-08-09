@@ -1114,3 +1114,8 @@ text.value {
     font-size: 11px;
     color:#537489;
 }
+.leftLine {
+    border-radius: 5px;
+    border-left: 3px solid #ffbb78;
+    padding: 20px;
+}

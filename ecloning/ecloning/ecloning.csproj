@@ -372,6 +372,7 @@
     <Compile Include="Models\department.cs">
       <DependentUpon>ecloning.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DisplayImage.cs" />
     <Compile Include="Models\dPrimer.cs" />
     <Compile Include="Models\dropdownitem.cs">
       <DependentUpon>ecloning.tt</DependentUpon>

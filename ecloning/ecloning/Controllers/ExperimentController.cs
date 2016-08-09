@@ -629,7 +629,7 @@ namespace ecloning.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult DisplayImage(string fileName, string step_table_id, string des)
+        public ActionResult DisplayImage(string fileName, int step_table_id, string des)
         {
             ViewBag.fileName = fileName;
             ViewBag.Id = step_table_id;
