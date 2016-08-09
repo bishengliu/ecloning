@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using System.Net;
+using System.Transactions;
 
 namespace ecloning.Controllers
 {
@@ -235,10 +236,22 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            probe probe = db.probes.Find(id);
-            db.probes.Remove(probe);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    probe probe = db.probes.Find(id);
+                    db.probes.Remove(probe);
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index");
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

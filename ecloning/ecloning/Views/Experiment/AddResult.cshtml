@@ -36,12 +36,10 @@
             @Html.AntiForgeryToken()
             <div class="form-horizontal">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
-
+                <div class="">
                     <div class="form-group">
                         @Html.LabelFor(model => model.result_upload, "Upload", htmlAttributes: new { @class = "control-label col-md-4" })
-                        <div class="col-md-6">
-
+                        <div class="col-md-6 col-lg-4">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="img_name" readonly>
                                 <span class="input-group-btn">
@@ -55,8 +53,8 @@
 
                     <div class="form-group required">
                         @Html.LabelFor(model => model.result_dt, "Date", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
-                        <div class="col-md-8 col-lg-6">
-                            @Html.EditorFor(model => model.result_dt, new { htmlAttributes = new { @class = "form-control" } })
+                        <div class="col-md-6 col-lg-4">
+                            @Html.EditorFor(model => model.result_dt, new { htmlAttributes = new { @class = "form-control datepicker" } })
                             @Html.ValidationMessageFor(model => model.result_dt, "", new { @class = "text-danger" })
                             <p id="nameMini-msg" class="text-danger"></p>
                         </div>
@@ -82,17 +80,16 @@
                             @Html.ValidationMessageFor(model => model.exp_step_id, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+
                     <div class="form-group">
                         @Html.LabelFor(model => model.result_des, "Remarks", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
-                        <div class="col-md-8 col-lg-6">
-                            @Html.TextAreaFor(model => model.result_des, 4, 150, new { @class = "form-control" })
+                        <div class="col-md-6 col-lg-4">
+                            @Html.TextAreaFor(model => model.result_des, 6, 150, new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.result_des, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="col-md-offset-3 col-lg-offset-4 col-md-6 col-lg-4">
                             <div class="pull-right">
                                 <button class="btn btn-danger"><i class="fa fa-plus-circle"></i><span> Result</span></button>
                             </div>
@@ -107,8 +104,14 @@
 @Scripts.Render("~/bundles/jquery")
 
 <script>
-    function uploadSize() {
+    $(function () {
+        $(".datepicker").datepicker({
+            autoclose: true,
+            format: 'dd/M/yyyy',
+        });
+    });
 
+    function uploadSize() {
         if (typeof ($('#img_fn')[0].files) != "undefined") {
             //check upload file size
             var size = parseFloat($('#img_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB

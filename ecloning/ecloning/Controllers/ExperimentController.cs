@@ -728,20 +728,26 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteStepConfirmed(int id)
         {
-            var step = db.exp_step.Find(id);
-            try 
-            {                
-                //find material
-                var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
-                db.exp_step_material.Remove(material);
-                db.exp_step.Remove(step);
-                db.SaveChanges();
-                return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
-            }
-            catch (Exception)
+            using (TransactionScope scope = new TransactionScope())
             {
-                return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
+                var step = db.exp_step.Find(id);
+                try 
+                {                
+                    //find material
+                    var material = db.exp_step_material.Where(m => m.exp_id == step.exp_id && m.exp_step_id == step.step_id).FirstOrDefault();
+                    db.exp_step_material.Remove(material);
+                    db.exp_step.Remove(step);
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Details", "Experiment", new { id = step.exp_id });
+                }
             }
+
         }
 
         [Authorize]
@@ -1833,17 +1839,22 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            try
+            using (TransactionScope scope = new TransactionScope())
             {
-                var exp = db.experiments.Find(id);          
-                db.experiments.Remove(exp);
-                db.SaveChanges();
-                return RedirectToAction("Index", "Experiment");
-            }
-            catch (Exception)
-            {
-                return RedirectToAction("Index", "Experiment");
-            }            
+                try
+                {
+                    var exp = db.experiments.Find(id);          
+                    db.experiments.Remove(exp);
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index", "Experiment");
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index", "Experiment");
+                }
+            }              
         }
 
         [Authorize]

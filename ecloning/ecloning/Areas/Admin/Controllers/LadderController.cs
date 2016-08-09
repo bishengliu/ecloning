@@ -232,19 +232,31 @@ namespace ecloning.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ladder ladder = db.ladders.Find(id);
-            db.ladders.Remove(ladder);
-            //remove fragements
-            var fragments = db.ladder_size.Where(l => l.ladder_id == ladder.id);
-            if (fragments.Count() > 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                foreach(var item in fragments.ToList())
-                {
-                    db.ladder_size.Remove(item);
+                ladder ladder = db.ladders.Find(id);
+                try
+                {                    
+                    db.ladders.Remove(ladder);
+                    //remove fragements
+                    var fragments = db.ladder_size.Where(l => l.ladder_id == ladder.id);
+                    if (fragments.Count() > 0)
+                    {
+                        foreach (var item in fragments.ToList())
+                        {
+                            db.ladder_size.Remove(item);
+                        }
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Details", new { type = ladder.ladder_type });
                 }
-            }
-            db.SaveChanges();
-            return RedirectToAction("Details", new { type = ladder.ladder_type });
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Details", new { type = ladder.ladder_type });
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

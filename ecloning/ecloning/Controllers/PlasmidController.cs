@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Transactions;
 
 namespace ecloning.Controllers
 {
@@ -1118,48 +1119,60 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            plasmid plasmid = db.plasmids.Find(id);
-            db.plasmids.Remove(plasmid);
-            //delete plasmid_map
-            var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == id);
-            if (plasmid_map.Count() > 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                foreach(var i in plasmid_map.ToList())
+                try
                 {
-                    db.plasmid_map.Remove(i);
-                }
-            }
-            //delete plasmid_map_backup
-            var plasmid_map_backup = db.plasmid_map_backup.Where(p => p.plasmid_id == id);
-            if (plasmid_map_backup.Count() > 0)
-            {
-                foreach (var i in plasmid_map_backup.ToList())
-                {
-                    db.plasmid_map_backup.Remove(i);
-                }
-            }
-            db.SaveChanges();
-            //remove any uploaded file
-            if(plasmid.img_fn != null)
-            {
-                if (eCloningSettings.AppHosting == "Cloud")
-                {
-                    //delete from azure
-                    AzureBlob azureBlob = new AzureBlob();
-                    azureBlob.directoryName = eCloningSettings.plasmidDir;
-                    azureBlob.AzureBlobDelete(plasmid.img_fn);
-                }
-                else
-                {
-                    //delete from local
-                    string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.plasmidDir + "/" + plasmid.img_fn);
-                    if (System.IO.File.Exists(path))
+                    plasmid plasmid = db.plasmids.Find(id);
+                    db.plasmids.Remove(plasmid);
+                    //delete plasmid_map
+                    var plasmid_map = db.plasmid_map.Where(p => p.plasmid_id == id);
+                    if (plasmid_map.Count() > 0)
                     {
-                        System.IO.File.Delete(path);
+                        foreach (var i in plasmid_map.ToList())
+                        {
+                            db.plasmid_map.Remove(i);
+                        }
                     }
+                    //delete plasmid_map_backup
+                    var plasmid_map_backup = db.plasmid_map_backup.Where(p => p.plasmid_id == id);
+                    if (plasmid_map_backup.Count() > 0)
+                    {
+                        foreach (var i in plasmid_map_backup.ToList())
+                        {
+                            db.plasmid_map_backup.Remove(i);
+                        }
+                    }
+                    db.SaveChanges();
+                    //remove any uploaded file
+                    if (plasmid.img_fn != null)
+                    {
+                        if (eCloningSettings.AppHosting == "Cloud")
+                        {
+                            //delete from azure
+                            AzureBlob azureBlob = new AzureBlob();
+                            azureBlob.directoryName = eCloningSettings.plasmidDir;
+                            azureBlob.AzureBlobDelete(plasmid.img_fn);
+                        }
+                        else
+                        {
+                            //delete from local
+                            string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.plasmidDir + "/" + plasmid.img_fn);
+                            if (System.IO.File.Exists(path))
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                        }
+                    }
+                    scope.Complete();
+                    return RedirectToAction("Index");
                 }
-            }
-            return RedirectToAction("Index");
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index");
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

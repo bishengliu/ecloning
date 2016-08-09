@@ -139,28 +139,40 @@ namespace ecloning.Areas.Admin.Controllers
 
             //find the enzyme
             var enzyme = db.restriction_company.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
-            if (enzyme.Count() == 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            else
-            {
-                //remove that enzyme
-                db.restriction_company.Remove(enzyme.FirstOrDefault());
-
-                //remove all the activity
-                var activities = db.activity_restriction.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
-                if (activities.Count() > 0)
+                try
                 {
-                    foreach(var a in activities.ToList())
+                    if (enzyme.Count() == 0)
                     {
-                        db.activity_restriction.Remove(a);
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
+                    else
+                    {
+                        //remove that enzyme
+                        db.restriction_company.Remove(enzyme.FirstOrDefault());
+
+                        //remove all the activity
+                        var activities = db.activity_restriction.Where(e => e.company_id == (int)company_id && e.enzyme_id == (int)enzyme_id);
+                        if (activities.Count() > 0)
+                        {
+                            foreach (var a in activities.ToList())
+                            {
+                                db.activity_restriction.Remove(a);
+                            }
+                        }
+                        db.SaveChanges();
+                    }
+                    scope.Complete();
+                    return RedirectToAction("EnzymeList", new { company_id = company_id });
                 }
-                db.SaveChanges();
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("EnzymeList", new { company_id = company_id });
+                }
             }
 
-            return RedirectToAction("EnzymeList", new { company_id = company_id });
         }
 
         [Authorize]

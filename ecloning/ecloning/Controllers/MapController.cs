@@ -306,13 +306,13 @@ namespace ecloning.Controllers
             return View();
         }
 
-        [Authorize]
-        [HttpGet]
-        public ActionResult EditSequence()
-        {
-            ViewBag.Seq = "GAGGCGGGTAGGGCGGGGATTGAGGCGGGTCAAGGCGGGTAAGAGGCGGGGTACCGACTGATTAAAAAAAATAAATACGTCTCCGGCTCCGGCGGAGACGGAGACTCGATAAGGTCTTCATCACTCCTCCGAAAAAACCTCCGGATCCGAAAACGTTTTTCGAGGGCCCTCGAACATATAGGTAAAAGCCTAGACTAGTCGTGCACAACTGTTAATTAGTAGCCGTATCATATAGCCGTATCATATTATGCTGTTCCACTCCTTGATTTGGTACCGGTTCAACTGGTCACGGCAAGGCCACGAGTGGCGCGCGCTGCAGCGGCCTCGCCAGCTCAAGACCTGGCTGGCCGAGCCCAAGAGGGCCCTGAAGCACCTCCTGCTGAAGCGGCCACACCAGGCCCTGCTGCACTGGGACAAGTAGTCGCGCCAGGTCCTGGTCCACCACGGCCTGTTGTGGGACCGGACCCACACCCACGCGCCGGACCTGCTCGACATGCGGCTCACCAGCCTCCAGCACAGGTGCTTGAAGGCCCTGCGGAGGCCCGGCCGGTACTGGCTCTAGCCGCTCGTCGGCACCCCCGCCCTCAAGCGGGACGCGCTGGGCCGGCCGTTGACGCAC";
-            return View();
-        }
+        //[Authorize]
+        //[HttpGet]
+        //public ActionResult EditSequence()
+        //{
+        //    ViewBag.Seq = "GAGGCGGGTAGGGCGGGGATTGAGGCGGGTCAAGGCGGGTAAGAGGCGGGGTACCGACTGATTAAAAAAAATAAATACGTCTCCGGCTCCGGCGGAGACGGAGACTCGATAAGGTCTTCATCACTCCTCCGAAAAAACCTCCGGATCCGAAAACGTTTTTCGAGGGCCCTCGAACATATAGGTAAAAGCCTAGACTAGTCGTGCACAACTGTTAATTAGTAGCCGTATCATATAGCCGTATCATATTATGCTGTTCCACTCCTTGATTTGGTACCGGTTCAACTGGTCACGGCAAGGCCACGAGTGGCGCGCGCTGCAGCGGCCTCGCCAGCTCAAGACCTGGCTGGCCGAGCCCAAGAGGGCCCTGAAGCACCTCCTGCTGAAGCGGCCACACCAGGCCCTGCTGCACTGGGACAAGTAGTCGCGCCAGGTCCTGGTCCACCACGGCCTGTTGTGGGACCGGACCCACACCCACGCGCCGGACCTGCTCGACATGCGGCTCACCAGCCTCCAGCACAGGTGCTTGAAGGCCCTGCGGAGGCCCGGCCGGTACTGGCTCTAGCCGCTCGTCGGCACCCCCGCCCTCAAGCGGGACGCGCTGGGCCGGCCGTTGACGCAC";
+        //    return View();
+        //}
         [Authorize]
         [HttpGet]
         public ActionResult SeqEditor(int? plasmid_id, int? start, int? end, string tag)
@@ -716,6 +716,7 @@ namespace ecloning.Controllers
             return View(features);
         }
 
+        [Authorize]
         // GET: Map/Edit/5
         public ActionResult Edit(int? plasmid_id)
         {
@@ -1036,13 +1037,25 @@ namespace ecloning.Controllers
                 TempData["msg"] = "Please select the features you want to remove!";
                 return View();
             }
-            foreach(int i in id)
+            using (TransactionScope scope = new TransactionScope())
             {
-                plasmid_map plasmid_map = db.plasmid_map.Find(i);
-                db.plasmid_map.Remove(plasmid_map);
-            }
-            db.SaveChanges();
-            return RedirectToAction("Index", new { id = plasmid_id, tag = "personDispaly" });
+                try
+                {
+                    foreach (int i in id)
+                    {
+                        plasmid_map plasmid_map = db.plasmid_map.Find(i);
+                        db.plasmid_map.Remove(plasmid_map);
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index", new { id = plasmid_id, tag = "personDispaly" });
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index", new { id = plasmid_id, tag = "personDispaly" });
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

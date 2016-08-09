@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ecloning.Models;
+using System.Transactions;
 
 namespace ecloning.Areas.Admin.Controllers
 {
@@ -210,30 +211,42 @@ namespace ecloning.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            buffer buffer = db.buffers.Find(id);
-            db.buffers.Remove(buffer);
-
-            //delete all the activity linked with this buffer           
-            var Ractivities = db.activity_restriction.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
-            if (Ractivities.Count() > 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                foreach(var a in Ractivities.ToList())
+                try
                 {
-                    db.activity_restriction.Remove(a);
-                }
-            }
+                    buffer buffer = db.buffers.Find(id);
+                    db.buffers.Remove(buffer);
 
-            //delete all the activity linked with this buffer           
-            var Mactivities = db.activity_modifying.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
-            if (Mactivities.Count() > 0)
-            {
-                foreach (var a in Mactivities.ToList())
-                {
-                    db.activity_modifying.Remove(a);
+                    //delete all the activity linked with this buffer           
+                    var Ractivities = db.activity_restriction.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
+                    if (Ractivities.Count() > 0)
+                    {
+                        foreach (var a in Ractivities.ToList())
+                        {
+                            db.activity_restriction.Remove(a);
+                        }
+                    }
+
+                    //delete all the activity linked with this buffer           
+                    var Mactivities = db.activity_modifying.Where(c => c.company_id == buffer.company_id && c.buffer_id == id);
+                    if (Mactivities.Count() > 0)
+                    {
+                        foreach (var a in Mactivities.ToList())
+                        {
+                            db.activity_modifying.Remove(a);
+                        }
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index");
                 }
-            }
-            db.SaveChanges();
-            return RedirectToAction("Index");
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index");
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

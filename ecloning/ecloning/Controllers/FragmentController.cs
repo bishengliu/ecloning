@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using ecloning.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace ecloning.Controllers
 {
@@ -460,20 +461,32 @@ namespace ecloning.Controllers
             {
                 return HttpNotFound();
             }
-
-            db.fragments.Remove(fragment);
-
-            //detele all the reffered features in fragment_map
-            var maps = db.fragment_map.Where(i => i.fragment_id == id);
-            if (maps.Count() > 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                foreach (var m in maps)
+                try
                 {
-                    db.fragment_map.Remove(m);
+                    db.fragments.Remove(fragment);
+
+                    //detele all the reffered features in fragment_map
+                    var maps = db.fragment_map.Where(i => i.fragment_id == id);
+                    if (maps.Count() > 0)
+                    {
+                        foreach (var m in maps)
+                        {
+                            db.fragment_map.Remove(m);
+                        }
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Fragment", "Fragment");
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Fragment", "Fragment");
                 }
             }
-            db.SaveChanges();
-            return RedirectToAction("Fragment", "Fragment");
+            
             
         }
 

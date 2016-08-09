@@ -914,49 +914,59 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int bundle_id)
         {
-            //check if in shared
-            //get the group info
-            //get userId
-            var userId = User.Identity.GetUserId();
-            var userInfo = new UserInfo(userId);
-            var groupInfo = new GroupInfo(userInfo.PersonId);
-            //check whether it has already been shared
-            var isShared = db.group_shared.Where(r => r.category == "pBundle" && r.resource_id == bundle_id && r.group_id == groupInfo.groupId.FirstOrDefault());
-            if (isShared.Count() > 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                return RedirectToAction("Index");
-            }
-
-            //not in shared, then delete the bundle
-            var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
-            foreach(var item in pBundle)
-            {
-                db.plasmid_bundle.Remove(item);
-            }           
-            db.SaveChanges();
-
-            //remove any uploaded file
-            if (!String.IsNullOrWhiteSpace(pBundle.First().img_fn))
-            {
-                if (eCloningSettings.AppHosting == "Cloud")
+                try
                 {
-                    //delete from azure
-                    AzureBlob azureBlob = new AzureBlob();
-                    azureBlob.directoryName = eCloningSettings.bundleDir;
-                    azureBlob.AzureBlobDelete(pBundle.First().img_fn);
-                }
-                else
-                {
-                    //delete from local
-                    string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.bundleDir + "/" + pBundle.First().img_fn);
-                    if (System.IO.File.Exists(path))
+                    //check if in shared
+                    //get the group info
+                    //get userId
+                    var userId = User.Identity.GetUserId();
+                    var userInfo = new UserInfo(userId);
+                    var groupInfo = new GroupInfo(userInfo.PersonId);
+                    //check whether it has already been shared
+                    var isShared = db.group_shared.Where(r => r.category == "pBundle" && r.resource_id == bundle_id && r.group_id == groupInfo.groupId.FirstOrDefault());
+                    if (isShared.Count() > 0)
                     {
-                        System.IO.File.Delete(path);
+                        return RedirectToAction("Index");
                     }
-                }
-            }
 
-            return RedirectToAction("Index");
+                    //not in shared, then delete the bundle
+                    var pBundle = db.plasmid_bundle.Where(b => b.bundle_id == bundle_id);
+                    foreach (var item in pBundle)
+                    {
+                        db.plasmid_bundle.Remove(item);
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                    //remove any uploaded file
+                    if (!String.IsNullOrWhiteSpace(pBundle.First().img_fn))
+                    {
+                        if (eCloningSettings.AppHosting == "Cloud")
+                        {
+                            //delete from azure
+                            AzureBlob azureBlob = new AzureBlob();
+                            azureBlob.directoryName = eCloningSettings.bundleDir;
+                            azureBlob.AzureBlobDelete(pBundle.First().img_fn);
+                        }
+                        else
+                        {
+                            //delete from local
+                            string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.bundleDir + "/" + pBundle.First().img_fn);
+                            if (System.IO.File.Exists(path))
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                        }
+                    }
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    scope.Complete();
+                    return RedirectToAction("Index");
+                }
+            }                
         }
 
         protected override void Dispose(bool disposing)

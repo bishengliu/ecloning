@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ecloning.Models;
+using System.Transactions;
 
 namespace ecloning.Areas.Admin.Controllers
 {
@@ -104,10 +105,23 @@ namespace ecloning.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            modifying_enzyme modifying_enzyme = db.modifying_enzyme.Find(id);
-            db.modifying_enzyme.Remove(modifying_enzyme);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            using (TransactionScope scope = new TransactionScope())
+            {
+                modifying_enzyme modifying_enzyme = db.modifying_enzyme.Find(id);
+
+                try
+                {
+                    db.modifying_enzyme.Remove(modifying_enzyme);
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index");
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

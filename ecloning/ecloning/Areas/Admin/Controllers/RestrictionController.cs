@@ -10,6 +10,7 @@ using ecloning.Models;
 using ecloning.Areas.Admin.Models;
 using System.Text;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace ecloning.Areas.Admin.Controllers
 {
@@ -204,7 +205,6 @@ namespace ecloning.Areas.Admin.Controllers
                 ViewBag.msg = "At least one enzyme is required!";
                 return View();
             }
-
             return RedirectToAction("Delete", new { enzyme = enzyme });
         }
 
@@ -234,15 +234,27 @@ namespace ecloning.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int[] id)
         {
-            foreach(int i in id)
+            using (TransactionScope scope = new TransactionScope())
             {
-                restri_enzyme restri_enzyme = db.restri_enzyme.Find(i);
-                db.restri_enzyme.Remove(restri_enzyme);
-            }
+                try
+                {
+                    foreach (int i in id)
+                    {
+                        restri_enzyme restri_enzyme = db.restri_enzyme.Find(i);
+                        db.restri_enzyme.Remove(restri_enzyme);
+                    }
 
-            // need to deal with the remove plasmid map
-            db.SaveChanges();
-            return RedirectToAction("Index");
+                    // need to deal with the remove plasmid map
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index");
+                }
+            }            
         }
 
         protected override void Dispose(bool disposing)

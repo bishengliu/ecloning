@@ -401,34 +401,38 @@ namespace ecloning.Controllers
             bool isAllowed = protocol.version == latestVersion ? true : false;
             if (isAllowed)
             {
-                try
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    db.protocols.Remove(protocol);
-                    db.SaveChanges();
-
-                    //remove the upload file if exists
-                    if (eCloningSettings.AppHosting == "Cloud")
+                    try
                     {
-                        //delete from azure
-                        AzureBlob azureBlob = new AzureBlob();
-                        azureBlob.directoryName = eCloningSettings.protocolDir;
-                        azureBlob.AzureBlobDelete(protocol.upload);
-                    }
-                    else
-                    {
-                        //delete from local
-                        string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.protocolDir + "/" + protocol.upload);
-                        if (System.IO.File.Exists(path))
+                        db.protocols.Remove(protocol);
+                        db.SaveChanges();
+                        scope.Complete();
+                        //remove the upload file if exists
+                        if (eCloningSettings.AppHosting == "Cloud")
                         {
-                            System.IO.File.Delete(path);
+                            //delete from azure
+                            AzureBlob azureBlob = new AzureBlob();
+                            azureBlob.directoryName = eCloningSettings.protocolDir;
+                            azureBlob.AzureBlobDelete(protocol.upload);
                         }
+                        else
+                        {
+                            //delete from local
+                            string path = Request.MapPath(eCloningSettings.filePath + eCloningSettings.protocolDir + "/" + protocol.upload);
+                            if (System.IO.File.Exists(path))
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                        }
+                        return RedirectToAction("Index");
                     }
-                    return RedirectToAction("Index");
-                }
-                catch (Exception)
-                {
-                    return RedirectToAction("Index");
-                }
+                    catch (Exception)
+                    {
+                        scope.Dispose();
+                        return RedirectToAction("Index");
+                    }
+                }                
             }
             else
             {

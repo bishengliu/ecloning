@@ -101,10 +101,18 @@ namespace ecloning.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            company company = db.companies.Find(id);
-            db.companies.Remove(company);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                company company = db.companies.Find(id);
+                db.companies.Remove(company);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+            
         }
 
         protected override void Dispose(bool disposing)

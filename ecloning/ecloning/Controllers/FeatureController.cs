@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ecloning.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace ecloning.Controllers
 {
@@ -97,34 +98,39 @@ namespace ecloning.Controllers
             var labels = db.common_feature.Where(g => groupInfo.groupId.Contains(g.group_id)).OrderBy(n => n.label).Select(f => new { id = f.id, label = f.label, group = f.group_id });
             ViewBag.JsonLabel = JsonConvert.SerializeObject(labels.ToList());
 
-
             if (ModelState.IsValid)
-            {              
-                try
+            {
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    //check whether the name has been used in the current group or the add min group
-                    //get appAdmin group id
-                    var adminGroupIds = db.groups.Where(g => g.name == "AppAdmin" || g.name == "Institute Admin").Select(i => i.id).ToList();
+                    try
+                    {
+                        //check whether the name has been used in the current group or the add min group
+                        //get appAdmin group id
+                        var adminGroupIds = db.groups.Where(g => g.name == "AppAdmin" || g.name == "Institute Admin").Select(i => i.id).ToList();
 
-                    var isFound = false;
-                    var oldFeatures = db.common_feature.Where(f => f.label == common_feature.label && (adminGroupIds.Contains(f.group_id) || groupInfo.groupId.Contains(f.group_id)));
-                    if(oldFeatures.Count()>0){
-                        isFound = true;
-                    }
-                    if(isFound){
-                        TempData["msg"] = "Feature Name has already been used, please choose a different name!";
-                        return View(common_feature);
-                    }
+                        var isFound = false;
+                        var oldFeatures = db.common_feature.Where(f => f.label == common_feature.label && (adminGroupIds.Contains(f.group_id) || groupInfo.groupId.Contains(f.group_id)));
+                        if(oldFeatures.Count()>0){
+                            isFound = true;
+                        }
+                        if(isFound){
+                            TempData["msg"] = "Feature Name has already been used, please choose a different name!";
+                            return View(common_feature);
+                        }
 
-                    common_feature.people_id = userInfo.PersonId;
-                    db.common_feature.Add(common_feature);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                        common_feature.people_id = userInfo.PersonId;
+                        db.common_feature.Add(common_feature);
+                        db.SaveChanges();
+                        scope.Complete();
+                        return RedirectToAction("Index");
+                    }
+                    catch(Exception)
+                    {
+                        scope.Dispose();
+                        return RedirectToAction("Index");
+                    }        
                 }
-                catch(Exception)
-                {
-                    return RedirectToAction("Index");
-                }               
+                       
             }
 
             return View(common_feature);
@@ -245,28 +251,41 @@ namespace ecloning.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            common_feature common_feature = db.common_feature.Find(id);
-            db.common_feature.Remove(common_feature);
-            //detele all the reffered features in plasmid_map and plamsid_map backup tables
-            var backups = db.plasmid_map_backup.Where(i => i.common_id == id);
-            if (backups.Count() > 0)
+            using (TransactionScope scope = new TransactionScope())
             {
-                foreach (var b in backups)
+                try
                 {
-                    db.plasmid_map_backup.Remove(b);
+                    common_feature common_feature = db.common_feature.Find(id);
+                    db.common_feature.Remove(common_feature);
+                    //detele all the reffered features in plasmid_map and plamsid_map backup tables
+                    var backups = db.plasmid_map_backup.Where(i => i.common_id == id);
+                    if (backups.Count() > 0)
+                    {
+                        foreach (var b in backups)
+                        {
+                            db.plasmid_map_backup.Remove(b);
+                        }
+                    }
+                    //find plasmid_map
+                    var maps = db.plasmid_map.Where(i => i.common_id == id);
+                    if (maps.Count() > 0)
+                    {
+                        foreach (var m in maps)
+                        {
+                            db.plasmid_map.Remove(m);
+                        }
+                    }
+                    db.SaveChanges();
+                    scope.Complete();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    scope.Dispose();
+                    return RedirectToAction("Index");
                 }
             }
-            //find plasmid_map
-            var maps = db.plasmid_map.Where(i => i.common_id == id);
-            if (maps.Count() > 0)
-            {
-                foreach (var m in maps)
-                {
-                    db.plasmid_map.Remove(m);
-                }
-            }
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            
         }
 
         protected override void Dispose(bool disposing)
