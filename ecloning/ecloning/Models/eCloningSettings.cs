@@ -20,7 +20,7 @@ namespace ecloning.Models
 
         public readonly static string AppURI = "http://localhost:2974/";
         //set the institute name
-        public readonly static string Institute = "eCloning";
+        public readonly static string Institute = "ePlasmid";
 
         //sendgrid
         //nki
