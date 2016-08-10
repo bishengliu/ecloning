@@ -28,6 +28,7 @@ namespace ecloning
                       "~/Scripts/bootstrap-datepicker.min.js",
                       "~/Scripts/datepicker.js",
                       "~/Scripts/respond.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/msa").Include(
                        "~/Scripts/msa/*.js",
                       "~/Scripts/msa/src/g/selection/*.js",
