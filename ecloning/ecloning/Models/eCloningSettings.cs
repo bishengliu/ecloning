@@ -13,12 +13,13 @@ namespace ecloning.Models
     {
         //set app hosting
         //public readonly static string AppHosting = "Cloud";
-        public readonly static string AppHosting = "Hybrid"; //store upload in local root path, but use send grid as smtp
-        //public readonly static string AppHosting = "Local";
+        //public readonly static string AppHosting = "Hybrid"; //store upload in local root path, but use send grid as smtp
+        public readonly static string AppHosting = "Local";
         //set env
         public readonly static string AppEnv = "Developement";
 
-        public readonly static string AppURI = "http://localhost:2974/";
+        //public readonly static string AppURI = "http://localhost:2974/";
+        public readonly static string AppURI = "http://eplasmid.azurewebsites.net/";
         //set the institute name
         public readonly static string Institute = "ePlasmid";
 
@@ -48,7 +49,7 @@ namespace ecloning.Models
         public readonly static string protocolDir = "protocol";
 
         //upload exp_data to azure directoryName
-        public readonly static string expDataDir = "exp_data";
+        public readonly static string expDataDir = "expdata";
 
         //local data path
         public readonly static string filePath = "~/App_Data/";

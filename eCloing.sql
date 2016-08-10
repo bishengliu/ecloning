@@ -1230,7 +1230,35 @@ INSERT INTO dropdownitem VALUES
 
 
 
+--index
+CREATE INDEX index_restriction_company_enzyme_id ON restriction_company (enzyme_id);
+CREATE INDEX index_restriction_company_company_id ON restriction_company (company_id);
 
+CREATE INDEX index_plasmid_map_plasmid_id ON plasmid_map (plasmid_id);
+CREATE INDEX index_plasmid_map_feature_id ON plasmid_map (feature_id);
+
+CREATE INDEX index_plasmid_map_backup_feature_id ON plasmid_map_backup (feature_id);
+CREATE INDEX index_plasmid_map_backup_plasmid_id ON plasmid_map_backup (plasmid_id);
+
+CREATE INDEX index_restri_enzyme_name ON restri_enzyme (name);
+
+CREATE INDEX index_activity_restriction_enzyme_id ON activity_restriction (enzyme_id);
+
+CREATE INDEX index_common_restriction_enzyme_id ON common_restriction (enzyme_id);
+
+CREATE INDEX index_methylation_plasmid_id ON methylation (plasmid_id);
+
+CREATE INDEX index_fragment_plasmid_id ON fragment (plasmid_id);
+
+CREATE INDEX index_fragment_map_fragment_id ON fragment_map (fragment_id);
+
+CREATE INDEX index_exp_step_exp_id ON exp_step (exp_id);
+
+CREATE INDEX index_exp_step_material_exp_id ON exp_step_material (exp_id);
+
+CREATE INDEX index_exp_step_result_exp_id ON exp_step_result (exp_id);
+
+CREATE INDEX index_exp_share_exp_id ON exp_share (exp_id);
 
 
 
