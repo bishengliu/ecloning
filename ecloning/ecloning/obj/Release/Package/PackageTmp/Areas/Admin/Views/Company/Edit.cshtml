@@ -1,0 +1,72 @@
+﻿@model ecloning.Models.company
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+}
+
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-10">
+            <h3 class="text-primary"><span class="fa fa-pencil-square-o"></span> Company</h3>
+        </div>
+        <div class="col-sm-2">
+            <br class="hidden-xs" />
+            <a class="btn btn-default pull-right" href="@Url.Action("Index", "Company")">
+                <i class="fa fa-chevron-circle-left text-info"></i>
+                <span class="">Cancel</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Add a Company
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+                            @using (Html.BeginForm())
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.id)
+                                    <div class="form-group required">
+                                        @Html.LabelFor(model => model.shortName, "Name Abbrevivation", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.EditorFor(model => model.shortName, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.shortName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group required">
+                                        @Html.LabelFor(model => model.fullName, "Full Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.EditorFor(model => model.fullName, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.fullName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.des, "Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-10">
+                                            <input type="submit" value="Save Changes" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

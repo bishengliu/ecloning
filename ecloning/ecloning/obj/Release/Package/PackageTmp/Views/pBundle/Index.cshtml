@@ -1,0 +1,189 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_bundle>
+@{
+    ViewBag.Title = "Plasmid Bundles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<int> BundleIds = (List<int>)ViewBag.BundleIds;
+    var plasmid = new ecloning.Models.PlasmidInfo();
+    var GroupBundleIds = (List<int>)ViewBag.GrouppBundleIds;
+}
+
+<div class="col-xs-12">
+    <div class="row">
+        <div class="col-xs-9 col-sm-9">
+            <h3 class="text-warning">Plasmid Bundles</h3>
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right">
+            <br />
+            <div class="pull-right">
+                <a class="btn btn-primary" href="@Url.Action("Select", "pBundle")">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Add Bundle</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-right">
+            <div class="pull-right">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input id="searchBundle" type="text" class="form-control" placeholder="Search bundle names...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="clearText">
+                            <i class="fa fa-remove"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br class="hidden-xs" />
+    <p id="msg" class="text-danger">@TempData["msg"]</p>
+</div>
+
+<br />
+<div>
+
+    @if (BundleIds.Count() > 0)
+    {
+        int x = 0;
+        for (int i = 0; i < BundleIds.Count(); i++)
+        {
+            x++;
+            if (x - 1 > 9)
+            {
+                x = x - 10;
+            }
+            string ClassName = "panel" + " " + "panel-color" + (x - 1).ToString();
+            //this bundle id
+            var bundleId = BundleIds[i];
+            var bundle = Model.Where(b => b.bundle_id == bundleId);
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 bundleDiv">
+                <div class="@ClassName">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center"><em><strong>@bundle.First().name</strong></em><span>&nbsp;</span><span class="badge">@bundle.Count()</span></h3>
+                    </div>
+                    <div class="panel-body noPadding">
+                        <div class="bundleDes">
+                            <span class="text-info"><strong>Bundle Description: </strong></span>@bundle.First().des<br />
+                            @if (!String.IsNullOrWhiteSpace(bundle.First().img_fn))
+                            {
+                                <span class="text-info"><strong>Bundle Document: </strong></span>
+                                <span>
+                                    <a href="@Url.Action("Download", "pBundle", new { fileName=bundle.First().img_fn })">
+                                        <span style="color:darkred">@bundle.First().img_fn</span>&nbsp;<i class="fa fa-arrow-circle-o-down " style="font-size:80%; color:darkred;"></i>
+                                    </a>
+                                </span>
+                            }
+                        </div>
+                        @foreach (var item in bundle)
+                        {
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = @item.member_id, tag = "groupDispaly" })">
+                                        <p class="text-center plasmidName"><em>@plasmid.PlasmidName(@item.member_id)</em></p>
+                                    </a>
+                                </div>
+                                <div class="col-xs-10">
+                                    <span>@item.member_role</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="panel-footer clearfix">
+                        <div class="pull-right">
+                            <a class="btn btn-default" target="_blank" href="@Url.Action("Details", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Bundle Details">
+                                <i class="fa fa-info"></i>
+                            </a>
+                            <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Compare Components">
+                                <i class="fa fa-th"></i>
+                            </a>
+                            <a class="btn btn-default" href="@Url.Action("Replacer", "pBundle", new { bundle_id = bundleId })" data-toggle="tooltip" title="Sequence Replacer">
+                                <i class="fa fa-rocket"></i>
+                            </a>
+                            @if (GroupBundleIds.Contains(bundleId))
+                            {
+                                <a class="btn btn-default disabled" href="@Url.Action("Edit", "pBundle")">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                                <a class="btn btn-default disabled" href="@Url.Action("Delete", "pBundle")">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                                if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
+                                {
+                                    <a href="@Url.Action("unShare", "pBundle", new { bundle_id = bundleId })" data-toggle="tooltip" title="Unshare this bundle!">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                            <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
+                                        </span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-default disabled" href="@Url.Action("Share", "pBundle")">
+                                        <i class="fa fa-share-alt"></i>
+                                    </a>
+                                }
+
+                            }
+                            else
+                            {
+                                <a class="btn btn-default" href="@Url.Action("Edit", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Edit Bundle">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                                <a class="btn btn-default" href="@Url.Action("Delete", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Delete Bundle">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                                <a class="btn btn-default" href="@Url.Action("Share", "pBundle", new { bundle_id = bundleId})" data-toggle="tooltip" title="Share Bundle">
+                                    <i class="fa fa-share-alt"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    $(function () {
+        $('#searchBundle').keyup(function () {
+            var _text = $(this).val().toLowerCase();
+            $('.bundleDiv').each(function () {
+                $(this).removeClass("hidden");
+                $(this).addClass("hidden");
+                var _aText = $(this).find('h3').eq(0).find('strong').text().toLowerCase().replace(/\s+/g, '');
+                if (RegExp('^' + _text).test(_aText) || _aText.indexOf(_text) >= 0) {
+                    $(this).removeClass("hidden");
+                    $(this).fadeIn(400);
+                };
+            });
+        });
+
+        $('#clearText').click(function (e) {
+            e.preventDefault();
+            $('#searchEnzyme').val('');
+            $('.bundleDiv').each(function () {
+                $(this).removeClass("hidden");
+                $(this).fadeIn(400);
+            });
+        });
+    });
+</script>
+
+<script>
+    //get current url, only works for seq replacer
+    var url = window.location.href;
+    if (url.indexOf('?result=False') != -1) {
+        $("#msg").text("Something went wrong with the sequence replacer. Plasmid sequence(s) was/were not changed, please try again later!");
+    }
+    if (url.indexOf('?result=True') != -1) {
+        $("#msg").text("Plasmid sequence(s) was/were changed!");
+    }
+</script>

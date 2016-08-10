@@ -1,0 +1,58 @@
+﻿
+    <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+                <li>
+                    <a href="@Url.Action("Index", "Company")"><i class="fa fa-building-o fa-fw"></i> Companies</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Buffer")"><i class="fa fa-flask fa-fw"></i> Buffers</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-list-alt fa-fw"></i> Enzymes<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="@Url.Action("Index", "Restriction")"><i class="fa fa-scissors fa-fw"></i> Restriction Enzymes</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "MEnzyme")"><i class="fa fa-exchange fa-fw"></i> Modifying Enzymes</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-star-half-empty fa-fw"></i> Enzyme Activity<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li>
+                                    <a href="@Url.Action("Index", "RActivity")"><i class="fa fa-scissors fa-fw"></i> Restriction Enzymes</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MActivity")"><i class="fa fa-exchange fa-fw"></i> Modifying Enzymes</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-barcode fa-fw fa-rotate-270"></i> Ladders<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="@Url.Action("Details", "Ladder", new { type="DNA" })"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> DNA Ladders</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Details", "Ladder", new { type="RNA" })"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> RNA Ladders</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Details", "Ladder", new { type="Protein" })"><i class="fa fa-barcode fa-rotate-270 fa-fw"></i> Protein Ladders</a>
+                        </li>
+                    </ul>
+                </li>
+
+                @if (User.IsInRole("appAdmin") || User.IsInRole("InstAdmin"))
+                {
+                    <li>
+                        <a href="@Url.Action("Index", "Users")"><i class="fa fa-users fa-fw"></i> Application Users</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+

@@ -1,0 +1,511 @@
+﻿@{
+    ViewBag.Title = "Bundle Replacer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var bundleObj = ViewBag.BundleSeq;
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Sequence Replacer</h3>
+    </div>
+</div>
+
+<span id="decodeIt" class="hidden"></span>
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Howto: </strong>
+    <br/>1) The replacer only accepts <span><em>single-stranded</em></span> DNA sequences. All letters or symbols except "a/A", "t/T", "g/G" and "c/C", such as space, line break, number, nonprintable characters <i>etc.</i> will be removed automatically;
+    <br/>2) You first need to provide the DNA sequence to be replaced. This DNA sequence must NOT be shorter than <strong class="text-danger">10</strong> letters. The replacer uses the "Exact Match" to find the sequence to be replaced on all the plasmids in the current bundle;
+    <br/>3) After that, you will be asked to provide the new DNA sequence that will replace the sequence in the previous step. if you don't provide this sequence, the replacer will remove the DNA sequence provied in the previous step.
+    <br/>4) The replacer will replace all the matched sequences by default if <strong class="text-danger"><=3</strong> matches are found on a plasmid. <i>You can click on the matches to unselect them.</i> If too many matches (>4) are found, the plasmid will be ingnored; Increase the length of the DNA sequence to be replaced will reduce the number of matches.
+</div>
+
+<div class="row" id="tobereplaced">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary" id="old_panel">
+            <div class="panel-heading">
+                <strong class="text-warning">Step 1</strong>: Provide below the single-stranded DNA sequence to be replaced
+            </div>
+            <div class="panel-body">
+                <p class="text-info">The DNA sequence must NOT be shorter than <strong class="text-danger">10</strong> letters. &nbsp;<span class="text-danger" id="old_msg"></span></p>
+                <textarea class="form-control" id="old_dna" rows="5"></textarea>
+            </div>
+            <div class="panel-footer clearfix">
+                <button class="btn btn-default pull-right disabled" id="old_button">
+                    <i class="fa fa-chevron-circle-right"></i>
+                    <span>Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row hidden" id="new_seq_div">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary" id="new_panel">
+            <div class="panel-heading">
+                <strong class="text-warning">Step 2</strong>: Provide below the single-stranded DNA sequence that will replace the sequence provided in step 1.
+            </div>
+            <div class="panel-body">
+                <p class="text-info">if you don't provide the new DNA sequence, the replacer will remove the DNA sequence provied in step 1.<br /><span class="text-danger" id="new_msg"></span></p>
+                <textarea class="form-control" id="new_dna" rows="5"></textarea>
+            </div>
+            <div class="panel-footer clearfix">
+                <button class="btn btn-danger pull-right" id="new_button">
+                    <i class="fa fa-chevron-circle-right"></i>
+                    <span>Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row hidden" id="match_found">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Matches Found</div>
+            <div class="panel-body">
+                <div class="panel panel-info hidden" id="aliDiv">
+                    <div class="panel-heading text-center">Sequences Alignment</div>
+                    <div class="panel-body xScrollable">
+                        <div class="col-xs-offset-1 col-xs-10">
+                            <div id="aligment"></div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div id="match_overview" class="panel panel-color9">
+                    <div class="panel-heading text-center">Matched Plasmids</div>
+                    <div class="panel-body">
+                        <div id="match_selection" class="col-xs-12 xScrollable "></div>
+                    </div>                    
+                </div>
+            </div>
+            <div class="panel-footer clearfix">
+                <p id="match_msg" class="text-danger pull-left"></p>
+
+                <button class="btn btn-default pull-right disabled" id="match_button">
+                    <i class="fa fa-chevron-circle-right"></i>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jquery")
+@*@Scripts.Render("~/bundles/bootstrap")*@
+@Scripts.Render("~/bundles/giraffe")
+<script src="~/Scripts/msa/msa.min.gz.js"></script>
+<script src="~/Scripts/needleman-Wunsch.js"></script>
+<script src="~/Scripts/ecloning-ali2seq.js"></script>
+<script>
+    //define array to hold the matches and changes
+    var matchedPlasmids = [];
+    //define the tag for saving changes
+    var isSelected = false;
+
+    $(document).ready(function () {
+        //tooltip 
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        //get plasmid ids
+        var bundleObj = ("@bundleObj");
+        document.getElementById("decodeIt").innerHTML = bundleObj;
+        bundleObj = document.getElementById("decodeIt").innerText;
+        try
+        {
+            bundleObj = JSON.parse(bundleObj);
+
+            //===================old seq===============================
+            //remove all non letter in the seqeuce input
+            $('#old_dna').change(function () {
+                var before = $('#old_dna').val();
+                //strip out non-alpha characters and convert to uppercase
+                var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+                after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+                $('#old_dna').val(after);
+                var count = after.length;
+                if (count < 10) {
+                    $("#old_msg").text("Please provide a DNA sequence no shorter than 10 letters!");
+
+                    if ($("#old_button").hasClass("btn-danger")) {
+                        $("#old_button").removeClass("btn-danger");
+                    }
+                    if (!$("#old_button").hasClass("btn-default")) {
+                        $("#old_button").addClass("btn-default");
+                    }
+                    if (!$("#old_button").hasClass("disabled")) {
+                        $("#old_button").addClass("disabled");
+                    }
+                }
+                else {
+                    $("#old_msg").text(null);
+                    if ($("#old_button").hasClass("btn-default")) {
+                        $("#old_button").removeClass("btn-default");
+                    }
+                    if (!$("#old_button").hasClass("btn-danger")) {
+                        $("#old_button").addClass("btn-danger");
+                    }
+                    if ($("#old_button").hasClass("disabled")) {
+                        $("#old_button").removeClass("disabled");
+                    }
+                }
+            });
+
+            $("#old_button").on("click", function () {
+                $("#old_dna").prop("readonly", true);
+                //change the panel class
+                if ($("#old_panel").hasClass("panel-primary")) {
+                    $("#old_panel").removeClass("panel-primary");
+                    $("#old_panel").addClass("panel-default");
+                }
+                if (!$("#old_button").hasClass("disabled")) {
+                    $("#old_button").addClass("disabled");
+                }
+
+                //show the new seq div
+                if ($("#new_seq_div").hasClass("hidden")) {
+                    $("#new_seq_div").removeClass("hidden");
+                }
+                scrollTo("#new_seq_div");
+            })
+
+            //===================new seq===============================
+            //remove all non letter in the seqeuce input
+            $('#new_dna').change(function () {
+                var before = $('#new_dna').val();
+                //strip out non-alpha characters and convert to uppercase
+                var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+                after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+                $('#new_dna').val(after);
+            });
+
+            $("#new_button").on("click", function () {
+                $("#new_dna").prop("readonly", true);
+                //check the new seq
+
+                if ($("#new_dna").val().trim().length == 0) {
+                    $("#new_msg").text("You did not provide the new sequence. The replacer will remove the DNA sequence provided in step 1 in all matched plasmids of the current bundle.");
+                }
+                else {
+                    $("#new_msg").text(null);
+                }
+                if (!$("#new_button").hasClass("disabled")) {
+                    $("#new_button").addClass("disabled");
+                }
+                //change the panel class
+                if ($("#new_panel").hasClass("panel-primary")) {
+                    $("#new_panel").removeClass("panel-primary");
+                    $("#new_panel").addClass("panel-default");
+                }
+                //show the match div
+                if ($("#match_found").hasClass("hidden")) {
+                    $("#match_found").removeClass("hidden");
+                }
+                scrollTo("#match_found");
+
+                var seq1 = $("#old_dna").val().trim();
+                var seq2 = $("#new_dna").val().trim();
+                var seq1Name = "Step 1";
+                var seq2Name = "Step 2";
+                //show the aligment if the new seq is provide
+                if ($("#new_dna").val().trim().length > 0) {
+                    //align the seq and show the result
+                    $("#aliDiv").removeClass("hidden");
+                    ali2seq(seq1, seq2, seq1Name, seq2Name, "aligment", "zappo");
+                }
+                //find matches
+                $.each(bundleObj.plasmids, function (i, d) {
+                    //get the index array
+                    var matches = findIndexes(d.sequence, seq1) || [];
+                        if (matches.length < 3 && matches.length > 0) {
+                            var obj = {};
+                            obj.pId = d.pId;
+                            obj.pName = d.pName;
+                            obj.seqCount = d.seqCount;
+                            obj.sequence = d.sequence;
+                            obj.seq1 = seq1;
+                            obj.seq2 = seq2;
+                            obj.features = d.features;
+                            obj.matches = matches; //0-based index of the start
+                            //generate fake feature
+                            var mArray = [];
+                            $.each(matches, function (i, m) {                                
+                                var mfeature = {};
+                                mfeature.clockwise = true;
+                                mfeature.cut = null;
+                                mfeature.start = matches[i] + 1;
+                                mfeature.end = matches[i] + seq1.length + 1;
+                                mfeature.feature = seq2.length > 0 ? "To Be Replaced" : "To Be Removed";
+                                mfeature.seqCount = d.seqCount;
+                                mfeature.show_feature = 1;
+                                mfeature.type_id = 5;
+                                mArray.push(mfeature);
+                            });
+                            obj.mfeatures = mArray;
+                            
+                            //set all matches to be replaced
+                            obj.selection = matches;
+                            matchedPlasmids.push(obj);
+                        }                                               
+                })
+
+                //show match overview of all plasmids, non-match plasmids or >3 matches are not shown
+                console.log(matchedPlasmids);
+                
+                if (matchedPlasmids.length > 0) {
+                    $("#match_msg").text(null);
+                    //match_selection
+                    var oriMapId;
+                    var mMapId1, mMapId2, mMapId3;
+                    var mSelectionId1, mSelectionId2, mSelectionId3;
+                    $.each(matchedPlasmids, function (i, d) {
+                        //check the selection
+                        if (d.selection.length > 0) {
+                            isSelected = true;
+                        }
+                        //add dom
+                        var html = "<div id=\"match-" + d.pId + "\" class=\"row xScrollable replacerDiv\">";
+                                //div for original features
+                                oriMapId = "origin-map-" + d.pId;
+                                html = html + '<div class="replacerSubDiv"><h4 class="text-center text-warning">'+d.pName+'</h4><div class="xScrollable" id="origin-map-' + d.pId + '"></div></div>';
+                                html = html + '<div class="bandDiv"></div>';
+                                //div for the matched option, can be max 3 options
+                                //ids
+                                mSelectionId1 = 'matched-map-' + d.pId + '-'+d.matches[0];
+                                mSelectionId2 = 'matched-map-' + d.pId + '-' + d.matches[1];
+                                mSelectionId3 = 'matched-map-' + d.pId + '-' + d.matches[2];
+                                mMapId1 = 'matched-map-' + d.pId + '-1';
+                                mMapId2 = 'matched-map-' + d.pId + '-2';
+                                mMapId3 = 'matched-map-' + d.pId + '-3';
+                                html = html + '<div id="' + mSelectionId1 + '" class="divSelected clickable" data-toggle="tooltip"><h4 class="text-center text-warning noEvent">Match 1 <i class="fa fa-check-circle-o text-danger noEvent"></i></h4><div class="xScrollable noEvent" id="matched-map-' + d.pId + '-1"></div></div>';
+                                if (d.mfeatures.length == 2) {
+                                    html = html + '<div id="' + mSelectionId2 + '" class="divSelected clickable" data-toggle="tooltip"><h4 class="text-center text-warning noEvent">Match 2 <i class="fa fa-times-circle-o text-muted noEvent"></i></h4><div class="xScrollable noEvent" id="matched-map-' + d.pId + '-2"></div></div>';
+                                }
+                                if (d.mfeatures.length == 3) {
+                                    html = html + '<div id="' + mSelectionId3 + '" class="divSelected clickable" data-toggle="tooltip"><h4 class="text-center text-warning noEvent">Match 3 <i class="fa fa-times-circle-o text-muted noEvent"></i></h4><div class="xScrollable noEvent" id="matched-map-' + d.pId + '-3"></div></div>';
+                                }
+                                html = html + "</div><div class=\"clearfix\"></div><hr/>";
+                        $("#match_selection").append(html);
+
+                        //draw original map
+                        var ori_width = ($("#" + oriMapId).width() <= 200 ? 200 : $("#" + oriMapId).width());
+                        drawMap(d.pName, d.seqCount, d.features, oriMapId, ori_width, 300);
+                        //draw matched maps
+                        if (d.mfeatures.length == 1) {
+                            //var mMapId1_width = ($("#" + mMapId1).width() <= 200 ? 200 : $("#" + mMapId1).width());
+                            drawMap(d.pName, d.seqCount, [d.mfeatures[0]], mMapId1, 250, 250);
+                        }
+                        if (d.mfeatures.length == 2) {
+                            //var mMapId2_width = ($("#" + mMapId2).width() <= 200 ? 200 : $("#" + mMapId2).width());
+                            drawMap(d.pName, d.seqCount, [d.mfeatures[1]], mMapId2, 250, 250);
+                        }
+                        if (d.mfeatures.length == 3) {
+                            //var mMapId2_width = ($("#" + mMapId2).width() <= 200 ? 200 : $("#" + mMapId2).width());
+                            drawMap(d.pName, d.seqCount, [d.mfeatures[2]], mMapId3, 250, 250);
+                        }
+                    })
+                    //enable button
+                    checkMatchSaveButton(isSelected, "match_button");
+
+                    //=====================mouse events=======================
+                    //tooltip titles
+                    $(".divSelected").each(function (i, el) {
+                        $('[data-toggle="tooltip"]').tooltip();
+                        $(el).prop("title", "This match is selected to be replaced!");
+                        //click to unselect
+                        $(el).click(function (e) {
+                            if ($(el).hasClass('divSelected')) {
+                                $(el).prop("title", "This match is NOT selected to be replaced!");
+                                //get the plasmid id and start match (1-based index)
+                                var id = e.target.id;
+                                var idArray = id.split('-'); //total 4 items
+                                var pId = idArray[2];
+                                var startPos = idArray[3];
+                                //====================remove this pos from the matchedPlasmids
+                                updateMatchedPlasmids(pId, startPos, "remove");
+                                console.log(matchedPlasmids);
+                                //change the class to divUnselected
+                                $(el).removeClass('divSelected').addClass('divUnselected');
+                                //change fa-check to fa-times
+                                $(el).find('i').removeClass('fa-check-circle-o').removeClass('text-danger').addClass('fa-times-circle-o').addClass('text-muted');
+                                
+                            }
+                            else {
+                                $(el).prop("title", "This match is selected to be replaced!");
+                                //get the plasmid id and start match (1-based index)
+                                var id = e.target.id;
+                                var idArray = id.split('-'); //total 4 items
+                                var pId = idArray[2];
+                                var startPos = idArray[3];
+                                //=====================add this pos from the matchedPlasmids
+                                updateMatchedPlasmids(pId, startPos, "add");
+                                console.log(matchedPlasmids);
+                                //change the class
+                                $(el).removeClass('divUnselected').addClass('divSelected');
+                                //change fa-check to fa-times
+                                $(el).find('i').removeClass('fa-times-circle-o').removeClass('text-muted').addClass('fa-check-circle-o').addClass('text-danger');                                
+                            }
+                            //check match button
+                            //====================check match_button again
+                            isSelected = false;
+                            $.each(matchedPlasmids, function (i, d) {
+                                //check the selection
+                                if (d.selection.length > 0) {
+                                    isSelected = true;
+                                }
+                            });
+                            checkMatchSaveButton(isSelected, "match_button");
+                            if (!isSelected) {
+                                $("#match_msg").text("No match is found or selected, nothing to replace");
+                            }
+                            else {
+                                $("#match_msg").text(null);
+                            }
+                        })
+                    })
+                }
+                else {
+                    $("#match_msg").text("No match is found or selected, nothing to replace");
+                }
+            })
+
+            $("#match_button").click(function () {
+                //generate json to pass to the server
+                var replacerArray = genReplacerArray(matchedPlasmids);
+                //change icon and show msg
+                $("#match_button").addClass("disabled");
+                $(".divSelected").each(function (i, el) { $(el).addClass("noEvent") })
+                $(".divUnselected").each(function (i, el) { $(el).addClass("noEvent") })
+                $("#match_msg").text(null);
+                $("#match_msg").append('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span> saving changes..., please keep this page open.</span>');
+                //post data
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Replacer", "pBundle")',
+                    data: { 'replacerArray': JSON.stringify(replacerArray) },
+                    crossDomain: true,
+                    success: function (data) {
+                        window.location.href = data.URL;
+                    }
+
+                });
+            })
+        }
+        catch (e) {
+            console.log(e);
+        }
+    });
+    
+</script>
+
+<script>
+    function scrollTo(id) {
+        $('html, body').animate({
+            scrollTop: $(id).offset().top
+        }, 1000);
+    }
+
+    //find all the indexes
+    function findIndexes(fullSeq, subSeq) {
+        var array = [];
+        if (fullSeq.indexOf(subSeq) !== -1) {
+            for (var index = 0; index < (fullSeq.length - subSeq.length) ; index += subSeq.length) {
+                index = fullSeq.indexOf(subSeq, index);
+                if (index == -1)
+                    return array;
+                array.push(index);
+            }
+        }
+        else {
+            return array;
+        }
+    }
+
+    function drawMap(pName, pCount, features, mapId, width, height) {          
+            var fData = [pCount, features];
+            //draw the map
+            var gd = GiraffeDraw();
+            gd.read(fData);
+            gd.CircularMap({
+                'map_dom_id': mapId,
+                'plasmid_name': pName,
+                'map_width': width,
+                'map_height': height
+            });
+    };
+
+    //uodate match Plasmid
+    function updateMatchedPlasmids(pId, startPos, action){
+        //filter the data find the target
+        $.each(matchedPlasmids, function (i, d) {
+            if (+d.pId === +pId) {
+                if (action == "remove") {
+                    //remove a statt pos
+                    if (d.selection.indexOf(+startPos) !== -1) {
+                        var index = d.selection.indexOf(+startPos);                        
+                        d.selection.splice(index, 1);
+                    }
+                }
+                if (action == "add") {
+                    //add a start pos
+                    if (d.selection.indexOf(+startPos) === -1) {                        
+                        d.selection.push(+startPos);
+                        d.selection.sort();
+                    }
+                }
+            }
+        })
+    }
+
+    //check match button
+    function checkMatchSaveButton(isSelected, id)
+    {
+        //enable button
+        if (isSelected) {
+            if ($("#"+id).hasClass("disabled")) {
+                $("#" + id).removeClass("disabled");
+            }
+            if ($("#" + id).hasClass("btn-default")) {
+                $("#" + id).removeClass("btn-default");
+            }
+            if (!$("#" + id).hasClass("btn-danger")) {
+                $("#" + id).addClass("btn-danger");
+            }
+        }
+        else {
+            if (!$("#" + id).hasClass("disabled")) {
+                $("#" + id).addClass("disabled");
+            }
+            if (!$("#" + id).hasClass("btn-default")) {
+                $("#" + id).addClass("btn-default");
+            }
+            if ($("#" + id).hasClass("btn-danger")) {
+                $("#" + id).removeClass("btn-danger");
+            }
+        }
+    }
+
+    //generate json to pass to the server
+    function genReplacerArray(matchedPlasmids) {
+        var array = [];
+        $.each(matchedPlasmids, function (i, d) {
+            if (d.selection.length > 0) {
+                var obj = {};
+                obj.pId = d.pId;
+                obj.selection = d.selection;
+                obj.seq1 = d.seq1;
+                obj.seq2 = d.seq2;
+                array.push(obj);
+            }            
+        })
+        return array;
+    }
+</script>

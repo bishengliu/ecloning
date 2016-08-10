@@ -1218,7 +1218,7 @@ INSERT INTO dropdownitem VALUES
 --ladder type
 ('DNA', 'DNA', 'ladder'),
 ('RNA', 'RNA', 'ladder'),
-('Protein', 'Protein', 'ladder')
+('Protein', 'Protein', 'ladder'),
 
 --app roles
 ('GroupLeader', 'Group Leader', 'appRole'),

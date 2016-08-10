@@ -1,0 +1,165 @@
+﻿@model ecloning.Models.ModifyingActivity
+@{
+    ViewBag.Title = "EnzymeInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int CompanyId = (int)ViewBag.CompanyId;
+    string Company = (string)ViewBag.Company;
+    int BufferCount = (int)ViewBag.BufferCount; //if no buffer found do list the activity for update
+    var db = new ecloning.Models.ecloningEntities();
+    //get the buffer id
+    List<string> bufferName = new List<string>();
+    List<int> bufferId = new List<int>();
+
+    var dict = Model.Activity;
+    int count = 0;
+
+    for (int i = 0; i < BufferCount; i++)
+    {
+        int bId = dict[i].Keys.First();
+        bufferId.Add(bId);
+        //get the buffer name
+        var name = db.buffers.Find(bId).name;
+        bufferName.Add(name);
+    }
+
+    var Buffers = (List<ecloning.Models.buffer>)ViewBag.Buffers;
+    var Enzyme = (ecloning.Models.modifying_enzyme)ViewBag.Enzyme;
+
+    //find enzyme info
+    var enzyme = db.modifying_enzyme.Find(Model.enzyme_id);
+}
+
+<div class="row">
+    <hr />
+    <div class="col-md-12 col-lg-10 col-lg-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center">
+                <span><span class="fa fa-exchange text-danger">&nbsp;</span>@enzyme.name (@Company)</span>
+            </div>
+            <div class="panel-body">               
+                <div class="row">
+                            <br />
+                            <div class="table-responsive">
+                                @if (BufferCount == 0)
+                                {
+                                    <table class="table table-condensed tableTopLine" id="enzyme-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-sm-2">
+                                                    Category
+                                                </th>
+                                                <th class="col-sm-2">
+                                                    Enzymes
+                                                </th>
+                                                <th class="col-sm-7">
+                                                    Application
+                                                </th>
+                                            </tr>
+
+                                        </thead>
+                                        <tr>
+                                                <td>
+                                                    <span class="text-primary">@Html.DisplayFor(modelItem => enzyme.category)</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-warning"><strong>@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => enzyme.application)
+                                                </td>
+                                            </tr>
+
+                                    </table>
+                                }
+                                else
+                                {
+                                    <table class="table table-condensed table-bordered tableTopLine" id="enzyme-table">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="2" class="text-center col-sm-2 no-sort">
+                                                    Category
+                                                </th>
+                                                <th rowspan="2" class="text-center col-sm-3 no-sort">
+                                                    Enzyme
+                                                </th>
+                                                <th colspan=@BufferCount class="text-center col-sm-6 no-sort">
+                                                    Activities
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                @foreach (var name in bufferName)
+                                                {
+                                                    <th class="text-center no-sort">
+                                                        <span class="text-primary">@name</span>
+                                                    </th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                            <tr>
+                                                <td>
+                                                    <span class="text-primary">@Html.DisplayFor(modelItem => enzyme.category)</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-warning">
+                                                        <strong>@Html.DisplayFor(modelItem => enzyme.name)</strong>
+                                                        <span class="text-info"> &nbsp;(@Model.temprature&deg;C)</span>
+                                                    </span>
+                                                </td>
+                                                @foreach (var i in bufferId)
+                                                {
+                                                    var convertActivity = new ecloning.Models.EnzymeActivity();
+                                                    <td class="text-center">
+                                                        @Html.Raw(convertActivity.Convert(dict[count].First().Value))
+                                                    </td>
+                                                    count++;
+                                                }
+
+                                            </tr>
+                                    </table>
+                                }
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    @if (BufferCount > 0)
+    {
+        <br />
+        <br />
+        <div class="col-md-6 hidden-xs col-sm-1"></div>
+        <div class="col-md-5 col-xs-12 col-sm-10">
+            <div class="panel panel-info">
+                <div class="panel-heading text-center">
+                    <span><span class="fa fa-flask text-danger">&nbsp;</span>Buffer Compositions (@Company)</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-3 col-sm-2">Buffer</th>
+                                        <th class="col-xs-9 col-sm-10">Composition</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var b in Buffers)
+                                    {
+                                        <tr>
+                                            <td class="text-primary">@b.name</td>
+                                            <td>@b.composition</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 hidden-xs col-sm-1"></div>
+    }
+</div>

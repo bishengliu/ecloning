@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "preDelete";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    var msg = (string)ViewBag.msg;
+    var Enzymes = ViewBag.Enzymes;
+}
+
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-9">
+            <h3 class="text-danger"><span class="fa fa-trash-o"></span> Delete Enzymes</h3>
+        </div>
+        <div class="col-sm-3">
+            <br class="hidden-xs" />
+            <a class="btn btn-default pull-right" href="@Url.Action("Index", "Restriction")">
+                <i class="fa fa-chevron-circle-left text-info"></i>
+                <span class="">Cancel</span>
+            </a>
+        </div>
+        <span id="decodeIt" class="hidden"></span>
+    </div>
+    <div class="row">
+        <hr/>
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <p class="text-danger">@msg</p>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label for="feature" class="required">Search restriction enzymes to delete: </label>
+                            <input type="text" name="enzyme" class="form-control" id="enzyme">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12 pull-right">
+                                <input type="submit" value="Delete Enzymes" class="btn btn-block btn-danger" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    var JsonData = ("@Enzymes");
+    document.getElementById("decodeIt").innerHTML = JsonData;
+    JsonData = document.getElementById("decodeIt").innerText;
+
+    try {
+        data = JSON.parse(JsonData);
+    } catch (e) {
+    }
+
+    $(document).ready(function () {
+        $("#enzyme").tokenInput(data, {
+            theme: 'facebook',
+            hintText: 'Type enzyme name to search',
+            tokenLimit: 5,
+            propertyToSearch: "name",
+            resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b></p></li>" },
+            tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+        });
+
+        $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+    });
+</script>

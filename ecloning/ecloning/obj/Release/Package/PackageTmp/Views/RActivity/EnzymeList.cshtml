@@ -1,0 +1,472 @@
+﻿@model IEnumerable<ecloning.Models.RestrictionActivity>
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "EnzymeList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count; //if no enzyme display message
+    int CompanyId = (int)ViewBag.CompanyId;
+    string Company = (string)ViewBag.Company;
+    int BufferCount = (int)ViewBag.BufferCount; //if no buffer found do list the activity for update
+    var EnzymeId = (List<int>)ViewBag.EnzymeId;
+    var db = new ecloning.Models.ecloningEntities();
+
+    //get the buffer id
+    List<string> bufferName = new List<string>();
+    List<int> bufferId = new List<int>();
+    if (Model.Count() > 0)
+    {
+        var dict = Model.FirstOrDefault().Activity;
+        for (int i = 0; i < BufferCount; i++)
+        {
+            int bId = dict[i].Keys.First();
+            bufferId.Add(bId);
+            //get the buffer name
+            var name = db.buffers.Find(bId).name;
+            bufferName.Add(name);
+        }
+    }
+
+    //prepare enzymeId and bufferid to jquery
+    System.Text.StringBuilder enzymeIdString = new System.Text.StringBuilder();
+    if (EnzymeId.Count() > 0)
+    {
+        for (int i = 0; i < (EnzymeId.Count() - 1); i++)
+        {
+            enzymeIdString.Append(EnzymeId[i].ToString()).Append(",");
+        }
+        enzymeIdString.Append(EnzymeId.Last().ToString());
+    }
+
+    System.Text.StringBuilder bufferIdString = new System.Text.StringBuilder();
+    if (bufferId.Count() > 0)
+    {
+        for (int i = 0; i < (bufferId.Count() - 1); i++)
+        {
+            bufferIdString.Append(bufferId[i].ToString()).Append(",");
+        }
+        bufferIdString.Append(bufferId.Last().ToString());
+    }
+
+
+    //get group info
+    //get current login email
+    var email = User.Identity.GetUserName();
+    int peopleId = 0;
+    var people = db.people.Where(e => e.email == email);
+    peopleId = people.FirstOrDefault().id;
+
+    //get the group id
+    List<int> groupId = new List<int>();
+    var group_people = db.group_people.Where(p => p.people_id == peopleId);
+    foreach (int i in group_people.Select(g => g.group_id).ToList())
+    {
+        groupId.Add(i);
+    }
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+        <h3 class="text-primary"><span><i class="fa fa-scissors">&nbsp;</i></span>Restriction Enzymes from @Company</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <span id="bufferId" class="hidden">@bufferIdString</span>
+                <span id="enzymeId" class="hidden">@enzymeIdString</span>
+                @if (Count == 0)
+                {
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
+                            <p class="text-warning">No enzyme found for this company, you can start to add enzyme by clicking "Add Enzyme" button above.</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-10">
+                            <div class="btn-toolbar">
+                                <div class="btn-group btn-group-sm" id="alphabet">
+                                    <button class="btn btn-default">All</button>
+                                    <button class="btn btn-default">A</button>
+                                    <button class="btn btn-default">B</button>
+                                    <button class="btn btn-default">C</button>
+                                    <button class="btn btn-default">D</button>
+                                    <button class="btn btn-default">E</button>
+                                    <button class="btn btn-default">F</button>
+                                    <button class="btn btn-default">G</button>
+                                    <button class="btn btn-default">H</button>
+                                    <button class="btn btn-default">I</button>
+                                    <button class="btn btn-default">J</button>
+                                    <button class="btn btn-default">K</button>
+                                    <button class="btn btn-default">L</button>
+                                    <button class="btn btn-default">M</button>
+                                    <button class="btn btn-default">N</button>
+                                    <button class="btn btn-default">O</button>
+                                    <button class="btn btn-default">P</button>
+                                    <button class="btn btn-default">Q</button>
+                                    <button class="btn btn-default">R</button>
+                                    <button class="btn btn-default">S</button>
+                                    <button class="btn btn-default">T</button>
+                                    <button class="btn btn-default">U</button>
+                                    <button class="btn btn-default">V</button>
+                                    <button class="btn btn-default">W</button>
+                                    <button class="btn btn-default">X</button>
+                                    <button class="btn btn-default">Y</button>
+                                    <button class="btn btn-default">Z</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <br />
+                        <div class="table-responsive">
+                            @if (BufferCount == 0)
+                            {
+                                <table class="table table-condensed tableTopLine" id="enzyme-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" class="text-center col-sm-1 no-sort">
+                                                Enzyme
+                                            </th>
+                                            <th rowspan="2" class="text-center col-sm-8 no-sort">
+                                                Prototype
+                                            </th>
+
+                                            <th colspan="5" class="text-center col-sm-2 no-sort">
+                                                Properties
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center no-sort">
+                                                <span class="fa fa-star text-primary"></span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="glyphicon glyphicon-fire text-primary"></span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">Dam</span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">Dcm</span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">CpG</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    @foreach (var item in Model)
+                                    {
+                                        string symbol = "<span></span>";
+                                        var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
+                                        //find enzyme info
+                                        var enzyme = db.restri_enzyme.Find(item.enzyme_id);
+
+                                        bool inFavorite = false;
+                                        foreach (var g in groupId)
+                                        {
+                                            var FavEnzyme = db.common_restriction.Where(f => f.enzyme_id == item.enzyme_id && f.company_id == item.company_id && f.group_id == g);
+                                            if (FavEnzyme.Count() > 0)
+                                            {
+                                                inFavorite = true;
+                                            }
+                                        }
+                                        <tr>
+                                            <td class="text-center">
+                                                @if (!inFavorite)
+                                                {
+                                                    <a href="@Url.Action("AddToFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark-o text-info"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                    </a>
+                                                    <br />
+                                                    <br/>
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("RemoveFromFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark text-danger"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                    </a>
+                                                    <br />
+                                                    <br />
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
+                                                {
+                                                    @Html.Raw(enzymeSybol.ShowPrototype2(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut, (int)enzyme.forward_cut2, (int)enzyme.reverse_cut2))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.starActivity == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.starActivity))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.inactivity != null)
+                                                {
+                                                    @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivity))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(enzymeSybol.InactivationSymbol(0))
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.dam == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.dcm == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.cpg == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                            else
+                            {
+                                <table class="table table-condensed table-bordered tableTopLine" id="enzyme-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" class="text-center col-sm-1 no-sort">
+                                                Enzyme
+                                            </th>
+                                            <th rowspan="2" class="text-center col-sm-4 no-sort">
+                                                Prototype
+                                            </th>
+                                            <th colspan=@BufferCount class="text-center col-sm-4 no-sort">
+                                                Activities
+                                            </th>
+                                            <th colspan="5" class="text-center col-sm-2 no-sort">
+                                                Properties
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            @foreach (var name in bufferName)
+                                            {
+                                                <th class="text-center no-sort">
+                                                    <span class="text-primary">@name</span>
+                                                </th>
+                                            }
+
+                                            <th class="text-center no-sort">
+                                                <span class="fa fa-star text-primary"></span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="glyphicon glyphicon-fire text-primary"></span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">Dam</span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">Dcm</span>
+                                            </th>
+                                            <th class="text-center no-sort">
+                                                <span class="text-primary">CpG</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    @foreach (var item in Model)
+                                    {
+                                        string symbol = "<span></span>";
+                                        var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
+                                        //find enzyme info
+                                        var enzyme = db.restri_enzyme.Find(item.enzyme_id);
+                                        var dict = item.Activity;
+                                        //set id for each activity
+                                        //enzyme_id-buffer_id
+                                        var id = item.enzyme_id.ToString() + "-";
+                                        int count = 0;
+                                        //check whether the enzyme is in the favorite list
+                                        bool inFavorite = false;
+                                        foreach(var g in groupId)
+                                        {
+                                            var FavEnzyme = db.common_restriction.Where(f => f.enzyme_id == item.enzyme_id && f.company_id == item.company_id && f.group_id == g);
+                                            if (FavEnzyme.Count() > 0)
+                                            {
+                                                inFavorite = true;
+                                            }
+                                        }
+                                        <tr>
+                                            <td class="text-center">
+                                                @if (!inFavorite)
+                                                {
+                                                    <a href="@Url.Action("AddToFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark-o text-info"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>                                                        
+                                                    </a>
+                                                    <br />
+                                                    <br />
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("RemoveFromFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
+                                                        <i class="fa fa-bookmark text-danger"></i>
+                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>                                                        
+                                                    </a>
+                                                    <br />
+                                                    <br />
+                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
+                                                {
+                                                    @Html.Raw(enzymeSybol.ShowPrototype2(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut, (int)enzyme.forward_cut2, (int)enzyme.reverse_cut2))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
+                                                }
+                                            </td>
+                                            @foreach (var i in bufferId)
+                                            {
+                                                var convertActivity = new ecloning.Models.EnzymeActivity();
+
+                                                id = id + i.ToString();
+                                                //find pk
+                                                var activity = db.activity_restriction.Where(a => a.company_id == item.company_id && a.enzyme_id == item.enzyme_id && a.buffer_id == i).First();
+                                                int pk = activity.id;
+                                                <td class="text-center">
+                                                    <span class="text-warning">@Html.Raw(convertActivity.Convert(dict[count].First().Value))</span>
+                                                </td>
+                                                count++;
+                                                id = item.enzyme_id.ToString() + "-";
+                                            }
+                                            <td class="text-center vert-align">
+                                                @if (item.starActivity == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.starActivity))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.inactivity != null)
+                                                {
+                                                    @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivity))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(enzymeSybol.InactivationSymbol(0))
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.dam == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.dcm == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                            <td class="text-center vert-align">
+                                                @if (item.cpg == true)
+                                                {
+                                                    @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(symbol)
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1 hidden-xs"></div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(function () {
+        var _alphabets = $('#alphabet > button');
+        var _contentRows = $('#enzyme-table tbody tr');
+
+        _alphabets.click(function () {
+            var _letter = $(this),
+                _text = $(this).text().toLowerCase(),
+                _count = 0;
+
+            _alphabets.removeClass("active");
+            _letter.addClass("active");
+
+            _contentRows.hide();
+            _contentRows.each(function (i) {
+                var _cellText = $(this).children('td').eq(0).text().toLowerCase().replace(/\s+/g, '');
+                if (_text === 'all') {
+                    _count += 1;
+                    $(this).fadeIn(400);
+                } else {
+                    if (RegExp('^' + _text).test(_cellText)) {
+                        _count += 1;
+                        $(this).fadeIn(400);
+                    }
+                }
+            });
+        });
+    });
+</script>

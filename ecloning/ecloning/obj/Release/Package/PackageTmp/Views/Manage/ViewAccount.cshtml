@@ -1,0 +1,80 @@
+﻿@model ecloning.Models.person
+
+@{
+    ViewBag.Title = "Account Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+}
+
+<h3 class="col-sm-offset-4 text-primary">Account Details</h3>
+
+@if (Count == 0)
+{
+    <div class="row">
+        <br />
+        <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+            <p class="text-primary text-center">Your account details is currently unavailable</p>
+        </div>
+    </div>
+}
+else
+{
+    var db = new ecloning.Models.ecloningEntities();
+    //get group info
+    //could be multiple
+    var email = Model.email;
+    var peopleId = Model.id;
+    var group_people = db.group_people.Where(p => p.people_id == peopleId);
+
+    List<int> groupId = new List<int>();
+
+    IEnumerable<ecloning.Models.group> groups = null;
+
+    //can be mutiple
+    if (group_people.Count() > 0)
+    {
+        groupId = group_people.Select(g => g.group_id).ToList();
+        groups = db.groups.Where(g => groupId.Contains(g.id));
+
+    }
+    <br />
+    <div class="row">
+        @if (groups.Count() > 0)
+        {
+            <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+                <p><strong>You are belong to the following research group(s):</strong></p>
+            </div>
+            foreach (var g in groups)
+            {
+            <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-12">
+                <span class="text-info"><strong>Group: </strong></span><span>@g.name</span><br />
+                <span class="text-info"><strong>Department: </strong></span><span>@g.department.name</span>
+            </div><br />
+            }
+            <div class="col-sm-offset-4 col-sm-6 col-md-4 col-xs-11">
+                <p>
+                    <br />
+                    <strong>Your personal information</strong>
+                    <span>
+                        &nbsp;<a class="btn btn-info btn-xs" href=@Url.Action("EditAccount", "Manage")>
+                            <i class="glyphicon glyphicon-pencil text-info"></i>
+                            <span class="text-info">Edit</span>
+                        </a>
+                    </span>
+                </p>
+                <span class="text-info"><strong>First Name: </strong></span><span>@Model.first_name</span><br />
+                <span class="text-info"><strong>Last Name: </strong></span><span>@Model.last_name</span><br />
+                @if (Model.func != null)
+                {
+                    <span class="text-info"><strong>Function: </strong></span><span>@Model.func</span><br />
+                }
+                <span class="text-info"><strong>Email: </strong></span><span>@Model.email</span>
+            </div>
+        }
+    </div>
+}
+
+
+
+
+

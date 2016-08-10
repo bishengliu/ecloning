@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" sizes="32x32" type="image/x-icon" href="~/logo/eCloning-2.ico" />
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">*@
+    <title>@ViewBag.Title - eCloning</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/less")
+    @Styles.Render("~/Content/biotools")
+
+</head>
+<body>
+    <div class="container-fluid top-logo">
+        <div class="container-fluid" style="padding-top:10px;">
+            <div class="row">
+                <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7 col-sm-offset-1">
+                    <div class="row">
+                        <img class="img-responsive" src="~/logo/eCloning-new1.jpg" height="60" style="height:60px !important" />
+                        <span class="hidden-xs appdescription"><span>Complete solutions</span> <br /><span>for Molecualr Cloning!</span></span>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3 col-md-3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div style="position:relative; left:15px;">
+                                <img class="hidden-xs img-responsive" src="~/logo/lumc.png" height="40" style="height:40px !important" />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <br class="hidden-xs" />
+                            @Html.Partial("_LoginPartial")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="@Url.Action("Index", "Home")">
+                                    <i class="fa fa-home"></i>
+                                    <span class="">Home</span>
+                                </a>
+                            </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-genderless fa-lg">&ensp;</span>Plasmids<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="@Url.Action("Index", "Plasmid")">
+                                                <i class="fa fa-genderless fa-lg"></i>
+                                                <span class="">All Plasmids</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Overview", "Plasmid")">
+                                                <i class="fa fa-th"></i>
+                                                <span>Plasmids Overview</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "pBundle")">
+                                                <i class="fa fa-object-group"></i>
+                                                <span>Plasmid Bundles</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Compare", "Plasmid")">
+                                                <span class="text-info"><i class="fa fa-sun-o"></i></span>
+                                                <i style="position:relative; left:-13px;" class="fa fa-sun-o"></i>
+                                                <span style="position:relative; left:-13px;">Compare Plasmids</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Search", "Plasmid")">
+                                                <i class="glyphicon glyphicon-search"></i>
+                                                <span class="">Find Plasmids</span>
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="@Url.Action("Index", "Feature")">
+                                                <i class="glyphicon glyphicon-align-left"></i>
+                                                <span class="">Plasmid Features</span>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+
+                                @*<li>
+                                        <a href="@Url.Action("Index", "Plasmid")">
+                                            <i class="fa fa-genderless fa-lg"></i>
+                                            <span class="">Plasmids</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "Feature")">
+                                            <i class="fa fa-bars"></i>
+                                            <span class="">Plasmid Features</span>
+                                        </a>
+                                    </li>*@
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title=""><span class="fa fa-bolt">&ensp;</span>Enzymes<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+
+                                        <li>
+                                            <a href="@Url.Action("Index", "RActivity")">
+                                                <i class="fa fa-scissors text-info"></i>
+                                                <span class="text-text-info">Restriction Enzymes</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "MActivity")">
+                                                <i class="fa fa-exchange text-info"></i>
+                                                <span class="text-text-info">Modifying Enzymes</span>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "BioTools")">
+                                        <i class="fa fa-wrench"></i>
+                                        <span class="">BioTools</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @RenderBody()
+    <div class="footer navbar-fixed-bottom">
+        <footer>
+            <p class="text-center" style="margin: 0px 0px 0px 0px;">&copy; @DateTime.Now.Year - eCloning. All Rights Reserved</p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/biotools")
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/datatable/dataTables.bootstrap.min.js"></script>
+
+
+
+    @*for loading paging*@
+    <script type="text/javascript" src="~/Scripts/paging.js"></script>
+</body>
+</html>

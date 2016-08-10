@@ -1,0 +1,151 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
+
+@{
+    ViewBag.Title = "Plasmid Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Name = (string)ViewBag.Name;
+    int plasmidId = (int)ViewBag.Id;
+    string Sequence = (string)ViewBag.Sequence;
+    int seqCount = (int)ViewBag.SeqLength;
+    var features = ViewBag.Features;
+    int idCount = 0;
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-warning text-center">Edit Map of Plasmid <em>@Name</em> Map(@seqCount bp)</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+        <span id="modleCount" class="hidden">@Model.Count()</span>
+        <p class="text-info">Click to edit:</p>
+        <div class="table-responsive">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>
+                            Feature
+                        </th>
+                        <th>
+                            Label
+                        </th>
+                        <th>
+                            5' Position
+                        </th>
+                        <th>
+                            3' Position
+                        </th>
+                        <th>
+                            Clockwise
+                        </th>
+                        <th>
+                            Cut Position (5'-3')
+                        </th>
+                        <th>
+                            Show Feature
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        var startId = "start" + idCount;
+                        var endId = "end" + idCount;
+                        var cutId = "cut" + idCount;
+                        var clockwiseId = "clockwise" + idCount;
+                        var show_featureId = "show_feature" + idCount;
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.common_feature.label)
+                            </td>
+                            <td>
+                                <a href="#" id=@startId data-type="number" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="start"})" data-title="Enter start position" data-clear=false>@Html.DisplayFor(modelItem => item.start)</a>
+                            </td>
+                            <td>
+                                <a href="#" id=@endId data-type="number" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="end"})" data-title="Enter end position" data-clear=false>@Html.DisplayFor(modelItem => item.end)</a>
+                            </td>
+                            <td>
+                                @if (item.clockwise == 1)
+                                {
+                                    <a href="#" id=@clockwiseId data-type="select" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="clockwise"})" data-title="Select Direction" data-clear=false data-value="1" data-source="[{value: 1, text: 'Yes'},{value: 0, text: 'No'}]">Yes</a>
+                                }
+                                else
+                                {
+                                    <a href="#" id=@clockwiseId data-type="select" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="clockwise"})" data-title="Select Direction" data-clear=false data-value="0" data-source="[{value: 1, text: 'Yes'},{value: 0, text: 'No'}]">No</a>
+                                }
+                            </td>
+                            <td>
+                                @if (item.feature_id == 4)
+                                {
+                                    <a href="#" id=@cutId data-type="number" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="cut"})" data-title="Enter cut position" data-clear=false>@Html.DisplayFor(modelItem => item.cut)</a>
+                                }
+                            </td>
+                            <td>
+                                @if (item.show_feature == 1)
+                                {
+                                    <a href="#" id=@show_featureId data-type="select" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="show_feature"})" data-title="Select Direction" data-clear=false data-value="1" data-source="[{value: 1, text: 'Yes'},{value: 0, text: 'No'}]">Yes</a>
+                                }
+                                else
+                                {
+                                    <a href="#" id=@show_featureId data-type="select" data-pk=@item.id data-url="@Url.Action("Change", "Map", new { plasmid_id = plasmidId, target="show_feature"})" data-title="Select Direction" data-clear=false data-value="0" data-source="[{value: 1, text: 'Yes'},{value: 0, text: 'No'}]">No</a>
+                                }
+                            </td>
+                        </tr>
+                        idCount++;
+                    }
+
+                </table>
+            </div>
+    </div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    //first get how many features in the Model
+    modelCount = document.getElementById("modleCount").textContent;
+    try{
+        var count = parseInt(modelCount);
+        //arrar foy start position
+        var startPos = [];
+        $(document).ready(function () {
+            for (var i = 0; i < count; i++) {
+                //get the start position
+                var start = $('#start' + i).text();
+                start = parseInt(start);
+                startPos.push(start);
+                var tag = i;
+                $('#start' + i).editable(
+                    'option', 'validate', function (v) {
+                        if (!v) return 'Field required!';
+                        if (v < 0) return 'Invalid Position!';
+                    });
+                $('#end' + i).editable(
+                    'option', 'validate', function (v) {
+                        if (!v) return 'Field required!';
+                        if (v < 0) return 'Invalid Position!';
+                        if (v <= startPos[tag]) {
+                            return '"End Position" must > "Start Position"!'
+                        }
+
+                    });
+                $('#cut' + i).editable(
+                    'option', 'validate', function (v) {
+                        if (!v) return 'Field required!';
+                        if (v < 0) return 'Invalid Position!';                        
+                    });
+
+                $('#clockwise' + i).editable();
+                $('#show_feature' + i).editable();
+            }
+        });
+    }
+    catch (e)
+    {
+        consol.log(e);
+    }
+</script>
+    

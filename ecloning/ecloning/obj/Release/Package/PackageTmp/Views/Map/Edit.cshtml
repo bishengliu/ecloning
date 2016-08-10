@@ -1,0 +1,132 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
+
+    @{
+        ViewBag.Title = "Edit Map";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        int Count = (int)ViewBag.Count;
+        string Name = (string)ViewBag.Name;
+        int seqCount = (int)ViewBag.SeqLength;
+        int plasmidId = (int)ViewBag.PlasmidId;        
+        int i = 0;
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="text-warning text-center">Edit Features of @Name (@seqCount bp)</h3>
+        </div>
+    </div>
+    <br />
+@if(Count == 0)
+{
+    <div class="text-info">
+        <p>No feature found for plasmid <em>@Name</em>.</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <div class="col-xs-12 col-md-10">
+                        <input type="text" name="plasmid_id" value=@plasmidId class="hidden" />
+                        <input type="submit" value="Update Features" class="btn btn-primary" />
+                    </div>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="table-responsive col-xs-12 col-sm-12 col-md-12 col-bg-12">
+                        <table class="table table-hover table-condensed">
+                            <tr>
+                                <th>
+                                    Feature Category
+                                </th>
+                                <th>
+                                    Feature Name
+                                </th>
+                                <th>
+                                    5' Position
+                                </th>
+                                <th>
+                                    3' Position
+                                </th>
+                                <th>
+                                    Clockwise
+                                </th>
+                                <th>
+                                    Cut Position (5'-3')
+                                </th>
+                                <th>
+                                    Show Feature
+                                </th>
+
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                                    </td>
+                                    <td>
+                                        @if (item.common_feature != null)
+                                        {
+                                            @item.common_feature.label
+                                        }
+                                        else
+                                        {
+                                            @item.feature
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.start)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.end)
+                                    </td>
+                                    <td>
+                                        @if (item.clockwise == 1)
+                                        {
+                                            <span>Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span>No</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.cut)
+                                    </td>
+                                    <td>
+                                        <input type="text" name="id[]" value=@item.id class="hidden" />
+                                        <select name="show_feature[]" class = "form-control col-md-6">
+                                           @if (item.show_feature == 1)
+                                           {
+                                               <option value="1" selected="selected">Yes</option>
+                                               <option value="0">No</option>
+                                           }
+                                           else
+                                           {
+                                               <option value="1">Yes</option>
+                                               <option value="0" selected="selected">No</option>
+                                           }
+                                       </select>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+
+                        </table>
+                    </div>
+                    <div class="col-xs-12 col-md-10">
+                        <input type="text" name="plasmid_id" value=@plasmidId class="hidden" />
+                        <input type="submit" value="Update Features" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+}
+
+    

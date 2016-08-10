@@ -1,0 +1,431 @@
+﻿@model ecloning.Models.pBundle
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Features = ViewBag.Features;
+    var Plasmids = ViewBag.Plasmids;
+    var Bundles = ViewBag.Bundles;
+    var msg = (string)TempData["msg"];
+    int Count = (int)ViewBag.Count;
+    List<int> pId = (List<int>)ViewBag.pId;
+    var idString = (string)ViewBag.IdString;
+    string bundleName = ViewBag.bundleName;
+}
+
+<div class="row">
+     <div class="col-xs-12 col-sm-offset-1 col-sm-8">
+          <h3 class="text-warning text-left">Edit Pamisd Bundle</h3>
+     </div>
+     <div class="col-xs-12 col-sm-2">
+          <br />
+          <a id="addPlasmid" href="#" class="btn btn-default pull-right">
+             <i class="fa fa-plus-circle"></i>
+             <span class="">Add Plasmids</span>
+          </a>
+     </div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="row hidden">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "modalPlasmid" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="col-xs-8 col-sm-10 col-md-11">
+                <input class="form-control" id="newPlasmid" name="newPlasmids" />
+            </div>
+                <div class="col-xs-4 col-sm-2 col-md-1">
+                    <button type="submit" id="add" class="btn btn-danger">
+                        <i class="fa fa-plus-circle"></i>
+                        <span class="">Plasmids</span>
+                    </button>
+                </div>
+        }
+        </div>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<p id="bundleName" class="hidden">@bundleName</p>
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <p id="error" class="text-danger text-center"></p>
+        <p id="msg" class="text-info text-center"></p>
+        <div class="row">
+        <div class="row">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", id= "saveChange" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="hidden">
+                    <input id="plasmidID" name="idString" value=@idString>
+                    <input name="oldUpload" value=@Model.Upload>
+                    <input name="BundleId" value=@Model.bundle_id readonly>
+                    @Html.EditorFor(model => model.bundle_id, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                    <div class="col-xs-12">
+                        @Html.LabelFor(model => model.Name, "Bundle Name", htmlAttributes: new { @class = "control-label required" })
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                    <div class="col-xs-12">
+                        @Html.LabelFor(model => model.Upload, "Upload file", htmlAttributes: new { @class = "control-label" })
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="Upload" id="file_name" value="@Model.Upload" readonly>
+                            <span class="input-group-btn">
+                                <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="file_fn" id="file_fn" onchange="getFilePath()" /></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Upload, "", new { @class = "text-danger" })
+                        <p id="max_size" class="text-danger" style="font-size:90%;"></p>
+                    </div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="col-xs-12">
+                        @Html.LabelFor(model => model.Des, "Bundle Description", htmlAttributes: new { @class = "control-label" })
+                        @Html.TextAreaFor(model => model.Des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                for (int i = 0; i < Count; i++)
+                {
+                    var mapId = "map-" + @pId[i].ToString();
+                    var modalMapId = "modal-map-" + @pId[i].ToString();
+                    var modalId = "modal-" + @pId[i].ToString();
+                    var modalRefId = "#modal-" + @pId[i].ToString();
+
+                    //div id
+                    var idDiv = "plasmid-" + @pId[i].ToString();
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <!-- Trigger the modal with a button -->
+                        <a href="#" data-toggle="modal" data-target=@modalRefId class="pull-left">
+                            <div class="col-xs-12" id=@mapId></div>
+                        </a>
+                        <div class="col-xs-12">
+                            <a href="#" class="pull-right delete" id="@idDiv">
+                                <i class="fa fa-2x fa-trash-o text-warning"></i>
+                                <span class="text-warning"></span>
+                            </a>
+
+                            <!-- Modal -->
+                            <div id=@modalId class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title text-center">Plasmid Map</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id=@modalMapId></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="hidden">
+                                @Html.LabelFor(model => model.Plasmids[i].plasmidId, "Plasmid Id", htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Plasmids[i].plasmidId, new { htmlAttributes = new { @class = "form-control", @Value = pId[i] } })
+                                @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidId, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.Plasmids[i].plasmidRole, "Comment", htmlAttributes: new { @class = "control-label" })
+                            @Html.TextAreaFor(model => model.Plasmids[i].plasmidRole, 4, 150, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidRole, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group col-sm-12" id="formButton">
+                    <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                        <br />
+                        <input type="submit" id="addBundle" value="Save Bundle" class="btn btn-block btn-primary" />
+                    </div>
+                </div>
+            }
+        </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+<script src="~/Scripts/ecloning.js"></script>
+<script>
+
+    //draw maps
+    //<reference path="~/Scripts/jquery-2.1.0-vsdoc.js" />
+    $(document).ready(function () {
+
+        var Features = ("@Features");
+        Features = LoadData(Features);
+
+        var Plasmids = ("@Plasmids");
+        Plasmids = LoadData(Plasmids);
+        //draw plasmid map (also in modals)
+        try {
+            Features = JSON.parse(Features);
+            Plasmids = JSON.parse(Plasmids);
+            //console.log(Features);
+            var IdString = $('#plasmidID').val();
+            //process the idString to array
+            var idStringArray = IdString.split(',');
+            var idArray = [];
+            $.each(idStringArray, function (index, value) {
+                idArray.push(parseInt(value));
+            })
+            //console.log(idArray);
+
+            //draw maps
+            drawMaps(idArray, Features, 348, 1048);
+
+            //redraw maps in modal
+            $('.modal-body div div svg text tspan').click({ idArray: idArray }, redrawMap);
+
+            //prepare tokenInput data
+            $("#newPlasmid").tokenInput(Plasmids, {
+                theme: 'facebook',
+                hintText: 'Type plasmid name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "name",
+                preventDuplicates: true,
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.length + "bp" + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+            $("#modalPlasmid div ul").addClass('token-input-list-facebook form-control text-box single-line');
+
+            //validate form
+            validateForm();
+
+            //allow delete plasmid
+            removePlasmid();
+
+            //show add plasmid form
+            $('#addPlasmid').click(function () {
+                $(this).addClass('hidden');
+                $('#modalPlasmid').parent().removeClass('hidden');
+            });
+
+            //add plasmid
+            $('#add').click(function (event) {
+                event.preventDefault();
+                $('#addPlasmid').removeClass('hidden');
+                $('#modalPlasmid').parent().addClass('hidden');
+
+                var newPlasmidIds = $('#newPlasmid').val();
+                if (!newPlasmidIds.trim()) {
+                    $('#error').text("You haven't selected any plasmid!");
+                    $('#msg').text(null);
+                    return false;
+                } else {
+                    //get id list and then generate maps and remove duplicates
+                    var newIdArray = unique(newPlasmidIds.split(','));
+
+                    //put update the plasmidID
+                    //get the plasmidID
+                    var IdString = $('#plasmidID').val();
+                    //process the idString to array
+                    var idArray = [];
+                    if (IdString.trim()) {
+                        var idStringArray = IdString.split(',');
+                        $.each(idStringArray, function (index, value) {
+                            idArray.push(parseInt(value));
+                        })
+                    }
+
+                    var iLength = idArray.length;
+                    //add the dom and concat array
+                    $.each(newIdArray, function (i, d) {
+                        //first check whether it is in the idArray
+                        if ($.inArray(+d, idArray) == -1) {
+                            //push to the idArray
+                            idArray.push(+d);
+                            //add div
+                            iLength++;
+                            var count = iLength;
+                            var id = +d;
+                            var modalRefId = "#modal-" + d;
+                            var mapId = "map-" + d;
+                            var modalMapId = "modal-map-" + d;
+                            var modalId = "modal-" + d;
+                            var idDiv = "plasmid-" + d;
+
+
+                            $('#formButton').before(BundleHTML(count - 1, id, modalRefId, mapId, idDiv, modalId, modalMapId));
+                            //draw map in div and modal
+                            draw2Maps(Features, mapId, modalMapId, d, 348, 1048);
+                        }
+                    });
+                    //run the click to remove function again
+                    removePlasmid();
+                    //put the inArray back
+                    //convert array to string separated by ','
+                    IdString = idArray.join(',');
+                    $('#plasmidID').val(IdString);
+                    return false;
+                }
+                return false;
+            });
+        }
+        catch (e) {
+            console.log(e);
+            $('#error').text("Unable to load requred data, please try again later!");
+            $("#addBundle").addClass("disabled");
+            $("#add").addClass("disabled");
+        }
+
+    });
+
+    function removePlasmid() {
+        $('.delete').click(function () {
+            //get the plasmid id
+            var id = $(this).attr('id');
+            //get the plasmid id
+            var pieces = id.split('-');
+            var plasmidId = pieces[pieces.length - 1];
+
+            //remove the plasmid id from IdString
+            //get the idString
+            var IdString = $('#plasmidID').val();
+            //check whether this is the last plasmid
+            if (IdString.indexOf(',') === -1) {
+                alert('You cannot remove the last plasmid!');
+                return true;
+            }
+            else {
+                //remove
+                var nIdString = IdString.replace(plasmidId.toString(), '');
+
+                //remove the join char ',', if is not the last id
+                if (nIdString.indexOf(',,') != -1) {
+                    nIdString = nIdString.replace(',,', ',');
+                }
+                //remove the last ','
+                if (nIdString.length > 0 && nIdString.indexOf(',') === 0) {
+                    nIdString = nIdString.substr(1, nIdString.length - 1);
+                }
+                //remove the first ','
+                if (nIdString.length > 0 && nIdString.lastIndexOf(',') === nIdString.length - 1) {
+                    nIdString = nIdString.substr(0, nIdString.length - 1);
+                }
+                //put back the idstring
+                $('#plasmidID').val(nIdString);
+                //remove the whole div
+                $(this).parent().parent().remove();
+                return true;
+            }
+        });
+    }
+
+    function validateForm() {
+        //validate the form submission
+        $('#saveChange').submit(function () {
+
+            //check upload file size
+            if ($('#file_name').val() && typeof ($('#file_fn')[0].files) != "undefined") {
+                //check upload file size
+                var size = parseFloat($('#file_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+                if (size > 10) {
+                    $('#max_size').text('Maximum upload file size is 10MB!');
+                    return false;
+                }
+            }
+            //get original Name
+            var oldName = $('#bundleName').text();
+            var Name = $('#Name').val();
+            //get bundle names to check the unique of the bundle name
+            var Bundles = ("@Bundles");
+            Bundles = LoadData(Bundles);
+            Bundles = JSON.parse(Bundles);
+            if (!Name.trim()) {
+                $('#error').text("\"Bundle Name\" is required!");
+                $('#msg').text(null);
+                return false;
+            }
+            
+            if (oldName !== Name && Name.trim() && $.inArray(Name.trim(), Bundles) !== -1) {
+                $('#error').text("\"Bundle Name\" has been taken, please give a different name!");
+                $('#msg').text(null);
+                return false;
+            }
+
+            return true;
+        });
+    };
+
+    //get the upload file name
+    function getFilePath() {
+        var fullPath = document.getElementById("file_fn").value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById("file_name").value = fileName;
+    };
+
+    function BundleHTML(count, id, modalRefId, mapId, idDiv, modalId, modalMapId)
+    {
+        var html = '';
+
+        //parent div
+        html = html +"<div class=\"col-xs-12 col-sm-6 col-md-4 col-lg-4\">";
+            //map wrapped inside a
+            html = html +"<a href=\"#\" data-toggle=\"modal\" data-target=" + modalRefId + " class=\"pull-left\">";
+            //map
+            html = html +"<div class=\"col-xs-12\" id=" + mapId + "></div>";
+            html = html +"</a>";
+
+            //trash and modal
+            html = html +"<div class=\"col-xs-12\">";
+                //trash
+                html = html +"<a href=\"#\" class=\"pull-right delete\" id=\"" + idDiv + "\">";
+                    html = html +"<i class=\"fa fa-2x fa-trash-o text-warning\"></i>";
+                    html = html +"<span class=\"text-warning\"></span>";
+                html = html +"</a>";
+
+            //modal
+            html = html +"<div id=" + modalId + " class=\"modal fade\" role=\"dialog\">";
+                html = html +"<div class=\"modal-dialog\">";
+                    html = html +"<div class=\"modal-content\">";
+                            html = html +"<div class=\"modal-header\">";
+                                html = html +"<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>";
+                                html = html +"<h4 class=\"modal-title text-center\">Plasmid Map</h4>";
+                            html = html +"</div>";
+                            html = html +"<div class=\"modal-body\">";
+                                html = html +"<div id=" + modalMapId + "></div>";
+                            html = html +"</div>";
+                            html = html +"<div class=\"modal-footer\">";
+                                html = html +"<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>";
+                            html = html +"</div>";
+                        html = html +"</div>";
+                    html = html +"</div>";
+                html = html +"</div>";
+
+            html = html +"</div>";
+
+            //form data
+            html = html +"<div class=\"col-xs-12\">";
+                //hidden id
+                html = html +"<div class=\"hidden\">";
+
+                html = html + '<input value="'+id+'" class="form-control text-box single-line" data-val="true" data-val-number="The field plasmidId must be a number." data-val-required="The plasmidId field is required." id="Plasmids_'+count+'__plasmidId" name="Plasmids['+count+'].plasmidId" type="number">';
+                html = html +"</div>";
+
+                //comment
+                html = html +'<label class="control-label" for="Plasmids_'+count+'__plasmidRole">Comment</label>';
+                html = html +'<textarea class="form-control" cols="150" id="Plasmids_'+count+'__plasmidRole" name="Plasmids['+count+'].plasmidRole" rows="4"></textarea>';
+
+                html = html + "</div>";
+
+        html = html + "</div>";
+
+        return html;
+    };
+
+</script>

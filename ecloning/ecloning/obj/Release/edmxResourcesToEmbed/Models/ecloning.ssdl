@@ -1,0 +1,1885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ecloningModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="__MigrationHistory">
+    <Key>
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
+    </Key>
+    <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
+    <Property Name="Model" Type="varbinary(max)" Nullable="false" />
+    <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="activity_modifying">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="buffer_id" Type="int" Nullable="false" />
+    <Property Name="activity" Type="int" Nullable="false" />
+    <Property Name="temprature" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="activity_restriction">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="buffer_id" Type="int" Nullable="false" />
+    <Property Name="activity" Type="int" Nullable="false" />
+    <Property Name="temprature" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="app_license">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="institute_num" Type="int" Nullable="false" />
+    <Property Name="institute_expired" Type="bit" />
+    <Property Name="institute_expired_dt" Type="datetime" />
+    <Property Name="depart_id" Type="int" Nullable="false" />
+    <Property Name="depart_num" Type="int" Nullable="false" />
+    <Property Name="depart_expired" Type="bit" />
+    <Property Name="depart_expired_dt" Type="datetime" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="group_num" Type="int" Nullable="false" />
+    <Property Name="group_expired" Type="bit" />
+    <Property Name="group_expired_dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="AspNetRoles">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AspNetUserClaims">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="ClaimType" Type="nvarchar(max)" />
+    <Property Name="ClaimValue" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="AspNetUserLogins">
+    <Key>
+      <PropertyRef Name="LoginProvider" />
+      <PropertyRef Name="ProviderKey" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="LoginProvider" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="ProviderKey" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AspNetUserRoles">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AspNetUsers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+    <Property Name="PasswordHash" Type="nvarchar(max)" />
+    <Property Name="SecurityStamp" Type="nvarchar(max)" />
+    <Property Name="PhoneNumber" Type="nvarchar(max)" />
+    <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="datetime" />
+    <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="buffer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="show_activity" Type="bit" />
+    <Property Name="show_activity2" Type="bit" />
+  </EntityType>
+  <EntityType Name="common_feature">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="feature_id" Type="int" Nullable="false" />
+    <Property Name="label" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="sequence" Type="text" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="people_id" Type="int" />
+  </EntityType>
+  <EntityType Name="common_modifying">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="common_restriction">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="company">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="shortName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="fullName" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="container">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="category" Type="nvarchar" MaxLength="100" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="Dam">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="COverlapping" Type="bit" Nullable="false" />
+    <Property Name="CBlocked" Type="bit" Nullable="false" />
+    <Property Name="appending" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Dcm">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="COverlapping" Type="bit" Nullable="false" />
+    <Property Name="CBlocked" Type="bit" Nullable="false" />
+    <Property Name="prefixing" Type="nvarchar" MaxLength="100" />
+    <Property Name="appending" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="department">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="dropdownitem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="value" Type="nvarchar" MaxLength="100" />
+    <Property Name="text" Type="nvarchar" MaxLength="100" />
+    <Property Name="category" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="exp_share">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="exp_id" Type="int" Nullable="false" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="exp_step">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" />
+    <Property Name="exp_id" Type="int" Nullable="false" />
+    <Property Name="type_id" Type="int" Nullable="false" />
+    <Property Name="step_id" Type="int" Nullable="false" />
+    <Property Name="protocol_id" Type="int" />
+    <Property Name="des" Type="text" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="sort_id" Type="int" />
+  </EntityType>
+  <EntityType Name="exp_step_material">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="exp_id" Type="int" Nullable="false" />
+    <Property Name="exp_step_id" Type="int" Nullable="false" />
+    <Property Name="forward_primer_id" Type="int" />
+    <Property Name="reverse_primer_id" Type="int" />
+    <Property Name="probe_id" Type="int" />
+    <Property Name="emzyme_id" Type="nvarchar" MaxLength="200" />
+    <Property Name="plasmid_id" Type="int" />
+    <Property Name="frag1_id" Type="int" />
+    <Property Name="frag2_id" Type="int" />
+    <Property Name="des" Type="text" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="ligation_method" Type="nvarchar" MaxLength="20" />
+    <Property Name="ligation_direction" Type="nvarchar" MaxLength="20" />
+    <Property Name="nplasmid_id" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="exp_step_result">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="exp_id" Type="int" Nullable="false" />
+    <Property Name="exp_step_id" Type="int" Nullable="false" />
+    <Property Name="result_id" Type="int" Nullable="false" />
+    <Property Name="result_upload" Type="nvarchar" MaxLength="200" />
+    <Property Name="result_des" Type="text" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="exp_type">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="experiment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" />
+    <Property Name="des" Type="text" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="fragment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="plasmid_id" Type="int" />
+    <Property Name="fragment_id" Type="int" />
+    <Property Name="parantal" Type="bit" Nullable="false" />
+    <Property Name="enzyme_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="company_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="buffer_id" Type="nvarchar" MaxLength="100" />
+    <Property Name="forward_start" Type="int" />
+    <Property Name="forward_end" Type="int" />
+    <Property Name="forward_size" Type="int" />
+    <Property Name="forward_seq" Type="text" />
+    <Property Name="rc_start" Type="int" />
+    <Property Name="rc_end" Type="int" />
+    <Property Name="rc_size" Type="int" />
+    <Property Name="rc_seq" Type="text" />
+    <Property Name="rc_left_overhand" Type="int" />
+    <Property Name="rc_right_overhand" Type="int" />
+    <Property Name="ladder_id" Type="int" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="dt" Type="datetime" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="fragment_map">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fragment_id" Type="int" Nullable="false" />
+    <Property Name="show_feature" Type="int" Nullable="false" />
+    <Property Name="feature" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="feature_id" Type="int" Nullable="false" />
+    <Property Name="start" Type="int" Nullable="false" />
+    <Property Name="end" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" />
+    <Property Name="common_id" Type="int" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="locked" Type="int" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="fragment_methylation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fragment_id" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" Nullable="false" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="dam_complete" Type="bit" Nullable="false" />
+    <Property Name="dam_impaired" Type="bit" Nullable="false" />
+    <Property Name="dcm_complete" Type="bit" Nullable="false" />
+    <Property Name="dcm_impaired" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="group">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="depart_id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="code" Type="text" />
+    <Property Name="email" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="group_people">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="group_shared">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
+    <Property Name="resource_id" Type="int" Nullable="false" />
+    <Property Name="category" Type="nvarchar" MaxLength="50" />
+    <Property Name="sratus" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="ladder">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ladder_type" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="min_bp_kDa" Type="int" Nullable="false" />
+    <Property Name="max_bp_kda" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="orderref" Type="nvarchar" MaxLength="100" />
+    <Property Name="a_values" Type="float" />
+    <Property Name="b_value" Type="float" />
+  </EntityType>
+  <EntityType Name="ladder_size">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ladder_id" Type="int" Nullable="false" />
+    <Property Name="size" Type="int" Nullable="false" />
+    <Property Name="Rf" Type="float" Nullable="false" />
+    <Property Name="mass" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="letter_code">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="necleotide" Type="nvarchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <EntityType Name="license">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="licence_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="methylation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="plasmid_id" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" Nullable="false" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="dam_complete" Type="bit" Nullable="false" />
+    <Property Name="dam_impaired" Type="bit" Nullable="false" />
+    <Property Name="dcm_complete" Type="bit" Nullable="false" />
+    <Property Name="dcm_impaired" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="methylation_backup">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="plasmid_id" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" Nullable="false" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="dam_complete" Type="bit" Nullable="false" />
+    <Property Name="dam_impaired" Type="bit" Nullable="false" />
+    <Property Name="dcm_complete" Type="bit" Nullable="false" />
+    <Property Name="dcm_impaired" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="minus180_liquid_nitrogen">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="tower_num" Type="int" Nullable="false" />
+    <Property Name="drawer_num" Type="int" Nullable="false" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="minus20">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="drawer_up" Type="int" Nullable="false" />
+    <Property Name="drawer_down" Type="int" Nullable="false" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="minus80">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="tower_num" Type="int" Nullable="false" />
+    <Property Name="drawer_num" Type="int" Nullable="false" />
+    <Property Name="box_num" Type="int" Nullable="false" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="modifying_company">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="modifying_enzyme">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="category" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="application" Type="text" />
+  </EntityType>
+  <EntityType Name="oligo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="sequence" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="company" Type="nvarchar" MaxLength="100" />
+    <Property Name="orderref" Type="nvarchar" MaxLength="100" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" />
+    <Property Name="usage" Type="nvarchar" MaxLength="100" />
+    <Property Name="purity" Type="nvarchar" MaxLength="100" />
+    <Property Name="modification" Type="nvarchar" MaxLength="100" />
+    <Property Name="people_id" Type="int" />
+    <Property Name="des" Type="text" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="people">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="mid_name" Type="nvarchar" MaxLength="50" />
+    <Property Name="last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="email" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="func" Type="nvarchar" MaxLength="100" />
+    <Property Name="active" Type="bit" />
+  </EntityType>
+  <EntityType Name="people_license">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="licence_id" Type="int" Nullable="false" />
+    <Property Name="licence_num" Type="nvarchar" MaxLength="250" />
+  </EntityType>
+  <EntityType Name="plasmid">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="sequence" Type="text" />
+    <Property Name="expression_system" Type="nvarchar" MaxLength="100" />
+    <Property Name="expression_subsystem" Type="nvarchar" MaxLength="100" />
+    <Property Name="promotor" Type="nvarchar" MaxLength="100" />
+    <Property Name="polyA" Type="nvarchar" MaxLength="100" />
+    <Property Name="resistance" Type="nvarchar" MaxLength="200" />
+    <Property Name="reporter" Type="nvarchar" MaxLength="200" />
+    <Property Name="selection" Type="nvarchar" MaxLength="200" />
+    <Property Name="insert" Type="nvarchar" MaxLength="200" />
+    <Property Name="usage" Type="nvarchar" MaxLength="200" />
+    <Property Name="plasmid_type" Type="nvarchar" MaxLength="200" />
+    <Property Name="ref_plasmid" Type="nvarchar" MaxLength="100" />
+    <Property Name="img_fn" Type="nvarchar" MaxLength="500" />
+    <Property Name="addgene" Type="int" />
+    <Property Name="d" Type="datetime" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
+    <Property Name="seq_length" Type="int" />
+  </EntityType>
+  <EntityType Name="plasmid_bundle">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="bundle_id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="member_type" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="member_id" Type="int" Nullable="false" />
+    <Property Name="member_role" Type="text" />
+    <Property Name="img_fn" Type="nvarchar" MaxLength="200" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="people_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="plasmid_feature">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="feature" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="plasmid_map">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="plasmid_id" Type="int" Nullable="false" />
+    <Property Name="show_feature" Type="int" Nullable="false" />
+    <Property Name="feature" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="feature_id" Type="int" Nullable="false" />
+    <Property Name="start" Type="int" Nullable="false" />
+    <Property Name="end" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" />
+    <Property Name="common_id" Type="int" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="des" Type="text" />
+    <Property Name="locked" Type="int" />
+  </EntityType>
+  <EntityType Name="plasmid_map_backup">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="plasmid_id" Type="int" Nullable="false" />
+    <Property Name="show_feature" Type="int" Nullable="false" />
+    <Property Name="feature" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="feature_id" Type="int" Nullable="false" />
+    <Property Name="start" Type="int" Nullable="false" />
+    <Property Name="end" Type="int" Nullable="false" />
+    <Property Name="cut" Type="int" />
+    <Property Name="common_id" Type="int" />
+    <Property Name="clockwise" Type="int" Nullable="false" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <EntityType Name="primer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="sequence" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="company" Type="nvarchar" MaxLength="100" />
+    <Property Name="orderref" Type="nvarchar" MaxLength="100" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" />
+    <Property Name="usage" Type="nvarchar" MaxLength="100" />
+    <Property Name="purity" Type="nvarchar" MaxLength="100" />
+    <Property Name="modification" Type="nvarchar" MaxLength="100" />
+    <Property Name="people_id" Type="int" />
+    <Property Name="des" Type="text" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="probe">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="sequence" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="forward_primer" Type="int" />
+    <Property Name="reverse_primer" Type="int" />
+    <Property Name="usage" Type="nvarchar" MaxLength="100" />
+    <Property Name="company" Type="nvarchar" MaxLength="100" />
+    <Property Name="orderref" Type="nvarchar" MaxLength="100" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" />
+    <Property Name="people_id" Type="int" />
+    <Property Name="des" Type="text" />
+    <Property Name="dt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="protocol">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="versionref" Type="int" />
+    <Property Name="people_id" Type="int" />
+    <Property Name="des" Type="text" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="type_id" Type="int" />
+    <Property Name="upload" Type="nvarchar" MaxLength="500" />
+  </EntityType>
+  <EntityType Name="restri_enzyme">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="forward_seq" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="forward_cut" Type="int" Nullable="false" />
+    <Property Name="reverse_cut" Type="int" Nullable="false" />
+    <Property Name="staractitivity" Type="bit" />
+    <Property Name="inactivation" Type="int" />
+    <Property Name="dam" Type="bit" />
+    <Property Name="dcm" Type="bit" />
+    <Property Name="cpg" Type="bit" />
+    <Property Name="forward_cut2" Type="int" />
+    <Property Name="reverse_cut2" Type="int" />
+  </EntityType>
+  <EntityType Name="restriction_company">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="enzyme_id" Type="int" Nullable="false" />
+    <Property Name="company_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="seq_code">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="necleotide" Type="nvarchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <EntityType Name="storage">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="type" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="ref_id" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="container_id" Type="int" Nullable="false" />
+    <Property Name="tower_id" Type="int" />
+    <Property Name="drawer_id" Type="int" />
+    <Property Name="box_id" Type="int" />
+    <Property Name="box_label" Type="nvarchar" MaxLength="500" />
+    <Property Name="vial_label" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="parent_link" Type="int" />
+    <Property Name="dt" Type="datetime" />
+    <Property Name="des" Type="text" />
+  </EntityType>
+  <Association Name="fk_activity_modifying_buffer_id">
+    <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
+    <End Role="activity_modifying" Type="Self.activity_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="buffer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_modifying">
+        <PropertyRef Name="buffer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_modifying_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="activity_modifying" Type="Self.activity_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_modifying">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_modifying_enzyme_id">
+    <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
+    <End Role="activity_modifying" Type="Self.activity_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="modifying_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_modifying">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_restriction_buffer_id">
+    <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
+    <End Role="activity_restriction" Type="Self.activity_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="buffer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_restriction">
+        <PropertyRef Name="buffer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_restriction_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="activity_restriction" Type="Self.activity_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_restriction">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_activity_restriction_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="activity_restriction" Type="Self.activity_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="activity_restriction">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_app_license_depart_id">
+    <End Role="department" Type="Self.department" Multiplicity="1" />
+    <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="department">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="app_license">
+        <PropertyRef Name="depart_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_app_license_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="app_license" Type="Self.app_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="app_license">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_buffer_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="buffer" Type="Self.buffer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="buffer">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_feature_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_feature">
+        <PropertyRef Name="feature_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_feature_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_feature">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_feature_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="0..1" />
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_feature">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_modifying_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="common_modifying" Type="Self.common_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_modifying">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_modifying_enzyme_id">
+    <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
+    <End Role="common_modifying" Type="Self.common_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="modifying_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_modifying">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_modifying_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_modifying" Type="Self.common_modifying" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_modifying">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_restriction_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_restriction_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_common_restriction_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="common_restriction" Type="Self.common_restriction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="common_restriction">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserClaims">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserLogins">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+    <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetRoles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserRoles">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserRoles">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_share_epeople_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="exp_share" Type="Self.exp_share" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_share">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_share_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_share" Type="Self.exp_share" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_share">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_forward_primer_id">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="forward_primer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_frag1_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="frag1_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_frag2_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="frag2_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_probe_id">
+    <End Role="probe" Type="Self.probe" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="probe">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="probe_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_material_reverse_primer_id">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="exp_step_material" Type="Self.exp_step_material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_material">
+        <PropertyRef Name="reverse_primer_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_protocol_id">
+    <End Role="protocol" Type="Self.protocol" Multiplicity="0..1" />
+    <End Role="exp_step" Type="Self.exp_step" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="protocol">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step">
+        <PropertyRef Name="protocol_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_exp_step_result_exp_id">
+    <End Role="experiment" Type="Self.experiment" Multiplicity="1" />
+    <End Role="exp_step_result" Type="Self.exp_step_result" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="experiment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="exp_step_result">
+        <PropertyRef Name="exp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_experiment_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="experiment" Type="Self.experiment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="experiment">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_map_common_id">
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
+    <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="common_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_map">
+        <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_map_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_map">
+        <PropertyRef Name="feature_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_map_fragment_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="1" />
+    <End Role="fragment_map" Type="Self.fragment_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_map">
+        <PropertyRef Name="fragment_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_fragment_methylation_fragment_id">
+    <End Role="fragment" Type="Self.fragment" Multiplicity="1" />
+    <End Role="fragment_methylation" Type="Self.fragment_methylation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fragment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment_methylation">
+        <PropertyRef Name="fragment_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_depart_id">
+    <End Role="department" Type="Self.department" Multiplicity="1" />
+    <End Role="group" Type="Self.group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="department">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group">
+        <PropertyRef Name="depart_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_people_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="group_people" Type="Self.group_people" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_people">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_people_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="group_people" Type="Self.group_people" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_people">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_group_shared_group_id">
+    <End Role="group" Type="Self.group" Multiplicity="1" />
+    <End Role="group_shared" Type="Self.group_shared" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="group_shared">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ladder_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="ladder" Type="Self.ladder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ladder">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_methylation_backup_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="methylation_backup" Type="Self.methylation_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="methylation_backup">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_methylation_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="methylation" Type="Self.methylation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="methylation">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_modifying_company_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="modifying_company">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_modifying_company_enzyme_id">
+    <End Role="modifying_enzyme" Type="Self.modifying_enzyme" Multiplicity="1" />
+    <End Role="modifying_company" Type="Self.modifying_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="modifying_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="modifying_company">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_oligo_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="0..1" />
+    <End Role="oligo" Type="Self.oligo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="oligo">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_padder_size_ladder_id">
+    <End Role="ladder" Type="Self.ladder" Multiplicity="1" />
+    <End Role="ladder_size" Type="Self.ladder_size" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ladder">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ladder_size">
+        <PropertyRef Name="ladder_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_people_license_licence_id">
+    <End Role="license" Type="Self.license" Multiplicity="1" />
+    <End Role="people_license" Type="Self.people_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="license">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="people_license">
+        <PropertyRef Name="licence_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_people_license_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="people_license" Type="Self.people_license" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="people_license">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_bundle_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="plasmid_bundle" Type="Self.plasmid_bundle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_bundle">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_fragment_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="fragment" Type="Self.fragment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_fragment_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="0..1" />
+    <End Role="fragment" Type="Self.fragment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="fragment">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_backup_ccommon_id">
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
+    <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="common_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map_backup">
+        <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_backup_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map_backup">
+        <PropertyRef Name="feature_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_backup_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="plasmid_map_backup" Type="Self.plasmid_map_backup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map_backup">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_ccommon_id">
+    <End Role="common_feature" Type="Self.common_feature" Multiplicity="0..1" />
+    <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="common_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map">
+        <PropertyRef Name="common_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_feature_id">
+    <End Role="plasmid_feature" Type="Self.plasmid_feature" Multiplicity="1" />
+    <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid_feature">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map">
+        <PropertyRef Name="feature_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_map_plasmid_id">
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="1" />
+    <End Role="plasmid_map" Type="Self.plasmid_map" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="plasmid">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid_map">
+        <PropertyRef Name="plasmid_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_plasmid_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="1" />
+    <End Role="plasmid" Type="Self.plasmid" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="plasmid">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_primer_tech_id">
+    <End Role="people" Type="Self.people" Multiplicity="0..1" />
+    <End Role="primer" Type="Self.primer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="primer">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_probe_forward_primer">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="probe" Type="Self.probe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="probe">
+        <PropertyRef Name="forward_primer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_probe_reverse_primer">
+    <End Role="primer" Type="Self.primer" Multiplicity="0..1" />
+    <End Role="probe" Type="Self.probe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="primer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="probe">
+        <PropertyRef Name="reverse_primer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_probe_tech_id">
+    <End Role="people" Type="Self.people" Multiplicity="0..1" />
+    <End Role="probe" Type="Self.probe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="probe">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_protocol_people_id">
+    <End Role="people" Type="Self.people" Multiplicity="0..1" />
+    <End Role="protocol" Type="Self.protocol" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="people">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="protocol">
+        <PropertyRef Name="people_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_restriction_company_company_id">
+    <End Role="company" Type="Self.company" Multiplicity="1" />
+    <End Role="restriction_company" Type="Self.restriction_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="company">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="restriction_company">
+        <PropertyRef Name="company_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_restriction_company_enzyme_id">
+    <End Role="restri_enzyme" Type="Self.restri_enzyme" Multiplicity="1" />
+    <End Role="restriction_company" Type="Self.restriction_company" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="restri_enzyme">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="restriction_company">
+        <PropertyRef Name="enzyme_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ecloningModelStoreContainer">
+    <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="activity_modifying" EntityType="Self.activity_modifying" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="activity_restriction" EntityType="Self.activity_restriction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="app_license" EntityType="Self.app_license" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="buffer" EntityType="Self.buffer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="common_feature" EntityType="Self.common_feature" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="common_modifying" EntityType="Self.common_modifying" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Dam" EntityType="Self.Dam" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="dropdownitem" EntityType="Self.dropdownitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="exp_share" EntityType="Self.exp_share" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="exp_step" EntityType="Self.exp_step" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="exp_step_material" EntityType="Self.exp_step_material" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="exp_step_result" EntityType="Self.exp_step_result" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="exp_type" EntityType="Self.exp_type" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="experiment" EntityType="Self.experiment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fragment" EntityType="Self.fragment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fragment_map" EntityType="Self.fragment_map" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fragment_methylation" EntityType="Self.fragment_methylation" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="group_people" EntityType="Self.group_people" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="group_shared" EntityType="Self.group_shared" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ladder" EntityType="Self.ladder" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ladder_size" EntityType="Self.ladder_size" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="letter_code" EntityType="Self.letter_code" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="methylation" EntityType="Self.methylation" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="methylation_backup" EntityType="Self.methylation_backup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="minus20" EntityType="Self.minus20" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="minus80" EntityType="Self.minus80" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="modifying_company" EntityType="Self.modifying_company" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="oligo" EntityType="Self.oligo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="people" EntityType="Self.people" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="people_license" EntityType="Self.people_license" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="plasmid" EntityType="Self.plasmid" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="plasmid_bundle" EntityType="Self.plasmid_bundle" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="plasmid_feature" EntityType="Self.plasmid_feature" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="plasmid_map" EntityType="Self.plasmid_map" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="plasmid_map_backup" EntityType="Self.plasmid_map_backup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="primer" EntityType="Self.primer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="probe" EntityType="Self.probe" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="protocol" EntityType="Self.protocol" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="restriction_company" EntityType="Self.restriction_company" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="seq_code" EntityType="Self.seq_code" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="storage" EntityType="Self.storage" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_activity_modifying_buffer_id" Association="Self.fk_activity_modifying_buffer_id">
+      <End Role="buffer" EntitySet="buffer" />
+      <End Role="activity_modifying" EntitySet="activity_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_modifying_company_id" Association="Self.fk_activity_modifying_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="activity_modifying" EntitySet="activity_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_modifying_enzyme_id" Association="Self.fk_activity_modifying_enzyme_id">
+      <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
+      <End Role="activity_modifying" EntitySet="activity_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_restriction_buffer_id" Association="Self.fk_activity_restriction_buffer_id">
+      <End Role="buffer" EntitySet="buffer" />
+      <End Role="activity_restriction" EntitySet="activity_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_restriction_company_id" Association="Self.fk_activity_restriction_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="activity_restriction" EntitySet="activity_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_activity_restriction_enzyme_id" Association="Self.fk_activity_restriction_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="activity_restriction" EntitySet="activity_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_app_license_depart_id" Association="Self.fk_app_license_depart_id">
+      <End Role="department" EntitySet="department" />
+      <End Role="app_license" EntitySet="app_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_app_license_group_id" Association="Self.fk_app_license_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="app_license" EntitySet="app_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_buffer_company_id" Association="Self.fk_buffer_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="buffer" EntitySet="buffer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_feature_feature_id" Association="Self.fk_common_feature_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_feature_group_id" Association="Self.fk_common_feature_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_feature_people_id" Association="Self.fk_common_feature_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="common_feature" EntitySet="common_feature" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_modifying_company_id" Association="Self.fk_common_modifying_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="common_modifying" EntitySet="common_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_modifying_enzyme_id" Association="Self.fk_common_modifying_enzyme_id">
+      <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
+      <End Role="common_modifying" EntitySet="common_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_modifying_group_id" Association="Self.fk_common_modifying_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="common_modifying" EntitySet="common_modifying" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_company_id" Association="Self.fk_common_restriction_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_enzyme_id" Association="Self.fk_common_restriction_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="fk_common_restriction_group_id" Association="Self.fk_common_restriction_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="common_restriction" EntitySet="common_restriction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+      <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+      <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_share_epeople_id" Association="Self.fk_exp_share_epeople_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="exp_share" EntitySet="exp_share" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_share_exp_id" Association="Self.fk_exp_share_exp_id">
+      <End Role="experiment" EntitySet="experiment" />
+      <End Role="exp_share" EntitySet="exp_share" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_exp_id" Association="Self.fk_exp_step_exp_id">
+      <End Role="experiment" EntitySet="experiment" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_exp_id" Association="Self.fk_exp_step_material_exp_id">
+      <End Role="experiment" EntitySet="experiment" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_forward_primer_id" Association="Self.fk_exp_step_material_forward_primer_id">
+      <End Role="primer" EntitySet="primer" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_frag1_id" Association="Self.fk_exp_step_material_frag1_id">
+      <End Role="fragment" EntitySet="fragment" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_frag2_id" Association="Self.fk_exp_step_material_frag2_id">
+      <End Role="fragment" EntitySet="fragment" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_plasmid_id" Association="Self.fk_exp_step_material_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_probe_id" Association="Self.fk_exp_step_material_probe_id">
+      <End Role="probe" EntitySet="probe" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_material_reverse_primer_id" Association="Self.fk_exp_step_material_reverse_primer_id">
+      <End Role="primer" EntitySet="primer" />
+      <End Role="exp_step_material" EntitySet="exp_step_material" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_people_id" Association="Self.fk_exp_step_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_protocol_id" Association="Self.fk_exp_step_protocol_id">
+      <End Role="protocol" EntitySet="protocol" />
+      <End Role="exp_step" EntitySet="exp_step" />
+    </AssociationSet>
+    <AssociationSet Name="fk_exp_step_result_exp_id" Association="Self.fk_exp_step_result_exp_id">
+      <End Role="experiment" EntitySet="experiment" />
+      <End Role="exp_step_result" EntitySet="exp_step_result" />
+    </AssociationSet>
+    <AssociationSet Name="fk_experiment_people_id" Association="Self.fk_experiment_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="experiment" EntitySet="experiment" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_map_common_id" Association="Self.fk_fragment_map_common_id">
+      <End Role="common_feature" EntitySet="common_feature" />
+      <End Role="fragment_map" EntitySet="fragment_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_map_feature_id" Association="Self.fk_fragment_map_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="fragment_map" EntitySet="fragment_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_map_fragment_id" Association="Self.fk_fragment_map_fragment_id">
+      <End Role="fragment" EntitySet="fragment" />
+      <End Role="fragment_map" EntitySet="fragment_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_fragment_methylation_fragment_id" Association="Self.fk_fragment_methylation_fragment_id">
+      <End Role="fragment" EntitySet="fragment" />
+      <End Role="fragment_methylation" EntitySet="fragment_methylation" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_depart_id" Association="Self.fk_group_depart_id">
+      <End Role="department" EntitySet="department" />
+      <End Role="group" EntitySet="group" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_people_group_id" Association="Self.fk_group_people_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="group_people" EntitySet="group_people" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_people_people_id" Association="Self.fk_group_people_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="group_people" EntitySet="group_people" />
+    </AssociationSet>
+    <AssociationSet Name="fk_group_shared_group_id" Association="Self.fk_group_shared_group_id">
+      <End Role="group" EntitySet="group" />
+      <End Role="group_shared" EntitySet="group_shared" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ladder_company_id" Association="Self.fk_ladder_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="ladder" EntitySet="ladder" />
+    </AssociationSet>
+    <AssociationSet Name="fk_methylation_backup_plasmid_id" Association="Self.fk_methylation_backup_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="methylation_backup" EntitySet="methylation_backup" />
+    </AssociationSet>
+    <AssociationSet Name="fk_methylation_plasmid_id" Association="Self.fk_methylation_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="methylation" EntitySet="methylation" />
+    </AssociationSet>
+    <AssociationSet Name="fk_modifying_company_company_id" Association="Self.fk_modifying_company_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="modifying_company" EntitySet="modifying_company" />
+    </AssociationSet>
+    <AssociationSet Name="fk_modifying_company_enzyme_id" Association="Self.fk_modifying_company_enzyme_id">
+      <End Role="modifying_enzyme" EntitySet="modifying_enzyme" />
+      <End Role="modifying_company" EntitySet="modifying_company" />
+    </AssociationSet>
+    <AssociationSet Name="fk_oligo_people_id" Association="Self.fk_oligo_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="oligo" EntitySet="oligo" />
+    </AssociationSet>
+    <AssociationSet Name="fk_padder_size_ladder_id" Association="Self.fk_padder_size_ladder_id">
+      <End Role="ladder" EntitySet="ladder" />
+      <End Role="ladder_size" EntitySet="ladder_size" />
+    </AssociationSet>
+    <AssociationSet Name="fk_people_license_licence_id" Association="Self.fk_people_license_licence_id">
+      <End Role="license" EntitySet="license" />
+      <End Role="people_license" EntitySet="people_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_people_license_people_id" Association="Self.fk_people_license_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="people_license" EntitySet="people_license" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_bundle_people_id" Association="Self.fk_plasmid_bundle_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="plasmid_bundle" EntitySet="plasmid_bundle" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_fragment_people_id" Association="Self.fk_plasmid_fragment_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="fragment" EntitySet="fragment" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_fragment_plasmid_id" Association="Self.fk_plasmid_fragment_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="fragment" EntitySet="fragment" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_backup_ccommon_id" Association="Self.fk_plasmid_map_backup_ccommon_id">
+      <End Role="common_feature" EntitySet="common_feature" />
+      <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_backup_feature_id" Association="Self.fk_plasmid_map_backup_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_backup_plasmid_id" Association="Self.fk_plasmid_map_backup_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="plasmid_map_backup" EntitySet="plasmid_map_backup" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_ccommon_id" Association="Self.fk_plasmid_map_ccommon_id">
+      <End Role="common_feature" EntitySet="common_feature" />
+      <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_feature_id" Association="Self.fk_plasmid_map_feature_id">
+      <End Role="plasmid_feature" EntitySet="plasmid_feature" />
+      <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_map_plasmid_id" Association="Self.fk_plasmid_map_plasmid_id">
+      <End Role="plasmid" EntitySet="plasmid" />
+      <End Role="plasmid_map" EntitySet="plasmid_map" />
+    </AssociationSet>
+    <AssociationSet Name="fk_plasmid_people_id" Association="Self.fk_plasmid_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="plasmid" EntitySet="plasmid" />
+    </AssociationSet>
+    <AssociationSet Name="fk_primer_tech_id" Association="Self.fk_primer_tech_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="primer" EntitySet="primer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_probe_forward_primer" Association="Self.fk_probe_forward_primer">
+      <End Role="primer" EntitySet="primer" />
+      <End Role="probe" EntitySet="probe" />
+    </AssociationSet>
+    <AssociationSet Name="fk_probe_reverse_primer" Association="Self.fk_probe_reverse_primer">
+      <End Role="primer" EntitySet="primer" />
+      <End Role="probe" EntitySet="probe" />
+    </AssociationSet>
+    <AssociationSet Name="fk_probe_tech_id" Association="Self.fk_probe_tech_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="probe" EntitySet="probe" />
+    </AssociationSet>
+    <AssociationSet Name="fk_protocol_people_id" Association="Self.fk_protocol_people_id">
+      <End Role="people" EntitySet="people" />
+      <End Role="protocol" EntitySet="protocol" />
+    </AssociationSet>
+    <AssociationSet Name="fk_restriction_company_company_id" Association="Self.fk_restriction_company_company_id">
+      <End Role="company" EntitySet="company" />
+      <End Role="restriction_company" EntitySet="restriction_company" />
+    </AssociationSet>
+    <AssociationSet Name="fk_restriction_company_enzyme_id" Association="Self.fk_restriction_company_enzyme_id">
+      <End Role="restri_enzyme" EntitySet="restri_enzyme" />
+      <End Role="restriction_company" EntitySet="restriction_company" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

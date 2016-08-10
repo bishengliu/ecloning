@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+}
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header text-center text-warning"><i class="fa fa-dashboard"></i><span> ADMIN DASHBOARD</span></h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-sm-6 col-lg-offset-2 col-lg-4">
+                <div class="panel panel-color0">
+                    <div class="panel-heading text-center">
+                        <i class="fa fa-building-o fa-fw"></i><span> Companies</span>
+                    </div>
+                    <div class="panel-body fixedHeight">
+                        <div class="col-xs-offset-5">
+                            <a href="@Url.Action("Index", "Company", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage companies">
+                                <i class="fa fa-building-o fa-3x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-sm-6 col-lg-4">
+                <div class="panel panel-color2">
+                    <div class="panel-heading text-center">
+                        <i class="fa fa-flask fa-fw"></i><span> Buffers</span>
+                    </div>
+                    <div class="panel-body fixedHeight">
+                        <div class="col-xs-offset-5">
+                            <a href="@Url.Action("Index", "Buffer", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage enzyme buffers">
+                                <i class="fa fa-flask fa-3x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            <div class="col-xs-12 col-sm-12 col-sm-6 col-lg-offset-2 col-lg-4">
+                <div class="panel panel-color5">
+                    <div class="panel-heading text-center">
+                        <i class="fa fa-exchange fa-fw"></i><span> Modifying Enzymes</span>
+                    </div>
+                    <div class="panel-body fixedHeight">
+                        <div class="col-xs-offset-2 col-xs-3">
+                            <a href="@Url.Action("Index", "MEnzyme", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage modifying enzymes">
+                                <i class="fa fa-exchange fa-fw fa-3x"></i>
+                            </a>
+                        </div>
+                        <div class="col-xs-offset-7">
+                            <a href="@Url.Action("Index", "MActivity", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage the activity of modifying enzymes">
+                                <i class="fa fa-star-half-empty fa-3x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-sm-6 col-lg-4">
+                <div class="panel panel-color1">
+                    <div class="panel-heading text-center">
+                        <i class="fa fa-scissors fa-fw"></i><span> Restriction Enzymes</span>
+                    </div>
+                    <div class="panel-body fixedHeight">
+                        <div class="col-xs-offset-2 col-xs-3">
+                            <a href="@Url.Action("Index", "Restriction", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage restriction enzymes">
+                                <i class="fa fa-scissors fa-fw fa-3x"></i>
+                            </a>
+                        </div>
+                        <div class="col-xs-offset-7">
+                            <a href="@Url.Action("Index", "RActivity", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage the activity of restriction enzymes">
+                                <i class="fa fa-star-half-empty fa-3x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-sm-6 col-lg-offset-2 col-lg-4">
+                <div class="panel panel-color3">
+                    <div class="panel-heading text-center">
+                        <i class="fa fa-barcode fa-rotate-270 fa-fw"></i><span> Ladders</span>
+                    </div>
+                    <div class="panel-body fixedHeight">
+                        <div class="col-xs-offset-2 col-xs-3">
+                            <a href="@Url.Action("Details", "Ladder", new { type="DNA" })" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage DNA ladders">
+                                <i class="fa fa-barcode fa-rotate-270 fa-fw fa-fw text-primary fa-3x"></i>
+                            </a>
+                        </div>
+                        <div class="col-xs-offset-7">
+                            <a href="@Url.Action("Details", "Ladder", new { type="RNA" })" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage RNA ladders">
+                                <i class="fa fa-barcode fa-rotate-270 fa-fw text-info fa-3x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (User.IsInRole("appAdmin") || User.IsInRole("InstAdmin"))
+            {
+                <div class="col-xs-12 col-sm-12 col-sm-6 col-lg-4">
+                    <div class="panel panel-color4">
+                        <div class="panel-heading text-center">
+                            <i class="fa fa-users fa-fw"></i><span> Application Users</span>
+                        </div>
+                        <div class="panel-body fixedHeight">
+                            <div class="col-xs-offset-5">
+                                <a href="@Url.Action("Index", "Users", new { area="Admin"})" class="btn btn-lg" data-toggle="tooltip" data-placement="top" title="Click here to manage application users">
+                                    <i class="fa fa-users fa-3x"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }            
+        </div>
+
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    })
+</script>

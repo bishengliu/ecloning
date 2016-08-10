@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="cbd0fb90d5dc40e691a20f263654dde6" Name="Diagram1">
+        <EntityTypeShape EntityType="ecloningModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.activity_modifying" Width="1.5" PointX="10.25" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.activity_restriction" Width="1.5" PointX="13.25" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.app_license" Width="1.5" PointX="11" PointY="32.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.AspNetUser" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.buffer" Width="1.5" PointX="8" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_feature" Width="1.5" PointX="6" PointY="35.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_modifying" Width="1.5" PointX="8" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.common_restriction" Width="1.5" PointX="11" PointY="21.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.company" Width="1.5" PointX="5.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.container" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.Dam" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.Dcm" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.department" Width="1.5" PointX="1.5" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.dropdownitem" Width="1.5" PointX="7.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.exp_share" Width="1.5" PointX="8.25" PointY="36.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.exp_step" Width="1.5" PointX="5.25" PointY="53.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.exp_step_material" Width="1.5" PointX="8.25" PointY="53.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.exp_step_result" Width="1.5" PointX="5.25" PointY="41.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.exp_type" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.experiment" Width="1.5" PointX="3" PointY="35.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.fragment" Width="1.5" PointX="5.25" PointY="45.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.fragment_map" Width="1.5" PointX="10.25" PointY="42" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.fragment_methylation" Width="1.5" PointX="7.5" PointY="44.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group" Width="1.5" PointX="3.75" PointY="28.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group_people" Width="1.5" PointX="3" PointY="39.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.group_shared" Width="1.5" PointX="6" PointY="67.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.ladder" Width="1.5" PointX="8" PointY="28.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.ladder_size" Width="1.5" PointX="10.25" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.letter_code" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.license" Width="1.5" PointX="3.75" PointY="32.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.methylation" Width="1.5" PointX="5.25" PointY="60" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.methylation_backup" Width="1.5" PointX="5.25" PointY="63.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus180_liquid_nitrogen" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus20" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.minus80" Width="1.5" PointX="9.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.modifying_company" Width="1.5" PointX="8" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.modifying_enzyme" Width="1.5" PointX="5.75" PointY="17.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.oligo" Width="1.5" PointX="3" PointY="48.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.person" Width="1.5" PointX="0.75" PointY="35.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.people_license" Width="1.5" PointX="6" PointY="32.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid" Width="1.5" PointX="3" PointY="60.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_bundle" Width="1.5" PointX="3" PointY="56.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_feature" Width="1.5" PointX="3.75" PointY="24.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_map" Width="1.5" PointX="11.25" PointY="49.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.plasmid_map_backup" Width="1.5" PointX="11.25" PointY="54.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.primer" Width="1.5" PointX="3" PointY="67.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.probe" Width="1.5" PointX="8.25" PointY="48.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.protocol" Width="1.5" PointX="3" PointY="72.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.restri_enzyme" Width="1.5" PointX="5.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.restriction_company" Width="1.5" PointX="8" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.seq_code" Width="1.5" PointX="10.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ecloningModel.storage" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="ecloningModel.fk_activity_modifying_buffer_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_activity_modifying_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_activity_modifying_enzyme_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_activity_restriction_buffer_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_activity_restriction_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_activity_restriction_enzyme_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_app_license_depart_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_app_license_group_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_buffer_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_feature_feature_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_feature_group_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_feature_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_fragment_map_common_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_map_backup_ccommon_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_map_ccommon_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_modifying_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_modifying_enzyme_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_modifying_group_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_restriction_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_restriction_enzyme_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_common_restriction_group_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_ladder_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_modifying_company_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_restriction_company_company_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_group_depart_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_share_epeople_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_share_exp_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_exp_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_protocol_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_exp_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_forward_primer_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_frag1_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_frag2_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_plasmid_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_probe_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_material_reverse_primer_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_exp_step_result_exp_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_experiment_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_fragment_map_fragment_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_fragment_methylation_fragment_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_fragment_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_fragment_plasmid_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_fragment_map_feature_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_group_people_group_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_group_shared_group_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_group_people_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_padder_size_ladder_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_people_license_licence_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_methylation_plasmid_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_methylation_backup_plasmid_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_modifying_company_enzyme_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_oligo_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_people_license_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_bundle_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_primer_tech_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_probe_tech_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_protocol_people_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_map_backup_plasmid_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_map_plasmid_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_map_backup_feature_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_plasmid_map_feature_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_probe_forward_primer" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_probe_reverse_primer" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.fk_restriction_company_enzyme_id" ManuallyRouted="false" />
+        <AssociationConnector Association="ecloningModel.AspNetUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

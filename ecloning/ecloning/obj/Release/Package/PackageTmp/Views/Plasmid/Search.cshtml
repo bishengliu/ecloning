@@ -1,0 +1,395 @@
+﻿@model IEnumerable<ecloning.Models.plasmid>
+@{
+    ViewBag.Title = "Search Plasmid";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var db = new ecloning.Models.ecloningEntities();
+    int Count = (int)ViewBag.Count;
+    string name = (string)ViewBag.name;
+    string insert = (string)ViewBag.insert;
+    int sharedPlasmidCount =(int)ViewBag.sharedPlasmidCount;
+    List<int> sharedPlasmidId = new List<int>();
+    if(sharedPlasmidCount > 0)
+    {
+        sharedPlasmidId = (List<int>)ViewBag.sharedPlasmidId;
+    }
+    var Features = ViewBag.Features;
+    //combined plasmid IDs
+    var PlasmidIDs = ViewBag.plasmidIds;
+}
+<span id="decodeIt" class="hidden"></span>
+
+<div class="row">
+    <div class="col-sm-11 col-sm-offset-1 text-center">
+        <h3 class="text-warning">Find Plasmids</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs">
+
+    </div>
+    <div class="col-sm-10">
+        <hr class="dotted-line" />
+        <div class="row">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
+                            <div class="form-group">
+                                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.Editor("name", new { htmlAttributes = new { @class = "form-control", @Value=name } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Insert/Gene", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.Editor("insert", new { htmlAttributes = new { @class = "form-control", @Value = insert } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Expression System", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("expression_system", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Promoter", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("promotor", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Poly A", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("polyA", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
+                            <div class="form-group">
+                                @Html.Label("Resistance", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    <span class="text-info" style="font-size:85%"><em>Resistance 1:</em></span><br/>
+                                    @Html.DropDownList("resistance1", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                    <span class="text-info" style="font-size:85%"><em>Resistance 2:</em></span><br />
+                                    @Html.DropDownList("resistance2", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Selection", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    <span class="text-info" style="font-size:85%"><em>Marker 1:</em></span><br />
+                                    @Html.DropDownList("selection1", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                    <span class="text-info" style="font-size:85%"><em>Marker 2:</em></span><br />
+                                    @Html.DropDownList("selection2", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display: inline-block">
+                            <div class="form-group">
+                                @Html.Label("Reporter", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    @Html.DropDownList("reporter", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Experimental Use", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6 col-xs-12">
+                                    <span class="text-info" style="font-size:85%"><em>Usage 1:</em></span><br />
+                                    @Html.DropDownList("usage1", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                    <span class="text-info" style="font-size:85%"><em>Usage 2:</em></span><br />
+                                    @Html.DropDownList("usage2", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-4 col-lg-offset-4 col-md-6 col-xs-12">
+                                    <input type="submit" value="Find Plasmid" class="btn btn-block btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-1 hidden-xs">
+
+    </div>
+</div>
+
+
+
+<br/>
+@if (Count > -2)
+{
+     <div class="row">
+        <div class="col-sm-11 col-sm-offset-1 text-center">
+            <h3 class="text-warning">Plasmids Found</h3>
+        </div>
+    </div>
+        if (Count == -1)
+        {
+            //user have not typed anything when clicking the search button
+            <div class="row">
+
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-xs-12">
+                    <hr class="dotted-line" />
+                    <h4 class="text-danger col-sm-offset-1">You haven't typed anything.</h4>
+                </div>
+            </div>
+        }
+        else if(Count == 0)
+        {
+            //nothing found
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-xs-12">
+                    <hr class="dotted-line" />
+                    <h4 class="text-danger col-sm-offset-1">No matched plasmid!</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10">
+                    @foreach (var item in Model)
+                    {
+                        string id = null;
+                        string refId = "#";
+                        id = item.name;
+                        refId = refId + id;
+                        var mapId = "map-" + item.id.ToString();
+                        //for submit
+                        string shareId = "share-" + item.id.ToString();
+                        string hrefShareId = "#" + shareId;
+
+                        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+                            <div class="plasmidDiv">
+                                <div class="col-xs-12 noPadding text-center text-primary">@item.name</div>
+                                <div class="col-xs-12">
+                                    @if (!sharedPlasmidId.Contains(item.id))
+                                    {
+                                        <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
+                                            <div id="@mapId"></div>
+                                        </a>
+                                        <div id="@item.id" class="hidden">
+                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag="personDispaly" })">
+                                                <span class="fa-stack fa-lg">
+                                                    <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                                    <i class="fa fa-plus fa-stack-1x text-danger"></i>
+                                                </span>
+                                            </a>
+                                            <br />
+                                            <br />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Index", "Map", new { id = item.id, tag = "groupDispaly" })">
+                                            <div id="@mapId"></div>
+                                        </a>
+                                        <div id="@item.id" class="hidden">
+                                            <a href="@Url.Action("Index", "Map", new { id = item.id, tag = "groupDispaly" })">
+                                                <span class="fa-stack fa-lg">
+                                                    <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                                    <i class="fa fa-plus fa-stack-1x text-danger"></i>
+                                                </span>
+                                            </a>
+                                            <br />
+                                            <br />
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-xs-12 noPadding plasmidBottom">
+                                    @if (!sharedPlasmidId.Contains(item.id))
+                                    {
+                                        <div class="col-xs-offset-4">
+                                            <a href="@Url.Action("Edit", "Plasmid", new { id = item.id })">
+                                                <i class="fa fa-pencil-square-o text-info"></i>
+                                            </a>
+                                            <span>&nbsp;</span>
+                                            <a href="@Url.Action("Delete", "Plasmid", new { id = item.id })">
+                                                <i class="glyphicon glyphicon-trash text-info"></i>
+                                            </a>
+                                            <span>&nbsp;</span>
+                                            <!-- Trigger the modal with a button -->
+                                            <a data-toggle="modal" href="@Url.Action("SharePlasmid", "Plasmid", new { id = item.id })" data-target=@hrefShareId>
+                                                <i class="fa fa-share-alt text-info"></i>
+                                            </a>
+                                            <!-- Modal -->
+                                            <div id=@shareId class="modal fade" role="dialog">
+                                                <div class="modal-dialog">
+                                                    <!-- Modal content-->
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            <h4 class="modal-title text-center text-info">Submit Plasmid to Group(s)</h4>
+                                                        </div>
+                                                        <div class="modal-body"></div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-xs-offset-4">
+                                                <i class="fa fa-pencil-square-o text-muted"></i>
+                                            <span>&nbsp;</span>
+                                                <i class="glyphicon glyphicon-trash text-muted"></i>
+                                            @if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant"))
+                                            {
+                                                <span>&nbsp;</span>
+                                                <a href="@Url.Action("unSharePlasmid", "Plasmid", new { id = item.id })" data-toggle="tooltip" title="Unshare this plasmid!">
+                                                    <span class="fa-stack fa-lg">
+                                                        <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                                        <i class="fa fa-times-circle-o fa-stack-1x text-info"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>&nbsp;</span>
+                                                <i class="fa fa-share-alt text-muted"></i>
+                                            }
+                                            
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-sm-1 hidden-xs"></div>
+            </div>
+        }
+
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#expression_system").chosen();
+        $("#promotor").chosen();
+        $("#polyA").chosen();
+        $("#reporter").chosen();
+        $("#selection1").chosen();
+        $("#selection2").chosen();
+        $("#usage1").chosen();
+        $("#usage2").chosen();
+        $("#resistance1").chosen();
+        $("#resistance2").chosen();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $('.plasmidDiv').mouseover(function () {
+        $(this).addClass("sendTop");
+    })
+    $('.plasmidDiv').mouseout(function () {
+        $(this).removeClass("sendTop");
+    })
+
+    $('.topButton').mouseover(function () {
+        $(this).addClass("sendTop");
+    })
+    $('.topButton').mouseout(function () {
+        $(this).removeClass("sendTop");
+    })
+
+    $(window).load(function () {
+
+        //get plasmid ids
+        var PlasmidIDs = ("@PlasmidIDs");
+        document.getElementById("decodeIt").innerHTML = PlasmidIDs;
+        PlasmidIDs = document.getElementById("decodeIt").innerText;
+
+        //get fearues
+        var Features = ("@Features");
+        document.getElementById("decodeIt").innerHTML = Features;
+        Features = document.getElementById("decodeIt").innerText;
+
+        try {
+            Features = JSON.parse(Features);
+            PlasmidIDs = JSON.parse(PlasmidIDs);
+            //console.log(Features);
+            var idArray = [];
+            $.each(PlasmidIDs, function (i, b) {
+                idArray.push("map-" + b);
+            });
+            //console.log(idArray);
+            //draw maps
+            $.each(idArray, function (index, value) {
+                mapId = value;
+                //get the plasmid id
+                var pieces = mapId.split('-');
+                var plasmidId = +pieces[pieces.length - 1];
+                //filter featrues
+                //console.log(plasmidId);
+                //console.log(Features);
+                var currentFeatures = $.grep(Features, function (n, i) {
+                    return n.pId === plasmidId;
+                });
+                //console.log(currentFeatures);
+                if (currentFeatures.length > 0) {
+                    pName = currentFeatures[0].pName;
+                    pCount = currentFeatures[0].pSeqCount;
+                    pId = currentFeatures[0].pId;
+
+                    delete currentFeatures['pId'];
+                    delete currentFeatures['pName'];
+                    delete currentFeatures['pCount'];
+
+                    fData = [pCount, currentFeatures];
+
+                    width = ($("#" + mapId).width() <= 200 ? 200 : $("#" + mapId).width());
+                    height = ($("#" + mapId).height() <= 200 ? 200 : $("#" + mapId).height());
+
+
+                    if ($('#' + mapId).length != 0) {
+                        //draw the map
+                        var gd = GiraffeDraw();
+                        gd.read(fData);
+                        gd.CircularMap({
+                            'map_dom_id': mapId,
+                            'plasmid_name': pName,
+                            'map_width': width,
+                            'map_height': height
+                        });
+                    }
+                }
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+        //display the link if the map is not shown
+        $.each(PlasmidIDs, function (i, v) {
+            if ($('#map-' + v).is(':empty')) {
+                $('#' + v).removeClass('hidden');
+            }
+        });
+    });
+</script>

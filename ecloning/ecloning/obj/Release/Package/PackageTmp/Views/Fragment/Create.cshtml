@@ -1,0 +1,103 @@
+﻿@model ecloning.Models.FragmentViewModel
+@{
+    ViewBag.Title = "Add Vector";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-5 col-sm-offset-1 col-xs-8 pull-left">
+        <h3 class="text-center text-warning">
+            <i class="fa fa-plus-circle"></i>
+            <span>Linearized Vector</span>
+        </h3>
+    </div>
+    <div class="col-sm-3 col-xs-4 pull-right">
+        <h3 class="hidden-xs">
+            <a class="btn btn-default" href="@Url.Action("Fragment", "Fragment")">
+                <i class="fa fa-chevron-circle-left"></i>
+                <span>Cancel</span>
+            </a>
+        </h3>
+        <h3 class="hidden-sm hidden-md hidden-lg">
+            <a class="btn btn-default" href="@Url.Action("Fragment", "Fragment")">
+                <i class="fa fa-chevron-circle-left"></i>
+                <span>Cancel</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-7 col-lg-offset-1 col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <p class="text-danger">@TempData["error"]</p>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.fName, "Vector Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.fName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.fName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.fSeq, "Forward Sequence (5' - 3')", htmlAttributes: new { @class = "control-label col-md-4"})
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.fSeq, new { htmlAttributes = new { @class = "form-control", id = "fsequence" } })
+                                @Html.ValidationMessageFor(model => model.fSeq, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.cSeq, "Complementary Sequence (3' - 5')", htmlAttributes: new { @class = "control-label col-md-4"})
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.cSeq, new { htmlAttributes = new { @class = "form-control", id = "csequence" } })
+                                @Html.ValidationMessageFor(model => model.cSeq, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.left_overhang, "Left Overhang", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.left_overhang, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.left_overhang, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-2 pull-left">
+                                <input type="submit" value="Save Vector" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-3 col-lg-3">
+        <img src="~/images/Fragment.jpg" class="img-responsive img-rounded" />
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    //remove all non letter in the seqeuce input
+    $('#fsequence').change(function () {
+        var before = $('#fsequence').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#fsequence').val(after);
+    });
+    $('#csequence').change(function () {
+        var before = $('#csequence').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#csequence').val(after);
+    });
+</script>

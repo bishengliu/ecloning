@@ -1,0 +1,1034 @@
+﻿
+@{
+    ViewBag.Title = "Sequence";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Tag = ViewBag.Tag;
+    var Plasmid = (ecloning.Models.plasmid)ViewBag.Plasmid;
+    var seqFeatures = ViewBag.seqFeatures;
+    var fvFeatures = ViewBag.fvFeatures;
+}
+<span id="decodeIt" class="hidden"></span>
+<span id="psequence" class="hidden"> @Plasmid.sequence </span>
+<span id="pName" class="hidden">@Plasmid.name</span>
+<span id="pId" class="hidden">@Plasmid.id</span>
+<span id="tag" class="hidden">@Tag</span>
+
+<div class="row">
+    <div class="hidden-sm hidden-xs col-md-0 col-lg-3">
+        &nbsp;
+    </div>
+    <div class="col-xs-12 col-sm-6 col-sm-offset-4 col-md-offset-4 col-md-5 col-lg-offset-0 col-lg-5">
+        <h3 class="text-warning text-center">
+            Plasmid <em>@Plasmid.name</em> (@Plasmid.seq_length bp)&nbsp;
+        </h3>
+    </div>
+    <div class="col-sx-12 col-sm-offset-4 col-sm-8 col-md-7 col-lg-offset-0 col-lg-3">
+        <h3 class="pull-right">
+            <a class="btn btn-default" target="_blank" href="@Url.Action("Compare", "Plasmid")">
+                <i class="fa fa-bullseye text-danger"></i>
+                <span>Compare Plasmids</span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Index", "Map", new { id = Plasmid.id, tag = Tag})">
+                <i class="fa fa-sun-o text-danger"></i>
+                <span>Map</span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Enzyme", "Map", new { plasmid_id = Plasmid.id, tag = Tag})">
+                <i class="fa fa-scissors text-danger"></i>
+                <span>Digestion</span>
+            </a>
+        </h3>
+    </div>
+</div>
+
+<!--show feature-->
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <p class="text-danger">@TempData["msg"]</p>
+    </div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-danger" id="seq-error"></h3>
+    </div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
+    <!--show feature buttons-->
+    <div class="hidden" id="tool-fv">
+        <br />
+        <br />
+        <div class="col-xs-12 col-sm-offset-6 col-sm-5">
+            <div class="pull-right">
+                @*<a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment Selection">
+                    <i class="text-danger alignment">A-GC</i>
+                    <i class="text-primary alignment">ATGC</i>
+                </a>*@
+                <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
+                    <input type="hidden" name="DATABASE" value="nr" />
+                    <input type="hidden" name="PAGE" value="Nucleotides" />
+                    <input type="hidden" name="PROGRAM" value="blastn" />
+                    <input type="hidden" name="SERVICE" value="plain" />
+                    <input type="hidden" name="GET_SEQUENCE" value="yes" />
+                    <input type="hidden" name="QUERY" id="fv-select-blast" value="" />
+                    <button type="submit" value="BLAST" class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST Selection">
+                        <span class="text-danger">BLAST</span>
+                    </button>
+                </form>
+                <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#fv-seq" id="copy-fvseq" data-toggle="tooltip" title="Copy Sequence">
+                    <i class="fa fa-copy text-danger"></i>
+                </a>
+                |
+                <a class="btn btn-default btn-sm" id="close-tool-fv" data-toggle="tooltip" title="Close">
+                    <i class="fa fa-times"></i>
+                    <span></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="clear:both;"></div>
+<!--show feature msg-->
+<div>   
+    <div class="col-xs-12 col-sm-offset-6 col-sm-5" id="tool-fv-msg">
+        <div class="pull-right">
+            <p class="text-info"></p>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
+<br />
+<!--show plasmid seq-->
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-seq"></div>
+</div>
+<br/>
+<!--show plasmid buttons-->
+<div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5 hidden" id="tool-full-seq">
+        <div class="pull-left">
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Complement Sequence" id="full-reverse">
+                <i class="fa fa-caret-right text-info"></i>
+                <i class="text-info">|</i>
+                <i class="fa fa-caret-left text-danger"></i>
+            </a>
+            <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Reverse Complement" id="full-rc">
+                <i class="fa fa-exchange text-danger"></i>
+            </a>
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Format" id="fasta">
+                <span class="text-danger">FASTA</span>
+            </a>
+            @*<a class="btn btn-default btn-sm" data-toggle="tooltip" title="Alignment">
+                <i class="text-danger alignment">A-GC</i>
+                <i class="text-primary alignment">ATGC</i>
+            </a>*@
+            <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
+                <input type="hidden" name="DATABASE" value="nr" />
+                <input type="hidden" name="PAGE" value="Nucleotides" />
+                <input type="hidden" name="PROGRAM" value="blastn" />
+                <input type="hidden" name="SERVICE" value="plain" />
+                <input type="hidden" name="GET_SEQUENCE" value="yes" />
+                <input type="hidden" name="QUERY" id="full-seq-blast" value="@Plasmid.sequence" />
+                <button type="submit" value="BLAST" class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST">
+                    <span class="text-danger">BLAST</span>
+                </button>
+            </form>
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#full-seq" id="copy-full-seq" data-toggle="tooltip" title="Copy">
+                <i class="fa fa-copy text-danger"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5 hidden" id="tool-seq">
+        <div class="pull-right">
+            <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="selectLength"></span>
+            <a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Edit Sequence" href="@Url.Action("SeqEditor", "Map", new { plasmid_id = Plasmid.id, start=1, end=1, tag="personDispaly" })" id="seq-editor">
+                <i class="fa fa-pencil-square-o text-danger"></i>
+            </a>
+            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, clockwise=1, end=1, tag="personDispaly" })" data-target="#quick_feature1" id="add_feature1"> 
+                <i class="fa fa-sliders text-danger"></i>
+            </a>
+
+            
+            <a class="btn btn-default btn-sm" data-toggle="tooltip" title="FASTA Selection" id="fasta-selection">
+                <span class="text-danger">FASTA</span>
+            </a>
+            @*<a class="btn btn-default btn-sm"  data-toggle="tooltip" title="Alignment Selection">
+                <i class="text-danger alignment">A-GC</i>
+                <i class="text-primary alignment">ATGC</i>
+            </a>*@
+            <form action="http://blast.ncbi.nlm.nih.gov/Blast.cgi" method="POST" target="_blank" style="display:inline-block;">
+                <input type="hidden" name="DATABASE" value="nr" />
+                <input type="hidden" name="PAGE" value="Nucleotides" />
+                <input type="hidden" name="PROGRAM" value="blastn" />
+                <input type="hidden" name="SERVICE" value="plain" />
+                <input type="hidden" name="GET_SEQUENCE" value="yes" />
+                <input type="hidden" name="QUERY" id="select-seq-blast" value="" />
+                <button type="submit" value="BLAST" class="btn btn-default btn-sm" data-toggle="tooltip" title="BLAST Selection">
+                    <span class="text-danger">BLAST</span>
+                </button>
+            </form>
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-seq" id="copy-seq" data-toggle="tooltip" title="Copy Selection">
+                <i class="fa fa-copy text-danger"></i>
+            </a>
+            |
+            <a class="btn btn-default btn-sm"  id="close-tool-seq" data-toggle="tooltip" title="Close">
+                <i class="fa fa-times"></i>
+                <span></span>
+            </a>
+        </div>
+    </div>
+</div>
+<div style="clear:both;"></div>
+            <!-- Modal -->
+<div id="modal1">
+    <div id="quick_feature1" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Add Feature</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--show plasmid seq msg-->
+<div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-seq-msg">
+        <div class="pull-left">
+            <p class="text-info"></p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5" id="tool-seq-msg">
+        <div class="pull-right">
+            <p class="text-info"></p>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
+
+<!--show plasmid derived seq-->
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="deri-seq"></div>
+</div>
+
+<br />
+<!--show plasmid derived seq tool-->
+<div class="hidden" id="tool-deri-full-seq">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5" >
+        <div class="pull-left">
+            <a class="btn btn-default btn-sm" id="close-full-deri-seq" data-toggle="tooltip" title="Close">
+                <i class="fa fa-times"></i>
+                <span></span>
+            </a>
+            |
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#dsequence" id="copy-deri-full-seq" data-toggle="tooltip" title="Copy">
+                <i class="fa fa-copy text-danger"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5 hidden" id="tool-deri-seq">
+        <div class="pull-right">
+            <span>&nbsp;&nbsp;</span><span class="text-right text-info selectLength" id="dselectLength"></span>
+            <a class="btn btn-default btn-sm" data-toggle="modal" title="Add Feature" href="@Url.Action("QuickFeature", "Map", new { plasmid_id = Plasmid.id, start=1, end=1,clockwise=0, tag="personDispaly" })" data-target="#quick_feature2" id="add_feature2">
+                <i class="fa fa-sliders text-danger"></i>
+            </a>      
+            <a class="btn btn-default btn-sm" data-clipboard-action="copy" data-clipboard-target="#select-dseq" id="copy-dseq" data-toggle="tooltip" title="Copy Selection">
+                <i class="fa fa-copy text-danger"></i>
+            </a>
+            |
+            <a class="btn btn-default btn-sm" id="close-tool-deri-seq" data-toggle="tooltip" title="Close">
+                <i class="fa fa-times"></i>
+                <span></span>
+            </a>
+        </div>
+    </div>
+</div>
+<div style="clear:both;"></div>
+<!-- Modal2 -->
+<div id="modal2">
+    <div id="quick_feature2" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Add Feature</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--show plasmid derived seq msg-->
+<div>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-5" id="full-deri-seq-msg">
+        <div class="pull-left">
+            <p class="text-info"></p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-5" id="tool-deri-seq-msg">
+        <div class="pull-right">
+            <p class="text-info"></p>
+        </div>
+    </div>
+</div>
+
+<!--mainly for copy to clipboard, hidden is not working-->
+<div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+    <input id="select-seq" value="">
+    <input id="full-seq" value=@Plasmid.sequence>
+
+    @*derivated seq*@
+    <input id="select-dseq" value="">
+    <input id="dsequence" value="">
+
+    @*feature seq*@
+    <input id="fv-seq" value="">
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/d3")
+@*seq viewer*@
+<script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
+@*feature viewer*@
+<script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+
+@*use ntseq*@
+<script src="~/Scripts/ntseq/ntseq.js"></script>
+<script>
+    //show features in seq
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+
+        //copy full seq using clipboard.min.js
+        var clipboard = new Clipboard('#copy-full-seq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            //console.info('Text:', e.text);
+            //console.info('Trigger:', e.trigger);
+            e.clearSelection();
+            $('#full-seq-msg').find('p').eq(0).text("Copied!");
+            setTimeout(function () { $('#full-seq-msg').find('p').eq(0).text(null); }, 2000);
+        });
+
+        clipboard.on('error', function (e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+
+        //copy full seq using clipboard.min.js
+        var clipboard = new Clipboard('#copy-deri-full-seq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            //console.info('Text:', e.text);
+            //console.info('Trigger:', e.trigger);
+            e.clearSelection();
+            $('#full-deri-seq-msg').find('p').eq(0).text("Copied!");
+            setTimeout(function () { $('#full-deri-seq-msg').find('p').eq(0).text(null); }, 2000);
+        });
+
+        clipboard.on('error', function (e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
+
+
+        //click to dismiss the seq-tool
+        $('#close-tool-seq').click(function () {
+            $('#tool-seq').addClass('hidden');
+        });
+
+        $('#close-tool-deri-seq').click(function () {
+            $('#tool-deri-seq').addClass('hidden');
+        });
+        $('#close-full-deri-seq').click(function () {
+            $('#deri-seq').addClass('hidden');
+            $('#tool-deri-full-seq').addClass('hidden');
+        });
+        $('#close-tool-fv').click(function () {
+            $('#tool-fv').addClass('hidden');
+        });
+
+        //to display the sequence in html
+        //get the plasmid seq
+        var seq = $('#psequence').text().trim();
+        if (!seq.trim()) {
+            $('seq-error').text('Unable to load plasmid sequence!, please try again later!');
+        }
+        else {
+            var seqFeatures = ("@seqFeatures");
+            document.getElementById("decodeIt").innerHTML = seqFeatures;
+            seqFeatures = document.getElementById("decodeIt").textContent;
+
+            var fvFeatures = ("@fvFeatures");
+            document.getElementById("decodeIt").innerHTML = fvFeatures;
+            fvFeatures = document.getElementById("decodeIt").textContent;
+
+            try {
+                seqFeatures = JSON.parse(seqFeatures);
+                fvFeatures = JSON.parse(fvFeatures);
+
+                //show the button for the full seq
+                $('#tool-full-seq').removeClass('hidden');
+
+
+                //define color scheme for seqFeatures
+                //type id, color, bgcolor
+                $.each(seqFeatures, function (i, d) {
+                    d.color = Color(+d.type_id);
+                    if (+d.type_id === 4) {
+                        d.bgcolor = "#6b6ecf";
+                    }
+                });
+
+                //get plasmid name
+                var pName = $('#pName').text();
+                var seqTitle = pName + " Sequence (5' - 3')";
+                //display the seq in html
+                var pSeq = new Sequence(seq);
+                pSeq.render('#plasmid-seq', {
+                    'showLineNumbers': true,
+                    'wrapAminoAcids': true,
+                    'charsPerLine': 180,
+                    'toolbar': true,
+                    'title': seqTitle,
+                    'sequenceMaxHeight': "800px",
+                    'badge': false,
+                    'search': true
+                });
+                //display colors for promotor, gene and terminator
+                //pSeq.coverage(seqFeatures);
+
+                ////Define Legend and color codes
+                //var cLegend = [
+                //    { name: "Promotor", color: "#ff7f0e", underscore: false },
+                //    { name: "Gene", color: "#d62728", underscore: false },
+                //    { name: "Terminator", color: "#9467bd", underscore: false }
+                //];
+                ////display legend
+                //pSeq.addLegend(cLegend);
+
+                //add mouse events, selection
+                pSeq.onMouseSelection(function (elem) {
+                    //console.log(elem.detail);
+                    //console.log(elem.detail.selection);
+                    //get the selected seq
+                    var sSeq = elem.detail.selection;
+                    //set the blast seq
+                    $('#select-seq-blast').val(sSeq);
+                    //get the plasmid seq
+                    var pSeq = $('#psequence').text().trim();
+
+
+                    //find the index and length of the selected seq and cal Tm
+                    var idx = pSeq.indexOf(sSeq);
+                    var len = elem.detail.selection.length;
+                    var sSeqPos = (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp';
+                    var infoText = sSeq.length > 0 ? sSeqPos + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : sSeqPos;
+                    //display the selection count, showing as "1706 .. 2925 = 1219 bp"
+                    $('#selectLength').text(infoText);
+                    $('#tool-seq').addClass('hidden');
+                    $('#tool-seq').removeClass('hidden');
+
+                    //put the selected seq in html
+                    $('#select-seq').val(sSeq);
+                    //console.log($('#select-seq').val());
+
+                    //generate modal href link for add feature
+                    var pId = $("#pId").text().trim();
+                    var tag = $("#tag").text().trim();
+                    var href = "/Map/QuickFeature?plasmid_id=" + pId + "&start=" + (idx + 1) + "&end=" + (idx + sSeq.length) + "&tag=" + tag + "&clockwise=" + 1;
+                    //change href
+                    $('#add_feature1').attr("href", href);
+                    $('#modal1').empty().append(show_modal('quick_feature1', "Add Feature"));
+                    $('#modal2').empty().append(show_modal('quick_feature2', "Add Feature"));
+                    if ($('textarea#sequence').length > 0) {
+                        $('textarea#sequence').val(null);
+                    }
+
+                    //generate seqEditor link
+                    //#seq-editor
+                    var se_href = "/Map/SeqEditor?plasmid_id=" + pId + "&start=" + (idx + 1) + "&end=" + (idx + sSeq.length) + "&tag=" + tag;
+                    //change href
+                    $('#seq-editor').attr("href", se_href);
+                    //Map/SeqEditor?plasmid_id=1005&start=1&end=1&tag=personDispaly
+
+                    //copy selected seq to clipboard using using clipboard.min.js
+                    var clipboard = new Clipboard('#copy-seq');
+                    clipboard.on('success', function (e) {
+                        console.info('Action:', e.action);
+                        //console.info('Text:', e.text);
+                        //console.info('Trigger:', e.trigger);
+                        e.clearSelection();
+                        //show and dismiss the text 'Copied!'
+                        $('#tool-seq-msg').find('p').eq(0).text("Copied!");
+                        setTimeout(function () { $('#tool-seq-msg').find('p').eq(0).text(null); }, 2000);
+                    });
+
+                    //log the coping errors
+                    clipboard.on('error', function (e) {
+                        console.error('Action:', e.action);
+                        console.error('Trigger:', e.trigger);
+                    });
+
+                });
+
+                //search events
+                //pSeq.onSubpartSelected(function (elem) {
+                //    //console.log(elem.detail);
+                //    //console.log(elem.detail.selection);
+                //    $('#tool-alert').addClass('hidden');
+                //    $('#tool-alert').removeClass('hidden');
+                //});
+
+                //====================deal with reverse/compliment seq
+                //reverse
+                $('#full-reverse').click(function () {
+
+                    //using ntSeq
+                    var oSeq = (new Nt.Seq()).read(seq);
+                    //get the reverse compliment
+                    var rcSeq = oSeq.complement().sequence();
+                    //reverse again to get 3' - 5'
+                    var rSeq = Reverse(rcSeq);
+                    //put seq in html
+                    $('#dsequence').val(rSeq);
+
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').empty();
+                    $('#deri-seq').removeClass('hidden');
+
+                    //display reverse seq
+                    var deriTitle = pName + "  Complement Sequence (3' - 5')";
+                    //display the seq in html
+                    var rSeq = new Sequence(rSeq);
+                    rSeq.render('#deri-seq', {
+                        'showLineNumbers': true,
+                        'wrapAminoAcids': true,
+                        'charsPerLine': 180,
+                        'toolbar': true,
+                        'title': deriTitle,
+                        'sequenceMaxHeight': "800px",
+                        'badge': false,
+                        'search': true
+                    });
+                    rSeq.onMouseSelection(function (elem) {
+                        //console.log(elem.detail);
+                        //console.log(elem.detail.selection);
+                        //get the selected seq
+                        var sSeq = elem.detail.selection;
+                        //get the plasmid rseq
+                        var dSeq = $('#dsequence').val().trim();
+                        //find the index and length of the selected seq and cal Tm
+                        var idx = dSeq.indexOf(sSeq);
+                        var len = elem.detail.selection.length;
+                        console.log(len);
+                        var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                        //display the selection count, showing as "1706 .. 2925 = 1219 bp"
+                        $('#dselectLength').text(infoText);
+                        $('#tool-deri-seq').addClass('hidden');
+                        $('#tool-deri-seq').removeClass('hidden');
+                        //remove add feature button
+                        if ($('#add_feature2').hasClass('hidden')) {
+                            $('#add_feature2').removeClass('hidden');
+                        }
+
+                        //put the selected seq in html
+                        $('#select-dseq').val(sSeq);
+                        //console.log($('#select-seq').val());
+
+                        //generate modal href link for add feature
+                        var pId = $("#pId").text().trim();
+                        var tag = $("#tag").text().trim();
+                        var href = "/Map/QuickFeature?plasmid_id=" + pId + "&start=" + (idx + 1) + "&end=" + (idx + sSeq.length) + "&tag=" + tag + "&clockwise=" + 0;
+                        //change href
+                        $('#add_feature2').attr("href", href);
+                        $('#modal1').empty().append(show_modal('quick_feature1', "Add Feature"));
+                        $('#modal2').empty().append(show_modal('quick_feature2', "Add Feature"));
+                        if ($('textarea#sequence').length > 0) {
+                            $('textarea#sequence').val(null);
+                        }
+                        
+                        //$('#quick_feature2').find('modal-body').empty();
+
+                        //copy selected seq to clipboard using using clipboard.min.js
+                        var clipboard = new Clipboard('#copy-dseq');
+                        clipboard.on('success', function (e) {
+                            console.info('Action:', e.action);
+                            //console.info('Text:', e.text);
+                            //console.info('Trigger:', e.trigger);
+                            e.clearSelection();
+                            //show and dismiss the text 'Copied!'
+                            $('#tool-deri-seq-msg').find('p').eq(0).text("Copied!");
+                            setTimeout(function () { $('#tool-deri-seq-msg').find('p').eq(0).text(null); }, 2000);
+                        });
+
+                        //log the coping errors
+                        clipboard.on('error', function (e) {
+                            console.error('Action:', e.action);
+                            console.error('Trigger:', e.trigger);
+                        });
+
+                    });
+                    $('#tool-deri-full-seq').removeClass('hidden');
+                    scrollTo('#deri-seq');
+                });
+
+                //reverse complement
+                $('#full-rc').click(function () {
+                    //using ntSeq
+                    var oSeq = (new Nt.Seq()).read(seq);
+                    var rcSeq = oSeq.complement().sequence();
+                    //put rcSeq in html
+                    $('#dsequence').val(rcSeq);
+                    //using sequencing viewer
+                    var rcSeq = new Sequence(rcSeq);
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').removeClass('hidden');
+                    $('#deri-seq').empty();
+                    //display reverse seq
+                    var deriTitle = pName + "  Reverse Complement (5' - 3')";
+                    //display the seq in html
+                    rcSeq.render('#deri-seq', {
+                        'showLineNumbers': true,
+                        'wrapAminoAcids': true,
+                        'charsPerLine': 180,
+                        'toolbar': true,
+                        'title': deriTitle,
+                        'sequenceMaxHeight': "800px",
+                        'badge': false,
+                        'search': true
+                    });
+                    rcSeq.onMouseSelection(function (elem) {
+                        //console.log(elem.detail);
+                        //console.log(elem.detail.selection);
+                        //get the selected seq
+                        var sSeq = elem.detail.selection;
+                        //get the plasmid rseq
+                        var dSeq = $('#dsequence').val().trim();
+                        //find the index and length of the selected seq and cal Tm
+                        var idx = dSeq.indexOf(sSeq);
+                        var len = elem.detail.selection.length;
+                        console.log(len);
+                        var infoText = sSeq.length > 0 ? (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp' + " (Tm: " + calTm(sSeq) + "\xB0C, GC: " + calGC(sSeq) + ")" : (idx + 1) + ' .. ' + (idx + 1 + sSeq.length) + ' = ' + len + ' bp';
+                        //display the selection count, showing as "1706 .. 2925 = 1219 bp"
+                        $('#dselectLength').text(infoText);
+                        $('#tool-deri-seq').addClass('hidden');
+                        $('#tool-deri-seq').removeClass('hidden');
+                        //remove add feature button
+                        if (!$('#add_feature2').hasClass('hidden')) {
+                            $('#add_feature2').addClass('hidden');
+                        }
+                        //put the selected seq in html
+                        $('#select-dseq').val(sSeq);
+                        //console.log($('#select-seq').val());
+
+                        //copy selected seq to clipboard using using clipboard.min.js
+                        var clipboard = new Clipboard('#copy-dseq');
+                        clipboard.on('success', function (e) {
+                            console.info('Action:', e.action);
+                            //console.info('Text:', e.text);
+                            //console.info('Trigger:', e.trigger);
+                            e.clearSelection();
+                            //show and dismiss the text 'Copied!'
+                            $('#tool-deri-seq-msg').find('p').eq(0).text("Copied!");
+                            setTimeout(function () { $('#tool-deri-seq-msg').find('p').eq(0).text(null); }, 2000);
+                        });
+
+                        //log the coping errors
+                        clipboard.on('error', function (e) {
+                            console.error('Action:', e.action);
+                            console.error('Trigger:', e.trigger);
+                        });
+
+                    });
+
+                    $('#tool-deri-full-seq').removeClass('hidden');
+                    scrollTo('#deri-seq');
+                });
+
+                //get FASTA
+                $('#fasta').click(function () {
+                    //put seq in html
+                    $('#tool-deri-full-seq').addClass('hidden');
+                    var pSeq = $('#psequence').text().trim();
+                    $('#dsequence').val(pSeq);
+                    //format the seq
+                    var fastaSeq = fasta(pSeq, pName, true);
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').empty();
+                    $('#deri-seq').removeClass('hidden');
+                    $('#deri-seq').html(fastaSeq);
+
+                });
+
+                $('#fasta-selection').click(function () {
+                    $('#tool-deri-full-seq').addClass('hidden');
+                    var sSeq = $('#select-seq').val();
+                    var pSeq = $('#psequence').text().trim();
+                    var idx = pSeq.indexOf(sSeq);
+                    var len = sSeq.length;
+                    var sSeqPos = (idx + 1) + ' .. ' + (idx + sSeq.length) + ' = ' + len + ' bp';
+                    //format the seq
+                    var fastaSeq = fasta(sSeq, pName +" ("+sSeqPos+")", true);
+                    $('#deri-seq').addClass('hidden');
+                    $('#deri-seq').empty();
+                    $('#deri-seq').removeClass('hidden');
+                    $('#deri-seq').html(fastaSeq);
+                    //var sSeq = elem.detail.selection;
+                });
+                //============================================================================================
+                //display features
+                //console.log(fvFeatures);
+                //preocess the data
+                var fArray = [];
+                var gFeature = getFeatureData(fvFeatures, fArray, 1); //1
+
+                var fArray = [];
+                var promotor = getFeatureData(fvFeatures, fArray, 2); //2
+
+                var fArray = [];
+                var primer = getFeatureData(fvFeatures, fArray, 3); //3
+
+                var fArray = [];
+                var enzyme = getFeatureData(fvFeatures, fArray, 4); //4
+
+                var fArray = [];
+                var gene = getFeatureData(fvFeatures, fArray, 5); //5
+
+                var fArray = [];
+                var origin = getFeatureData(fvFeatures, fArray, 6); //6
+
+                var fArray = [];
+                var regulatory = getFeatureData(fvFeatures, fArray, 7); //7
+
+                var fArray = [];
+                var terminator = getFeatureData(fvFeatures, fArray, 8); //8
+
+                var fArray = [];
+                var eFeature = getFeatureData(fvFeatures, fArray, 9); //9
+
+                var fArray = [];
+                var orf = getFeatureData(fvFeatures, fArray, 10); //10
+                
+                //merge eFeature and gFeature
+                mFeature = $.extend(gFeature, eFeature);
+
+                var fOptions = {
+                    showAxis: true, showSequence: true,
+                    brushActive: true, toolbar: true,
+                    bubbleHelp: true, zoomMax: 20
+                };
+                var ft = new FeatureViewer(seq, "#plasmid-feature", fOptions);
+
+
+                if (enzyme.length > 0) {
+                    ft.addFeature({
+                        data: enzyme,
+                        name: "Restriction Cuts",
+                        className: "enzyme",
+                        color: Color(4),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (regulatory.length > 0) {
+                    ft.addFeature({
+                        data: regulatory,
+                        name: "Regulatory",
+                        className: "regulatory",
+                        color: Color(7),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (promotor.length > 0) {
+                    ft.addFeature({
+                        data: promotor,
+                        name: "Promotor",
+                        className: "promotor",
+                        color: Color(2),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (gene.length > 0) {
+                    ft.addFeature({
+                        data: gene,
+                        name: "Gene",
+                        className: "gene",
+                        color:  Color(5),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (terminator.length > 0) {
+                    ft.addFeature({
+                        data: terminator,
+                        name: "Terminator",
+                        className: "terminator",
+                        color: Color(8),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (orf.length > 0) {
+                    ft.addFeature({
+                        data: orf,
+                        name: "ORF",
+                        className: "orf",
+                        color: Color(10),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (mFeature.length > 0) {
+                    ft.addFeature({
+                        data: mFeature,
+                        name: "Generic Feature",
+                        className: "gFeature",
+                        color: Color(1),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (origin.length > 0) {
+                    ft.addFeature({
+                        data: origin,
+                        name: "Origin",
+                        className: "origin",
+                        color: Color(6),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                if (primer.length > 0) {
+                    ft.addFeature({
+                        data: primer,
+                        name: "Primer",
+                        className: "primer",
+                        color: Color(3),
+                        type: "rect",
+                        filter: "type2"
+                    });
+                }
+                
+                //mouse event
+                ft.onFeatureSelected(function (d) {
+                    console.log(d.detail);
+                    if (+d.detail.start !== +d.detail.end) {
+                        //hight in seq below
+                        pSeq.selection(+d.detail.start - 1, +d.detail.end, '#c5b0d5');
+
+                        //scroll within div is not working
+                        scrollTo('#plasmid-seq');
+
+                        //show tool div
+                        $('#tool-fv').removeClass('hidden');
+                        setTimeout(function () { $('#tool-fv').addClass('hidden') }, 60000);
+                        //for copy
+                        var fvSeq = $('#psequence').text().trim().substring(+d.detail.start - 1, d.detail.end);
+                        //set the blast seq
+                        $('#fv-select-blast').val(fvSeq);
+                        //set the copying seq
+                        $('#fv-seq').val(fvSeq);
+                        //copy selected seq to clipboard using using clipboard.min.js
+                        var clipboard = new Clipboard('#copy-fvseq');
+                        clipboard.on('success', function (e) {
+                            console.info('Action:', e.action);
+                            //console.info('Text:', e.text);
+                            //console.info('Trigger:', e.trigger);
+                            e.clearSelection();
+                            //show and dismiss the text 'Copied!'
+                            $('#tool-fv-msg').find('p').eq(0).text("Copied!");
+                            setTimeout(function () { $('#tool-fv-msg').find('p').eq(0).text(null); }, 2000);
+                        });
+
+                        //log the coping errors
+                        clipboard.on('error', function (e) {
+                            console.error('Action:', e.action);
+                            console.error('Trigger:', e.trigger);
+                        });
+                    }
+                });
+
+            }
+            catch (e) {
+                console.log(e);
+                $('seq-error').text('Unable to load the features and sequence!, please try again later!');
+            }
+        }
+    });
+
+    function Color(type_id) {
+        switch (type_id) {
+            case 1:
+                return '#1f77b4';
+                break;
+            case 2:
+                return '#ff7f0e';
+                break;
+            case 3:
+                return '#2ca02c';
+                break;
+            case 4:
+                return '#8c564b';
+                break;
+            case 5:
+                return '#d62728';
+                break;
+            case 6:
+                return '#7f7f7f';
+                break;
+            case 7:
+                return '#e377c2';
+                break;
+            case 8:
+                return '#9467bd';
+                break;
+            case 9:
+                return ' #bcbd22';
+                break;
+            case 10:
+                return '#17becf';
+                break;
+        }
+    }
+
+    function Reverse(seq) {
+        return seq.split("").reverse().join("");
+    }
+
+    function calTm(sSeq) {
+        /*
+
+        Basic Melting Temperature (Tm) Calculations
+        The two standard approximation calculations are used. For sequences less than 14 nucleotides the formula is
+
+            Tm= (wA+xT) * 2 + (yG+zC) * 4
+
+            where w,x,y,z are the number of the bases A,T,G,C in the sequence, respectively (from Marmur,J., and Doty,P. (1962) J Mol Biol 5:109-118 [PubMed]).
+
+        For sequences longer than 13 nucleotides, the equation used is
+
+            Tm= 64.9 +41*(yG+zC-16.4)/(wA+xT+yG+zC)
+
+        */
+
+        var seqArray = sSeq.split("");
+        var numA = $.grep(seqArray, function (e) {
+            return e === 'A';
+        }).length;
+        var numT = $.grep(seqArray, function (e) {
+            return e === 'T';
+        }).length;
+        var numG = $.grep(seqArray, function (e) {
+            return e === 'G';
+        }).length;
+        var numC = $.grep(seqArray, function (e) {
+            return e === 'C';
+        }).length;
+        var Tm = 0;
+        if (sSeq.length > 0) {
+            if (sSeq.length <= 13) {
+                //Tm= (wA+xT) * 2 + (yG+zC) * 4
+                Tm = (numA + numT) * 2 + (numG + numC) * 4;
+            }
+            else {
+                //Tm= 64.9 +41*(yG+zC-16.4)/(wA+xT+yG+zC)
+                Tm = 64.9 + 41 * (numG + numC - 16.4) / (numA + numT + numG + numC);
+            }
+        }
+
+        return Tm.toFixed(1);
+    }
+
+    function calGC(sSeq) {
+        var seq = (new Nt.Seq()).read(sSeq);
+        var pG = seq.fractionalContent()['G'];
+        var pC = seq.fractionalContent()['C'];
+
+        //convert to %
+        var pGC = (pG + pC) * 100;
+        return (pGC.toFixed(1) + '%');
+    }
+
+    function scrollTo(id) {
+        $('html, body').animate({
+            scrollTop: $(id).offset().top
+        }, 1000);
+    }
+
+    // Returns array of sequence, split from input sequence
+    function wrap(seq_string, width) {
+        if (seq_string) {
+            var res = [];
+            var line = '';
+            for (var i = 0; i < seq_string.length; i++) {
+                line += seq_string.charAt(i);
+                if (line.length >= width) {
+                    res.push(line);
+                    line = '';
+                }
+            }
+            if (line.length > 0) { res.push(line); }
+            return res;
+        }
+        return [];
+    }
+
+    // Returns FASTA format of sequence
+    function fasta(seq, name, html) {
+        var line_width = 80; //fasta is normally 80bp per line
+        if (html === undefined) { html = true; }
+        var lines_vec = wrap(seq, line_width); //return an array
+        var s = '';
+        if (html) { s = '<p class="giraffe-seq-textarea">&gt;' + name + '<br/>'; }
+        else { s = '>' + name + '\n'; }
+        for (var i = 0; i < lines_vec.length; i++) {
+            s += lines_vec[i];
+            if (html) { s += '<br/>'; } else { s += '\n'; }
+        }
+        if (html) { s += '</p>'; }
+        return s;
+    }
+
+    function getFeatureData(fvFeatures, array, type_id) {
+        $.each($.grep(fvFeatures, function (d) {
+            return +d.type_id === type_id;
+        }), function (i, n) {
+            delete n.type_id;
+            array.push(n);
+        });
+
+        $.each(array, function (i, d) {
+            d.color = Color(type_id);
+        });
+        return array;
+    }
+    function show_modal(id, title) {
+        var html = "";
+        html = html + '<div id="'+id+'" class="modal fade" role="dialog">';
+            html = html + '<div class="modal-dialog">';
+                html = html + '<div class="modal-content">';
+                    html = html + '<div class="modal-header">';
+                        html = html + '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                        html = html + '<h4 class="modal-title text-center">'+title+'</h4>';
+                    html = html + '</div>';
+                    html = html + '<div class="modal-body">';
+                        html = html + '<p class="text-center"><span class="fa fa-spinner fa-pulse text-danger"></span>&nbsp;<span>Loading . . .</span></p>';
+                    html = html + '</div>';
+                html = html + '</div>';
+            html = html + '</div>';
+        html = html + '</div>';
+        return html;
+    }
+</script>

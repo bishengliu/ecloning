@@ -1,0 +1,630 @@
+﻿
+@{
+    ViewBag.Title = "Digestion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Name = (string)ViewBag.Name;
+    int plasmidId = (int)ViewBag.PlasmidId;
+    string Sequence = (string)ViewBag.Sequence;
+    int seqCount = (int)ViewBag.SeqLength;
+    var features = ViewBag.Features;
+    var methylation = ViewBag.Methylation;
+    var enzymes = ViewBag.Enzymes;
+    var Tag = (string)ViewBag.Tag;
+    var fvFeatures = ViewBag.fvFeatures;
+    var restricProperty = ViewBag.restric_property;
+    var activity = ViewBag.activity;
+    var ladders = ViewBag.ladders;
+    var saveBands = ViewBag.SavedBands;
+}
+
+<div class="row">
+    <div class="col-sx-12 hidden-sm hidden-xs col-sm-12 col-md-3 col-lg-2">
+        &nbsp;
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-7">
+        <h3 class="text-warning text-center">
+            Plasmid <em>@Name</em> Restriction Digestion&nbsp;
+        </h3>
+    </div>
+    <div class="col-sx-12 col-sm-12 col-md-4 col-lg-3">
+        <h3>
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Sequence", "Map", new { plasmid_id = plasmidId })">
+                <i class="fa fa-exchange text-danger"></i>
+                <span>Sequence</span>
+            </a>
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Map", new { id = plasmidId, tag = Tag })">
+                <i class="fa fa-sun-o text-danger"></i>
+                <span>Plasmid Map</span>
+            </a>
+            <a id="autogenerate" class="btn btn-default" href="@Url.Action("Index", "Fragment", new { id = plasmidId, tag = Tag})">
+                <i class="fa fa-bars text-danger"></i>
+                <span>Fragments</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<span id="seqCount" class="hidden">@seqCount</span>
+<span id="sequence" class="hidden">@Sequence</span>
+<span id="name" class="hidden">@Name</span>
+<span id="plasmidId" class="hidden">@plasmidId</span>
+
+<!--feature viewer-->
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
+</div>
+<br/>
+<!--digesiton div-->
+<div  class="row">
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="digestion">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center"><em><strong>Select one or more enzymes to start digestion</strong></em></h3>
+                </div>
+            </div>
+            @*<hr class="black-line" />*@
+            <div id="enzyme-list" class="col-xs-4 col-sm-3 col-md-2 col-lg-2">
+                <h4 class="text-primary">Enzymes</h4>
+            </div>
+            <div id="result" class="col-xs-8 col-sm-9 col-md-10 col-lg-10 hidden">
+                <!--header-->
+                <div class="col-xs-12" id="top-result">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Enzyme and Activity</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--emzyme info panel-->
+                <div class="col-xs-12 col-md-4">
+                    <div class="panel-group">
+                        <div class="panel panel-color1">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center" id="cut-title"></h3>
+                            </div>
+                            <div class="panel-body xScrollable"><div id="cut-map"></div></div>
+                            <div class="panel-footer clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="enzyme-info" class="col-xs-12 col-md-4"></div>
+                <div id="activity-info" class="col-xs-12 col-md-4"></div>
+
+                <!--header-->
+                <div class="col-xs-12" id="middle-result">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Stimulations</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--bands for single enzyme-->
+                <div id="gel-panel-single" class="col-xs-12 col-md-6">
+                    <div class="panel-group">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Electrophoresis</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="gel-single-tools" class="row">
+                                    <div id="gel-running-single" class="col-xs-offset-1 col-xs-4 col-sm-offset-1 col-sm-4 col-lg-offset-1 col-lg-3">
+                                        <button id="increase-single" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Increase Band Separation"><i class="fa fa-plus"></i></button>
+                                        <button id="decrease-single" class="btn btn-sm btn-circle btn-danger"  type="button" data-toggle="tooltip" title="Decrease Band Separation"><i class="fa fa-minus"></i></button>
+                                        <button id="default-single" class="btn btn-sm btn-circle btn-default" type="button" data-toggle="tooltip" title="Default Band Separation"><i class="fa fa-road"></i></button>
+
+                                    </div>
+                                    <div id="ladder-selection-single" class="col-xs-7 col-lg-8"></div>                                    
+                                </div>
+                                <div id="gel-single"></div>
+                            </div>
+                            <div class="panel-footer clearfix text-info"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="gel-info-single" class="col-xs-12 col-md-6 hidden">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">Band Info</div>
+                        <div class="panel-body">
+                            <div class="xScrollable"><div id="band-feature-single" class="col-xs-12"></div></div>
+                            <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                <input id="band-single-fseq" value="" />
+                                <input id="band-single-cseq" value="" />
+                            </div>
+                            <div id="band-ends-single" class="col-xs-12"></div>
+                        </div>
+                        <div class="panel-footer clearfix" >
+                            <a id="band-button-single" class="btn btn-default" data-toggle="tooltip" title="Save Band">
+                                <i class="fa fa-heart-o"></i>
+                            </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-fseq" id="copy-band-single-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
+                                <i class="fa fa-copy text-danger"></i>
+                            </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-cseq" id="copy-band-single-cseq" data-toggle="tooltip" title="Copy Complement Sequence">
+                                <i class="fa fa-copy text-primary"></i>
+                            </a>
+                            <p id="band-single-msg" class="text-info"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--bands for multiple enzymes-->
+                <div style="clear:both;"></div>
+                <div id="gel-panel-multiple" class="col-xs-12 col-md-6 hidden">
+                    <div class="panel-group">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Gel Electrophoresis</h3>
+                            </div>
+                            <div class="panel-body" >
+                                <div id="gel-multiple-tools" class="row">
+                                    <div id="gel-running-multiple" class="col-xs-offset-1 col-xs-4 col-sm-offset-1 col-sm-4 col-lg-offset-1 col-lg-3">
+                                        <button id="increase-multiple" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Increase Band Separation"><i class="fa fa-plus"></i></button>
+                                        <button id="decrease-multiple" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Decrease Band Separation"><i class="fa fa-minus"></i></button>
+                                        <button id="default-multiple" class="btn btn-sm btn-circle btn-default" type="button" data-toggle="tooltip" title="Default Band Separation"><i class="fa fa-road"></i></button>
+                                    </div>
+                                    <div id="ladder-selection-multiple" class="col-xs-7 col-lg-8"></div>
+                                </div>
+                                <div id="gel-multiple"></div>
+                            </div>
+                            <div class="panel-footer clearfix text-info" id="gel-multiple-footer"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="gel-info-multiple" class="col-xs-12 col-md-6 hidden">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">Band Info</div>
+                        <div class="panel-body">
+                            <div class="xScrollable"><div id="band-feature-multiple" class="col-xs-12"></div></div>
+                            <br/>
+                            <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                <input id="band-multiple-fseq" value="" />
+                                <input id="band-multiple-cseq" value="" />
+                            </div>
+                            <div id="band-ends-multiple" class="col-xs-12"></div>
+                        </div>
+                        <div class="panel-footer clearfix">
+                            <a id="band-button-multiple" class="btn btn-default" data-toggle="tooltip" title="Save Band">
+                                <i class="fa fa-heart-o"></i>
+                            </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-fseq" id="copy-band-multiple-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
+                                <i class="fa fa-copy text-danger"></i>
+                            </a>
+                            <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-cseq" id="copy-band-multiple-cseq" data-toggle="tooltip" title="Copy Complement Sequence">
+                                <i class="fa fa-copy text-primary"></i>
+                            </a>
+                            <p id="band-multiple-msg" class="text-info"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-danger navbar-fixed-bottom" id="success-alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close"><span style="font-size:80%;">&times;</span></a>
+    <span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Too many enzymes! You are only allowed to select no more than 3 emzymes.
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+
+@*seq viewer*@
+<script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
+@*feature viewer*@
+<script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+
+<script src="~/Scripts/ecloning-digestion.js"></script>
+<script>
+    //hide the alert
+    $("#success-alert").hide();
+
+    //define a global array for selected enzyme list
+    var enzyArray = [];
+    //define a global array of arrays of enzyme; for digestion
+    var MEDigestArray = [];
+    //global save band ajax data
+    var singleData = {};
+    //global save band ajax data
+    var multipleData = {};
+    //fragment features
+    var featureArray = [];
+
+    //global plasmid id
+    var plasmidId = +$("#plasmidId").text().trim();
+
+    //all ladders [{"name": name, "id": id}]
+    var allLadders = [];
+    //global single ladder id
+    var sLadderId = null;
+    //global multiple ladder id
+    var mLadderId = null;
+
+    //curent saved bands [name]
+    var savedBands = [];
+
+    //global gel height
+    var defaultHeight = 300;
+    var gelHeightSingle = defaultHeight;
+    var gelHeightMultiple = defaultHeight;
+    var stepHeight = 25;
+    //all restricition enzymes
+    //global features
+    var allFeatures = [];
+    var sequence = null;
+    var cSequence = null;
+    var seqCount = null;
+    var restricProperty = null;
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+
+        //for copy fragment seq
+        //copy full seq using clipboard.min.js
+        //copy single-cut
+        var clipboard = new Clipboard('#copy-band-single-fseq');
+        clipboard.on('success', function (e) {
+            $('#band-single-msg').text("Sequence Copied!");
+            console.info('Action:', e.action);
+            e.clearSelection();
+            setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+        });
+
+        var clipboard = new Clipboard('#copy-band-single-cseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-single-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+        });
+
+        //copy multiple-cut
+        var clipboard = new Clipboard('#copy-band-multiple-fseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-multiple-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+        });
+
+        var clipboard = new Clipboard('#copy-band-multiple-cseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-multiple-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+        });
+
+        //get full sequence
+        sequence = $('#sequence').text().trim();
+        //get complementary seq
+        cSequence = gencSeq(sequence);
+        seqCount = parseInt($('#seqCount').text().trim())
+        //get plasmid name
+        name = $('#name').text().trim();
+        //get plasmid id
+        pId = +$("#plasmidId").text().trim();
+
+        //get plasmid feature json data for plasmid map
+        var features = ("@features");
+        features = LoadData(features);
+        //get the feature for feature viwerer
+        var fvFeatures = ("@fvFeatures");
+        fvFeatures = LoadData(fvFeatures);
+        //get enzymes
+        var enzymes = ("@enzymes");
+        enzymes = LoadData(enzymes);
+        //get methylation
+        var methylation = ("@methylation");
+        methylation = LoadData(methylation);
+
+        //get restrcition property and prototype
+        restricProperty = ("@restricProperty");
+        restricProperty = LoadData(restricProperty);
+
+        //get enzyme activity
+        var activity = ("@activity");
+        activity = LoadData(activity);
+
+        //get ladders
+        var ladders = ("@ladders");
+        ladders = LoadData(ladders);
+
+        //get saved bands
+        var sBands = ("@saveBands");
+        sBands = LoadData(sBands);
+
+        try {
+            //draw linear map
+            features = JSON.parse(features);
+            allFeatures = features;
+            //draw features on top
+            fvFeatures = JSON.parse(fvFeatures);
+            drawFeatures(fvFeatures, sequence, 'plasmid-feature');
+            //display enzyme checkbox
+            enzymes = JSON.parse(enzymes);
+            methylation = JSON.parse(methylation);
+            displayEnzymeList(enzymes, "enzyme-list");
+            //parse json for restricProperty
+            restricProperty = JSON.parse(restricProperty);
+            //parse json for enzyme activity
+            activity = JSON.parse(activity);
+            //show enzyme companies and activities
+            activity = FormatActivity(activity);
+            //get company list
+            var companies = findCompany(activity);
+            //parse ladders
+            ladders = JSON.parse(ladders);
+            //format ladder data
+            ladders = formatLadder(ladders);
+            //update global ladder name and is array
+            allLadders = getLadderNameId(ladders);
+            //parse saved bands
+            savedBands = JSON.parse(sBands);
+            //capture user selection of enzyme
+            $(":checkbox").change(function () {
+                //allow max 3 selection
+                var maxSelection = 3;
+                if ($('input[type=checkbox]:checked').length > maxSelection) {
+                    $(this).prop('checked', false);
+                    //show msg
+                    $("#success-alert").show();
+                }
+                else {
+                    $("#success-alert").hide();
+                }
+                //change some div setting
+                $("#gel-single").empty();
+                $("#band-feature-single").empty();
+                $("#band-ends-single").empty();
+                $("#gel-info-single").addClass("hidden");
+
+                $("#gel-multiple").empty();
+                $("#gel-panel-multiple").addClass("hidden");
+                $("#band-feature-multiple").empty();
+                $("#band-ends-multiple").empty();
+                $("#gel-info-multiple").addClass("hidden");
+
+                //update enzymeArray
+                if (this.checked) {
+                    //add enzyme to enzyArray
+                    enzyArray = updateArray($(this).val(), enzyArray, "add");
+                    //add digesiton enzyme array
+                    //digestArray = updateDigest($(this).val(), digestArray, "add");
+                }
+                else {
+                    //remove enzyme to enzyArray
+                    enzyArray = updateArray($(this).val(), enzyArray, "remove");
+                    //add digesiton enzyme array
+                    //digestArray = updateDigest($(this).val(), digestArray, "remove");
+                }
+                //=======================================================================
+                //show cut overview for multiple enzymes
+                //show panel title
+                genCutTitle("cut-title", enzyArray);
+                //generate plasmid cut-map overview using giraffe
+                drawCuts("cut-map", enzymes, enzyArray, features, seqCount, name);
+                //show cut info with tabs
+                //==========================================================================
+                genEnzymeTabs(enzyArray, 'enzyme-info');
+                //genCutMap for each enzyme using giraffe
+                drawCutMap(enzymes, enzyArray, features, seqCount, name);
+                //show cut positions and methylation info in panel-body
+                showDigestInfo(enzymes, enzyArray, methylation);
+                //show cut prototype and property
+                showRestricProperty(enzyArray, restricProperty);
+
+                //=========================================================================
+                //show activity tabs
+                genActivityTab(enzyArray, 'activity-info', companies);
+                //show enzyme activities
+                showActivity(enzyArray, activity, companies);
+                //===============================
+                //match enzyme-info and activity-info
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    var target = $(e.target).attr("href") // activated tab
+                    if (target.length > 9 && target.substring(0, 9) == "#activity") {
+                        //this is the activity tab
+                        var tab = target.substring(10, target.length);
+                        if (tab != "" || tab != "undefined") {
+                            $('a[href="#' + tab + '"]').tab('show');
+                        }
+                    }
+                    else {
+                        var tab = target.substring(1, target.length);
+                        if (tab != "" || tab != "undefined") {
+                            $('a[href="#activity-' + tab + '"]').tab('show');
+                        }
+                    }
+                });
+
+                //===========================================================================
+                //draw gel
+                //generate single enzyme digestion bands======******************==============
+                var SEbands = enzyArray.length > 0 ? genSEBands(enzyArray, enzymes, methylation, seqCount): [];
+                //draw gel stimulation
+                if (SEbands.length > 0) {
+                    //choose ladder based on the band sizes
+                    var SEladder = chooseLadder(SEbands, ladders);
+                    //set global ladderId
+                    sLadderId = +SEladder[0].id;
+                    //add selection box
+                    LadderSelection("ladder-selection-single", sLadderId, allLadders);
+                    //draw gel stimulation
+                    drawGel("#gel-single", SEladder, SEbands, gelHeightSingle); //change 300 to change the gel height == runing lognger
+
+                    //ladder selection box change========================================
+                    $('#ladder-selection-single-selection').change(function () {
+                        //change the sLadderId
+                        sLadderId = +$(this).val();
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    });
+                    //plus/minus button====================================================
+                    $('#increase-single').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightSingle = gelHeightSingle + stepHeight;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    })
+                    $('#decrease-single').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightSingle = gelHeightSingle - stepHeight>0?gelHeightSingle - stepHeight:0;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    })
+                    $('#default-single').click(function () {
+                        gelHeightSingle = defaultHeight; //default value
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === sLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-single").empty();
+                        drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                    });
+                }
+                //deal with multiple enzyme digestion==================***************============
+                //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
+                var MEDigestArray = genMEDigestion(enzyArray);
+                var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
+                if (MEbands.length > 0) {
+                    $("#gel-panel-multiple").removeClass("hidden");
+                    var MEladder = chooseLadder(MEbands, ladders);
+                    //set global ladderId
+                    mLadderId = +MEladder[0].id;
+                    //add selection box
+                    LadderSelection("ladder-selection-multiple", mLadderId, allLadders);
+                    //draw gel stimulation                    
+                    drawGel("#gel-multiple", MEladder, MEbands, gelHeightMultiple); //change 300 to change the gel height == runing lognger
+                    //ladder selection box change==================================================
+                    $('#ladder-selection-multiple-selection').change(function () {
+                        mLadderId = +$(this).val();
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    });
+                    //plus/minus button====================================================
+                    $('#increase-multiple').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightMultiple = gelHeightMultiple + stepHeight;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    })
+                    $('#decrease-multiple').click(function () {
+                        //change the gelHeightSingle
+                        gelHeightMultiple = gelHeightMultiple - stepHeight > 0 ? gelHeightMultiple - stepHeight : 0;
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    })
+                    $('#default-multiple').click(function () {
+                        gelHeightMultiple = defaultHeight; //default value
+                        var newLadder = $.grep(ladders, function (d, i) {
+                            return d.id === mLadderId;
+                        })
+                        //redraw gel stimulation
+                        $("#gel-multiple").empty();
+                        drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                    });
+                }
+                //show the result div
+                if (enzyArray.length > 0) {
+                    //show the result panel
+                    if ($("#result").hasClass("hidden")) {
+                        $("#result").removeClass("hidden");
+                    };
+                }
+                else {
+                    //hide the result panel
+                    if (!$("#result").hasClass("hidden")) {
+                        $("#result").addClass("hidden");
+                    }
+                }
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+        //save fragment
+        $('#band-button-single').on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveFragment", "Map")',
+                data: { 'band': JSON.stringify(singleData) },
+                success: function (data)
+                {
+                    if (data.result == true)
+                    {
+                        savedBands.push(data.band);
+                        $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                        $('#band-button-single').addClass('disabled');
+                        //scrollTo('#band-single-msg');
+                        $('#band-single-msg').text("Fragment Saved!");
+                        setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
+                    }
+                    else
+                    {
+                        //scrollTo('#band-single-msg');
+                        $('#band-single-msg').text("Fragment NOT Saved!");
+                        setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
+                    }
+                }
+            });
+        });
+        $('#band-button-multiple').on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveFragment", "Map")',
+                data: { 'band': JSON.stringify(multipleData) },
+                success: function (data)
+                {
+                    if (data.result == true)
+                    {
+                        savedBands.push(data.band);
+                        $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                        $('#band-button-multiple').addClass("disabled");
+                        //scrollTo('#band-multiple-msg');
+                        $('#band-multiple-msg').text("Fragment Saved!");
+                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
+                    } else
+                    {
+                        //scrollTo('#band-multiple-msg');
+                        $('#band-multiple-msg').text("Fragment NOT Saved!");
+                        setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
+                    }
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,2112 @@
+﻿@model ecloning.Models.ExpStep
+@{
+    ViewBag.Title = "Add Step";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int expId = ViewBag.expId;
+    var Plasmids = ViewBag.Plasmids;
+    var Protocols = ViewBag.Protocols;
+    var Fragments = ViewBag.Fragments;
+    var ShownStep = ViewBag.ShownStep;
+    var FragmentMap = ViewBag.FragmentMap;
+    var Primers = ViewBag.Primers;
+    var Probes = ViewBag.Probes;
+    var Restrics = ViewBag.Restrics;
+    var restricProperty = ViewBag.restric_property;
+}
+<span id="decodeIt" class="hidden"></span>
+<span id="ShownStep" class="hidden">@ShownStep</span>
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment Step</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Details", "Experiment", new { id= expId })" class="btn btn-default">
+                <i class="fa fa-caret-left"></i>
+                <span>Experiments</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<div id="steps" class="">
+    <div class="clearfix"></div>
+    <div class="input-group col-xs-12 col-sm-offset-7 col-sm-4">
+        <span class="input-group-addon">EXPERIMENT STEPS</span>
+        @Html.DropDownList("types", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+        <span class="input-group-btn">
+            <button class="btn btn-secondary btn-danger" type="button" id="add_exp_step"><i class="fa fa-plus-circle"></i></button>
+        </span>
+    </div>
+    <div class="clearfix"></div>
+    <div class="input-group col-xs-12 col-sm-offset-7 col-sm-4 pull-right">        
+        <p class="text-danger" id="step-error"></p>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type2">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Plasmid Transformation</i></h3>
+    <br/>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id= "nameTrans" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameTrans-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value="2" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid", id="plasmidTrans" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                        <p id="plasmidTrans-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add2" name="StepButton" value="add2"><i class="fa fa-plus-circle"></i><span> Transformation</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type3">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Plasmid Miniprep</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id="nameMini" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameMini-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "3" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid", id="plasmidMini" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                        <p id="plasmidMini-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add3" name="StepButton" value="add3"><i class="fa fa-plus-circle"></i><span> Miniprep</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type8">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Plasmid Maxiprep</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id="nameMaxi" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameMaxi-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "8" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid", id="plasmidMaxi" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                        <p id="plasmidMaxi-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add8" name="StepButton" value="add8"><i class="fa fa-plus-circle"></i><span> Maxiprep</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type7">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Pick Colonies</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id="nameColony" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameColony-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "7" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 4, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add7" name="StepButton" value="add7"><i class="fa fa-plus-circle"></i><span> Pick Colonies</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type4">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Fragment Gel Extraction</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id="nameGel" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameGel-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "4" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.frag1_id, "Fragment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.frag1_id, new { htmlAttributes = new { @class = "form-control fragment", id="fragmentGel" } })
+                        @Html.ValidationMessageFor(model => model.frag1_id, "", new { @class = "text-danger" })
+                        <p id="fragmentGel-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add4" name="StepButton" value="add4"><i class="fa fa-plus-circle"></i><span> Gel Extraction</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type5">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>PCR</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id="namePCR" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="namePCR-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "5" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid", id="plasmidPCR" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                        <p id="plasmidPCR-msg" class="text-danger"></p>
+                    </div>
+                    <a class="btn btn-primary btn-sm col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-0" id="useFragment" data-toggle="tooltip" data-placement="top" title="Use fragment as PCR template"><span>Fragment</span></a>
+                </div>
+                <div class="form-group required hidden">
+                    @Html.LabelFor(model => model.frag1_id, "Fragment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.frag1_id, new { htmlAttributes = new { @class = "form-control fragment", id="fragmentPCR" } })
+                        @Html.ValidationMessageFor(model => model.frag1_id, "", new { @class = "text-danger" })
+                        <p id="fragmentPCR-msg" class="text-danger"></p>
+                    </div>
+                    <a class="btn btn-primary btn-sm col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-0" id="usePlasmid" data-toggle="tooltip" data-placement="top" title="Use plasmid as PCR template"><span>Plasmid</span></a>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.forward_primer_id, "Forward Primer", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.forward_primer_id, new { htmlAttributes = new { @class = "form-control primer" } })
+                        @Html.ValidationMessageFor(model => model.forward_primer_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.reverse_primer_id, "Reverse Primer", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.reverse_primer_id, new { htmlAttributes = new { @class = "form-control primer" } })
+                        @Html.ValidationMessageFor(model => model.reverse_primer_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.probe_id, "Probe", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.probe_id, new { htmlAttributes = new { @class = "form-control probe" } })
+                        @Html.ValidationMessageFor(model => model.probe_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 8, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add5" name="StepButton" value="add5"><i class="fa fa-plus-circle"></i><span> PCR</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type1">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Restriction Enzyme Digestion</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id = "nameDiges" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameDiges-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "1" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmid_id, "Plasmid", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmid_id, new { htmlAttributes = new { @class = "form-control plasmid", id = "plasmidDiges" } })
+                        @Html.ValidationMessageFor(model => model.plasmid_id, "", new { @class = "text-danger" })
+                        <p id="plasmidDiges-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.emzyme_id, "Enzymes", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.emzyme_id, new { htmlAttributes = new { @class = "form-control enzyme", id = "enzymeDiges" } })
+                        @Html.ValidationMessageFor(model => model.emzyme_id, "", new { @class = "text-danger" })
+                        <p id="enzymeDiges-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 8, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-right">
+                            <button class="btn btn-danger" id="add1" name="StepButton" value="add1"><i class="fa fa-plus-circle"></i><span> Digestion</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+ 
+</div>
+
+<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="type6">
+    <hr class="tableTopLine" />
+    <h3 class="text-capitalize text-center text-info"><i>Fragment Ligation</i></h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", id = "nameLig" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                        <p id="nameLig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.type_id, "TypeId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.type_id, new { htmlAttributes = new { @class = "form-control", @Value = "6" } })
+                        @Html.ValidationMessageFor(model => model.type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.exp_id, "ExpId", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value = expId } })
+                        @Html.ValidationMessageFor(model => model.exp_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.frag1_id, "Fragment 1 (smaller)", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.frag1_id, new { htmlAttributes = new { @class = "form-control fragment", id = "fragment1Lig" } })
+                        @Html.ValidationMessageFor(model => model.frag1_id, "", new { @class = "text-danger" })
+                        <p id="fragment1Lig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.frag2_id, "Fragment 2 (backbone)", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.frag2_id, new { htmlAttributes = new { @class = "form-control fragment", id = "fragment2Lig" } })
+                        @Html.ValidationMessageFor(model => model.frag2_id, "", new { @class = "text-danger" })
+                        <p id="fragment2Lig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.plasmidName, "New Plasmind Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.plasmidName, new { htmlAttributes = new { @class = "form-control", id = "plasmidNameLig" } })
+                        @Html.ValidationMessageFor(model => model.plasmidName, "", new { @class = "text-danger" })
+                        <p id="plasmidNameLig-msg" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.ligation_method, "Ligation method", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.ligation_method, new { htmlAttributes = new { @class = "form-control", id = "methodLig" } })
+                        @Html.ValidationMessageFor(model => model.ligation_method, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.LabelFor(model => model.ligation_direction, "Ligation Direction", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.ligation_direction, new { htmlAttributes = new { @class = "form-control", id = "directionLig" } })
+                        @Html.ValidationMessageFor(model => model.ligation_direction, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    @Html.EditorFor(model => model.map1_seq, new { htmlAttributes = new { @class = "form-control", id = "map1_seq" } })
+                    @Html.EditorFor(model => model.map2_seq, new { htmlAttributes = new { @class = "form-control", id = "map2_seq" } })
+                    @Html.EditorFor(model => model.map3_seq, new { htmlAttributes = new { @class = "form-control", id = "map3_seq" } })
+                    @Html.EditorFor(model => model.map4_seq, new { htmlAttributes = new { @class = "form-control", id = "map4_seq" } })
+                </div>             
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.protocol_id, "Protocol", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.EditorFor(model => model.protocol_id, new { htmlAttributes = new { @class = "form-control protocol" } })
+                        @Html.ValidationMessageFor(model => model.protocol_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-8 col-lg-6">
+                        @Html.TextAreaFor(model => model.des, 7, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-8 col-lg-6">
+                        <div class="pull-left">
+                            <button class="btn btn-danger" id="show_ligation" data-toggle="tooltip" data-placement="top" title="Display below how the fragments can be ligated"><i class="fa fa-eye"></i><span> Ligation</span></button>
+                        </div>
+                        <div class="pull-right">
+                            <button class="btn btn-default disabled noEvent" id="add6" name="StepButton" value="add6" data-toggle="tooltip" data-placement="top" title="Please select below how the fragments can be ligated"><i class="fa fa-plus-circle"></i><span> Ligation</span></button>
+                        </div>
+                        <div class="pull-right">
+                            <p class="text-center text-danger" id="msgLig"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@*fragment div*@
+<div class="clearfix"></div>
+<br/>
+<br/>
+<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+    <div class="panel panel-color0 hidden" id="frag-line">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center"><em><strong>Selected fragment(s)</strong></em></h3>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 hidden" id="fragment1">
+        <div class="panel panel-primary" id="frag1">
+            <div class="panel-heading text-center" id="frag1-header"></div>
+            <div class="panel-body fixed-panel">
+                <div id="frag1-map" class="col-xs-12 max-width"></div>
+                <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                    <p id="frag1Id"></p>
+                    <input id="frag1-fId" value="" />
+                    <input id="frag1-cId" value="" />
+                </div>
+                <div id="frag1-end" class="col-xs-12"></div>
+                <br />
+                <p id="frag1-msg" class="text-info"></p>
+            </div>
+            <div class="panel-footer clearfix">
+                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#frag1-fId" id="frag1-fcopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                    <i class="fa fa-copy text-danger"></i>
+                </a>
+                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#frag1-cId" id="frag1-ccopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                    <i class="fa fa-copy text-primary"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 hidden" id="fragment2">
+        <div class="panel panel-primary" id="frag2">
+            <div class="panel-heading text-center" id="frag2-header"></div>
+            <div class="panel-body fixed-panel">
+                <div id="frag2-map" class="col-xs-12 max-width"></div>
+                <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                    <p id="frag2Id"></p>
+                    <input id="frag2-fId" value="" />
+                    <input id="frag2-cId" value="" />
+                </div>
+                <div id="frag2-end" class="col-xs-12"></div>
+                <br />
+                <br />
+                <br />
+                <p id="frag2-msg" class="text-info"></p>
+            </div>
+            <div class="panel-footer clearfix">
+                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#frag2-fId" id="frag2-fcopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                    <i class="fa fa-copy text-danger"></i>
+                </a>
+                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#frag2-cId" id="frag2-ccopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                    <i class="fa fa-copy text-primary"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*digestion*@
+<div class="clearfix"></div>
+<div id="digestionDiv" class="hidden">
+    <br />
+    <br />
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-color5">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center"><em><strong>Use the tool below to find the enzymes and save fragment(s)</strong></em></h3>
+            </div>
+        </div>
+    </div>    
+    <div class="clearfix"></div>
+    <br />
+    <br /> 
+    <span id="seqCount" class="hidden"> </span>
+    <span id="sequence" class="hidden"> </span>
+    <span id="plasmidName" class="hidden"> </span>
+    <span id="plasmidId" class="hidden"> </span>
+
+    <!--feature viewer-->
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="plasmid-feature"></div>
+    </div>
+    <br />
+    <!--digesiton div-->
+    <div class="row">
+        <div class="row">
+            <div class="col-xs-12 col-sm-offset-1 col-sm-10" id="digestion">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center"><em><strong>Select one or more enzymes to start digestion</strong></em></h3>
+                    </div>
+                </div>
+                <div id="enzyme-list" class="col-xs-4 col-sm-3 col-md-2 col-lg-2">
+                    <h4 class="text-primary">Enzymes</h4>
+                </div>
+                <div id="result" class="col-xs-8 col-sm-9 col-md-10 col-lg-10 hidden">
+                    <!--header-->
+                    <div class="col-xs-12" id="top-result">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title text-center">Enzyme and Activity</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--emzyme info panel-->
+                    <div class="col-xs-12 col-md-4">
+                        <div class="panel-group">
+                            <div class="panel panel-color1">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title text-center" id="cut-title"></h3>
+                                </div>
+                                <div class="panel-body xScrollable"><div id="cut-map"></div></div>
+                                <div class="panel-footer clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="enzyme-info" class="col-xs-12 col-md-4"></div>
+                    <div id="activity-info" class="col-xs-12 col-md-4"></div>
+
+                    <!--header-->
+                    <div class="col-xs-12" id="middle-result">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title text-center">Gel Stimulations</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--bands for single enzyme-->
+                    <div id="gel-panel-single" class="col-xs-12 col-md-6">
+                        <div class="panel-group">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title text-center">Gel Electrophoresis</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="gel-single-tools" class="row">
+                                        <div id="gel-running-single" class="col-xs-offset-1 col-xs-4 col-sm-offset-1 col-sm-4 col-lg-offset-1 col-lg-3">
+                                            <button id="increase-single" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Increase Band Separation"><i class="fa fa-plus"></i></button>
+                                            <button id="decrease-single" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Decrease Band Separation"><i class="fa fa-minus"></i></button>
+                                            <button id="default-single" class="btn btn-sm btn-circle btn-default" type="button" data-toggle="tooltip" title="Default Band Separation"><i class="fa fa-road"></i></button>
+
+                                        </div>
+                                        <div id="ladder-selection-single" class="col-xs-7 col-lg-8"></div>
+                                    </div>
+                                    <div id="gel-single"></div>
+                                </div>
+                                <div class="panel-footer clearfix text-info"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gel-info-single" class="col-xs-12 col-md-6 hidden">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading text-center">Band Info</div>
+                            <div class="panel-body">
+                                <div class="xScrollable"><div id="band-feature-single" class="col-xs-12"></div></div>
+                                <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                    <input id="band-single-fseq" value="" />
+                                    <input id="band-single-cseq" value="" />
+                                </div>
+                                <div id="band-ends-single" class="col-xs-12"></div>
+                            </div>
+                            <div class="panel-footer clearfix">
+                                <a id="band-button-single" class="btn btn-default" data-toggle="tooltip" title="Save Band">
+                                    <i class="fa fa-heart-o"></i>
+                                </a>
+                                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-fseq" id="copy-band-single-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
+                                    <i class="fa fa-copy text-danger"></i>
+                                </a>
+                                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-single-cseq" id="copy-band-single-cseq" data-toggle="tooltip" title="Copy Complement Sequence">
+                                    <i class="fa fa-copy text-primary"></i>
+                                </a>
+                                <p id="band-single-msg" class="text-info"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--bands for multiple enzymes-->
+                    <div style="clear:both;"></div>
+                    <div id="gel-panel-multiple" class="col-xs-12 col-md-6 hidden">
+                        <div class="panel-group">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title text-center">Gel Electrophoresis</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="gel-multiple-tools" class="row">
+                                        <div id="gel-running-multiple" class="col-xs-offset-1 col-xs-4 col-sm-offset-1 col-sm-4 col-lg-offset-1 col-lg-3">
+                                            <button id="increase-multiple" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Increase Band Separation"><i class="fa fa-plus"></i></button>
+                                            <button id="decrease-multiple" class="btn btn-sm btn-circle btn-danger" type="button" data-toggle="tooltip" title="Decrease Band Separation"><i class="fa fa-minus"></i></button>
+                                            <button id="default-multiple" class="btn btn-sm btn-circle btn-default" type="button" data-toggle="tooltip" title="Default Band Separation"><i class="fa fa-road"></i></button>
+                                        </div>
+                                        <div id="ladder-selection-multiple" class="col-xs-7 col-lg-8"></div>
+                                    </div>
+                                    <div id="gel-multiple"></div>
+                                </div>
+                                <div class="panel-footer clearfix text-info" id="gel-multiple-footer"><strong>a</strong>) red label: dam/dcm complete blockage or impairment; <strong>b</strong>) click band to show band info.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gel-info-multiple" class="col-xs-12 col-md-6 hidden">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading text-center">Band Info</div>
+                            <div class="panel-body">
+                                <div class="xScrollable"><div id="band-feature-multiple" class="col-xs-12"></div></div>
+                                <br />
+                                <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                    <input id="band-multiple-fseq" value="" />
+                                    <input id="band-multiple-cseq" value="" />
+                                </div>
+                                <div id="band-ends-multiple" class="col-xs-12"></div>
+                            </div>
+                            <div class="panel-footer clearfix">
+                                <a id="band-button-multiple" class="btn btn-default" data-toggle="tooltip" title="Save Band">
+                                    <i class="fa fa-heart-o"></i>
+                                </a>
+                                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-fseq" id="copy-band-multiple-fseq" data-toggle="tooltip" title="Copy Forward Sequence">
+                                    <i class="fa fa-copy text-danger"></i>
+                                </a>
+                                <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#band-multiple-cseq" id="copy-band-multiple-cseq" data-toggle="tooltip" title="Copy Complement Sequence">
+                                    <i class="fa fa-copy text-primary"></i>
+                                </a>
+                                <p id="band-multiple-msg" class="text-info"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-danger navbar-fixed-bottom" id="success-alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close"><span style="font-size:80%;">&times;</span></a>
+        <span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span>&nbsp;Too many enzymes! You are only allowed to select no more than 3 emzymes.
+    </div>
+</div>
+
+@*ligation*@
+<div class="clearfix"></div>
+<div id="ligationDiv" class="col-xs-12 col-sm-offset-1 col-sm-10 hidden">
+    <div class="panel panel-color5">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center"><em><strong>Please choose how to ligate the fragments (<span class="text-danger">click to select</span>)</strong></em></h3>
+        </div>
+        <div class="panel-body">
+            <div id="ligation-method">
+                <div class="col-xs-12 com-sm-12 col-md-4 hidden ligUnselected clickable" id="map1">
+                    <h4 class="text-center text-warning noEvent">Direct Ligation (clockwise) <i class="fa fa-times-circle-o text-muted"></i></h4>
+                    <div id="method1-cw-map" class=""></div>
+                </div>
+                <div class="col-xs-12 com-sm-12 col-md-4 hidden ligUnselected clickable" id="map2">
+                    <h4 class="text-center text-warning noEvent">Direct Ligation (anticlockwise) <i class="fa fa-times-circle-o text-muted"></i></h4>
+                    <div id="method1-acw-map" class="noEvent"></div>
+                </div>
+                <div class="col-xs-12 com-sm-12 col-md-4 hidden ligUnselected clickable" id="map3">
+                    <h4 class="text-center text-warning noEvent">Indirect Ligation (clockwise) <i class="fa fa-times-circle-o text-muted"></i></h4>
+                    <div id="method2-cw-map" class="noEvent"></div>
+                </div>
+                <div class="col-xs-12 com-sm-12 col-md-4 hidden ligUnselected clickable" id="map4">
+                    <h4 class="text-center text-warning noEvent">Indirect Ligation (anticlockwise) <i class="fa fa-times-circle-o text-muted"></i></h4>
+                    <div id="method2-acw-map" class="noEvent"></div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+<script src="~/Scripts/ecloning-fragment.js"></script>
+@*seq viewer*@
+<script src="~/Scripts/sequence-viewer/sequence-viewer.bundle.js"></script>
+@*feature viewer*@
+<script src="~/Scripts/feature-viewer/feature-viewer.js"></script>
+
+<script src="~/Scripts/ecloning-digestion.js"></script>
+@*show ligation methods*@
+<script src="~/Scripts/ecloning-ligation.js"></script>
+
+<script>
+    //for ligation
+    var method = "X";
+    //"X" is not selected, "D" is direct ligation; "I" is first blunting then ligation; "B" both direct and indirect ligation
+    var direction = "XX";
+    //"XX" is not selected, direct ligation (first pos): "BX" both direction, "CX" postive direction, "AX" negative direction; --indirect ligation (2nd pos): "XB" both direction, "XC" postive direction, "XA" negative direction \\\\
+
+    //map1 - map4, sequence
+    var map1_seq = null, map2_seq = null, map3_seq = null, map4_seq = null;
+
+    $(document).ready(function () {
+        //for selection ligation
+        ///////////////////////////////////need to upda teht e method and direction//////////////////////////////////
+        $("#map1").on('click', function () {
+            //check the div
+            if ($("#map1").hasClass("ligUnselected")) {
+                $("#map1").addClass('ligSelected').removeClass("ligUnselected");
+                $("#map1").find("i").removeClass("fa-times-circle-o").removeClass("text-muted").addClass("fa-check-circle-o").addClass("text-danger");
+
+                ///////////////////////////////////////////////slected
+                console.log([method, direction]);
+                //cal the direction and method
+                if (method == 'X' || method == 'D') {
+                    method = 'D';
+                }
+                else {
+                    //'B' OR 'I'
+                    method = 'B';
+                }
+
+                //cal the ligation type                
+                var array = direction.split('');
+                if (array[0] == 'X' || array[0] == 'C') {
+                    array[0] = 'C';
+                }
+                else {
+                    array[0] = 'B';
+                }
+                direction = array.join('');
+
+                ////////////////////////////////////////////////////////////
+                console.log([method, direction]);
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                //seq
+                if (map1_seq != null) {                    
+                    $("#map1_seq").val(map1_seq);
+                }
+            }
+            else
+            {
+                $("#map1").removeClass("ligSelected").addClass('ligUnselected');
+                $("#map1").find("i").removeClass("fa-check-circle-o").removeClass("text-danger").addClass("fa-times-circle-o").addClass("text-muted");
+
+                ///////////////////////////////////////////////unslected
+                //cal the direction and method
+                if (method == 'D' && direction.split('')[0] == 'C') {
+                    method = 'X';
+                }
+                if (method == 'B' && direction.split('')[0] == 'C') {
+                    method = 'I';
+                }
+
+                //cal the ligation type
+                var array = direction.split('');
+                if (array[0] == "C") {
+                    array[0] = "X";
+                }
+                else {
+                    array[0] = "A";
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                //seq
+                $("#map1_seq").val(null);
+            }
+
+            if ($("#add6").hasClass("disabled")) {
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
+            }
+            if (!$("#show_ligation").hasClass("disabled")) {
+                $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
+            }
+
+        });
+        $("#map2").click(function () {
+            //check the div
+            if ($("#map2").hasClass("ligUnselected")) {
+                $("#map2").removeClass("ligUnselected").addClass('ligSelected');
+                $("#map2").find("i").removeClass("fa-times-circle-o").removeClass("text-muted").addClass("fa-check-circle-o").addClass("text-danger");
+
+                ///////////////////////////////////////////////slected
+                console.log([method, direction]);
+                //cal the direction and method
+                if (method == 'X' || method == 'D') {
+                    method = 'D';
+                }
+                else {
+                    //'B' OR 'I'
+                    method = 'B';
+                }
+
+                //cal the ligation type                
+                var array = direction.split('');
+                if (array[0] == 'X' || array[0] == 'A') {
+                    array[0] = 'A';
+                }
+                else {
+                    array[0] = 'B';
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                //seq
+                if (map2_seq != null) {
+                    $("#map2_seq").val(map2_seq);
+                }
+            }
+            else {
+                $("#map2").removeClass("ligSelected").addClass('ligUnselected');
+                $("#map2").find("i").removeClass("fa-check-circle-o").removeClass("text-danger").addClass("fa-times-circle-o").addClass("text-muted");
+                ///////////////////////////////////////////////unslected
+                //cal the direction and method
+                if (method == 'D' && direction.split('')[0] == 'A') {
+                    method = 'X';
+                }
+                if (method == 'B' && direction.split('')[0] == 'A') {
+                    method = 'I';
+                }
+
+                //cal the ligation type
+                var array = direction.split('');
+                if (array[0] == "A") {
+                    array[0] = "X";
+                }
+                else {
+                    array[0] = "C";
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                $("#map2_seq").val(null);
+            }
+            if ($("#add6").hasClass("disabled")) {
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
+            }
+            if (!$("#show_ligation").hasClass("disabled")) {
+                $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
+            }
+        });
+        $("#map3").click(function () {
+            //check the div
+            if ($("#map3").hasClass("ligUnselected")) {
+                $("#map3").removeClass("ligUnselected").addClass('ligSelected');
+                $("#map3").find("i").removeClass("fa-times-circle-o").removeClass("text-muted").addClass("fa-check-circle-o").addClass("text-danger");
+
+                ///////////////////////////////////////////////slected
+                //cal the direction and method
+                if (method == 'X' || method == 'I') {
+                    method = 'I';
+                }
+                else {
+                    //'B' OR 'I'
+                    method = 'B';
+                }
+
+                //cal the ligation type                
+                var array = direction.split('');
+                if (array[1] == 'X' || array[1] == 'C') {
+                    array[1] = 'C';
+                }
+                else {
+                    array[1] = 'B';
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                //seq
+                if (map3_seq != null) {
+                    $("#map3_seq").val(map3_seq);
+                }
+
+            }
+            else {
+                $("#map3").removeClass("ligSelected").addClass('ligUnselected');
+                $("#map3").find("i").removeClass("fa-check-circle-o").removeClass("text-danger").addClass("fa-times-circle-o").addClass("text-muted");
+                ///////////////////////////////////////////////unslected
+                //cal the direction and method
+                if (method == 'I' && direction.split('')[1] == 'C') {
+                    method = 'X';
+                }
+                if (method == 'B' && direction.split('')[1] == 'C') {
+                    method = 'D';
+                }
+
+                //cal the ligation type
+                var array = direction.split('');
+                if (array[1] == "C") {
+                    array[1] = "X";
+                }
+                else {
+                    array[1] = "A";
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                $("#map3_seq").val(null);
+            }
+            if ($("#add6").hasClass("disabled")) {
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
+            }
+            if (!$("#show_ligation").hasClass("disabled")) {
+                $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
+            }
+        });
+        $("#map4").click(function () {
+            //check the div
+            if ($("#map4").hasClass("ligUnselected")) {
+                $("#map4").removeClass("ligUnselected").addClass('ligSelected');
+                $("#map4").find("i").removeClass("fa-times-circle-o").removeClass("text-muted").addClass("fa-check-circle-o").addClass("text-danger");
+                ///////////////////////////////////////////////slected
+                //cal the direction and method
+                if (method == 'X' || method == 'I') {
+                    method = 'I';
+                }
+                else {
+                    //'B' OR 'I'
+                    method = 'B';
+                }
+
+                //cal the ligation type                
+                var array = direction.split('');
+                if (array[1] == 'X' || array[1] == 'A') {
+                    array[1] = 'A';
+                }
+                else {
+                    array[1] = 'B';
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                //seq
+                if (map4_seq != null) {
+                    $("#map4_seq").val(map4_seq);
+                }
+            }
+            else {
+                $("#map4").removeClass("ligSelected").addClass('ligUnselected');
+                $("#map4").find("i").removeClass("fa-check-circle-o").removeClass("text-danger").addClass("fa-times-circle-o").addClass("text-muted");
+                ///////////////////////////////////////////////unslected
+                //cal the direction and method
+                if (method == 'D' && direction.split('')[1] == 'A') {
+                    method = 'X';
+                }
+                if (method == 'B' && direction.split('')[1] == 'A') {
+                    method = 'D';
+                }
+
+                //cal the ligation type
+                var array = direction.split('');
+                if (array[1] == "A") {
+                    array[1] = "X";
+                }
+                else {
+                    array[1] = "C";
+                }
+                direction = array.join('');
+                ////////////////////////////////////////////////////////////
+                $('#methodLig').val(method);
+                $('#directionLig').val(direction);
+                //seq
+                $("#map4_seq").val(null);
+            }
+
+            if ($("#add6").hasClass("disabled")) {
+                $("#add6").removeClass("disabled").removeClass("noEvent").removeClass("btn-default").addClass('btn-danger');
+            }
+            if (!$("#show_ligation").hasClass("disabled")) {
+                $("#show_ligation").addClass("disabled btn-default").removeClass("btn-danger");
+            }
+        });
+    })
+    
+    //hide the alert
+    $("#success-alert").hide();
+
+    //define a global array for selected enzyme list
+    var enzyArray = [];
+    //define a global array of arrays of enzyme; for digestion
+    var MEDigestArray = [];
+    //global save band ajax data
+    var singleData = {};
+    //global save band ajax data
+    var multipleData = {};
+    //fragment features
+    var featureArray = [];
+
+    //global plasmid id
+    var plasmidId = null;
+
+    //all ladders [{"name": name, "id": id}]
+    var allLadders = [];
+    //global single ladder id
+    var sLadderId = null;
+    //global multiple ladder id
+    var mLadderId = null;
+
+    //curent saved bands [name]
+    var savedBands = [];
+
+    //global gel height
+    var defaultHeight = 300;
+    var gelHeightSingle = defaultHeight;
+    var gelHeightMultiple = defaultHeight;
+    var stepHeight = 25;
+    //all restricition enzymes
+    //global features
+    var allFeatures = [];
+    var sequence = null;
+    var cSequence = null;
+    var seqCount = null;
+    var restricProperty = null;
+
+    $(document).ready(function () {
+        //for copy fragment seq
+        //copy full seq using clipboard.min.js
+        //copy single-cut
+        var clipboard = new Clipboard('#copy-band-single-fseq');
+        clipboard.on('success', function (e) {
+            $('#band-single-msg').text("Sequence Copied!");
+            console.info('Action:', e.action);
+            e.clearSelection();
+            setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+        });
+
+        var clipboard = new Clipboard('#copy-band-single-cseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-single-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-single-msg').text(null); }, 2000);
+        });
+
+        //copy multiple-cut
+        var clipboard = new Clipboard('#copy-band-multiple-fseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-multiple-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+        });
+
+        var clipboard = new Clipboard('#copy-band-multiple-cseq');
+        clipboard.on('success', function (e) {
+            console.info('Action:', e.action);
+            e.clearSelection();
+            $('#band-multiple-msg').text("Sequence Copied!");
+            setTimeout(function () { $('#band-multiple-msg').text(null); }, 2000);
+        });
+    });
+
+    //end of enzyem digesiton
+
+    var stepShown = +$("#ShownStep").text();
+    if (stepShown != -1 && stepShown != "") {
+        var id = "type" + stepShown;
+        $("#" + id).removeClass("hidden");
+        $("#steps").addClass("hidden");
+    }
+
+    var Plasmids = ("@Plasmids");
+    document.getElementById("decodeIt").innerHTML = Plasmids;
+    Plasmids = document.getElementById("decodeIt").innerText;
+
+    var Protocols = ("@Protocols");
+    document.getElementById("decodeIt").innerHTML = Protocols;
+    Protocols = document.getElementById("decodeIt").innerText;
+
+    var Fragments = ("@Fragments");
+    document.getElementById("decodeIt").innerHTML = Fragments;
+    Fragments = document.getElementById("decodeIt").innerText;
+
+    var FragmentMap = ("@FragmentMap");
+    document.getElementById("decodeIt").innerHTML = FragmentMap;
+    FragmentMap = document.getElementById("decodeIt").innerText;
+
+    var Primers = ("@Primers");
+    document.getElementById("decodeIt").innerHTML = Primers;
+    Primers = document.getElementById("decodeIt").innerText;
+
+    var Probes = ("@Probes");
+    document.getElementById("decodeIt").innerHTML = Probes;
+    Probes = document.getElementById("decodeIt").innerText;
+
+    var Restrics = ("@Restrics");
+    document.getElementById("decodeIt").innerHTML = Restrics;
+    Restrics = document.getElementById("decodeIt").innerText;
+
+    //get restrcition property and prototype
+    restricProperty = ("@restricProperty");
+    restricProperty = LoadData(restricProperty);
+
+    try {
+        Plasmids = JSON.parse(Plasmids);
+        Protocols = JSON.parse(Protocols);
+        Fragments = JSON.parse(Fragments);
+        FragmentMap = JSON.parse(FragmentMap);
+        Primers = JSON.parse(Primers);
+        Probes = JSON.parse(Probes);
+        Restrics = JSON.parse(Restrics);
+        $(document).ready(function () {
+            $(".token-input-list-facebook").addClass('token-input-list-facebook form-control text-box single-line');
+        });
+
+        $(document).ready(function () {
+            //show tooltip
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+            $(".plasmid").each(function (i, el) {
+                $(el).tokenInput(Plasmids, {
+                    theme: 'facebook',
+                    hintText: 'Type in plasmid name',
+                    tokenLimit: 1,
+                    onAdd: function (item) {
+                        drawPlasmid(item.id);
+                        $("#digestionDiv").removeClass("hidden");
+                        console.log("Added " + item.id);
+                    },
+                    onDelete: function (item) {
+                        removePlasmid();
+                        console.log("Deleted " + item.id);
+                    },
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+                });
+            });
+
+            $(".protocol").each(function (i, el) {
+                $(el).tokenInput(Protocols, {
+                    theme: 'facebook',
+                    hintText: 'Type in protocol name',
+                    tokenLimit: 1,
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + " (V" + item.version + ")</span></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b><span style='color: gray'>" + " (V" + item.version + ")</span></p></li>" },
+                });
+            });
+
+            $(".fragment").each(function (i, el) {
+                $(el).tokenInput(Fragments, {
+                    theme: 'facebook',
+                    hintText: 'Type in fragment name',
+                    tokenLimit: 1,
+                    onAdd: function (item) {
+                        drawFragment(item.id);
+                        console.log("Added " + item.id);
+                    },
+                    onDelete: function (item) {
+                        removeFragment();
+                        console.log("Deleted " + item.id);
+                    },
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.pos + ")</span></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b><span style='color: gray'>" + item.pos + ")</span></p></li>" },
+                });
+            });
+
+            $(".primer").each(function (i, el) {
+                $(el).tokenInput(Primers, {
+                    theme: 'facebook',
+                    hintText: 'Type in primer name',
+                    tokenLimit: 1,
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+                });
+            });
+
+            $(".probe").each(function (i, el) {
+                $(el).tokenInput(Probes, {
+                    theme: 'facebook',
+                    hintText: 'Type in probe name',
+                    tokenLimit: 1,
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+                });
+            });
+
+            $(".enzyme").each(function (i, el) {
+                $(el).tokenInput(Restrics, {
+                    theme: 'facebook',
+                    hintText: 'Type in probe name',
+                    tokenLimit: 3,
+                    propertyToSearch: "name",
+                    resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b></p></li>" },
+                    tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+                });
+            });
+
+
+        })
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+
+
+    //add step
+    $("#add_exp_step").click(function () {
+        var exp_type = $("#types").val();
+        if (exp_type != "" || exp_type > 0) {
+            $("#steps").addClass("hidden");
+            addStep(exp_type);
+        }
+        else {
+            console.log("please select a value...");
+            $("#step-error").text("Please select a step!")
+        }
+    })
+
+    function addStep(exp_type) {
+        /*
+            type1.Name = "Restriction Enzyme Digestion";
+            type2.Name = "Plasmid Transformation";
+            type3.Name = "Plasmid Miniprep";
+            type4.Name = "Fragment Gel Extraction";
+            type5.Name = "PCR";
+                type6.Name = "Ligation";
+            type7.Name = "Pick Colonies";
+            type8.Name = "Plasmid Maxiprep";
+        */
+        if (exp_type == 1) {
+            $("#type1").removeClass("hidden");
+        }
+        if (exp_type == 2) {
+            $("#type2").removeClass("hidden");
+        }
+        if (exp_type == 3) {
+            $("#type3").removeClass("hidden");
+        }
+        if (exp_type == 4) {
+            $("#type4").removeClass("hidden");
+        }
+        if (exp_type == 5) {
+            $("#type5").removeClass("hidden");
+        }
+        if (exp_type == 6) {
+            $("#type6").removeClass("hidden");
+        }
+        if (exp_type == 7) {
+            $("#type7").removeClass("hidden");
+        }
+        if (exp_type == 8) {
+            $("#type8").removeClass("hidden");
+        }        
+    }
+
+    function drawFragment(fragId) {
+        //fisr check which fragment is it now
+        $("#frag-line").removeClass("hidden");
+        var currentFrag = 0;
+        if ($("#fragment1").hasClass("hidden")) {
+            currentFrag = 1;
+            $("#frag1Id").text(fragId);
+        }
+        else if (!$("#fragment1").hasClass("hidden") && $("#fragment2").hasClass("hidden")) {
+            currentFrag = 2;
+            $("#frag2Id").text(fragId);
+        }
+        else {
+            currentFrag = 0;
+        }
+
+        $.each(FragmentMap, function (i, d) {
+            if (+d.id === +fragId) {
+                var size = +d.fSeq.length;
+                var features = d.featureArray;
+                var id = "frag" + currentFrag + "-map";
+                var enzymes = d.enzymes[0] == d.enzymes[1] ? d.enzymes[0] : d.enzymes[0] + ", " + d.enzymes[1];
+                var fname = name + " (" + enzymes + ", " + d.f_start + "-" + d.f_end + ")";
+                var width = 450;
+                drawLinearMap(features, id, d.fName, size, width);
+                //set panel name header
+                $("#frag" + currentFrag + "-header").text(d.fName);
+
+                //set fSeq and cSeq
+                $("#frag" + currentFrag + "-fId").val(d.fSeq);
+                $("#frag" + currentFrag + "-cId").val(d.cSeq);
+                //prepare to copy seq
+                //copy seq using clipboard.min.js
+                var clipboard = new Clipboard("#frag" + currentFrag + "-fcopy");
+                clipboard.on('success', function (e) {
+                    $("#frag" + currentFrag + "-msg").text("Sequence Copied!");
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    setTimeout(function () { $("#frag" + currentFrag + "-msg").text(null); }, 2000);
+                });
+
+                var clipboard = new Clipboard("#frag" + currentFrag + "-ccopy");
+                clipboard.on('success', function (e) {
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    $("#frag" + currentFrag + "-msg").text("Sequence Copied!");
+                    setTimeout(function () { $("#frag" + currentFrag + "-msg").text(null); }, 2000);
+                });
+                //draw end
+                drawEndSeq("frag" + currentFrag + "-end", d.fSeq, d.cSeq, d.overhangs, 10)
+            }
+        })
+        $("#fragment" + currentFrag).removeClass("hidden");
+    }
+
+    function removeFragment() {
+        //fisr check which fragment is it now
+        var currentFrag = 0;
+        if (!$("#fragment1").hasClass("hidden") && !$("#fragment2").hasClass("hidden")) {
+            currentFrag = 2;
+        }
+        else {
+            currentFrag = 1;
+            $("#frag-line").addClass("hidden");
+        }
+
+        $("#fragment" + currentFrag).addClass("hidden");
+        $("#frag" + currentFrag + "-map").empty();
+    }
+
+    $("#usePlasmid").click(function (e) {
+        e.preventDefault();
+        $(this).parent().addClass("hidden");
+        $(this).parent().prev().removeClass("hidden");
+
+    })
+    $("#useFragment").click(function (e) {
+        e.preventDefault();
+        $(this).parent().addClass("hidden");
+        $(this).parent().next().removeClass("hidden");
+
+    })
+
+    //validate form
+    $("#type1").find("form").on("submit", function () {
+        if ($("#nameDiges").val() == "" || $("#nameDiges").val() == null) {
+            $("#nameDiges-msg").text("Required");
+            return false;
+        }
+        if ($("#plasmidDiges").val() == "" || $("#plasmidDiges").val() == null) {
+            $("#plasmidDiges-msg").text("Required");
+            return false;
+        }
+        if ($("#enzymeDiges").val() == "" || $("#enzymeDiges").val() == null) {
+            $("#enzymeDiges-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
+
+
+    $("#type3").find("form").on("submit", function () {
+        if ($("#nameMini").val() == "" || $("#nameMini").val() == null) {
+            $("#nameMini-msg").text("Required");
+            return false;
+        }
+        if ($("#plasmidMini").val() == "" || $("#plasmidMini").val() == null) {
+            $("#plasmidMini-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
+
+    $("#type8").find("form").on("submit", function () {
+        if ($("#nameMaxi").val() == "" || $("#nameMaxi").val() == null) {
+            $("#nameMaxi-msg").text("Required");
+            return false;
+        }
+        if ($("#plasmidMaxi").val() == "" || $("#plasmidMaxi").val() == null) {
+            $("#plasmidMaxi-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
+
+    $("#type2").find("form").on("submit", function () {
+        if ($("#nameTrans").val() == "" || $("#nameTrans").val() == null) {
+            $("#nameTrans-msg").text("Required");
+            return false;
+        }
+        if ($("#plasmidTrans").val() == "" || $("#plasmidTrans").val() == null) {
+            $("#plasmidTrans-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
+
+    $("#type7").find("form").on("submit", function () {
+        if ($("#nameColony").val() == "" || $("#nameColony").val() == null) {
+            $("#nameColony-msg").text("Required");
+            return false;
+        }        
+        return true;
+    })
+
+    $("#type4").find("form").on("submit", function () {
+        if ($("#nameGel").val() == "" || $("#nameGel").val() == null) {
+            $("#nameGel-msg").text("Required");
+            return false;
+        }
+        if ($("#fragmentGel").val() == "" || $("#fragmentGel").val() == null) {
+            $("#fragmentGel-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
+    
+    $("#type5").find("form").on("submit", function () {
+        if ($("#namePCR").val() == "" || $("#namePCR").val() == null) {
+            $("#namePCR-msg").text("Required");
+            return false;
+        }
+
+        if (!$("#fragmentPCR").parent().parent().hasClass("hidden") && $("#fragmentPCR").val() == "" || $("#fragmentPCR").val() == null) {
+            $("#fragmentPCR-msg").text("Required");
+            return false;
+        }
+        if (!$("#plasmidPCR").parent().parent().hasClass("hidden") && $("#plasmidPCR").val() == "" || $("#plasmidPCR").val() == null) {
+            $("#plasmidPCR-msg").text("Required");
+            return false;
+        }
+        return true;
+    })
+
+    $("#type6").find("form").on("submit", function () {
+        if ($("#nameLig").val() == "" || $("#nameLig").val() == null) {
+            $("#nameLig-msg").text("Required");
+            return false;
+        }
+        if ($("#fragment1Lig").val() == "" || $("#fragment1Lig").val() == null) {
+            $("#fragment1Lig-msg").text("Required");
+            return false;
+        }
+        if ($("#fragment2Lig").val() == "" || $("#fragment2Lig").val() == null) {
+            $("#fragment2Lig-msg").text("Required");
+            return false;
+        }
+        if ($("#plasmidNameLig").val() == "" || $("#plasmidNameLig").val() == null) {
+            $("#plasmidNameLig-msg").text("Required");
+            return false;
+        }
+        if ($("#methodLig").val() == "X" || $("#directionLig").val() == "XX") {
+            $("#msgLig").text("Please select how the fragments are ligated below!");
+            return false;
+        }
+        return true;
+    })
+    //check ligation plasmid name
+    $("#plasmidNameLig").keyup(function () {
+        if ($(this).val().trim() != "" || $(this).val().trim() != null) {
+            $.each(Plasmids, function (i, d) {
+                if (d.name === $(this).val().trim()) {
+                    result = false;
+                }
+            });
+            if (!result) {
+                $("#plasmidNameLig-msg").text("Plasmid name already exists!");
+            }
+        }
+    })
+
+
+    $('#show_ligation').click(function (e) {
+        e.preventDefault();
+        var showLigation = 0;
+        if ($("#nameLig").val() == "" || $("#nameLig").val() == null) {
+            $("#nameLig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($("#fragment1Lig").val() == "" || $("#fragment1Lig").val() == null) {
+            $("#fragment1Lig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($("#fragment2Lig").val() == "" || $("#fragment2Lig").val() == null) {
+            $("#fragment2Lig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($("#plasmidNameLig").val() == "" || $("#plasmidNameLig").val() == null) {
+            $("#plasmidNameLig-msg").text("Required");
+            showLigation = -1;
+        }
+        if ($('#plasmidNameLig').val().trim() != "" && $("#plasmidNameLig").val().trim() != null) {
+            var result = true;
+            $.each(Plasmids, function (i, d) {
+                if (d.name === $('#plasmidNameLig').val().trim()) {
+                    result = false;
+                }
+            });
+            if (!result) {
+                $("#plasmidNameLig-msg").text("Plasmid name already exists!");
+                showLigation = -1;
+            }
+        }
+        if (showLigation === 0) {
+            //show ligation
+            //show ligation methods
+            //get the first frag1 id 
+            var f1Id = +$("#frag1Id").text();
+            var f2Id = +$("#frag2Id").text()
+            show_ligation(f1Id, f2Id);
+            $("#ligationDiv").removeClass("hidden");
+        }
+    })
+
+    function drawPlasmid(plasmid_id){
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("RetrievePlasmidMap", "Experiment")',
+            data: { 'plasmid_id': JSON.stringify(plasmid_id) },
+            success: function (data) {
+                var obj = JSON.parse(data);
+                if (obj.result == "Failed") {
+                    console.log("retrieve data failed for digestion");
+                }
+                else {
+                    //plasmid data is retrieved from server
+                    try
+                    {
+                        $("#seqCount").text(obj.seqCount);
+                        $("#sequence").text(obj.Sequence);
+                        $("#plasmidName").text(obj.Name); //name id is not unique
+                        $("#plasmidId").text(obj.plasmidId);
+                        plasmidId = +$("#plasmidId").text().trim();
+
+                        //get full sequence
+                        sequence = $('#sequence').text().trim();
+                        //get complementary seq
+                        cSequence = gencSeq(sequence);
+                        seqCount = parseInt($('#seqCount').text().trim())
+                        //get plasmid name
+                        name = $('#plasmidName').text().trim();
+                        //get plasmid id
+                        pId = +$("#plasmidId").text().trim();
+
+                        //draw linear map
+                        features = JSON.parse(LoadData(obj.features));
+                        allFeatures = features;
+
+                        //draw features on top
+                        fvFeatures = JSON.parse(LoadData(obj.fvFeatures));
+                        drawFeatures(fvFeatures, sequence, 'plasmid-feature');
+
+                        //display enzyme checkbox
+                        enzymes = JSON.parse(LoadData(obj.enzymes));
+                        methylation = JSON.parse(LoadData(obj.methylation));
+                        displayEnzymeList(enzymes, "enzyme-list");
+
+                        //parse json for restricProperty
+                        restricProperty = JSON.parse(restricProperty);
+
+                        //parse json for enzyme activity
+                        activity = JSON.parse(LoadData(obj.activity));
+
+                        //show enzyme companies and activities
+                        activity = FormatActivity(activity);
+
+                        //get company list
+                        var companies = findCompany(activity);
+                        //parse ladders
+                        ladders = JSON.parse(LoadData(obj.ladders));
+                        //format ladder data
+                        ladders = formatLadder(ladders);
+
+                        //update global ladder name and is array
+                        allLadders = getLadderNameId(ladders);
+                        //parse saved bands
+                        savedBands = JSON.parse(LoadData(obj.saveBands));
+                        //capture user selection of enzyme
+                        $(":checkbox").change(function () {
+                            //allow max 3 selection
+                            var maxSelection = 3;
+                            if ($('input[type=checkbox]:checked').length > maxSelection) {
+                                $(this).prop('checked', false);
+                                //show msg
+                                $("#success-alert").show();
+                            }
+                            else {
+                                $("#success-alert").hide();
+                            }
+                            //change some div setting
+                            $("#gel-single").empty();
+                            $("#band-feature-single").empty();
+                            $("#band-ends-single").empty();
+                            $("#gel-info-single").addClass("hidden");
+
+                            $("#gel-multiple").empty();
+                            $("#gel-panel-multiple").addClass("hidden");
+                            $("#band-feature-multiple").empty();
+                            $("#band-ends-multiple").empty();
+                            $("#gel-info-multiple").addClass("hidden");
+
+                            //update enzymeArray
+                            if (this.checked) {
+                                //add enzyme to enzyArray
+                                enzyArray = updateArray($(this).val(), enzyArray, "add");
+                                //add digesiton enzyme array
+                                //digestArray = updateDigest($(this).val(), digestArray, "add");
+                            }
+                            else {
+                                //remove enzyme to enzyArray
+                                enzyArray = updateArray($(this).val(), enzyArray, "remove");
+                                //add digesiton enzyme array
+                                //digestArray = updateDigest($(this).val(), digestArray, "remove");
+                            }
+                            //=======================================================================
+                            //show cut overview for multiple enzymes
+                            //show panel title
+                            genCutTitle("cut-title", enzyArray);
+                            //generate plasmid cut-map overview using giraffe
+                            drawCuts("cut-map", enzymes, enzyArray, features, seqCount, name);
+                            //show cut info with tabs
+                            //==========================================================================
+                            genEnzymeTabs(enzyArray, 'enzyme-info');
+                            //genCutMap for each enzyme using giraffe
+                            drawCutMap(enzymes, enzyArray, features, seqCount, name);
+                            //show cut positions and methylation info in panel-body
+                            showDigestInfo(enzymes, enzyArray, methylation);
+                            //show cut prototype and property
+                            showRestricProperty(enzyArray, restricProperty);
+
+                            //=========================================================================
+                            //show activity tabs
+                            genActivityTab(enzyArray, 'activity-info', companies);
+                            //show enzyme activities
+                            showActivity(enzyArray, activity, companies);
+                            //===============================
+                            //match enzyme-info and activity-info
+                            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                                var target = $(e.target).attr("href") // activated tab
+                                if (target.length > 9 && target.substring(0, 9) == "#activity") {
+                                    //this is the activity tab
+                                    var tab = target.substring(10, target.length);
+                                    if (tab != "" || tab != "undefined") {
+                                        $('a[href="#' + tab + '"]').tab('show');
+                                    }
+                                }
+                                else {
+                                    var tab = target.substring(1, target.length);
+                                    if (tab != "" || tab != "undefined") {
+                                        $('a[href="#activity-' + tab + '"]').tab('show');
+                                    }
+                                }
+                            });
+
+                            //===========================================================================
+                            //draw gel
+                            //generate single enzyme digestion bands======******************==============
+                            var SEbands = enzyArray.length > 0 ? genSEBands(enzyArray, enzymes, methylation, seqCount) : [];
+                            //draw gel stimulation
+                            if (SEbands.length > 0) {
+                                //choose ladder based on the band sizes
+                                var SEladder = chooseLadder(SEbands, ladders);
+                                //set global ladderId
+                                sLadderId = +SEladder[0].id;
+                                //add selection box
+                                LadderSelection("ladder-selection-single", sLadderId, allLadders);
+                                //draw gel stimulation
+                                drawGel("#gel-single", SEladder, SEbands, gelHeightSingle); //change 300 to change the gel height == runing lognger
+
+                                //ladder selection box change========================================
+                                $('#ladder-selection-single-selection').change(function () {
+                                    //change the sLadderId
+                                    sLadderId = +$(this).val();
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                });
+                                //plus/minus button====================================================
+                                $('#increase-single').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightSingle = gelHeightSingle + stepHeight;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                })
+                                $('#decrease-single').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightSingle = gelHeightSingle - stepHeight > 0 ? gelHeightSingle - stepHeight : 0;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                })
+                                $('#default-single').click(function () {
+                                    gelHeightSingle = defaultHeight; //default value
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === sLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-single").empty();
+                                    drawGel("#gel-single", newLadder, SEbands, gelHeightSingle);
+                                });
+                            }
+                            //deal with multiple enzyme digestion==================***************============
+                            //generate MEDigestArray, find all the possible emzyme cobination. Only allow for max 3 enzymes
+                            var MEDigestArray = genMEDigestion(enzyArray);
+                            var MEbands = MEDigestArray.length > 0 ? genMEBands(MEDigestArray, enzymes, seqCount) : [];
+                            if (MEbands.length > 0) {
+                                $("#gel-panel-multiple").removeClass("hidden");
+                                var MEladder = chooseLadder(MEbands, ladders);
+                                //set global ladderId
+                                mLadderId = +MEladder[0].id;
+                                //add selection box
+                                LadderSelection("ladder-selection-multiple", mLadderId, allLadders);
+                                //draw gel stimulation                    
+                                drawGel("#gel-multiple", MEladder, MEbands, gelHeightMultiple); //change 300 to change the gel height == runing lognger
+                                //ladder selection box change==================================================
+                                $('#ladder-selection-multiple-selection').change(function () {
+                                    mLadderId = +$(this).val();
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                });
+                                //plus/minus button====================================================
+                                $('#increase-multiple').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightMultiple = gelHeightMultiple + stepHeight;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                })
+                                $('#decrease-multiple').click(function () {
+                                    //change the gelHeightSingle
+                                    gelHeightMultiple = gelHeightMultiple - stepHeight > 0 ? gelHeightMultiple - stepHeight : 0;
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                })
+                                $('#default-multiple').click(function () {
+                                    gelHeightMultiple = defaultHeight; //default value
+                                    var newLadder = $.grep(ladders, function (d, i) {
+                                        return d.id === mLadderId;
+                                    })
+                                    //redraw gel stimulation
+                                    $("#gel-multiple").empty();
+                                    drawGel("#gel-multiple", newLadder, MEbands, gelHeightMultiple);
+                                });
+                            }
+                            //show the result div
+                            if (enzyArray.length > 0) {
+                                //show the result panel
+                                if ($("#result").hasClass("hidden")) {
+                                    $("#result").removeClass("hidden");
+                                };
+                            }
+                            else {
+                                //hide the result panel
+                                if (!$("#result").hasClass("hidden")) {
+                                    $("#result").addClass("hidden");
+                                }
+                            }
+                        });
+                    }
+                    catch (e)
+                    {
+                        console.log(e);
+                    }
+
+                    //save fragment
+                    $('#band-button-single').on("click", function () {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveFragment", "Map")',
+                            data: { 'band': JSON.stringify(singleData) },
+                            success: function (data) {
+                                if (data.result == true) {
+                                    savedBands.push(data.band);
+                                    $('#band-button-single i').removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                                    $('#band-button-single').addClass('disabled');
+                                    //scrollTo('#band-single-msg');
+                                    $('#band-single-msg').text("Fragment Saved!");
+                                    setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
+                                }
+                                else {
+                                    //scrollTo('#band-single-msg');
+                                    $('#band-single-msg').text("Fragment NOT Saved!");
+                                    setTimeout(function () { $('#band-single-msg').text(null); }, 5000);
+                                }
+                            }
+                        });
+                    });
+                    $('#band-button-multiple').on("click", function () {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveFragment", "Map")',
+                            data: { 'band': JSON.stringify(multipleData) },
+                            success: function (data) {
+                                if (data.result == true) {
+                                    savedBands.push(data.band);
+                                    $('#band-button-multiple').find('i').eq(0).removeClass('fa-heart-o').addClass("text-danger fa-heart");
+                                    $('#band-button-multiple').addClass("disabled");
+                                    //scrollTo('#band-multiple-msg');
+                                    $('#band-multiple-msg').text("Fragment Saved!");
+                                    setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
+                                } else {
+                                    //scrollTo('#band-multiple-msg');
+                                    $('#band-multiple-msg').text("Fragment NOT Saved!");
+                                    setTimeout(function () { $('#band-multiple-msg').text(null); }, 5000);
+                                }
+                            }
+                        });
+                    });
+                };
+            }
+        });
+    }
+
+    function removePlasmid() {
+        $("#digestionDiv").addClass("hidden");
+        $("#plasmid-feature").empty();
+        $("#enzyme-list").find('h3').next().empty();
+        $("#cut-map").empty();
+        $("#enzyme-info").empty();
+        $("#activity-info").empty();
+        $("#gel-single").empty();
+        $("#band-feature-single").empty();
+        $("#band-ends-single").empty();
+        $("#gel-multiple").empty();
+        $("#band-feature-multiple").empty();
+        $("#band-ends-multiple").empty();        
+    }
+</script>

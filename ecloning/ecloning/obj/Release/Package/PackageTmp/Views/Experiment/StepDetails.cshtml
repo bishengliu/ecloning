@@ -1,0 +1,1803 @@
+﻿@model ecloning.Models.ExpStep
+@{
+    ViewBag.Title = "Step Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Features = ViewBag.Features;
+    var nFeatures = ViewBag.nFeatures;
+    var nPlasmid = ViewBag.nPlasmid;
+    var Fragment1 = ViewBag.Fragment1;
+    var Fragment2 = ViewBag.Fragment2;
+    var npIdNames = (List<ecloning.Models.pIdName>)ViewBag.npIdNames;
+    var db = new ecloning.Models.ecloningEntities();
+    var outDate = "";
+    if (Model.dt != null)
+    {
+        var day = Model.dt.Value.Day;
+        var month = Model.dt.Value.Month;
+        var year = Model.dt.Value.Year;
+        var dc = new ecloning.Models.DateConvert();
+        outDate = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+    }
+    //get the protocol
+    var protocol = db.protocols.Find(Model.protocol_id);
+    var protocolName = "";
+    if (protocol != null)
+    {
+        protocolName = protocol.name;
+    }
+
+    //get th plasmid    
+    var plasmid = db.plasmids.Find(Model.plasmid_id);
+
+    //parse enzymes
+    var enzymeId = new List<int>();
+    List<ecloning.Models.EnzymeIdName> enzymeIdName = new List<ecloning.Models.EnzymeIdName>();
+    if (Model.emzyme_id != null)
+    {
+        var enzymeString = Model.emzyme_id.Split(',');
+        foreach (var id in enzymeString)
+        {
+            enzymeId.Add(Int32.Parse(id));
+        }
+        //get the enzyme name       
+        var enzyme = new ecloning.Models.EnzymeIdName();
+        foreach (var item in enzymeId)
+        {
+            var eIdName = new ecloning.Models.EnzymeIdName();
+            eIdName.id = item;
+            eIdName.Name = enzyme.getName(item);
+            enzymeIdName.Add(eIdName);
+        }
+    }
+
+    //get the primers and probe
+    var FPrimer = "";
+    var RPrimer = "";
+    var Probe = "";
+    if (Model.forward_primer_id != null)
+    {
+        var primer = db.primers.Find(Model.forward_primer_id);
+        FPrimer = primer.name + " (" + primer.sequence + ")";
+    }
+    if (Model.reverse_primer_id != null)
+    {
+        var primer = db.primers.Find(Model.reverse_primer_id);
+        RPrimer = primer.name + " (" + primer.sequence + ")";
+    }
+    if (Model.probe_id != null)
+    {
+        var probe = db.probes.Find(Model.probe_id);
+        Probe = probe.name + " (" + probe.sequence + ")";
+    }
+
+    //ligation method
+    var method = "";
+    if(Model.ligation_method != null)
+    {
+        if (Model.ligation_method == "D")
+        {
+            method = "Direct Ligation";
+        }
+        else if (Model.ligation_method == "I")
+        {
+            method = "Indirect Ligation";
+        }
+        else if (Model.ligation_method == "B")
+        {
+            method = "Direct and Indirect Ligation";
+        }
+        else
+        {
+            method = "";
+        }
+    }
+
+    //ligation direction
+    var direction = "";
+    if(Model.ligation_direction != null)
+    {
+        var direction1 = Model.ligation_direction.Substring(0, 1);
+        var direction2 = Model.ligation_direction.Substring(1, 1);
+        if (direction1 == "C")
+        {
+            direction = "Direct Ligation, Clockwise";
+        }
+        else if(direction1 == "A")
+        {
+            direction = "Direct Ligation, Anticlockwise";
+        }
+        else if (direction1 == "B")
+        {
+            direction = "Direct Ligation, Clockwise and Anticlockwise";
+        }
+        else
+        {
+            direction = "";
+        }
+
+        if (direction2 == "C")
+        {
+            if(direction != "")
+            {
+                direction += "; Direct Ligation, Clockwise";
+            }
+            else
+            {
+                direction += "; Direct Ligation, Clockwise";
+            }
+        }
+        else if (direction2 == "A")
+        {
+            if (direction != "")
+            {
+                direction += "; Direct Ligation, Anticlockwise";
+            }
+            else
+            {
+                direction += " Direct Ligation, Anticlockwise";
+            }
+        }
+        else if (direction2 == "B")
+        {
+            if (direction != "")
+            {
+                direction += "; Direct Ligation, Clockwise and Anticlockwise";
+            }
+            else
+            {
+                direction += " Direct Ligation, Clockwise and Anticlockwise";
+            }
+        }
+        else
+        {
+            direction = "";
+        }
+    }
+    
+    
+    //azure
+    var azureBlob = new ecloning.Models.AzureBlob();
+}
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-12">
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment #@Model.exp_id</h3>
+    </div>
+    <div class="col-sm-5 col-xs-12">
+        <div class="col-xs-6">
+            <h3 class="pull-left">
+                <a href="@Url.Action("AddResult", "Experiment", new { id = Model.id, type_id = Model.type_id })" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Add Experiment Results">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Results</span>
+                </a>
+            </h3>
+        </div>
+        <div class="col-xs-6">
+            <h3 class="pull-right">
+                <a href="@Url.Action("Details", "Experiment", new { id = Model.exp_id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Go Back to Experiment Details">
+                    <i class="fa fa-caret-left"></i>
+                    <span>Experiments</span>
+                </a>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <p class="text-center text-danger">@TempData["msg"]</p>
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-center text-danger">EXPERIMENT STEP</h3>
+        <hr class="topDangerLine"/>
+        @if (Model.type_id == 1)
+        {
+            //Restriction Enzyme Digestion
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Restriction Enzyme Digestion
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Enzymes
+                    </dt>
+                    <dd>
+                        @if (enzymeIdName.Count() > 0)
+                        {
+                            foreach (var e in enzymeIdName)
+                            {
+                                <i class="fa fa-scissors text-danger"></i>
+                                <span class="text-primary">@e.Name</span>
+                                @:&nbsp;&nbsp;
+                            }
+
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else if (Model.type_id == 2)
+        {
+            //Plasmid Transformation
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Plasmid Transformation
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else if (Model.type_id == 3)
+        {
+            //Plasmid Miniprep
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Plasmid Miniprep
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else if (Model.type_id == 4)
+        {
+            //Fragment Gel Extraction
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Fragment Gel Extraction
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Fragment
+                    </dt>
+                    <dd>
+                        @if (Model.frag1_id != null)
+                        {
+                            var id = "fragment1-" + Model.frag1_id;
+                            var headId = "fragment1-header-" + Model.frag1_id;
+                            var mapId = "fragment1-map-" + Model.frag1_id;
+                            var endId = "fragment1-end-" + Model.frag1_id;
+
+                            var fId = "fragment1-fSeq-" + Model.frag1_id;
+                            var cId = "fragment1-cSeq-" + Model.frag1_id;
+
+                            var fIdRef = "#fragment1-fSeq-" + Model.frag1_id;
+                            var cIdRef = "#fragment1-cSeq-" + Model.frag1_id;
+
+                            var fIdCopy = "copy-fragment1-fSeq-" + Model.frag1_id;
+                            var cIdCopy = "copy-fragment1-cSeq-" + Model.frag1_id;
+                            var cIdMsg = "copy-msg1-" + Model.frag1_id;
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <div class="panel panel-primary" id="@id">
+                                    <div class="panel-heading text-center" id="@headId"></div>
+                                    <div class="panel-body fixed-panel">
+                                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                            <input id="@fId" value="" />
+                                            <input id="@cId" value="" />
+                                        </div>
+                                        <div id="@endId" class="col-xs-12"></div>
+                                        <br />
+                                        <p id="@cIdMsg" class="text-info"></p>
+                                    </div>
+                                    <div class="panel-footer clearfix">
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                            <i class="fa fa-copy text-danger"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                            <i class="fa fa-copy text-primary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else if (Model.type_id == 5)
+        {
+            //PCR
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Restriction Enzyme Digestion
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </dd>
+                    <dt>
+                        Forward Primer
+                    </dt>
+                    <dd>
+                        @FPrimer
+                    </dd>
+                    <dt>
+                        Reverse Primer
+                    </dt>
+                    <dd>
+                        @RPrimer
+                    </dd>
+                    <dt>
+                        Probe
+                    </dt>
+                    <dd>
+                        @Probe
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else if (Model.type_id == 6)
+        {
+            //Ligation
+            <div class="col-xs-12 col-sm-12 col-lg-6">
+                <dl class="">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Ligation
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Fragment1
+                    </dt>
+                    <dd>
+                        @if (Model.frag1_id != null)
+                        {
+                            var id = "fragment1-" + Model.frag1_id;
+                            var headId = "fragment1-header-" + Model.frag1_id;
+                            var mapId = "fragment1-map-" + Model.frag1_id;
+                            var endId = "fragment1-end-" + Model.frag1_id;
+
+                            var fId = "fragment1-fSeq-" + Model.frag1_id;
+                            var cId = "fragment1-cSeq-" + Model.frag1_id;
+
+                            var fIdRef = "#fragment1-fSeq-" + Model.frag1_id;
+                            var cIdRef = "#fragment1-cSeq-" + Model.frag1_id;
+
+                            var fIdCopy = "copy-fragment1-fSeq-" + Model.frag1_id;
+                            var cIdCopy = "copy-fragment1-cSeq-" + Model.frag1_id;
+                            var cIdMsg = "copy-msg1-" + Model.frag1_id;
+                            <div class="">
+                                <div class="panel panel-primary" id="@id">
+                                    <div class="panel-heading text-center" id="@headId"></div>
+                                    <div class="panel-body fixed-panel">
+                                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                            <input id="@fId" value="" />
+                                            <input id="@cId" value="" />
+                                        </div>
+                                        <div id="@endId" class="col-xs-12"></div>
+                                        <br />
+                                        <p id="@cIdMsg" class="text-info"></p>
+                                    </div>
+                                    <div class="panel-footer clearfix">
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                            <i class="fa fa-copy text-danger"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                            <i class="fa fa-copy text-primary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        }
+                    </dd>
+                    <dt>
+                        Fragment2
+                    </dt>
+                    <dd>
+                        @if (Model.frag2_id != null)
+                        {
+                            var id = "fragment2-" + Model.frag2_id;
+                            var headId = "fragment2-header-" + Model.frag2_id;
+                            var mapId = "fragment2-map-" + Model.frag2_id;
+                            var endId = "fragment2-end-" + Model.frag2_id;
+
+                            var fId = "fragment2-fSeq-" + Model.frag2_id;
+                            var cId = "fragment2-cSeq-" + Model.frag2_id;
+
+                            var fIdRef = "#fragment2-fSeq-" + Model.frag2_id;
+                            var cIdRef = "#fragment2-cSeq-" + Model.frag2_id;
+
+                            var fIdCopy = "copy-fragment2-fSeq-" + Model.frag2_id;
+                            var cIdCopy = "copy-fragment2-cSeq-" + Model.frag2_id;
+                            var cIdMsg = "copy-msg2-" + Model.frag2_id;
+                            <div class="">
+                                <div class="panel panel-primary" id="@id">
+                                    <div class="panel-heading text-center" id="@headId"></div>
+                                    <div class="panel-body fixed-panel">
+                                        <div id="@mapId" class="col-xs-12 max-width"></div>
+                                        <div class="navbar-fixed-bottom" style="position:relative; left:-99999px;">
+                                            <input id="@fId" value="" />
+                                            <input id="@cId" value="" />
+                                        </div>
+                                        <div id="@endId" class="col-xs-12"></div>
+                                        <br />
+                                        <p id="@cIdMsg" class="text-info"></p>
+                                    </div>
+                                    <div class="panel-footer clearfix">
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@fIdRef" id="@fIdCopy" data-toggle="tooltip" title="Copy Forward Sequence">
+                                            <i class="fa fa-copy text-danger"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="@cIdRef" id="@cIdCopy" data-toggle="tooltip" title="Copy Complement Sequence">
+                                            <i class="fa fa-copy text-primary"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        }
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-lg-6">
+                <dl>
+                    <dt>
+                        Method
+                    </dt>
+                    <dd>
+                        @method
+                    </dd>
+                    <dt>
+                        Direction
+                    </dt>
+                    <dd>
+                        @direction
+                    </dd>
+                    <dt>
+                        New Plasmid(s)
+                    </dt>
+                    <dd>
+                        @if (npIdNames.Count() > 0)
+                        {
+                            int i = 0;
+                            foreach (var np in npIdNames)
+                            {
+                                var id = "plasmid-map-"+ i;
+                                <div class="col-xs-6">
+                                    <div class="plasmidDiv">
+                                        <div class="col-xs-12 noPadding text-center text-primary">@np.name</div>
+                                        <div class="col-xs-12">
+                                            <a href="@Url.Action("Index", "Map", new { id = np.id, tag = "personDispaly" })" target="_blank">
+                                                <div id="@id"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                i++;
+                            }
+                        }                        
+                    </dd>
+                </dl>
+            </div>
+
+             @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else if (Model.type_id == 7)
+        {
+            //Pick Colonies
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Pick Colonies
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+        else
+        {
+            //Model.type_id == 8
+            //Plasmid Maxiprep
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Category
+                    </dt>
+                    <dd>
+                        Plasmid Maxiprep
+                    </dd>
+                    <dt>
+                        Step Name
+                    </dt>
+                    <dd>
+                        @Model.name
+                    </dd>
+                    <dt>
+                        Protocol
+                    </dt>
+                    <dd>
+                        @protocolName
+                    </dd>
+                    <dt>
+                        Plasmid
+                    </dt>
+                    <dd>
+                        @if (plasmid != null)
+                        {
+                            <div class="plasmidDiv fixedWidth">
+                                <div class="col-xs-12 noPadding text-center text-primary">@plasmid.name</div>
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("Index", "Map", new { id = Model.plasmid_id, tag = "personDispaly" })" target="_blank">
+                                        <div id="plasmid-map"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        }                        
+                    </dd>
+                    <dt>
+                        Remarks
+                    </dt>
+                    <dd>
+                        @Html.Raw(Model.des)
+                    </dd>
+                    <dt>
+                        Date
+                    </dt>
+                    <dd>
+                        @outDate
+                    </dd>
+                </dl>
+            </div>
+            @*display result*@
+            <div class="clearfix"></div>
+            <br />
+            <h3 class="text-center text-primary">EXPERIMENT RESULT</h3>
+            <div class="topPrimaryLine"></div>
+            <div class="clearfix"></div>
+            if (!Model.hasResult)
+            {
+                <br />
+                <h4 class="text-info">No result added yet!</h4>
+            }
+            else
+            {
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-1">Date</th>
+                                <th class="col-xs-4">File(s)</th>
+                                <th class="col-xs-6">Remarks</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.results)
+                            {
+                                //format date
+                                var Date = "";
+                                var day = Model.dt.Value.Day;
+                                var month = Model.dt.Value.Month;
+                                var year = Model.dt.Value.Year;
+                                var dc = new ecloning.Models.DateConvert();
+                                Date = dc.GetDate(day, month, year, "ddMMyyyy", "/");
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                string fileType = null;
+
+                                string ModelId = "result" + item.id;
+                                string HrefModelId = "#" + ModelId;
+
+                                <tr>
+                                    <td>@Date</td>
+                                    <td>
+                                        @if (item.result_upload != null)
+                                        {
+                                            if (ecloning.Models.ImageExtensionCheck.IsImage(item.result_upload) == true)
+                                            {
+                                                //get the fileType
+                                                var nameArray = item.result_upload.Split('.');
+                                                fileType = nameArray[nameArray.Length - 1];
+
+                                                var displayImg = new ecloning.Models.DisplayImage();
+                                                memoryStream = displayImg.loadImage(item.result_upload);
+                                                if (memoryStream != null)
+                                                {
+                                                    <span>
+                                                        <!-- Trigger the modal with a button -->
+                                                        <button type="button" class="btn btn-link btn-xs" data-toggle="modal" href="@Url.Action("Displayimage", "Experiment", new { filename = item.result_upload, step_table_id = Model.id, des = item.result_des })" data-target=@HrefModelId><img width="100" height="100" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" /></button>
+                                                    </span>
+                                                        <!-- Modal -->
+                                                    <div id=@ModelId class="modal fade" role="dialog">
+                                                        <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title text-center text-info">Result Image</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p class="text-center"><i class="fa fa-spinner fa-pulse text-danger"></i><span class="text-center text-info">Loading ...</span></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <br />
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Download", "Experiment", new { fileName = item.result_upload, actionName = "StepDetails", id = Model.id })">
+                                                    <i class="fa fa-download"></i>
+                                                    <span>@item.result_upload.Substring(item.result_upload.IndexOf('%') + 1)</span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.result_des)</td>
+                                    <td>
+                                        <a href="@Url.Action("DeleteResult", "Experiment", new { id = item.id })" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Remove this result">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+@*copy/cut to clipboard*@
+<script src="~/Scripts/clipboard/clipboard.min.js"></script>
+<script src="~/Scripts/ecloning-fragment.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function () {
+        //get fearues
+        var Features = ("@Features");
+        document.getElementById("decodeIt").innerHTML = Features;
+        Features = document.getElementById("decodeIt").innerText;
+        //get Fragment1
+        var Fragment1 = ("@Fragment1");
+        document.getElementById("decodeIt").innerHTML = Fragment1;
+        Fragment1 = document.getElementById("decodeIt").innerText;
+        //get Fragment2
+        var Fragment2 = ("@Fragment2");
+        document.getElementById("decodeIt").innerHTML = Fragment2;
+        Fragment2 = document.getElementById("decodeIt").innerText;
+
+        //get fearues
+        var nFeatures = ("@nFeatures");
+        document.getElementById("decodeIt").innerHTML = nFeatures;
+        nFeatures = document.getElementById("decodeIt").innerText;
+        //get plasmid id
+        //nPlasmid
+        var nPlasmid = ("@nPlasmid");
+        document.getElementById("decodeIt").innerHTML = nPlasmid;
+        nPlasmid = document.getElementById("decodeIt").innerText;
+        try
+        {
+            Features = JSON.parse(Features);
+            nFeatures = JSON.parse(nFeatures);
+            nPlasmid = JSON.parse(nPlasmid);
+            Fragment1 = JSON.parse(Fragment1);
+            Fragment2 = JSON.parse(Fragment2);
+            //draw the map
+            if (Features != null)
+            {
+                var fData = [Features[0].pSeqCount, Features];
+                var gd = GiraffeDraw();
+                gd.read(fData);
+                gd.CircularMap({
+                    'map_dom_id': "plasmid-map",
+                    'map_width': 450,
+                    'map_height': 250
+                });
+            }
+            if (Fragment1 != null) {
+                //draw fragment1
+                var size = +Fragment1.fSeq.length;
+                var features = Fragment1.featureArray;
+                var id = "fragment1-map-" + Fragment1.id;
+                var enzymes = Fragment1.enzymes[0] == Fragment1.enzymes[1] ? Fragment1.enzymes[0] : Fragment1.enzymes[0] + ", " + Fragment1.enzymes[1];
+                var fname = name + " (" + enzymes + ", " + Fragment1.f_start + "-" + Fragment1.f_end + ")";
+                var width = 450;
+                drawLinearMap(features, id, fname, size, width);
+                //set panel name header
+                $('#fragment1-header-' + Fragment1.id).text(fname);
+
+                //set fSeq and cSeq
+                $('#fragment1-fSeq-' + Fragment1.id).val(Fragment1.fSeq);
+                $('#fragment1-cSeq-' + Fragment1.id).val(Fragment1.cSeq);
+                //prepare to copy seq
+                //copy seq using clipboard.min.js
+                var clipboard = new Clipboard('#copy-fragment1-fSeq-' + Fragment1.id);
+                clipboard.on('success', function (e) {
+                    $('#copy-msg1-' + Fragment1.id).text("Sequence Copied!");
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    setTimeout(function () { $('#copy-msg1-' + Fragment1.id).text(null); }, 2000);
+                });
+
+                var clipboard = new Clipboard('#copy-fragment1-cSeq-' + Fragment1.id);
+                clipboard.on('success', function (e) {
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    $('#copy-msg1-' + Fragment1.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg1-' + Fragment1.id).text(null); }, 2000);
+                });
+                //draw end
+                drawEndSeq("fragment1-end-" + Fragment1.id, Fragment1.fSeq, Fragment1.cSeq, Fragment1.overhangs, 10);
+            }
+            if (Fragment2 != null) {
+                //draw fragment2
+                var size = +Fragment2.fSeq.length;
+                var features = Fragment2.featureArray;
+                var id = "fragment2-map-" + Fragment2.id;
+                var enzymes = Fragment2.enzymes[0] == Fragment2.enzymes[1] ? Fragment2.enzymes[0] : Fragment2.enzymes[0] + ", " + Fragment2.enzymes[1];
+                var fname = name + " (" + enzymes + ", " + Fragment2.f_start + "-" + Fragment2.f_end + ")";
+                var width = 450;
+                drawLinearMap(features, id, fname, size, width);
+                //set panel name header
+                $('#fragment2-header-' + Fragment2.id).text(fname);
+
+                //set fSeq and cSeq
+                $('#fragment2-fSeq-' + Fragment2.id).val(Fragment2.fSeq);
+                $('#fragment2-cSeq-' + Fragment2.id).val(Fragment2.cSeq);
+                //prepare to copy seq
+                //copy seq using clipboard.min.js
+                var clipboard = new Clipboard('#copy-fragment2-fSeq-' + Fragment2.id);
+                clipboard.on('success', function (e) {
+                    $('#copy-msg2-' + Fragment2.id).text("Sequence Copied!");
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    setTimeout(function () { $('#copy-msg2-' + Fragment2.id).text(null); }, 2000);
+                });
+
+                var clipboard = new Clipboard('#copy-fragment2-cSeq-' + Fragment2.id);
+                clipboard.on('success', function (e) {
+                    console.info('Action:', e.action);
+                    e.clearSelection();
+                    $('#copy-msg2-' + Fragment2.id).text("Sequence Copied!");
+                    setTimeout(function () { $('#copy-msg2-' + Fragment2.id).text(null); }, 2000);
+                });
+                //draw end
+                drawEndSeq("fragment2-end-" + Fragment2.id, Fragment2.fSeq, Fragment2.cSeq, Fragment2.overhangs, 10);
+            }
+            //new plasmids from ligation
+            if (nPlasmid.length >0) {
+                //draw maps
+                //nFeatures
+                $.each(nPlasmid, function (i, d) {
+                    var id = "plasmid-map-" + i;
+                    var nfeatures = $.grep(nFeatures, function (n, ni) {
+                        return n.pId === +d;
+                    });
+                    var fData = [nfeatures[0].pSeqCount, nfeatures];
+                    var gd = GiraffeDraw();
+                    gd.read(fData);
+                    gd.CircularMap({
+                        'map_dom_id': id,
+                        'map_width': 400,
+                        'map_height': 250
+                    });
+                })
+            }
+        }
+        catch(e)
+        {
+
+        }
+    })
+</script>

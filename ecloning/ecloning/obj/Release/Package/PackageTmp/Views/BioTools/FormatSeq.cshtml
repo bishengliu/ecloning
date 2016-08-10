@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "FormatSeq";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning">Format Sequence</h3>
+    </div>
+</div>
+<div class="alert alert-info alert-dismissible fade in col-xs-12 col-sm-offset-1 col-sm-10" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    Formart DNA or RNA Sequence only accepts <span><em>single-stranded</em></span> sequence. You can use the following tools to remove non "a/A", "t/T", "g/G", "c/C" and "u/U" letters, space, line break, number etc. nonprintable and printable ASCII characters.
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Format a single-stranded DNA sequence
+            </div>
+            <div class="panel-body">
+                <p class="text-info">Paste text into the textbox below and then click any place outside the box.</p>
+                <textarea class="form-control" id="dna" rows="15"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    //remove all non letter in the seqeuce input
+    $('#dna').change(function () {
+        var before = $('#dna').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsvwxyzBDEFHIJKLMNOPQRSVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#dna').val(after);
+    });
+</script>

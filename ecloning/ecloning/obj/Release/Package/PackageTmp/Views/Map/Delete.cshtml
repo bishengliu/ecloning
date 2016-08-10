@@ -1,0 +1,119 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
+
+@{
+    ViewBag.Title = "Delete Features";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+    string Name = (string)ViewBag.Name;
+    int seqCount = (int)ViewBag.SeqLength;
+    int plasmidId = (int)ViewBag.PlasmidId;
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-warning text-center">Remove Features of @Name (@seqCount bp)</h3>
+    </div>
+</div>
+<br/>
+<span class="text-danger">
+    @TempData["msg"]
+</span>
+<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+    <p class="text-info">Select the features you want to delete:</p>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <div class="table-responsive">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>
+                            <span class="glyphicon glyphicon-trash text-danger"></span>
+                        </th>
+                        <th>
+                            Feature
+                        </th>
+                        <th>
+                            Label
+                        </th>
+                        <th>
+                            5' Position
+                        </th>
+                        <th>
+                            3' Position
+                        </th>
+                        <th>
+                            Clockwise
+                        </th>
+                        <th>
+                            Cut Position (5'-3')
+                        </th>
+                        <th>
+                            Show Feature
+                        </th>
+
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="id[]" value=@item.id />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.common_feature.label)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.start)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.end)
+                            </td>
+                            <td>
+                                @if (item.clockwise == 1)
+                        {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.cut)
+                            </td>
+                            <td>
+                                @if (item.show_feature == 1)
+                        {
+                                    <span>Yes</span>
+                                }
+                                else
+                                {
+                                    <span>No</span>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+
+                </table>
+            </div>
+
+            
+            <div class="form-group">
+                <div class="col-xs-12 col-md-10">
+                    <input type="text" name="plasmid_id" value=@plasmidId class="hidden" />
+                    <input type="submit" value="Delete Feature" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+

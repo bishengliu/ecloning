@@ -1,0 +1,211 @@
+﻿@model ecloning.Areas.Admin.Models.Restriction
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    var Codes = (IOrderedQueryable<ecloning.Models.letter_code>)ViewBag.Codes;
+}
+
+
+@Html.Partial("_BioTools")
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-10">
+            <h3 class="text-primary"><span class="fa fa-plus"></span> Restriction Enzyme</h3>
+        </div>
+        <div class="col-sm-2">
+            <br class="hidden-xs" />
+            <a class="btn btn-default" href="@Url.Action("Create", "Restriction")">
+                <i class="fa fa-toggle-on  text-danger"></i>
+                <span class="">Multiple Cuts</span>
+            </a>
+            <a class="btn btn-default pull-right" href="@Url.Action("Index", "Restriction")">
+                <i class="fa fa-chevron-circle-left text-info"></i>
+                <span class="">Cancel</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Restriction Enzyme with Multiple Cuts
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+                            <p class="text-danger">@TempData["error"]</p>
+                            @using (Html.BeginForm())
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.name, "Enzyme Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.forward_seq, "Forward Sequence (5' - 3')", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.EditorFor(model => model.forward_seq, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.forward_seq, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.forward_cut, "For Most Left Cut", htmlAttributes: new { @class = "control-label col-md-4 text-danger" })
+                                        <div class="col-md-8">
+                                            @Html.LabelFor(model => model.forward_cut, "Forward Cut Position", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.forward_cut, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.forward_cut, "", new { @class = "text-danger" })
+                                            <p><span class="text-info" style="font-size:80%;"><em>Position starts with 1 and fill the position before the cut</em></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.reverse_cut, "  ", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.LabelFor(model => model.reverse_cut, "Complementary Cut Position", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.reverse_cut, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.reverse_cut, "", new { @class = "text-danger" })
+                                            <p><span class="text-info" style="font-size:80%;"><em>Position starts with 1 and fill the position before the cut</em></span></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.forward_cut2, "For Most Right Cut", htmlAttributes: new { @class = "control-label col-md-4 text-danger" })
+                                        <div class="col-md-8">
+                                            @Html.LabelFor(model => model.forward_cut2, "Forward Cut Position", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.forward_cut2, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.forward_cut2, "", new { @class = "text-danger" })
+                                            <p><span class="text-info" style="font-size:80%;"><em>Position starts with 1 and fill the position before the cut</em></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.reverse_cut2, "  ", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.LabelFor(model => model.reverse_cut2, "Complementary Cut Position", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.reverse_cut2, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.reverse_cut2, "", new { @class = "text-danger" })
+                                            <p><span class="text-info" style="font-size:80%;"><em>Position starts with 1 and fill the position before the cut</em></span></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.staractitivity, "Star Activity", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("staractitivity", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.staractitivity, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.inactivation, "Heat Inactivation", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("inactivation", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.inactivation, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.dam, "Dam Sensitivity", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("dam", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.dam, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.dcm, "Dcm Sensitivity", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("dcm", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.dcm, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.cpg, "CpG Sensitivity", htmlAttributes: new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("cpg", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.cpg, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <div class="col-md-offset-2 col-md-2">
+                                            <input type="submit" value="Add Enzyme" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    How to find cut positions
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
+                            <div id="cut_prototype">
+                                <img src="~/images/BdaI.jpg" class="img-rounded img-responsive" alt="bdaI" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Letter Codes
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+                            <div id="letter_code" class="row">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>Letter Codes</th>
+                                                <th>Necleotides</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Codes.ToList())
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.name
+                                                    </td>
+                                                    <td>
+                                                        @item.necleotide
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = "Compare Plasmids";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Plasmids = ViewBag.Plasmids;
+    var Features = ViewBag.Features;
+    var fLabels = ViewBag.fLabels;
+    var msg = (string)TempData["msg"];
+}
+
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Compare Plasmids</h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<span id="compare-type" class="hidden"></span>
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <p id="error" class="text-danger text-center"></p>
+        <p id="msg" class="text-info text-center"></p>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <label for="plasmid" class="required">Search plasmids to compare:</label>
+                    <input type="text" name="plasmid" class="form-control" id="plasmid">
+                </div>
+            </div>
+
+            <div class="form-group">                
+                <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                    <br />
+                    <input type="submit" id="compare-feature" value="Compare Features" class="btn btn-block btn-primary" />
+                    <input type="submit" id="compare" value="Compare Maps" class="btn btn-block btn-primary" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-lg-11 col-lg-offset-1" id="maps">
+
+    </div>
+    <div class="col-xs-12 col-lg-11 col-lg-offset-1" id="features">
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+@Scripts.Render("~/bundles/d3")
+<script src="~/Scripts/ecloning.js"></script>
+<script src="~/Scripts/ecloning-compare.js"></script>
+<script>
+    var Plasmids = ("@Plasmids");
+    Plasmids = LoadData(Plasmids);
+
+    var Features = ("@Features");
+    Features = LoadData(Features);
+
+    var fLabels = ("@fLabels");
+    fLabels = LoadData(fLabels);
+
+    try {
+        data = JSON.parse(Plasmids);
+        Features = JSON.parse(Features);
+        fLabels = JSON.parse(fLabels);
+
+        //token list
+        $(document).ready(function () {
+            $("#plasmid").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type plasmid name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "name",
+                preventDuplicates: true,
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.length + "bp" + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+            $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+        });
+
+        $(document).ready(function () { 
+            //submit form to compare maps
+            $('#compare').click(compare);
+            //submit form to compare features
+            $('#compare-feature').click(compareFeature);
+
+            //redraw the chart when resize the window
+            $(window).resize(function () {
+                if ($('#compare-type').text() == "features") {
+                    $("#maps").empty();
+                    $("#features").empty();
+
+                    var idString = $('#plasmid').val();
+                    //get id list and then generate maps and remove duplicates
+                    var idArray = unique(idString.split(','));
+                    drawFeatures(idArray, Features, fLabels);                
+                }
+            });
+        });
+    } catch (e) {
+        console.log(e);
+        $('#error').text("Unable to load plasmid data, please try again later!");
+        $("#compare").addClass("disabled");
+        $("#compare-feature").addClass("disabled");
+    }
+</script>

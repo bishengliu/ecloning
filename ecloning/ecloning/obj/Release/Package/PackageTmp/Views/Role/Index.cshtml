@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ecloning.Models.RoleViewModel>
+@{
+    ViewBag.Title = "Group People";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
+        <h3 class="text-center text-primary">Group People</h3>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+        <br class="hidden-xs"/>
+        @using (Html.BeginForm("Invite", "Role"))
+        {
+            <div class="input-group pull-right">
+                <span class="input-group-addon" id="basic-addon">@Html.Raw('@')</span>
+                <input type="email" name="email" required="required" class="form-control" placeholder="Invite a person to the group..." aria-describedby="basic-addon">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="submit"><i class="fa fa-send-o text-danger"></i></button>
+                </span>
+            </div>
+        }
+        <p class="text-info pull-right">@TempData["msg"]</p>            
+    </div>
+</div>
+<br/>
+<div class="col-xs-12 col-md-offset-1 col-md-10">
+    @foreach (var item in Model)
+    {
+        var Roles = string.Join(", ", item.Roles.ToArray());
+        var className = "panel panel-primary";
+        if (item.isAssistant || ViewBag.userId == item.userId)
+        {
+            className = "panel panel-danger";
+        }
+
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+            <div class="panel-group">
+                <div class="@className">
+                    <div class="panel-heading text-center">@item.userName</div>
+                    <div class="panel-body text-center">
+                        <span class="text-center"><a href="mailto:@item.Email">@item.Email</a></span>
+                    </div>
+                    <div class="panel-footer clearfix">
+                        @if (!item.Roles.Contains("GroupLeader"))
+                        {
+                            if (ViewBag.userId != item.userId)
+                            {
+                                if (item.isAssistant)
+                                {
+                                    <a href="@Url.Action("Assistant", "Role", new { userId = @item.userId, tag="remove" })" class="pull-left">
+                                        <i class="fa fa-toggle-on text-danger"></i>
+                                        <span class="text-info">Senior</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Assistant", "Role", new { userId = @item.userId, tag="add" })" class="pull-left">
+                                        <i class="fa fa-toggle-off text-info"></i>
+                                        <span class="text-info">Senior</span>
+                                    </a>
+                                }
+
+                                if (item.isActive != null && (bool)item.isActive)
+                                {
+                                    <a href="@Url.Action("Lock", "Role", new { email = @item.Email, tag="lock"})" class="pull-right" data-toggle="tooltip" title="Lock a user">
+                                        <i class="fa fa-unlock text-info"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Lock", "Role", new { email = @item.Email, tag="unlock"})" class="pull-right" data-toggle="tooltip" title="Unlock a user">
+                                        <i class="fa fa-lock text-danger"></i>
+                                    </a>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <a class="pull-left disabled noEvent">
+                                <i class="fa fa-toggle-on text-muted"></i>
+                                <span class="text-muted">Senior</span>
+                            </a>
+                            <a class="pull-right disabled">
+                                <i class="fa fa-unlock text-muted"></i>
+                            </a>
+                        }
+                        
+                    </div>
+                </div>                
+            </div>
+
+            
+        </div>
+    }           
+</div>
+<div class="alert alert-success navbar-fixed-bottom" id="success-alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <span>&nbsp;&nbsp;</span><span class="fa fa-info-circle"></span><span class="text-danger">*</span>&nbsp;: Senior researchers can help the group leader to maintain the group-shared plasmids, etc.
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        //initiate tooltip from bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

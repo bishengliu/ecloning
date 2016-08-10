@@ -1,0 +1,64 @@
+﻿@model ecloning.Models.ExperimentViewModal
+@{
+    ViewBag.Title = "Add Experiment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-flask"></i> Experiment</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Index", "Experiment")" class="btn btn-default">
+                <i class="fa fa-caret-left"></i>
+                <span>Experiments</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<div class="">
+    @using (Html.BeginForm())
+    {
+        <div id="generalInfo" class="col-xs-12 col-sm-offset-1 col-sm-10">
+            <h3 class="text-info text-center"><i>General Information</i></h3>
+            <br/>
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-6 col-lg-4">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-3 col-lg-4" })
+                    <div class="col-md-6 col-lg-4">
+                        @Html.TextAreaFor(model => model.des, 4, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-lg-offset-4 col-md-6 col-lg-4">
+                        <div class="pull-right">
+                            <button class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="create an experiment without adding steps" id="add_exp_no_step"><i class="fa fa-plus-circle"></i><span> Experiment</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+  
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        //show tooltip
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    });
+</script>

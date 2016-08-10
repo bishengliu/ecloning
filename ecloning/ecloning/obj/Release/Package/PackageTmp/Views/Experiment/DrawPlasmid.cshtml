@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "DrawPlasmid";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="plasmid" class="noEvent"></div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/d3")
+
+@*show ligation methods*@
+<script src="~/Scripts/ecloning-ligation.js"></script>
+
+<script>
+    var fSeqFront = '---AAAGGAGGCCAGT'; //f1
+    var fSeqMiddle = 'GCATCAGAGAGACGCTGAAACTGTATGCGGAAAAGGAGGCCAGTGCATCAGAGAGTCGCAAACAGCTGTGAAGTCGCGTT'; //f2
+    var fSeqEnd = 'CTCAAGAATTTGCAGCAGGCT---'; //f1
+
+    var cSeqFront = '---TTTCCTCCGGTCACGTA'; //f1
+    var cSeqMiddle = 'GTCTCTCTGCGACTTTGACATACGCCTTTTCCTCCGGTCACGTAGTCTCTCAGCGTTTGTCGACACTTCAGCGCAAGAGT'; //f2
+    var cSeqEnd = 'TCTTAAACGTCGTCCGA---'; //f1
+
+    var fSeqArray = [fSeqFront, fSeqMiddle, fSeqEnd];
+    var cSeqArray = [cSeqFront, cSeqMiddle, cSeqEnd];
+    var fBluntingArray = [100, 20];
+    var cBluntingArray = [21, 99];
+
+    DrawPlasmid(fSeqArray, cSeqArray, false, fBluntingArray, cBluntingArray,"pACK-Luc", 1000, "#plasmid");
+
+
+</script>

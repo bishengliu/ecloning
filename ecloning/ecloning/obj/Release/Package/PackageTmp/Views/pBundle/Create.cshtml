@@ -1,0 +1,219 @@
+﻿@model ecloning.Models.pBundle
+@{
+    ViewBag.Title = "Create Bundle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Features = ViewBag.Features;
+    var Bundles = ViewBag.Bundles;
+    var msg = (string)TempData["msg"];
+    var idString = (string)ViewBag.IdString;
+    int Count = (int)ViewBag.Count;
+    List<int> pId = (List<int>)ViewBag.pId;
+}
+
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-10">
+        <h3 class="text-warning text-center">Create a new plasmid bundle</h3>
+    </div>
+</div>
+<span id="decodeIt" class="hidden"></span>
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <p id="error" class="text-danger text-center"></p>
+        <p id="msg" class="text-info text-center"></p>
+        <div class="row">
+            <div class="row">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="hidden">
+                    <input id="plasmidID" name="idString" value=@idString >
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                    <div class="col-xs-12">
+                        @Html.LabelFor(model => model.Name, "Bundle Name", htmlAttributes: new { @class = "control-label required" })
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                        <div class="col-xs-12">
+                            @Html.LabelFor(model => model.Upload, "Upload file", htmlAttributes: new { @class = "control-label" })
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Upload" id="file_name" readonly>
+                                <span class="input-group-btn">
+                                    <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="file_fn" id="file_fn" onchange="getFilePath()" /></span>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Upload, "", new { @class = "text-danger" })
+                            <p id="max_size" class="text-danger" style="font-size:90%;"></p>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12">
+                        <div class="col-xs-12">
+                            @Html.LabelFor(model => model.Des, "Bundle Description", htmlAttributes: new { @class = "control-label" })
+                            @Html.TextAreaFor(model => model.Des, 6, 150, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Des, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                for(int i = 0; i< Count; i++)
+                {
+                    var mapId = "map-" + @pId[i].ToString();
+                    var modalMapId = "modal-map-" + @pId[i].ToString();
+                    var modalId = "modal-" + @pId[i].ToString();
+                    var modalRefId = "#modal-" + @pId[i].ToString();
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <div class="col-xs-12" id=@mapId></div>
+                        <div class="col-xs-12">
+                            <!-- Trigger the modal with a button -->
+
+                            <a href="#" data-toggle="modal" data-target=@modalRefId class="pull-right">
+                                <i class="fa fa-2x fa-search-plus"></i>
+                                <span class=""></span>
+                            </a>
+
+                            <!-- Modal -->
+                            <div id=@modalId class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title text-center">Plasmid Map</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id=@modalMapId></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                          <div class="col-xs-12 hidden">
+                              @Html.LabelFor(model => model.Plasmids[i].plasmidId, "Plasmid Id", htmlAttributes: new { @class = "control-label" })
+                              @Html.EditorFor(model => model.Plasmids[i].plasmidId, new { htmlAttributes = new { @class = "form-control", @Value = pId[i] } })
+                              @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidId, "", new { @class = "text-danger" })
+                          </div>
+                              @Html.LabelFor(model => model.Plasmids[i].plasmidRole, "Comment", htmlAttributes: new { @class = "control-label" })
+                              @Html.TextAreaFor(model => model.Plasmids[i].plasmidRole, 2, 150, new { @class = "form-control" })
+                              @Html.ValidationMessageFor(model => model.Plasmids[i].plasmidRole, "", new { @class = "text-danger" })
+                       </div>
+                    </div>   
+                 }
+                 <div class="form-group col-sm-12">
+                     <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                         <br />
+                         <input type="submit" id="addBundle" value="Add Bundle" class="btn btn-block btn-primary" />
+                     </div>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/giraffe")
+<script src="~/Scripts/ecloning.js"></script>
+<script>
+
+    //<reference path="~/Scripts/jquery-2.1.0-vsdoc.js" />
+    $(document).ready(function () {
+
+        var Features = ("@Features");
+        Features = LoadData(Features);
+        //draw plasmid map (also in modals)
+        try {
+            Features = JSON.parse(Features);
+            
+            //console.log(Features);
+            var IdString = $('#plasmidID').val();
+            //process the idString to array
+            var idStringArray = IdString.split(',');
+            var idArray = [];
+            $.each(idStringArray, function (index, value) {
+                idArray.push(parseInt(value));
+            })
+            //console.log(idArray);
+
+            //draw maps
+            $.each(idArray, function (index, value) {
+                mapId = "map-" + value;
+                modalMapId = "modal-map-" + value;
+                draw2Maps(Features, mapId, modalMapId, value, 348, 1048);
+            });
+
+
+            //redraw maps in modal
+            $('.modal-body div div svg text tspan').click({ idArray: idArray, Features: Features }, redrawModalMap);
+
+        }
+        catch (e) {
+            console.log(e);
+            $('#error').text("Unable to load plasmid maps, please try again later!");
+            $("#addBundle").addClass("disabled");
+        }
+
+    });
+
+
+    //validate the form submission
+    $('form').submit(function () {
+
+        //check upload file size
+        if ($('#file_name').val() && typeof ($('#file_fn')[0].files) != "undefined") {
+            //check upload file size
+            var size = parseFloat($('#file_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+            if (size > 10) {
+                $('#max_size').text('Maximum upload file size is 10MB!');
+                return false;
+            }
+        }
+
+        var Name = $('#Name').val();
+        //get bundle names to check the unique of the bundle name
+        var Bundles = ("@Bundles");
+        Bundles = LoadData(Bundles);
+        try {
+            Bundles = JSON.parse(Bundles);
+
+            if (!Name.trim()) {
+                $('#error').text("\"Bundle Name\" is required!");
+                $('#msg').text(null);
+                return false;
+            }
+            if (Name.trim() && $.inArray(Name.trim(), Bundles) !== -1) {
+                $('#error').text("\"Bundle Name\" has been taken, please give a different name!");
+                $('#msg').text(null);
+                return false;
+            }
+
+            return true;
+        }
+        catch (e) {
+            console.log(e);
+            $('#error').text("Unable to check \"Bundle Name\", please try again later!");
+            $("#addBundle").addClass("disabled");
+            return false;
+        }
+    });
+
+    //get the upload file name
+    function getFilePath() {
+        var fullPath = document.getElementById("file_fn").value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById("file_name").value = fileName;
+    }
+</script>
+
+

@@ -1,0 +1,70 @@
+﻿@model  ecloning.Models.CollaborationExp
+@{
+    ViewBag.Title = "Collaboration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+    int Id = ViewBag.expId;
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title text-center text-info">Who do you want to collaborate?</h4>
+</div>
+
+<div class="row">
+    <div class="col-sm-2 hidden-xs">&nbsp;</div>
+    <div class="col-sm-10 col-xs-12">
+        <br />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group required">
+                    @Html.Label("Person", htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.DropDownList("person", null, "--  Select  --", htmlAttributes: new { @class = "form-control", id= "choose_person", multiple = "multiple" })
+                        @Html.ValidationMessageFor(model => model.person, "", new { @class = "text-danger" })
+                        <p class="text-danger" id="error"></p>
+                    </div>
+                </div>
+                <div class="form-group hidden">
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.exp_id, new { htmlAttributes = new { @class = "form-control", @Value=Id } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6 col-md-offset-3 col-xs-12">
+                        @*<a class="btn btn-block btn-primary">
+                            <i class="fa fa-share-alt"></i>
+                            <span>Collaboration</span>
+                        </a>*@
+                        <input type="submit" value="Collaboration" class="btn btn-block btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-1 hidden-xs">&nbsp;</div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#group-share").chosen();
+    });
+
+    $('form').on("submit", function () {
+        if ($("#choose_person").val() == "" || $("#choose_person").val() == null) {
+            $("#error").text("Required!");
+            return false;
+        }
+        return true;
+    })
+</script>

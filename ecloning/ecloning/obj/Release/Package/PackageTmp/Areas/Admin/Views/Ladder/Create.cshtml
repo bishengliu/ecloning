@@ -1,0 +1,154 @@
+﻿@model ecloning.Models.mladder
+@{
+    ViewBag.Title = "Add Ladder";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+    var Count = (int)ViewBag.Count;
+}
+
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-10">
+            <h3 class="text-primary"><span class="fa fa-plus"></span> Ladder</h3>
+        </div>
+        <div class="col-sm-2">
+            <br class="hidden-xs" />
+            <a class="btn btn-default pull-right" href="@Url.Action("Index", "Ladder")">
+                <i class="fa fa-chevron-circle-left text-info"></i>
+                <span class="">Cancel</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        <div class="col-xs-12 col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Add Ladder
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            @using (Html.BeginForm())
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12" style="display: inline-block">                                    
+                                        <div class="form-group required">
+                                            @Html.LabelFor(model => model.ladder_type, "Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.DropDownList("ladder_type", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.ladder_type, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group required">
+                                            @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group required">
+                                            @Html.LabelFor(model => model.company_id, "Company", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.DropDownList("company_id", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.company_id, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.orderref, "Cat#", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.orderref, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.orderref, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="display: inline-block">
+                                        <div class="form-group">
+                                            <div class="col-xs-10">
+                                                <p class="text-primary text-center">Fragment</p>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="pull-right">
+                                                    <a class="btn btn-sm btn-default" data-toggle="tooltip" title="Add fragment" id="add_fragment">
+                                                        <i class="fa fa-plus-circle text-primary"></i>
+                                                    </a>
+                                                    <a class="btn btn-sm btn-default" data-toggle="tooltip" title="Remove fragment" id="remove_fragment">
+                                                        <i class="fa fa-minus-circle text-danger"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @for (var i = 0; i < Count; i++)
+                                        {
+                                            var divId = "fragment-" + i;
+                                            <div id=@divId class="fragmentDiv">
+                                                <div class="col-xs-4">
+                                                    <div class="form-group required">
+                                                        @Html.LabelFor(model => model.ladderSize[i].size, "Size(bp)", htmlAttributes: new { @class = "control-label col-md-6" })
+                                                        <div class="col-md-6">
+                                                            @Html.EditorFor(model => model.ladderSize[i].size, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ladderSize[i].size, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <div class="form-group required">
+                                                        @Html.LabelFor(model => model.ladderSize[i].mass, "Mass", htmlAttributes: new { @class = "control-label col-md-6" })
+                                                        <div class="col-md-6">
+                                                            @Html.EditorFor(model => model.ladderSize[i].mass, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ladderSize[i].mass, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <div class="form-group required">
+                                                        @Html.LabelFor(model => model.ladderSize[i].Rf, "Rf(mm)", htmlAttributes: new { @class = "control-label col-md-6" })
+                                                        <div class="col-md-6">
+                                                            @Html.EditorFor(model => model.ladderSize[i].Rf, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ladderSize[i].Rf, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-10">
+                                            <input type="submit" value="Add Ladder" class="btn btn-primary pull-right" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/ecloning.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#add_fragment').on('click', function () {
+            var count = $('.fragmentDiv').length;
+            console.log(count);
+            var html = ladderSize(count);
+            $('#fragment-0').parent().append(html);
+        })
+        $('#remove_fragment').on('click', function () {
+            var count = $('.fragmentDiv').length;
+            if (count > 1) {
+                $('#fragment-' + (count - 1)).remove();
+            }
+            else {
+                alert("Cannot remove the last fragment!");
+            }           
+        })
+    });
+    
+</script>

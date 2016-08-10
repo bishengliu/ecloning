@@ -1,0 +1,70 @@
+﻿@model ecloning.Models.common_feature
+
+@{
+    ViewBag.Title = "Delete Feature";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-md-offset-1 col-md-10 col-sm-12 col-xs-12">
+        <div>
+            <h3 class="text-danger">Are you sure you want to delete this?</h3>
+        </div>
+
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-link" /> |
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-link" })
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table">
+                <tr>
+                    <th>
+                        Feature Category
+                    </th>
+                    <th>
+                        Feature Name
+                    </th>
+                    <th>
+                        Sequence
+                    </th>
+                    <th>
+                        Remarks
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.plasmid_feature.des)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.label)
+                    </td>
+                    <td>
+                        @if (Model.sequence.Count() >= 50)
+                        {
+
+                            var GenerateModel = new ecloning.Models.ModalSeq(Model.sequence, Model.group_id, Model.label, 125);
+                            <span>@Html.Raw(GenerateModel.ModalRawHTML())</span>
+                        }
+                        else
+                        {
+                            <span>@Model.sequence</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.des)
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+

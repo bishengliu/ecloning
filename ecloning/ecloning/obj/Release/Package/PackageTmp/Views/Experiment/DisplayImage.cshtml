@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Display Image";
+    Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+    string fileName = ViewBag.fileName;
+    int Id = ViewBag.Id;
+    string Des = ViewBag.Des;
+    MemoryStream memoryStream = new MemoryStream();
+    string fileType = null;
+    //get the fileType
+    var nameArray = fileName.Split('.');
+    fileType = nameArray[nameArray.Length - 1];
+    var displayImg = new ecloning.Models.DisplayImage();
+    memoryStream = displayImg.loadImage(fileName);
+}
+
+
+@if (memoryStream != null)
+{
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title text-center text-primary">RESULT IMAGE</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-7">
+                        <img width="700" height="700" src="data:image/@fileType;base64,@(Convert.ToBase64String(memoryStream.ToArray()))" />
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="leftLine">
+                            <span class="text-info"><strong>Remarks: </strong></span><br /><span>@Html.Raw(Des)</span><br /><br />
+                            <hr class="dotted-line" />
+                            <a href="@Url.Action( "Download", "Experiment", new { fileName = fileName, actionName = "StepDetails", id = Id })" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Download the origin image">
+                                <i class="fa fa-download"></i>
+                                <span>Download</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+
+}
+
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

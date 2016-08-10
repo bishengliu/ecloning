@@ -1,0 +1,280 @@
+﻿@model ecloning.Models.PlasmidViewModel
+
+@{
+    ViewBag.Title = "Add Plasmid";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var JsonPlasmid = ViewBag.JsonPlasmid;
+    var db = new ecloning.Models.ecloningEntities();
+
+}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-offset-2 col-sm-offset-4 col-sm-4">
+            <h3 class="text-warning">Add Plasmid</h3>
+        </div>
+        <div class="col-sm-offset-0 col-sm-4 col-xs-offset-4" style="position:relative;top:15px;">
+            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    </div>
+    <hr class="dotted-line" />
+    <span id="decodeIt" class="hidden"></span>
+    <div class="row">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return uploadSize();" }))
+        {
+            @Html.AntiForgeryToken()
+            <p class="text-danger">@TempData["msg"]</p>
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block">
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(model => model.sequence, 18, 150, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            @Html.LabelFor(model => model.seq_length, "Length", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.seq_length, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.seq_length, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.expression_system, "Expression System", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("expression_system", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.expression_system, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.expression_subsystem, "Expression Subsystem", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.expression_subsystem, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.expression_subsystem, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.promotor, "Promoter", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("promotor", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.promotor, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.polyA, "Poly A", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("polyA", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.polyA, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6" style="display: inline-block">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.resistance, "Resistance", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(model=>model.resistance, new SelectList(db.dropdownitems.Where(c => c.category == "Resistance").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                @Html.ValidationMessageFor(model => model.resistance, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.reporter, "Reporter", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(model=>model.reporter, new SelectList(db.dropdownitems.Where(c => c.category == "Reporter").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                @Html.ValidationMessageFor(model => model.reporter, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.selection, "Selection Marker", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(model=>model.selection, new SelectList(db.dropdownitems.Where(c => c.category == "SelectMarker").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                @Html.ValidationMessageFor(model => model.selection, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.insert, "Insert/Gene", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.insert, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.insert, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.insert_species, "Insert Species", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("insert_species", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.insert_species, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.usage, "Experimental Use", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(model=>model.usage, new SelectList(db.dropdownitems.Where(c => c.category == "PlasmidUse").OrderBy(g => g.text), "text", "value"), new { @class = "form-control", multiple = "multiple" })
+                                @Html.ValidationMessageFor(model => model.usage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.plasmid_type, "Plasmid Type", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("plasmid_type", null, "--  Select  --", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.plasmid_type, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.img_fn, "File Upload", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="img_name" readonly>
+                                        <span class="input-group-btn">
+                                            <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="img_fn" id="img_fn" onchange="getFilePath()" /></span>
+                                        </span>
+                                    </div>
+                                @Html.ValidationMessageFor(model => model.img_fn, "", new { @class = "text-danger" })
+                                <p id="max_size" class="text-danger" style="font-size:90%;"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ref_plasmid, "Linked Plasmid", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ref_plasmid, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ref_plasmid, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.addgene, "Addgene#", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.addgene, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.addgene, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group hidden">
+                            @Html.LabelFor(model => model.d, htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.d, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.d, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.people_id, "Researcher", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("people_id", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.people_id, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.des, "Remarks", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(model => model.des, 6, 150, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-5 col-sm-2">
+                            <input type="submit" value="Add Plasmid" class="btn btn-block btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    function uploadSize() {
+
+        if (typeof ($('#img_fn')[0].files) != "undefined") {
+            //check upload file size
+            var size = parseFloat($('#img_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+            if (size > 10) {
+                $('#max_size').text('Maximum upload file size is 10MB!');
+                return false;
+            }
+        }
+    }
+</script>
+<script>
+    function getFilePath() {
+        var fullPath = document.getElementById("img_fn").value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById("img_name").value = fileName;
+    }
+</script>
+
+<script>    
+    //get plasmid json data
+    var JsonPlasmid = ("@JsonPlasmid");
+    document.getElementById("decodeIt").innerHTML = JsonPlasmid;
+    JsonPlasmid = document.getElementById("decodeIt").textContent;
+    try
+    {
+        JsonPlasmid = JSON.parse(JsonPlasmid);
+
+        $(document).ready(function () {
+            $("#ref_plasmid").tokenInput(JsonPlasmid, {
+                theme: 'facebook',
+                hintText: 'Type plasmid\'s name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "name",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.seqLen + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+            //$("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+        });
+    }
+    catch(e)
+    {
+        $("#ref_plasmid").addClass("hidden");
+        $(".token-input-list-facebook").addClass("hidden");
+    }
+</script>
+<script>
+    //use jquery chosen plugin
+    $(document).ready(function () {
+        $("#expression_system").chosen();
+        $("#promotor").chosen();
+        $("#polyA").chosen();
+        $("#reporter").chosen();
+        $("#selection").chosen();
+        $("#usage").chosen();
+        $("#insert_species").chosen();
+        $("#plasmid_type").chosen();
+        $("#resistance").chosen();
+        $("#people_id").chosen();
+    });
+</script>
+<script>
+    //remove all non letter in the seqeuce input
+    $('#sequence').change(function () {
+        var before = $('#sequence').val();
+        //strip out non-alpha characters and convert to uppercase
+        var after = before.replace(/[^a-zA-Z]+|\s+$|[0-9]+/g, '').toUpperCase();
+        after = after.replace(/[bdefhijklmnopqrsuvwxyzBDEFHIJKLMNOPQRSUVWZYX]+|\s+$|[0-9]+/g, '').toUpperCase();
+        $('#sequence').val(after);
+
+        //calculate length and fill the length input
+        var seqLength = after.length;
+        $("#seq_length").val(seqLength);
+    });
+</script>

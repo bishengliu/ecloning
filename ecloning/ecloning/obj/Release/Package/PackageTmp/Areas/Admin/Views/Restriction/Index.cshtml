@@ -1,0 +1,156 @@
+﻿@model IEnumerable<ecloning.Models.restri_enzyme>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_BioToolsLayout.cshtml";
+}
+
+@Html.Partial("_BioTools")
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-sm-9">
+            <h3 class="text-primary"><span><i class="fa fa-scissors">&nbsp;</i></span>Restriction Enzymes</h3>
+        </div>
+        <div class="col-sm-3">
+            <br class="hidden-xs"/>
+            <a class="btn btn-default" href="@Url.Action("preDelete", "Restriction")">
+                <i class="fa fa-trash-o text-danger"></i>
+                <span class="">Delete Enzymes</span>
+            </a>
+            <a class="btn btn-default pull-right" href="@Url.Action("Create", "Restriction")">
+                <i class="fa fa-plus text-info"></i>
+                <span class="">New Enzyme</span>
+            </a>         
+        </div>
+    </div>
+    <div class="row">
+        <hr/>
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-offset-1 col-md-10 table-responsive">
+                        <table class="table table-condensed tableTopLine" id="enzymeTable">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" class="text-center col-sm-2 no-sort">
+                                        Enzyme
+                                    </th>
+                                    <th rowspan="2" class="text-center col-sm-5 no-sort">
+                                        Prototype
+                                    </th>
+
+                                    <th colspan="5" class="text-center col-sm-5 no-sort">
+                                        Properties
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center col-sm-1 no-sort">
+                                        <span class="fa fa-star text-primary"></span>
+                                    </th>
+                                    <th class="text-center col-sm-1 no-sort">
+                                        <span class="glyphicon glyphicon-fire text-primary"></span>
+                                    </th>
+                                    <th class="text-center col-sm-1 no-sort">
+                                        <span class="text-primary">Dam</span>
+                                    </th>
+                                    <th class="text-center col-sm-1 no-sort">
+                                        <span class="text-primary">Dcm</span>
+                                    </th>
+                                    <th class="text-center col-sm-1 no-sort">
+                                        <span class="text-primary">CpG</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                    {
+                                        string symbol = "<span></span>";
+                                        var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
+                                    <tr>
+                                        <td class="text-center">
+                                            <strong class="text-warning">@Html.DisplayFor(modelItem => item.name)</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (item.forward_cut2 != null && item.reverse_cut2 != null)
+                                            {
+                                                @Html.Raw(enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2))
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
+                                            }
+                                        </td>
+                                        <td class="text-center vert-align">
+                                            @if (item.staractitivity == true)
+                                        {
+                                                @Html.Raw(enzymeSybol.StarActivitySymbol((bool)item.staractitivity))
+                                        }
+                                        else
+                                        {
+                                                @Html.Raw(symbol)
+                                        }
+                                        </td>
+                                        <td class="text-center vert-align">
+                                            @if (item.inactivation != null)
+                                        {
+                                                @Html.Raw(enzymeSybol.InactivationSymbol((int)item.inactivation))
+                                        }
+                                        else
+                                        {
+                                                @Html.Raw(enzymeSybol.InactivationSymbol(0))
+                                        }
+                                        </td>
+                                        <td class="text-center vert-align">
+                                            @if (item.dam == true)
+                                        {
+                                                @Html.Raw(enzymeSybol.DamSymbol((bool)item.dam))
+                                        }
+                                        else
+                                        {
+                                                @Html.Raw(symbol)
+                                        }
+                                        </td>
+                                        <td class="text-center vert-align">
+                                            @if (item.dcm == true)
+                                        {
+                                                @Html.Raw(enzymeSybol.DcmSymbol((bool)item.dcm))
+                                        }
+                                        else
+                                        {
+                                                @Html.Raw(symbol)
+                                        }
+                                        </td>
+                                        <td class="text-center vert-align">
+                                            @if (item.cpg == true)
+                                        {
+                                                @Html.Raw(enzymeSybol.CpGSymbol((bool)item.cpg))
+                                        }
+                                        else
+                                        {
+                                                @Html.Raw(symbol)
+                                        }
+                                        </td>
+                                    </tr>
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table').DataTable({
+            responsive: true,
+            "iDisplayLength": 25,
+            "bSort": false
+        });
+    });
+</script>

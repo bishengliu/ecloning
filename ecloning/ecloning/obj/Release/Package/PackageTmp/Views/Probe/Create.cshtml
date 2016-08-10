@@ -1,0 +1,131 @@
+﻿@model ecloning.Models.ProbeViewModel
+@{
+    ViewBag.Title = "Add PCR Probe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var JsonData = ViewBag.JsonData;
+}
+<span id="decodeIt" class="hidden"></span>
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-plus-circle"></i> PCR Probe</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Index", "Probe")" class="btn btn-default">
+                <i class="fa fa-caret-left"></i>
+                <span>Cancel</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.sequence, "Sequence", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.sequence, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.sequence, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.forward_primer, "Forward Primer", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.forward_primer, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.forward_primer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.reverse_primer, "Reverse Primer", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.reverse_primer, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.reverse_primer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <p class="text-danger">@TempData["msg"]</p>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.location, "Location", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.location, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.location, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.usage, "Usage", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.usage, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.usage, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.TextAreaFor(model => model.des, 4, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-4 col-sm-4 col-lg-2">
+                        <input type="submit" value="Add Probe" class="btn btn-primary" id="addprimer" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script>
+    var JsonData = ("@JsonData");
+    document.getElementById("decodeIt").innerHTML = JsonData;
+    JsonData = document.getElementById("decodeIt").innerText;
+
+    try {
+        data = JSON.parse(JsonData);
+        $(document).ready(function () {
+            $(".token-input-list-facebook").addClass('token-input-list-facebook form-control text-box single-line');
+        });
+
+        $(document).ready(function () {
+
+            $("#forward_primer").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type in primer name',
+                tokenLimit: 1,
+                propertyToSearch: "name",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.seq + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+
+            $("#reverse_primer").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type in primer name',
+                tokenLimit: 1,
+                propertyToSearch: "name",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + " </b><span style='color: gray'>" + item.seq + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.name + "</b></p></li>" },
+            });
+
+        });
+    } catch (e) {
+        console.log(e);
+    }
+
+</script>

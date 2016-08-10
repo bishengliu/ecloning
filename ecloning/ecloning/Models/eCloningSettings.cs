@@ -13,8 +13,8 @@ namespace ecloning.Models
     {
         //set app hosting
         //public readonly static string AppHosting = "Cloud";
-        //public readonly static string AppHosting = "Hybrid"; //store upload in local root path, but use send grid as smtp
-        public readonly static string AppHosting = "Local";
+        public readonly static string AppHosting = "Hybrid"; //store upload in local root path, but use send grid as smtp
+        //public readonly static string AppHosting = "Local";
         //set env
         public readonly static string AppEnv = "Developement";
 
@@ -23,8 +23,13 @@ namespace ecloning.Models
         public readonly static string Institute = "eCloning";
 
         //sendgrid
-        public readonly static string SendgridLoginName = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
-        public readonly static string SendgridPsw = "boL5MRQUCtbM1K8";
+        //nki
+        //public readonly static string SendgridLoginName = "azure_a0bed7402d312ae0c71db9d57a71c67c@azure.com";
+        //public readonly static string SendgridPsw = "boL5MRQUCtbM1K8";
+        //bisheng
+        public readonly static string SendgridLoginName = "azure_5752ee67da0b68b2b3599195c3f84a96@azure.com";
+        public readonly static string SendgridPsw = "2sVfAzDdyacKqGmZ";
+
 
         //institute Admin
         public readonly static string iEmail = "bishengliu@gmail.com";

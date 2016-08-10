@@ -1,0 +1,519 @@
+﻿
+@{
+    ViewBag.Title = "Edit Sequence";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Sequence = ViewBag.Seq;
+    var PlasmidId = (int)ViewBag.PlasmidId;
+    var Start = (int)ViewBag.Start;
+    var End = (int)ViewBag.End;
+    var Tag = (string)ViewBag.Tag;
+}
+
+<div class="row">
+    <div class="col-xs-offset-1 col-xs-7 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4 col-lg-offset-0 col-lg-2">
+        <h3 class="text-warning">Sequence Editor</h3>
+    </div>
+    <div class="col-xs-3 col-sm-8 col-md-8 col-lg-8">
+            <div class="pull-left">
+            <br />
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-actions no-color">
+                     <input type="submit" value="Save" class="btn btn-block btn-default" id="form_submission"/>
+                </div>
+                <div class="form-group hidden">
+                     <input name="plasmid_id" value="@PlasmidId"/>
+                     <input name="start" value="@Start" />
+                     <input name="end" value="@End" />
+                     <input name="tag" value="@Tag" />
+                     <input name="seq" value="" id="new_seq"/>
+                </div>
+            }
+            </div>
+        </div>
+</div>
+<p class="text-danger" id="msg"></p>
+<br />
+<div class="seqDiv">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="form-horizontal">
+                <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-trash-o text-danger"></i></span>
+                            <span class="input-group-addon">From</span>
+                            <input type="text" class="form-control" id="from_pos" placeholder="Position">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">To</span>
+                            <input type="text" class="form-control" id="to_pos" placeholder="Position">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="delete_seq">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-offset-1">
+            <p class="text-danger" id="delete_msg"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="form-horizontal">
+                <div class="col-xs-6 col-sm-2 col-md-1 col-lg-1" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-plus text-danger"></i></span>
+                            <select class="form-control" id="aob">
+                                <option>After</option>
+                                <option>Before</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-2 col-md-1 col-lg-1" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="insert_pos" placeholder="Position">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="display: inline-block">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="insert_seq" placeholder="Sequence">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="insert">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-offset-1">
+            <p class="text-danger" id="insert_msg"></p>
+        </div>
+    </div>
+    <span id="decodeIt" class="hidden"></span>
+
+    <span id="seq" class="hidden">@Sequence</span>
+    <div class="col-xs-12">
+        <div id="seq-editor">
+
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/d3")
+<script src="~/Scripts/ecloning-seqeditor.js"></script>
+<script>
+    //this script is used to generate seq editor for ecloing project
+    //get original seq
+    var seq = $('#seq').text().trim().toUpperCase();
+    //convert the seq to arary
+    var seqArray = seq.split('');
+    var seq_len = seqArray.length;
+    //console.log(seqArray);
+
+    //empty object to store user editing info, will be updated later
+    var EditObj = [];
+
+
+    //prepare svg
+    var margin = { top: 50, right: 40, bottom: 60, left: 40 },
+        width = ($("#seq-editor").width() <= 250 ? 250 : $("#seq-editor").width()) - margin.left - margin.right;
+    var padding = 1.0; //half of the step
+    var r = 10; //radius of the circle
+    var pr = 1; //point
+    //using d3 rangePoints
+    var step = 2 * r; //distance between 2 necleotides
+    var numCol = Math.floor(width / step); //number of nucleotides per line
+    var arrCol = genArray(numCol);
+    var numRow = Math.round(seq_len / numCol) < 2 ? 2 : Math.round(seq_len / numCol);
+    var arrRow = genArray(numRow);
+    //height of svg
+    var height = numRow * (step * 3); //step in vertical is half of the horizontal
+
+    //console.log(seqObj);
+
+    var x = d3.scale.ordinal()
+              .domain(arrCol)
+              .rangePoints([1, width], padding);
+    var y = d3.scale.ordinal()
+              .domain(arrRow)
+              .rangePoints([1, height], padding);
+    var xRange = x.range()[1] - x.range()[0];
+    var yRange = y.range()[1] - y.range()[0];
+    //process the seq data
+    var seqObj = genSeqObj(seqArray, seq_len, numCol, numRow, xRange, yRange);
+
+    var color = d3.scale.ordinal()
+                  .domain(["A", "T", "G", "C"])
+                  .range(["#3366cc", "#dc3912", "#ff9900", "#109618"]);
+    var xAxis = d3.svg.axis()
+                .scale(x)
+                .innerTickSize(-height).outerTickSize(0).tickPadding(10)
+                .orient("bottom");
+    var yAxis = d3.svg.axis()
+                .scale(y)
+                .innerTickSize(-width).outerTickSize(0).tickPadding(10)
+                .tickFormat(function (d) { return d==1? d: (d-1) * numCol+1;})
+                .orient("left");
+    var svg = d3.select("#seq-editor").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //svg.append("g")
+    //  .attr("class", "x axis")
+    //  .attr("transform", "translate(0," + height + ")")
+    //  .call(xAxis);
+    //svg.append("g")
+    //  .attr("class", "y axis")
+    //  .call(yAxis);
+
+
+    //draw points
+    var g = svg.append("g").attr("class", "unit");
+
+    var points = g.selectAll(".point")
+                     .data(seqObj)
+                  .enter()
+                     .append("circle");
+    var pointsAttributes = points
+                            .attr("class", "point")
+                            .attr("id", function (d) { return d[1] + "-point" })
+                            .attr("cx", function (d) { return d[2]; })
+                            .attr("cy", function (d) { return d[3]+25; })
+                            .attr("r", pr)
+                            .attr("display", function (d) { return d[1] % 5 === 0 ? "none" : "inline "; })
+                            //.style("stroke", "none")
+                            //.style("stroke", function (d) { return color(d[0]); })
+                            //.style("stroke-width", 0.3)
+                            .style("fill-opacity", 0.2)
+                            .style("fill", "#3b3eac");
+                            //.style("fill", function (d) { return color(d[0]); });
+
+    //add seq count
+    var counts = g.selectAll(".count")
+                .data(seqObj)
+             .enter()
+                .append("text")
+                                .attr({
+                                    "alignment-baseline": "middle",
+                                    "text-anchor": "middle"
+                                })
+                                .attr("y", function (d) { return d[3]+25; })
+                                .attr("x", function (d) { return d[2]; })
+                                .attr("id", function (d) { return d[1] + "-count" })
+                                .attr("class", "count")
+                                .attr("class", "noselect")
+                                .attr("display", function (d) { return d[1] % 5 !== 0 ? "none" : "inline "; })
+                                .attr("font-size", "10px")
+                                .attr("font-family", "monospace")
+                                .style("fill-opacity", 0.2)
+                                .style("fill", "#3b3eac")
+                                .text(function (d) { return d[1] + "" });
+
+    //add neucleotide letters
+    var text = g.selectAll(".letter")
+                .data(seqObj)
+             .enter()
+                .append("text")
+                                .attr({
+                                    "alignment-baseline": "middle",
+                                    "text-anchor": "middle"
+                                })
+                               .attr("y", function (d) { return d[3]; })
+                                .attr("x", function (d) { return d[2]; })
+                                .attr("class", "letter")
+                                //.attr("class", "noselect")
+                                .attr("class", "clickable")
+                                .attr("id", function (d) { return d[1] + "-letter" })
+                                .style("fill", function (d) { return color(d[0]); })
+                                .text(function (d) { return d[0] + "" });
+
+    //add events on letter
+    text.on("mouseover", function (d) {
+        //get data
+        var target = d3.select(this);
+        var target_data = target[0][0].__data__;
+        var curLetter = target_data[0];
+        var curPos = target_data[1];
+        var curId = "#" + curPos + "-letter";
+
+        //preparep tooltip div
+        var tooltip = d3.select("body").append("div")
+                            .attr("class", "seq-tool")
+                            .style("opacity", 0);
+        //============points and count===================
+        //point
+        var pointId = "#" + d[1] + "-point";
+        var point = $(pointId);
+        //count
+        var countId = "#" + d[1] + "-count";
+        var count = $(countId);
+        if (d[1] % 5 === 0) {
+            //point is original hidden, do nothing on point
+            //test is original show, change the text color
+            count.css({ "fill-opacity": 0.5 });
+            count.css({ fill: "red" });
+
+        }
+        else {
+            //point is originaly shown, hide it
+            point.css({ display: "none" });
+            //count is originally hiden, now show it
+            count.css({display: "inline"});
+
+            //change color
+            count.css({ "fill-opacity": 0.5 });
+            count.css({ fill: "red" });
+        }
+        /*
+        //hide current letter
+        target.attr("display", "none");
+        */
+        //===========tool======================
+        var tx = d[2] + 4 * r;
+        var ty = d[3] + 2 * r + 29;
+        //data to define the position of buttons
+        var dataLetter = [
+
+                            { info: "<span class=\"text-info\">Insert \"A\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "A", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"T\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "T", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"G\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "G", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"C\"</span><br/><span class=\"tooltip-smallfont text-info\">After Current</span>", type: "after", letter: "C", value: 0.5 },
+
+                            { info: "<span class=\"text-info\">Change to \"A\"</span>", type: "change", letter: "A", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"T\"</span>", type: "change", letter: "T", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"G\"</span>", type: "change", letter: "G", value: 0.5 },
+                            { info: "<span class=\"text-info\">Change to \"C\"</span>", type: "change", letter: "C", value: 0.5 },
+
+                            { info: "<span class=\"text-info\">Insert \"A\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "A", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"T\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "T", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"G\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "G", value: 0.5 },
+                            { info: "<span class=\"text-info\">Insert \"C\"</span><br/><span class=\"tooltip-smallfont text-info\">Before Current</span>", type: "before", letter: "C", value: 0.5 }
+        ];
+        var toolcolor = d3.scale.ordinal()
+            .domain(["change", "before", "after"])
+            .range(["#0099c6", "#994499", "#66aa00"]);
+        var toolpie = d3.layout.pie()
+            .value(function (d) { return d.value; })
+            .sort(null);
+
+        var arc = d3.svg.arc()
+            .outerRadius(5 * r - 10);
+
+        //var pie = d3.layout.pie(function (d) { return d.v; });
+
+        var tool = d3.select("svg").append("g").attr("class", "tool")
+                     .on("mouseleave", function (d) {
+                        //hide tool
+                        d3.selectAll(".tool")
+                            .transition().delay(150)//.attr("transform", "scale(0)");
+                            .attr("display", "none");
+                         //delete all tooltip
+                        d3.selectAll(".tooltip2").remove();
+                        })
+                     .datum(dataLetter).attr("transform", "translate(" + tx + "," + ty + ")");
+
+        //big toolcircle
+        var toolcircle = tool.selectAll("path")
+                      .data(toolpie)
+                       .enter();
+
+        var toolpie = toolcircle.append("path").attr("class", "toolcircle")
+                        .style("fill-opacity", 0.8)
+                        .attr("class", "clickable")
+                        .style("fill", function (d, i) { return toolcolor(d.data.type); })
+                        .on("mouseover", function (d) {
+                            //here to add events
+                            var tgt = d3.select(this);
+                            var tgtdata = tgt[0][0].__data__.data;
+                            tgt.style("fill-opacity", 1.0);
+                            //show tooltip
+                            tooltip.transition()
+                                    .duration(200)
+                                    .style("opacity", .9);
+                            tooltip.html(tgtdata.info)
+                                .style("left", (d3.event.pageX + 10) + "px")
+                                .style("top", (d3.event.pageY + 30) + "px");
+                        })
+                        .on("mouseleave", function (d) {
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 0.8);
+                            //hide tooptip
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        })
+                        .on("click", function (d) {
+                            //find which pie is the current tgt        
+                            var ctgt = d3.select(this);
+                            toolPieClick(d, ctgt, target_data, color, r, seq_len);
+                        });
+        //show the big circle
+        toolpie
+            .transition()
+	        .duration(1000)
+            .attrTween("d", function (d, i, a) {
+                var i = d3.interpolate(this._current, d.data.endAngle);
+                this._current = i(0);
+                return function (t) {
+                    return arc(d);
+                };
+            });
+
+        //add "A", "T","G" and C on the toolcircle
+        var toolletter = toolcircle.append("text")
+                                   .attr("dy", ".35em")
+                                   .attr("class", "clickable")
+                                   .attr("text-anchor", "middle")
+                                   .attr("transform", function (d) {
+                                         d.innerRadius = 5 * r / 2 - 10; // Set Inner Coordinate
+                                         return "translate(" + arc.centroid(d) + ")rotate(" + angle(d) + ")";
+                                    })
+                                    .style("fill", "White")
+                                    .style("font", "10px Arial")
+                                    .style("font-weight", "bold")
+                                    .text(function (d) { return d.data.letter; });
+        //tool letter events
+        toolletter.on("click", function (d) {
+            //find which pie is the current tgt        
+            var ctgt = d3.select(this);
+            toolPieClick(d, ctgt, target_data, color, r, seq_len);
+        });
+
+        //add inner criclefor remove function
+        var innerarc = d3.svg.arc()
+            .outerRadius(5 * r/2 - 10)
+            .startAngle(0)
+            .endAngle(Math.PI * 2);
+        var innerCircle = tool.append("path").attr("class", "innercircle")
+                        .style("fill-opacity", 0.6)
+                        .attr("class", "clickable")
+                        .style("fill", "#fd8d3c")
+                        .attr("d", innerarc)
+                        .on("mouseover", function () {
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 1.0);
+                            //show tooltip
+                            tooltip.transition()
+                                    .duration(200)
+                                    .style("opacity", .9);
+                            tooltip.html(function (d) { return "<span class=\"text-danger\"><i class=\"fa fa-trash-o text-danger\"></i> Remove</span>"; })
+                                .style("left", (d3.event.pageX - 40) + "px")
+                                .style("top", (d3.event.pageY + 50) + "px");
+                        })
+                        .on("mouseleave", function (d) {
+                            var tgt = d3.select(this);
+                            tgt.style("fill-opacity", 0.6);
+                            //hide tooptip$
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        });
+        //add text with strike-through in the remove-inner circle
+        var removeLetter = tool.append("text")
+                              .attr("dy", ".35em")
+                              .attr("text-anchor", "middle")
+                              .attr("class", "clickable")
+                              .style("fill", "white")
+                              .style("font", "13px Arial")
+                              .style("font-weight", "bold")
+                              .style("text-decoration", "line-through")
+                              .style("strikethrough-thickness", 4)
+                              .style("stroke", "red")
+                              .text(curLetter);
+        //innercircle click event
+        innerCircle.on("click", function (d) {
+            //hide tool
+            d3.selectAll(".tool")
+              .transition().delay(150)
+              .attr("display", "none");
+            //add strikethrough on the seq neceotide and add removed class
+            $(curId).addClass("removed").css("text-decoration", "line-through")
+                              //.css("text-decoration-color", "red")
+                              .css("font-size", "15px")
+                              .css("stroke", "#000000");
+            //update EditObj
+            EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+        });
+        //innnerLetter click event
+        removeLetter.on("click", function (d) {
+            //hide tool
+            d3.selectAll(".tool")
+              .transition().delay(150)
+              .attr("display", "none");
+            //add strikethrough on the seq neceotide
+            $(curId).addClass("removed").css("text-decoration", "line-through")
+                              //.css("text-decoration-color", "red")
+                              .css("font-size", "15px")
+                              .css("stroke", "#000000");
+            //update EditObj
+            EditObj = genEditObj(curPos, curLetter, "delete", null, null, EditObj);
+        });
+        //console.log(EditObj);
+    })
+        .on("mouseout", function (d) {
+            //============points and count===================
+            //point
+            var pointId = "#" + d[1] + "-point";
+            var point = $(pointId);
+            //count
+            var countId = "#" + d[1] + "-count";
+            var count = $(countId);
+
+            if (d[1] % 5 === 0) {
+                //point is original hidden, do nothing on point
+                //test is original show, change the text color back
+                count.css({ "fill-opacity" : 0.2 });
+                count.css({ fill: "#3b3eac"});
+
+            }
+            else {
+
+                //point is originaly shown, show it again
+                point.css({display: "inline" });
+                //count is originally hiden, now hidden it again
+                count.css({display: "none"});
+
+                //change color back
+                count.css({ "fill-opacity": 0.2 });
+                count.css({ fill: "#3b3eac" });
+            }
+
+        });
+
+    //for submission
+    $("#form_submission").click(function () {
+        $("#msg").text(null);
+        //check whether user edit or not
+        if (EditObj.length == 0) {
+            $("#msg").text("You haven't edited anything!");
+            return false;
+        }
+
+        //generate final seq array
+        var finalSeqArray = genFinalSeq(seqArray, EditObj);
+        //final seq
+        var finalSeq = finalSeqArray.join('');
+        $("#new_seq").val(finalSeq);
+        $("form").submit();
+    });
+</script>

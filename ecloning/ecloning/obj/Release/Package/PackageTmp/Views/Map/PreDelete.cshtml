@@ -1,0 +1,112 @@
+﻿@model IEnumerable<ecloning.Models.plasmid_map>
+
+@{
+    ViewBag.Title = "Delete Features";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+    string Name = (string)ViewBag.Name;
+    int seqCount = (int)ViewBag.SeqLength;
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3 class="text-warning text-center">@Name (@seqCount bp)</h3>
+    </div>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+
+        <div class="table-responsive col-md-10">
+            <table class="table table-hover table-condensed">
+                <tr>
+                    <th>
+                        <span class="glyphicon glyphicon-trash text-danger"></span>
+                    </th>
+                    <th>
+                        Feature
+                    </th>
+                    <th>
+                        Label
+                    </th>
+                    <th>
+                        Start Position
+                    </th>
+                    <th>
+                        End Position
+                    </th>
+                    <th>
+                        Clockwise
+                    </th>
+                    <th>
+                        Cut Position
+                    </th>
+                    <th>
+                        Show Feature
+                    </th>
+
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="id[]" value=@item.id />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.plasmid_feature.des)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.label)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.start)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.end)
+                        </td>
+                        <td>
+                            @if (item.clockwise == 1)
+                    {
+                                <span>Yes</span>
+                            }
+                            else
+                            {
+                                <span>No</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cut)
+                        </td>
+                        <td>
+                            @if (item.show_feature == 1)
+                    {
+                                <span>Yes</span>
+                            }
+                            else
+                            {
+                                <span>No</span>
+                            }
+                        </td>
+
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Delete Feature" class="btn btn-primary" />
+            </div>
+        </div>
+   </div>
+}
+
+
+

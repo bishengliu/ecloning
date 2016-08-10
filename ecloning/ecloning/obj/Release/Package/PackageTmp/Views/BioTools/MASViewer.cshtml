@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewBag.Title = "Alignment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Plasmids = ViewBag.Plasmids;
+}
+<span id="decodeIt" class="hidden"></span>
+<br/>
+<br/>
+<div class="text-info">http://www.ebi.ac.uk/Tools/msa/clustalo/</div>
+<div id="aliDiv">Loading ... </div>
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/msa/msa.min.gz.js"></script>
+<script>
+    $(document).ready(function () {
+        var Plasmids = ("@Plasmids");
+        document.getElementById("decodeIt").innerHTML = Plasmids;
+        Plasmids = document.getElementById("decodeIt").textContent;
+        try {
+            Plasmids = JSON.parse(Plasmids);
+
+            //format seq
+            $.each(Plasmids, function(i, d){
+                d.ref = d.reference;
+            });
+            console.log(Plasmids);
+            //var msa = require("msa");
+            var aliConatiner = $('#aliDiv');
+            var opts = {
+                el: aliConatiner,
+                //seqs: Plasmids,
+                vis: {
+                    conserv: false,
+                    overviewbox: false,
+                    seqlogo: true
+                },
+                conf: {
+                    dropImport: true
+                },
+                zoomer: {
+                    menuFontsize: "12px",
+                    autoResize: true
+                    
+                }
+            };
+
+            var m = new msa.msa(opts);
+
+            // search in URL for fasta or clustal
+            function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+            }
+
+            var defaultURL = "https://raw.githubusercontent.com/greenify/msa/master/snippets/data/fer1.clustal";
+            var url = getURLParameter('seq') || defaultURL;
+
+            m.u.file.importURL(url, renderMSA);
+
+            function renderMSA() {
+
+                // the menu is independent to the MSA container
+                var menuOpts = {
+                    el: document.getElementById('div'),
+                    msa: m
+                };
+                var defMenu = new msa.menu.defaultmenu(menuOpts);
+                m.addView("menu", defMenu);
+
+                 //call render at the end to display the whole MSA
+                m.render();
+            }
+
+        }
+        catch (e) {
+
+        }
+
+    });
+</script>

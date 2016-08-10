@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Choose Features";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int PlasmidId = (int)ViewBag.PlasmidId;
+    var JsonFeatures = ViewBag.JsonFeatures;
+    int SeqLength = (int)ViewBag.SeqLength;
+    var msg = (string)ViewBag.msg;
+}
+
+<div class="row">
+    <div class="col-xs-offset-2 col-sm-offset-1 col-sm-3">
+        <h3 class="text-warning">Add features for @ViewBag.Name</h3>
+    </div>
+    <div class="col-sm-offset-0 col-sm-2 col-xs-6" style="position:relative;top:14px;">
+        <br />
+        <p class="text-right text-info"><em>Not found?</em> </p>
+    </div>
+    <div class="col-sm-offset-0 col-sm-2 col-xs-6">
+        <br />
+        @Html.ActionLink("New Feature", "AddFeature", new { plasmid_id = PlasmidId, tag = "noseq" }, new { @class = "btn btn-danger" })
+    </div>
+</div>
+<hr class="dotted-line" />
+<span id="decodeIt" class="hidden"></span>
+
+<div class="row">
+    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <p class="text-danger">@msg</p>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label for="feature" class="required">Search feature name to add:</label>
+                <input type="text" name="feature" class="form-control" id="feature">
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
+                    <input type="submit" value="Add Features" class="btn btn-block btn-primary" />
+                </div>
+            </div>
+            <div class="form-group hidden">
+                <div class="col-md-10">
+                    <input type="text" name="plasmid_id" value=@PlasmidId />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    var JsonData = ("@JsonFeatures");
+    document.getElementById("decodeIt").innerHTML = JsonData;
+    JsonData = document.getElementById("decodeIt").innerText;
+
+    try {
+        data = JSON.parse(JsonData);
+    } catch (e)
+    {
+    }
+
+    $(document).ready(function () {
+        $("#feature").tokenInput(data, {
+                theme: 'facebook',
+                hintText: 'Type feature name to search',
+                //tokenLimit: 1,
+                propertyToSearch: "label",
+                resultsFormatter: function (item) { return "<li><p><b style='color: red'>" + item.label + " </b><span style='color: gray'>" + item.feature + "</span></p></li>" },
+                tokenFormatter: function (item) { return "<li><p><b style='color: red'>" + item.label + "</b></p></li>" },
+            });
+
+            $("form div ul").addClass('token-input-list-facebook form-control text-box single-line');
+    });
+</script>

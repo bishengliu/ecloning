@@ -1,0 +1,94 @@
+﻿@model ecloning.Models.ProtocolViewModel
+@{
+    ViewBag.Title = "NewVersion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var LinkedProtocol =(ecloning.Models.protocol)ViewBag.LinkedProtocol;
+}
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-file-text-o"></i> Protocol</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Index", "Protocol")" class="btn btn-default">
+                <i class="fa fa-caret-left"></i>
+                <span>Cancel</span>
+            </a>
+        </h3>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return uploadSize();" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.name, "Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    @Html.LabelFor(model => model.upload, "Protocol File", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control single-line" name="upload" id="upload" data-val-required="required" readonly>
+                            <span class="input-group-btn">
+                                <span style="float:left;" class="btn btn-info btn-file">Browse <input type="file" name="pro_fn" id="pro_fn" onchange="getFilePath()" /></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.upload, "", new { @class = "text-danger" })
+                        <p id="max_size" class="text-danger" style="font-size:90%;"></p>
+                    </div>
+                </div>
+                <p class="text-danger">@TempData["msg"]</p>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: inline-block">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.des, "Comment", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.TextAreaFor(model => model.des, 4, 150, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-4 col-sm-4 col-lg-2">
+                        <input type="submit" value="Add Protocol" class="btn btn-primary" id="addprimer" />
+                    </div>
+                </div>
+            </div>
+            <div class="hidden">
+                <input type="text" name="linked_id" value="@LinkedProtocol.id"/>
+            </div>
+        </div>
+    }
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    function uploadSize() {
+
+        if (typeof ($('#pro_fn')[0].files) != "undefined") {
+            //check upload file size
+            var size = parseFloat($('#pro_fn')[0].files[0].size / 1024 / 1024).toFixed(2); // cal the file size in MB
+            if (size > 10) {
+                $('#max_size').text('Maximum upload file size is 10MB!');
+                return false;
+            }
+        }
+    }
+</script>
+<script>
+    function getFilePath() {
+        var fullPath = document.getElementById("pro_fn").value;
+        fileName = fullPath.split(/(\\|\/)/g).pop();
+        document.getElementById("upload").value = fileName;
+    }
+</script>
+
+

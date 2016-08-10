@@ -1,0 +1,169 @@
+﻿@model IEnumerable<ecloning.Models.probe>
+@{
+    ViewBag.Title = "PCR Probes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Count = (int)ViewBag.Count;
+    int PeopleId = (int)ViewBag.PersonId;
+    List<int> SharedIds = (List<int>)ViewBag.shareIds;
+    var db = new ecloning.Models.ecloningEntities();
+}
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-5 col-xs-6">
+        <h3 class="text-warning"><i class="fa fa-list"></i> PCR Probe</h3>
+    </div>
+    <div class="col-sm-5 col-xs-6">
+        <h3 class="pull-right">
+            <a href="@Url.Action("Create", "Probe")" class="btn btn-default">
+                <i class="fa fa-plus-circle"></i>
+                <span>PCR Probe</span>
+            </a>
+        </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10">
+        @if ((int)ViewBag.Count < 1)
+        {
+            <br />
+            <div class="row">
+                <div class="col-sm-1 hidden-xs"></div>
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <h4 class="text-info">No qPCR Probe found!</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th class="no-sort">
+                            Sequence
+                        </th>
+                        <th class="no-sort">
+                            Forward Primer
+                        </th>
+                        <th class="no-sort">
+                            Reverse Primer
+                        </th>
+                        <th class="no-sort">
+                            Usage
+                        </th>
+                        <th class="no-sort">
+                            Location
+                        </th>
+                        <th class="no-sort">
+                            People
+                        </th>
+                        <th class="no-sort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var peopleInfo = new ecloning.Models.PeopleInfo((int)item.people_id);
+                        //get primer name and seq
+                        string fNmae = "", rName = "";
+                        string fSeq = "" , rSeq = "";
+                        
+                        var fprimer = db.primers.Where(f => f.id == item.forward_primer);
+                        if (fprimer.Count() > 0)
+                        {
+                            fNmae = fprimer.FirstOrDefault().name;
+                            fSeq = fprimer.FirstOrDefault().sequence;
+                        }
+                        var rprimer = db.primers.Where(f => f.id == item.reverse_primer);
+                        if (rprimer.Count() > 0)
+                        {
+                            rName = rprimer.FirstOrDefault().name;
+                            rSeq = rprimer.FirstOrDefault().sequence;
+                        }
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.sequence)
+                            </td>
+                            <td>
+                                <span class="text-info">@fNmae</span>:<br />@fSeq
+                            </td>
+                            <td>
+                                <span class="text-info">@rName</span>:<br />@rSeq
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.usage)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.location)
+                            </td>
+                            <td>
+                                @peopleInfo.Name
+                            </td>
+                            <td>
+                                @if ((item.people_id == PeopleId && !SharedIds.Contains(item.id)) || (User.IsInRole("GroupLeader") || User.IsInRole("Assistant")))
+                                {
+                                    <a href="@Url.Action("Edit", "Probe", new { id= item.id})">
+                                        <i class="fa fa-pencil-square-o text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                    <a href="@Url.Action("Delete", "Probe", new { id = item.id })">
+                                        <i class="glyphicon glyphicon-trash text-danger"></i>
+                                        <span></span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-pencil-square-o text-muted"></i>
+                                    <i class="glyphicon glyphicon-trash text-muted"></i>
+                                }
+                                @if (!SharedIds.Contains(item.id))
+                                {
+                                    if (item.people_id == PeopleId)
+                                    {
+                                        <a href="@Url.Action("Share", "Probe", new { id = item.id })">
+                                            <i class="fa fa-share-alt text-danger"></i>
+                                            <span></span>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    if (User.IsInRole("GroupLeader") || User.IsInRole("Assistant") || User.IsInRole("appAdmin"))
+                                    {
+                                        <a href="@Url.Action("unShare", "Probe", new { id = item.id })">
+                                            <span class="fa-stack fa-lg">
+                                                <i class="fa fa-share-alt text-muted fa-stack-1x"></i>
+                                                <i class="fa fa-times-circle-o fa-stack-1x text-danger"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table').DataTable({
+            responsive: true,
+            "iDisplayLength": 50,
+            columnDefs: [
+                { targets: 'no-sort', orderable: false }
+            ]
+        });
+    });
+</script>
