@@ -640,6 +640,7 @@
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\msa\msa.css" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="images\Fragment.jpg" />
     <Content Include="Models\ecloning.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -995,6 +996,11 @@
     <Content Include="Models\ecloning.edmx.diagram">
       <DependentUpon>ecloning.edmx</DependentUpon>
     </Content>
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\eplasmid - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
