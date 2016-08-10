@@ -6,7 +6,4 @@
   <parameter name="ecloningEntities-Web.config Connection String" description="ecloningEntities Connection String used in web.config by the application to access the database." defaultValue="metadata=res://*/Models.ecloning.csdl|res://*/Models.ecloning.ssdl|res://*/Models.ecloning.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=tcp:eplasmid.database.windows.net,1433;database=eplasmid;user id=truusPlasmid;password=6rHuWJmaQANrUx7i;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="SqlConnectionString">
     <parameterEntry kind="XmlFile" scope="\\\\Mac\\Home\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ecloningEntities']/@connectionString" />
   </parameter>
-  <parameter name="StorageConnectionString-Web.config Connection String" description="StorageConnectionString Connection String used in web.config by the application to access the database." defaultValue="DefaultEndpointsProtocol=https;AccountName=mcca;AccountKey=uKfixib6SQSiYwhZQN1gu3EiOQFXFv0kBgGN6jeVUnX7sNEAWgdWxDdX9lWO4CYUmrwxew/y6A3tgmRjWLWe1g==" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="\\\\Mac\\Home\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='StorageConnectionString']/@connectionString" />
-  </parameter>
 </parameters>
