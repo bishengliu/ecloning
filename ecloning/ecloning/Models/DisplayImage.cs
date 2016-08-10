@@ -13,6 +13,8 @@ namespace ecloning.Models
             MemoryStream memoryStream = new MemoryStream();
             //azure
             var azureBlob = new AzureBlob();
+            azureBlob.directoryName = eCloningSettings.expDataDir;
+
             if (ImageExtensionCheck.IsImage(fileName) == true)
             {
                 if (eCloningSettings.AppHosting == "Cloud")
