@@ -200,8 +200,8 @@ CREATE TABLE department --department level
 	CONSTRAINT uq_department_name UNIQUE (name)
 );
 INSERT INTO [department](name,[des]) VALUES 
-( 'AppAdmin', 'SystemAdmin'),
-( 'Institute Admin', 'Institute Admin');
+( 'AppAdmin', 'SystemAdmin');
+--( 'Institute Admin', 'Institute Admin');
 
 --research group in each department--
 CREATE TABLE [group]
