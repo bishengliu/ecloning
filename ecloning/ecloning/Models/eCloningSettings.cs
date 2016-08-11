@@ -12,9 +12,9 @@ namespace ecloning.Models
     public static class eCloningSettings
     {
         //set app hosting
-        public readonly static string AppHosting = "Cloud";
+        //public readonly static string AppHosting = "Cloud";
         //public readonly static string AppHosting = "Hybrid"; //store upload in local root path, but use send grid as smtp
-        //public readonly static string AppHosting = "Local";
+        public readonly static string AppHosting = "Local";
         //set env
         public readonly static string AppEnv = "Developement";
 
@@ -32,11 +32,12 @@ namespace ecloning.Models
         public readonly static string SendgridPsw = "2sVfAzDdyacKqGmZ";
 
 
-        //institute Admin
+        //Admin Info
         public readonly static string iEmail = "bishengliu@gmail.com";
         public readonly static string iFirstName = "Bisheng";
         public readonly static string iLastName = "Liu";
         public readonly static string iCode = "3ZxaOlh6823UTz2pUP7ExHi9qy53uf65";
+        public readonly static string appName = "ePlasmid";
 
 
         //upload plasmid to azure directoryName

@@ -7,10 +7,32 @@ namespace ecloning.Models
 {
     public class AppAdmin
     {
-        public readonly string first_Name = "Bisheng";
-        public readonly string last_name = "Liu";
-        public readonly string email = "bishengliu@gmail.com";
-        public readonly string code = "3ZxaOlh6823UTz2pUP7ExHi9qy53uf65";
-        public readonly string appName = "eCloning System";
+        public string first_Name { get; set; }
+        public string last_name { get; set; }
+        public string email { get; set; }
+        public string code { get; set; }
+        public string appName { get; set; }
+       
+
+        public AppAdmin(string env)
+        {
+            if (env == "Developement")
+            {
+                this.first_Name = "Admin";
+                this.last_name = "ePlasmid";
+                this.email = "bishengliu@gmail.com";
+                this.code = eCloningSettings.iCode;
+                this.appName = eCloningSettings.appName;
+            }
+            else
+            {
+                this.first_Name = eCloningSettings.iFirstName;
+                this.last_name = eCloningSettings.iLastName;
+                this.email = eCloningSettings.iEmail;
+                this.code = eCloningSettings.iCode;
+                this.appName = eCloningSettings.appName;
+            }
+        }
+
     }
 }

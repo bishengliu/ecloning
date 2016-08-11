@@ -18,7 +18,7 @@ namespace ecloning.Models
             if (env != null && env == "Developement")
             {
                 //insitute admin
-                var app_admin = new AppAdmin();
+                var app_admin = new AppAdmin(eCloningSettings.AppEnv);
                 this.iEmail = app_admin.email;
                 this.iFirstName = app_admin.first_Name;
                 this.iLastName = app_admin.last_name;
@@ -30,6 +30,7 @@ namespace ecloning.Models
                 this.iEmail = eCloningSettings.iEmail;
                 this.iFirstName = eCloningSettings.iFirstName;
                 this.iLastName = eCloningSettings.iLastName;
+                this.iCode = eCloningSettings.iCode;
             }
         }
 
