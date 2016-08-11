@@ -328,17 +328,24 @@ namespace ecloning.Models
                 //memStream.Seek(0, SeekOrigin.Begin);
                 //file.InputStream.CopyTo(memStream);
                 Image thumbNail = null;
-                Image image = Image.FromStream(file.InputStream, true, false);
 
-                //var ratio = image.Height / image.Width;
-                //var ratio = 1;
-                thumbNail = image.GetThumbnailImage(100, 100, () => false, IntPtr.Zero);
+                using (Image image = Image.FromStream(file.InputStream))
+                {
+                    if (image.Width < 100)
+                    {
+                        thumbNail = image.GetThumbnailImage(image.Width, image.Height, () => false, IntPtr.Zero);
+                    }
+                    thumbNail = image.GetThumbnailImage(100, 100, () => false, IntPtr.Zero);
+                }
 
                 //save tb into memorystream
                 MemoryStream m = new MemoryStream();
+                m.Flush();
+                m.Seek(0, SeekOrigin.Begin);
                 //get image format
                 System.Drawing.Imaging.ImageFormat format = ImageFormat.GetImageFormatFromFile(FileName);
                 thumbNail.Save(m, format);
+                m.Seek(0, SeekOrigin.Begin);
 
 
                 //save to azure
