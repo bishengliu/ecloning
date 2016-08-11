@@ -181,7 +181,7 @@ namespace ecloning.Controllers
             //send email
             //shared info
             var leaderEmail = User.Identity.GetUserName();
-            var leaderName = db.people.Where(e => e.email == email).FirstOrDefault().first_name + " " + db.people.Where(e => e.email == email).FirstOrDefault().last_name;
+            var leaderName = db.people.Where(e => e.email == userInfo.userEmail).FirstOrDefault().first_name + " " + db.people.Where(e => e.email == userInfo.userEmail).FirstOrDefault().last_name;
             var html = "I invite you to register on this website: <a href=\"" + eCloningSettings.AppURI + "\">" + eCloningSettings.AppURI + "</a>";
             html = html + "<br/><p>Please copy the following code to register</p>";
             html = html + "<p><strong>" + group.code + "</strong></p>";
