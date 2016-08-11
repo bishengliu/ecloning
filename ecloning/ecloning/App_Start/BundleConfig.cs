@@ -11,7 +11,7 @@ namespace ecloning
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",                        
                         "~/Scripts/chosen.jquery.js",
-                        "~/Scripts/jquery-ui-{version}.js",                        
+                        //"~/Scripts/jquery-ui-{version}.js",                        
                         "~/Scripts/jquery.tokeninput.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -23,8 +23,8 @@ namespace ecloning
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/bootstrap-datepicker.js",
+                      "~/Scripts/bootstrap.min.js",
+                      //"~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/bootstrap-datepicker.min.js",
                       "~/Scripts/datepicker.js",
                       "~/Scripts/respond.js"));
@@ -105,7 +105,7 @@ namespace ecloning
                       "~/Content/bootstrap.min.css",
                       "~/Content/font-awesome/font-awesome.min.css",
                       "~/Content/bootstrap-datepicker.min.css",
-                      "~/Content/nv.d3.css",
+                      //"~/Content/nv.d3.css",
                       "~/Content/token-input.css",
                       "~/Content/token-input-facebook.css",
                       "~/Content/token-input-mac.css",
