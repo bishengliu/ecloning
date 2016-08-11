@@ -10,11 +10,14 @@
     filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorstr='#EEEFEE', endColorstr='#E5E7E6'); /* IE9 */
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient (GradientType=1, startColorstr='#EEEFEE', endColorstr='#E5E7E6')"; /* IE8 */
 }
-
+html, body,.body-content {
+       height: 100%;
+       min-height: 100%;
+    }
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -1114,8 +1117,32 @@ text.value {
     font-size: 11px;
     color:#537489;
 }
+.hugeFont{
+    padding-top:20px;
+    font-size: 48px;
+    color:#537489;
+}
 .leftLine {
     border-radius: 5px;
     border-left: 3px solid #ffbb78;
     padding: 20px;
+}
+
+@media(min-width:768px){
+   html, body, #home-header {
+       height: 100%;
+       min-height: 100%;
+    }
+}
+
+#home-header {
+    margin:0px;
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    /*background-color:#999999;*/
+    /*background-image: url(headerMain.jpg);*/
+    background-position: center;
+    background-size: cover;
+    -o-background-size: cover;
 }
