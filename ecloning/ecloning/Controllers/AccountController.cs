@@ -496,15 +496,24 @@ namespace ecloning.Controllers
                         //add current user to role "GroupLeader"
                         if (!userManager.IsInRole(user.Id, "GroupLeader"))
                         {
-                            userManager.RemoveFromRole(user.Id, "GroupLeader");
+                            userManager.AddToRole(user.Id, "GroupLeader");
                         }
                     }
                     else
                     {
-                        //normal user
+                        //check whether Reseafcher role
+                        var researcher = db.AspNetRoles.Where(r => r.Name == "Researcher");
+                        if (researcher.Count() == 0)
+                        {
+                            //create it
+                            IdentityRole Role = new IdentityRole("Researcher");
+                            context.Roles.Add(Role);
+                            context.SaveChanges();
+                        }
+                        //add to normal user
                         if (!userManager.IsInRole(user.Id, "Researcher"))
                         {
-                            userManager.RemoveFromRole(user.Id, "Researcher");
+                            userManager.AddToRole(user.Id, "Researcher");
                         }
                     }
 
