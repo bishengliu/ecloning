@@ -10,58 +10,13 @@
     var EnzymeId = (List<int>)ViewBag.EnzymeId;
     var db = new ecloning.Models.ecloningEntities();
 
-    //get the buffer id
-    List<string> bufferName = new List<string>();
-    List<int> bufferId = new List<int>();
-    if (Model.Count() > 0)
-    {
-        var dict = Model.FirstOrDefault().Activity;
-        for (int i = 0; i < BufferCount; i++)
-        {
-            int bId = dict[i].Keys.First();
-            bufferId.Add(bId);
-            //get the buffer name
-            var name = db.buffers.Find(bId).name;
-            bufferName.Add(name);
-        }
-    }
-
-    //prepare enzymeId and bufferid to jquery
-    System.Text.StringBuilder enzymeIdString = new System.Text.StringBuilder();
-    if (EnzymeId.Count() > 0)
-    {
-        for (int i = 0; i < (EnzymeId.Count() - 1); i++)
-        {
-            enzymeIdString.Append(EnzymeId[i].ToString()).Append(",");
-        }
-        enzymeIdString.Append(EnzymeId.Last().ToString());
-    }
-
-    System.Text.StringBuilder bufferIdString = new System.Text.StringBuilder();
-    if (bufferId.Count() > 0)
-    {
-        for (int i = 0; i < (bufferId.Count() - 1); i++)
-        {
-            bufferIdString.Append(bufferId[i].ToString()).Append(",");
-        }
-        bufferIdString.Append(bufferId.Last().ToString());
-    }
-
-
-    //get group info
-    //get current login email
-    var email = User.Identity.GetUserName();
-    int peopleId = 0;
-    var people = db.people.Where(e => e.email == email);
-    peopleId = people.FirstOrDefault().id;
-
+    ////get the buffer id and name
+    List<string> bufferName = (List<string>)ViewBag.bufferName;
+    List<int> bufferId = (List<int>)ViewBag.BufferId;
+    
     //get the group id
-    List<int> groupId = new List<int>();
-    var group_people = db.group_people.Where(p => p.people_id == peopleId);
-    foreach (int i in group_people.Select(g => g.group_id).ToList())
-    {
-        groupId.Add(i);
-    }
+    List<int> groupId = (List<int>)ViewBag.GroupId;
+
 }
 
 <div class="row">
@@ -77,8 +32,6 @@
             <div class="panel-heading">
             </div>
             <div class="panel-body">
-                <span id="bufferId" class="hidden">@bufferIdString</span>
-                <span id="enzymeId" class="hidden">@enzymeIdString</span>
                 @if (Count == 0)
                 {
                     <div class="row">
@@ -166,7 +119,7 @@
                                         string symbol = "<span></span>";
                                         var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
                                         //find enzyme info
-                                        var enzyme = db.restri_enzyme.Find(item.enzyme_id);
+                                        //var enzyme = db.restri_enzyme.Find(item.enzyme_id);
 
                                         bool inFavorite = false;
                                         foreach (var g in groupId)
@@ -183,17 +136,17 @@
                                                 {
                                                     <a href="@Url.Action("AddToFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
                                                         <i class="fa fa-bookmark-o text-info"></i>
-                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                        <span><strong class="text-warning">@item.enzymeName</strong></span>
                                                     </a>
                                                     <br />
                                                     <br/>
-                                                    <span class="text-info"><em>@item.temprature&deg;C</em></span>
+                                                    @*<span class="text-info"><em>@item.temprature&deg;C</em></span>*@
                                                 }
                                                 else
                                                 {
                                                     <a href="@Url.Action("RemoveFromFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
                                                         <i class="fa fa-bookmark text-danger"></i>
-                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>
+                                                        <span><strong class="text-warning">@item.enzymeName</strong></span>
                                                     </a>
                                                     <br />
                                                     <br />
@@ -201,13 +154,13 @@
                                                 }
                                             </td>
                                             <td class="text-center">
-                                                @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
+                                                @if (item.forward_cut2 != null && item.reverse_cut2 != null)
                                                 {
-                                                    @Html.Raw(enzymeSybol.ShowPrototype2(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut, (int)enzyme.forward_cut2, (int)enzyme.reverse_cut2))
+                                                    @Html.Raw(enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2))
                                                 }
                                                 else
                                                 {
-                                                    @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
+                                                    @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
                                                 }
                                             </td>
                                             <td class="text-center vert-align">
@@ -312,11 +265,11 @@
                                         string symbol = "<span></span>";
                                         var enzymeSybol = new ecloning.Models.RestrictionEnzyme();
                                         //find enzyme info
-                                        var enzyme = db.restri_enzyme.Find(item.enzyme_id);
+                                        //var enzyme = db.restri_enzyme.Find(item.enzyme_id);
                                         var dict = item.Activity;
-                                        //set id for each activity
-                                        //enzyme_id-buffer_id
-                                        var id = item.enzyme_id.ToString() + "-";
+                                        ////set id for each activity
+                                        ////enzyme_id-buffer_id
+                                        //var id = item.enzyme_id.ToString() + "-";
                                         int count = 0;
                                         //check whether the enzyme is in the favorite list
                                         bool inFavorite = false;
@@ -334,7 +287,7 @@
                                                 {
                                                     <a href="@Url.Action("AddToFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
                                                         <i class="fa fa-bookmark-o text-info"></i>
-                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>                                                        
+                                                        <span><strong class="text-warning">@item.enzymeName</strong></span>                                                        
                                                     </a>
                                                     <br />
                                                     <br />
@@ -344,7 +297,7 @@
                                                 {
                                                     <a href="@Url.Action("RemoveFromFavorite", "RActivity", new { company_id= item.company_id, enzyme_id = item.enzyme_id})">
                                                         <i class="fa fa-bookmark text-danger"></i>
-                                                        <span><strong class="text-warning">@Html.DisplayFor(modelItem => enzyme.name)</strong></span>                                                        
+                                                        <span><strong class="text-warning">@item.enzymeName</strong></span>                                                        
                                                     </a>
                                                     <br />
                                                     <br />
@@ -352,28 +305,28 @@
                                                 }
                                             </td>
                                             <td class="text-center">
-                                                @if (enzyme.forward_cut2 != null && enzyme.reverse_cut2 != null)
+                                                @if (item.forward_cut2 != null && item.reverse_cut2 != null)
                                                 {
-                                                    @Html.Raw(enzymeSybol.ShowPrototype2(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut, (int)enzyme.forward_cut2, (int)enzyme.reverse_cut2))
+                                                    @Html.Raw(enzymeSybol.ShowPrototype2(item.forward_seq, item.forward_cut, item.reverse_cut, (int)item.forward_cut2, (int)item.reverse_cut2))
                                                 }
                                                 else
                                                 {
-                                                    @Html.Raw(enzymeSybol.ShowPrototype(enzyme.forward_seq, enzyme.forward_cut, enzyme.reverse_cut))
+                                                    @Html.Raw(enzymeSybol.ShowPrototype(item.forward_seq, item.forward_cut, item.reverse_cut))
                                                 }
                                             </td>
                                             @foreach (var i in bufferId)
                                             {
                                                 var convertActivity = new ecloning.Models.EnzymeActivity();
 
-                                                id = id + i.ToString();
-                                                //find pk
-                                                var activity = db.activity_restriction.Where(a => a.company_id == item.company_id && a.enzyme_id == item.enzyme_id && a.buffer_id == i).First();
-                                                int pk = activity.id;
+                                                //id = id + i.ToString();
+                                                ////find pk
+                                                //var activity = db.activity_restriction.Where(a => a.company_id == item.company_id && a.enzyme_id == item.enzyme_id && a.buffer_id == i).First();
+                                                //int pk = activity.id;
                                                 <td class="text-center">
-                                                    <span class="text-warning">@Html.Raw(convertActivity.Convert(dict[count].First().Value))</span>
+                                                    <span class="text-warning">@Html.Raw(convertActivity.Convert(dict[count].activity))</span>
                                                 </td>
                                                 count++;
-                                                id = item.enzyme_id.ToString() + "-";
+                                                //id = item.enzyme_id.ToString() + "-";
                                             }
                                             <td class="text-center vert-align">
                                                 @if (item.starActivity == true)

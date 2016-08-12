@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Server=tcp:eplasmid.database.windows.net,1433;database=eplasmid;user id=truusPlasmid;password=6rHuWJmaQANrUx7i;Connect Timeout=36000" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="\\\\Mac\\Home\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="D:\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
   </parameter>
   <parameter name="ecloningEntities-Web.config Connection String" description="ecloningEntities Connection String used in web.config by the application to access the database." defaultValue="metadata=res://*/Models.ecloning.csdl|res://*/Models.ecloning.ssdl|res://*/Models.ecloning.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=tcp:eplasmid.database.windows.net,1433;database=eplasmid;user id=truusPlasmid;password=6rHuWJmaQANrUx7i;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="\\\\Mac\\Home\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ecloningEntities']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="D:\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ecloningEntities']/@connectionString" />
   </parameter>
   <parameter name="StorageConnectionString-Web.config Connection String" description="StorageConnectionString Connection String used in web.config by the application to access the database." defaultValue="DefaultEndpointsProtocol=https;AccountName=eplasmid;AccountKey=dCKLVfyGc+i0RUlYoIZNRXl3u7pIjUKFOUhvttxs0Y8N+K0G+MHBIphGIZupa+rjK7+lrZOxLMXHZ6YWgyfA+A==" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="\\\\Mac\\Home\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='StorageConnectionString']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="D:\\ecloning\\ecloning\\ecloning\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='StorageConnectionString']/@connectionString" />
   </parameter>
 </parameters>

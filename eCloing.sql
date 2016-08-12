@@ -1230,7 +1230,12 @@ INSERT INTO dropdownitem VALUES
 
 
 
---index
+--index 
+CREATE INDEX index_activity_restriction_company_id ON activity_restriction (company_id);
+CREATE INDEX index_activity_restriction_enzyme_id ON activity_restriction (enzyme_id);
+CREATE INDEX index_activity_restriction_buffer_id ON activity_restriction (buffer_id);
+
+
 CREATE INDEX index_restriction_company_enzyme_id ON restriction_company (enzyme_id);
 CREATE INDEX index_restriction_company_company_id ON restriction_company (company_id);
 
@@ -1242,7 +1247,6 @@ CREATE INDEX index_plasmid_map_backup_plasmid_id ON plasmid_map_backup (plasmid_
 
 CREATE INDEX index_restri_enzyme_name ON restri_enzyme (name);
 
-CREATE INDEX index_activity_restriction_enzyme_id ON activity_restriction (enzyme_id);
 
 CREATE INDEX index_common_restriction_enzyme_id ON common_restriction (enzyme_id);
 

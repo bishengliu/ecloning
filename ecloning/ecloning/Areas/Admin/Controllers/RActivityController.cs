@@ -40,58 +40,64 @@ namespace ecloning.Areas.Admin.Controllers
             ViewBag.CompanyId = company_id;
             ViewBag.Company = company.FirstOrDefault().shortName;
             ViewBag.EnzymeId = enzymeId;
-            //get the enzymes
-            //var enzymeList = db.restri_enzyme.Where(i => enzymeId.Contains(i.id)).ToList();
 
             //load data to model RestrictionActivity
             List<RestrictionActivity> RActivityList = new List<RestrictionActivity>();
 
             //first get active buffer
-            var buffers = db.buffers.Where(b => b.company_id == company_id && b.show_activity != false).OrderBy(b=>b.name);
+            var buffers = db.buffers.Where(b => b.company_id == company_id && b.show_activity != false).OrderBy(b => b.name).ToList();
+            var bufferId = buffers.Select(i => i.id).ToList();
+            var bufferName = buffers.Select(i => i.name).ToList();
             ViewBag.BufferCount = buffers.Count(); //don't show buffer and activity
+            ViewBag.BufferId = bufferId;
+            ViewBag.bufferName = bufferName;
+
+            var restri = db.restri_enzyme.Where(r => enzymeId.Contains(r.id)).ToList();
             if (enzymes.Count() > 0)
             {
-                foreach(var e in enzymeId)
+                foreach (var e in restri)
                 {
-                    //find the enzyme
-                    var enzyme = db.restri_enzyme.Find(e);
-
                     var RActivity = new RestrictionActivity();
                     RActivity.company_id = company_id;
-                    RActivity.enzyme_id = e;
-                    RActivity.starActivity = enzyme.staractitivity;
-                    RActivity.dam = enzyme.dam;
-                    RActivity.dcm = enzyme.dcm;
-                    RActivity.cpg = enzyme.cpg;
-                    RActivity.inactivity = enzyme.inactivation;
+                    RActivity.enzyme_id = e.id;
+                    RActivity.enzymeName = e.name;
+                    RActivity.forward_seq = e.forward_seq;
+                    RActivity.forward_cut = e.forward_cut;
+                    RActivity.forward_cut2 = e.forward_cut2;
+                    RActivity.reverse_cut2 = e.reverse_cut2;
+                    RActivity.reverse_cut = e.reverse_cut;
+                    RActivity.starActivity = e.staractitivity;
+                    RActivity.dam = e.dam;
+                    RActivity.dcm = e.dcm;
+                    RActivity.cpg = e.cpg;
+                    RActivity.inactivity = e.inactivation;
 
-                    List<Dictionary<int, int>> bufferDict = new List<Dictionary<int, int>>();
+                    List<Activity> bufferActivity = new List<Activity>();
+                    //uncoment this if want to show buffer info
+
                     if (buffers.Count() > 0)
                     {
-                        foreach(var b in buffers.ToList())
+                        //find activity                           
+                        var activities = db.activity_restriction.Where(a => a.enzyme_id == e.id && a.company_id == company_id).Where(b => bufferId.Contains(b.buffer_id)).OrderBy(b => b.buffer_id).ToList();
+                        if (activities.Count() > 0)
                         {
-                            Dictionary<int, int> Activity = new Dictionary<int, int>();
-                            //find activity
-                            var activity = db.activity_restriction.Where(a => a.company_id ==company_id && a.enzyme_id == e && a.buffer_id == b.id);
-                            if (activity.Count() > 0)
+                            foreach (var b in activities)
                             {
-                                Activity.Add(b.id, activity.FirstOrDefault().activity);
-                                bufferDict.Add(Activity);
-                                RActivity.temprature = activity.FirstOrDefault().temprature;
+                                Activity Activity = new Activity();
+                                Activity.id = b.buffer_id; //buffer id 
+                                Activity.bufferName = b.buffer.name;//buffer name
+                                Activity.activity = b.activity; //enzyme activity
+                                bufferActivity.Add(Activity);
+                                RActivity.temprature = b.temprature;
                             }
                         }
-                        RActivity.Activity = bufferDict;
                     }
 
+                    RActivity.Activity = bufferActivity;
                     RActivityList.Add(RActivity);
                 }
             }
-
             return View(RActivityList.ToList());
-
-
-
-            //return View(enzymeList);
         }
 
         [Authorize]

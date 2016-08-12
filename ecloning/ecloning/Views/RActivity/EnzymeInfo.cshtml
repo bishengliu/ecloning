@@ -11,12 +11,12 @@
     List<string> bufferName = new List<string>();
     List<int> bufferId = new List<int>();
 
-    var dict = Model.Activity;
+    var enzymeAtivity = Model.Activity;
     int count = 0;
 
     for (int i = 0; i < BufferCount; i++)
     {
-        int bId = dict[i].Keys.First();
+        int bId = enzymeAtivity[i].id;
         bufferId.Add(bId);
         //get the buffer name
         var name = db.buffers.Find(bId).name;
@@ -210,7 +210,7 @@
                                                 var activity = db.activity_restriction.Where(a => a.company_id == Model.company_id && a.enzyme_id == Model.enzyme_id && a.buffer_id == i).First();
                                                 int pk = activity.id;
                                                 <td class="text-center">
-                                                    <span class="text-warning">@Html.Raw(convertActivity.Convert(dict[count].First().Value))</span>
+                                                    <span class="text-warning">@Html.Raw(convertActivity.Convert(enzymeAtivity[count].activity))</span>
                                                 </td>
                                                 count++;
                                             }
