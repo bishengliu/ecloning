@@ -808,11 +808,12 @@ namespace ecloning.Controllers
             var userId = User.Identity.GetUserId();
             //get people id
             var userInfo = new UserInfo(userId);
+            var groupInfo = new GroupInfo(userInfo.PersonId);
             int peopleId = userInfo.PersonId;
 
             //get person id and name 
             List<PeopleIdName> pIdNames  = new List<PeopleIdName>();
-            var people = db.people.Where(p=>p.id != userInfo.PersonId);
+            var people = db.people.Where(p => p.id != userInfo.PersonId && groupInfo.groupPeopleId.Contains(p.id));
             if (people.Count() > 0)
             {
                 foreach(var p in people)
