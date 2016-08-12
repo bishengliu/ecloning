@@ -55,6 +55,8 @@ namespace ecloning.Areas.Admin.Controllers
             var restri = db.restri_enzyme.Where(r => enzymeId.Contains(r.id)).ToList();
             if (enzymes.Count() > 0)
             {
+                //first load the activities;
+                var activities = db.activity_restriction.Where(a => a.company_id == company_id);
                 foreach (var e in restri)
                 {
                     var RActivity = new RestrictionActivity();
@@ -78,10 +80,10 @@ namespace ecloning.Areas.Admin.Controllers
                     if (buffers.Count() > 0)
                     {
                         //find activity                           
-                        var activities = db.activity_restriction.Where(a => a.enzyme_id == e.id && a.company_id == company_id).Where(b => bufferId.Contains(b.buffer_id)).OrderBy(b => b.buffer_id).ToList();
-                        if (activities.Count() > 0)
+                        var enzymeActivities = activities.Where(a => a.enzyme_id == e.id).Where(b => bufferId.Contains(b.buffer_id)).OrderBy(b => b.buffer_id).ToList();
+                        if (enzymeActivities.Count() > 0)
                         {
-                            foreach (var b in activities)
+                            foreach (var b in enzymeActivities)
                             {
                                 Activity Activity = new Activity();
                                 Activity.id = b.buffer_id; //buffer id 
