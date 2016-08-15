@@ -12,11 +12,14 @@ namespace ecloning
                         "~/Scripts/jquery-{version}.js",                        
                         "~/Scripts/chosen.jquery.js",
                         "~/Scripts/jquery-ui-{version}.js",                        
-                        "~/Scripts/jquery.tokeninput.js"));
+                        "~/Scripts/jquery.tokeninput.min.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
+
             bundles.Add(new ScriptBundle("~/bundles/tokenInput").Include(
                         "~/Scripts/jquery.tokeninput.js"));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -27,7 +30,7 @@ namespace ecloning
                       //"~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/bootstrap-datepicker.min.js",
                       "~/Scripts/datepicker.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/respond.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/msa").Include(
                        "~/Scripts/msa/*.js",
@@ -46,8 +49,8 @@ namespace ecloning
             //bundles.Add(new ScriptBundle("~/bundles/msa").Include(
             //            "~/Scripts/msa/*.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/d3").Include(
-                      "~/Scripts/d3/d3*"));
+            //bundles.Add(new ScriptBundle("~/bundles/d3").Include(
+            //          "~/Scripts/d3/d3*"));
 
             bundles.Add(new ScriptBundle("~/bundles/editable").Include(
                       "~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"));
@@ -72,9 +75,9 @@ namespace ecloning
                       "~/Scripts/nv.d3.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3.min.js"));
-            //include angular js
-            bundles.Add(new ScriptBundle("~/bundles/AngularJS").Include(
-                      "~/Scripts/angular-*"));
+            ////include angular js
+            //bundles.Add(new ScriptBundle("~/bundles/AngularJS").Include(
+            //          "~/Scripts/angular-*"));
 
             //feature viewer and sequence viewer
             bundles.Add(new ScriptBundle("~/bundles/bioviewer").Include(
@@ -106,9 +109,9 @@ namespace ecloning
                       "~/Content/font-awesome/font-awesome.min.css",
                       "~/Content/bootstrap-datepicker.min.css",
                       //"~/Content/nv.d3.css",
-                      "~/Content/token-input.css",
+                      //"~/Content/token-input.css",
                       "~/Content/token-input-facebook.css",
-                      "~/Content/token-input-mac.css",
+                      //"~/Content/token-input-mac.css",
                       "~/Content/chosen.css",
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
