@@ -76,7 +76,7 @@
                                             var enzyme = db.restri_enzyme.Find(eItem);
                                             var className = "enzymeItem " + enzyme.name;
                                             <div class=@className onclick="window.open('@Url.Action("EnzymeInfo", "RActivity", new { company_id = item.company_id, enzyme_id = eItem})','_blank')">
-                                                <i class="fa fa-scissors text-danger"></i>
+                                                <i class="fa fa-scissors text-danger fa-rotate-270"></i>
                                                 <span class="text-primary text-center">@Html.Raw(@ecloning.Models.REnzyme.FormatName(enzyme.name))</span>
                                             </div>
                                         }
