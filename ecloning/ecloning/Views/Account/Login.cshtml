@@ -3,9 +3,8 @@
 @{
     ViewBag.Title = "Sign in";
 }
-
 <h3 class="text-center">@ViewBag.Title</h3>
-<div class="row">
+<div class="">
     <div class="col-sm-offset-4 col-sm-6">
         <section id="loginForm">
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -39,27 +38,13 @@
                         <input type="submit" value="Log in" class="btn btn-block btn-primary" />
                     </div>
                 </div>
-                @*<p>
-                    @Html.ActionLink("Register as a new user", "Register")
-                </p>*@
-                @* Enable this once you have account confirmation enabled for password reset functionality
-                    <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
             }
         </section>
         <div class="col-md-offset-2">
-            @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { @class = "btn btn-link" })
-            @*<br />
-            @Html.ActionLink("Resend Email Confirmation?", "SendEmailConfirmation", null, new { @class = "btn btn-link" })*@
+            @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { @class = "btn btn-link" })           
         </div>
 
     </div>
-    @*<div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>*@
 </div>
 
 @section Scripts {
