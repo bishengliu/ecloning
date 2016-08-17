@@ -4,7 +4,7 @@
     var bundleObj = ViewBag.BundleSeq;
 }
 
-<div class="row">
+<div class="">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <h3 class="text-warning text-center">Sequence Replacer</h3>
     </div>
@@ -21,8 +21,8 @@
     <br/>3) After that, you will be asked to provide the new DNA sequence that will replace the sequence in the previous step. if you don't provide this sequence, the replacer will remove the DNA sequence provied in the previous step.
     <br/>4) The replacer will replace all the matched sequences by default if <strong class="text-danger"><=3</strong> matches are found on a plasmid. <i>You can click on the matches to unselect them.</i> If too many matches (>4) are found, the plasmid will be ingnored; Increase the length of the DNA sequence to be replaced will reduce the number of matches.
 </div>
-
-<div class="row" id="tobereplaced">
+<div class="clearfix"></div>
+<div class="" id="tobereplaced">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <div class="panel panel-primary" id="old_panel">
             <div class="panel-heading">
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div class="row hidden" id="new_seq_div">
+<div class="hidden" id="new_seq_div">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <div class="panel panel-primary" id="new_panel">
             <div class="panel-heading">
@@ -62,7 +62,7 @@
     </div>
 </div>
 
-<div class="row hidden" id="match_found">
+<div class="hidden" id="match_found">
     <div class="col-xs-12 col-sm-offset-1 col-sm-10">
         <div class="panel panel-primary">
             <div class="panel-heading">Matches Found</div>

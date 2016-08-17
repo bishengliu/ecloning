@@ -18,16 +18,14 @@
 }
 <span id="decodeIt" class="hidden"></span>
 
-<div class="row">
+<div class="">
     <div class="col-sm-11 col-sm-offset-1 text-center">
         <h3 class="text-warning"><span class="fa fa-search"></span> Plasmids</h3>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-sm-1 hidden-xs">
-
-    </div>
+<div class="clearfix"></div>
+<div class="">
+    <div class="col-sm-1 hidden-xs"></div>
     <div class="col-sm-10">
         <hr class="dotted-line" />
         <div class="row">
@@ -131,37 +129,39 @@
 <br/>
 @if (Count > -2)
 {
-     <div class="row">
+     <div class="">
         <div class="col-sm-11 col-sm-offset-1 text-center">
             <h3 class="text-warning">Plasmids Found</h3>
         </div>
     </div>
-        if (Count == -1)
-        {
-            //user have not typed anything when clicking the search button
-            <div class="row">
-
+    if (Count == -1)
+    {
+        //user have not typed anything when clicking the search button
+        <div class="clearfix"></div>
+                <div class="">
                 <div class="col-sm-1 hidden-xs"></div>
                 <div class="col-sm-10 col-xs-12">
                     <hr class="dotted-line" />
                     <h4 class="text-danger col-sm-offset-1">You haven't typed anything.</h4>
                 </div>
             </div>
-        }
-        else if(Count == 0)
-        {
-            //nothing found
-            <div class="row">
+    }
+    else if (Count == 0)
+    {
+        //nothing found
+        <div class="clearfix"></div>
+                <div class="">
                 <div class="col-sm-1 hidden-xs"></div>
                 <div class="col-sm-10 col-xs-12">
                     <hr class="dotted-line" />
                     <h4 class="text-danger col-sm-offset-1">No matched plasmid!</h4>
                 </div>
             </div>
-        }
-        else
-        {
-            <div class="row">
+    }
+    else
+    {
+        <div class="clearfix"></div>
+            <div class="">
                 <div class="col-sm-1 hidden-xs"></div>
                 <div class="col-sm-10">
                     @foreach (var item in Model)

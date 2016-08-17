@@ -12,8 +12,8 @@
 }
 else
 {
-    <div class="row">
-        <div class="row">
+    <div class="">
+        <div class="">
             <div class="col-xs-12 col-sm-offset-1 col-sm-10">
                 <div class="col-xs-offset-1 col-xs-7 col-sm-offset-0 col-sm-6 col-md-offset-0 col-md-6 col-lg-offset-0 col-lg-4">
                     <h3 class="text-warning">@Type Sequence Editor</h3>
@@ -31,7 +31,7 @@ else
     <p class="hidden" id="type">@Type</p>
 
     //capture seq
-    <div class="row"  id="capture_seq">
+    <div class=""  id="capture_seq">
         <div class="col-xs-12 col-sm-offset-1 col-sm-10">
             <p class="text-danger" id="msg"></p>
             @using (Html.BeginForm())
@@ -58,8 +58,8 @@ else
 
     <br/>
     //show editor
-    <div class="row hidden" id="editor">
-        <div class="row">
+    <div class="hidden" id="editor">
+        <div class="">
             <div class="col-xs-12 col-sm-offset-1 col-sm-10">
                 <div class="col-xs-12">
                     <form class="form-horizontal">
@@ -141,7 +141,7 @@ else
     </div>
     <br/>
     //new seq
-    <div class="row hidden" id="result_seq">
+    <div class="hidden" id="result_seq">
         <div class="col-xs-12 col-sm-offset-1 col-sm-10">
             @using (Html.BeginForm())
                 {
