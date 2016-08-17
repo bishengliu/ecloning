@@ -1143,6 +1143,26 @@ namespace ecloning.Controllers
                             db.plasmid_map_backup.Remove(i);
                         }
                     }
+                    //delete methy
+                    var methy = db.methylations.Where(p => p.plasmid_id == id);
+                    if (methy.Count() > 0)
+                    {
+                        foreach (var i in methy.ToList())
+                        {
+                            db.methylations.Remove(i);
+                        }
+                    }
+
+                    //delete methy backup
+                    var methy_backup = db.methylation_backup.Where(p => p.plasmid_id == id);
+                    if (methy_backup.Count() > 0)
+                    {
+                        foreach (var i in methy_backup.ToList())
+                        {
+                            db.methylation_backup.Remove(i);
+                        }
+                    }
+
                     db.SaveChanges();
                     //remove any uploaded file
                     if (plasmid.img_fn != null)
