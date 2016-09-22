@@ -642,6 +642,7 @@
     <Content Include="Content\jqueryui-editable\img\loading.gif" />
     <Content Include="Content\msa\msa.css" />
     <Content Include="Content\nv.d3.css" />
+    <Content Include="Content\spectrum\spectrum.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="images\Fragment.jpg" />
     <Content Include="Models\ecloning.Context.tt">
@@ -1034,6 +1035,8 @@
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\sequence-viewer\sequence-viewer.min.js" />
+    <Content Include="Scripts\spectrum\colorPicker.js" />
+    <Content Include="Scripts\spectrum\spectrum.js" />
     <Content Include="Scripts\upload.validate.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="sorter\asc.gif" />

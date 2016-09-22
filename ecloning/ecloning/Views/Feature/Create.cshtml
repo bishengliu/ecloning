@@ -51,9 +51,17 @@
                         </div>
 
                         <div class="form-group">
+                            @Html.LabelFor(model => model.color, "Feature Color", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.color, new { htmlAttributes = new { @class = "form-control", id = "selectColor" } })
+                                @Html.ValidationMessageFor(model => model.color, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             @Html.LabelFor(model => model.des, "Remarks", htmlAttributes: new { @class = "control-label col-md-4" })
                             <div class="col-md-6">
-                                @Html.TextAreaFor(model => model.des, 10, 150, new { @class = "form-control" })
+                                @Html.TextAreaFor(model => model.des, 8, 150, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.des, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -81,12 +89,14 @@
 </div>
 
 @Scripts.Render("~/bundles/jquery")
-
 <script>
     //use jquery chosen plugin
     $(document).ready(function () {
         $("#feature_id").chosen();
         $("#group_id").chosen();
+        
+        //spectrum
+        colorFull("selectColor");
     });
 </script>
 

@@ -13,8 +13,8 @@ function colorBasic(className) {
 }
 
 
-function colorFull(className){
-    $("."+ className).spectrum({
+function colorFull(idName){
+    $("#"+ idName).spectrum({
         color: "#ECC",
         showInput: true,
         className: "full-spectrum",

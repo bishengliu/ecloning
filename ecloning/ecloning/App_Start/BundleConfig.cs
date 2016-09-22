@@ -84,6 +84,10 @@ namespace ecloning
                       "~/Scripts/feature-viewer/feature-viewer.js",
                       "~/Scripts/sequence-viewer/sequence-viewer.js"));
 
+            //choose color
+            bundles.Add(new ScriptBundle("~/bundles/spectrum").Include(
+                      "~/Scripts/spectrum/spectrum.js",
+                      "~/Scripts/spectrum/colorPicker.js"));
 
             bundles.Add(new StyleBundle("~/Content/bioviewer").Include(
                     "~/Content/feature-viewer/fv.css"));
@@ -115,6 +119,7 @@ namespace ecloning
                       "~/Content/chosen.css",
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
+                      "~/Content/spectrum/spectrum.css", //color
                       "~/Content/feature-viewer/fv.css",
                       "~/Content/msa/msa.css",
                       "~/Content/site.css"));
