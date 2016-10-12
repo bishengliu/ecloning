@@ -73,7 +73,7 @@ namespace ecloning.Controllers
             ViewBag.Count = combinedIds.Count();
 
             //get the feautures
-            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, color = f.common_feature.color, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             ViewBag.plasmidIds = JsonConvert.SerializeObject(combinedIds.ToList());
 
@@ -190,7 +190,7 @@ namespace ecloning.Controllers
             //pass all features into json
             var features = db.plasmid_map.Include(p => p.plasmid).Where(m => combinedIds.Contains(m.plasmid_id)).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10);
             var fLabels = features.OrderBy(f => f.feature_id).Select(f => f.common_feature.label).Distinct().ToList();
-            var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f => f.common_feature.label).Where(p => combinedIds.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
+            var featuresJson = features.OrderBy(p => p.plasmid_id).OrderBy(s => s.plasmid.name).OrderBy(f => f.common_feature.label).Where(p => combinedIds.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, color= f.common_feature.color, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, feature = f.common_feature != null ? f.common_feature.label : f.feature });
             ViewBag.fLabels = JsonConvert.SerializeObject(fLabels);
             ViewBag.Features = JsonConvert.SerializeObject(featuresJson.ToList());
             ViewBag.Count = featuresJson.Count();
@@ -220,7 +220,7 @@ namespace ecloning.Controllers
             ViewBag.Plasmids = JsonConvert.SerializeObject(plasmids.ToList());
             //pass all features into json
             var plasmid_maps = db.plasmid_map.Include(p => p.plasmid).Where(m => combinedIds.Contains(m.plasmid_id)).Where(f => f.feature_id != 4 && f.feature_id != 3 && f.feature_id != 10);
-            var features = plasmid_maps.OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p => combinedIds.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            var features = plasmid_maps.OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Where(p => combinedIds.Contains(p.plasmid_id)).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, color=f.common_feature.color, pSeqCount = f.plasmid.seq_length, fLength = f.end - f.start, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
 
             var fLabels = plasmid_maps.OrderBy(f=>f.feature_id).Select(f => f.common_feature.label).Distinct().ToList();
@@ -1001,7 +1001,7 @@ namespace ecloning.Controllers
             //get the combined plasmid ids
             var combinedIds = sharedPlasmidId.Concat(plasmidMapIds).Distinct();
             //get the feautures
-            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
+            var features = db.plasmid_map.Include(p => p.plasmid).Where(p => combinedIds.Contains(p.plasmid_id)).Where(f => f.feature_id != 4).OrderBy(p => p.plasmid_id).OrderBy(s => s.start).Select(f => new { pId = f.plasmid.id, pName = f.plasmid.name, color= f.common_feature.color, pSeqCount = f.plasmid.seq_length, show_feature = f.show_feature, end = f.end, feature = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
             ViewBag.plasmidIds = JsonConvert.SerializeObject(combinedIds.ToList());
 

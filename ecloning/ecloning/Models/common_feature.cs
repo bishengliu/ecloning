@@ -11,7 +11,8 @@ namespace ecloning.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class common_feature
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -23,11 +24,16 @@ namespace ecloning.Models
         }
     
         public int id { get; set; }
+        [Required(ErrorMessage = "Required")]
         public int feature_id { get; set; }
+        [Required(ErrorMessage = "Required")]
         public string label { get; set; }
+        [Required(ErrorMessage = "Required")]
+        [RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
         public string sequence { get; set; }
         public string color { get; set; }
         public string des { get; set; }
+        [Required(ErrorMessage = "Required")]
         public int group_id { get; set; }
         public Nullable<int> people_id { get; set; }
     

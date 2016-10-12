@@ -76,7 +76,7 @@ namespace ecloning.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,feature_id,label,sequence,group_id,people_id,des")] common_feature common_feature)
+        public ActionResult Create([Bind(Include = "id,feature_id,label,color,sequence,group_id,people_id,des")] common_feature common_feature)
         {
             //get userId
             var userId = User.Identity.GetUserId();
@@ -181,7 +181,7 @@ namespace ecloning.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,feature_id,label,sequence,group_id,people_id,des")] common_feature common_feature)
+        public ActionResult Edit([Bind(Include = "id,feature_id,label,corlor,sequence,group_id,people_id,des")] common_feature common_feature)
         {
             //get userId
             var userId = User.Identity.GetUserId();

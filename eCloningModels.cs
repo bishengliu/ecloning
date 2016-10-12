@@ -94,7 +94,7 @@ namespace ecloning.Models
             this.plasmid_map_backup = new HashSet<plasmid_map_backup>();
             this.plasmid_map = new HashSet<plasmid_map>();
         }
-
+    
         public int id { get; set; }
         [Required(ErrorMessage = "Required")]
         public int feature_id { get; set; }
@@ -103,11 +103,12 @@ namespace ecloning.Models
         [Required(ErrorMessage = "Required")]
         [RegularExpression("^[ATGCatgc]*$", ErrorMessage = "Sequence can only contains letters: A, T, G, C!")]
         public string sequence { get; set; }
+        public string color { get; set; }
         public string des { get; set; }
         [Required(ErrorMessage = "Required")]
         public int group_id { get; set; }
         public Nullable<int> people_id { get; set; }
-
+    
         public virtual plasmid_feature plasmid_feature { get; set; }
         public virtual group group { get; set; }
         public virtual person person { get; set; }

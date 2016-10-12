@@ -32,6 +32,7 @@
                     <th>
                         Feature Name
                     </th>
+                    <th class="no-sort"></th>
                     <th>
                         Sequence
                     </th>
@@ -46,6 +47,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => Model.label)
                     </td>
+                    <td bgcolor="@Model.color"></td>
                     <td>
                         @if (Model.sequence.Count() >= 50)
                         {
