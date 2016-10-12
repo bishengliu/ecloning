@@ -22,13 +22,13 @@ namespace ecloning.Models
     
         public int id { get; set; }
         public string name { get; set; }
+        public string upload { get; set; }
         public Nullable<int> version { get; set; }
         public Nullable<int> versionref { get; set; }
         public Nullable<int> people_id { get; set; }
         public string des { get; set; }
-        public Nullable<System.DateTime> dt { get; set; }
         public Nullable<int> type_id { get; set; }
-        public string upload { get; set; }
+        public Nullable<System.DateTime> dt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<exp_step> exp_step { get; set; }

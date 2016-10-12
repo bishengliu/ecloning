@@ -18,8 +18,8 @@
     <Property Name="enzyme_id" Type="int" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
     <Property Name="buffer_id" Type="int" Nullable="false" />
-    <Property Name="activity" Type="int" Nullable="false" />
     <Property Name="temprature" Type="int" Nullable="false" />
+    <Property Name="activity" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="activity_restriction">
     <Key>
@@ -29,8 +29,8 @@
     <Property Name="enzyme_id" Type="int" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
     <Property Name="buffer_id" Type="int" Nullable="false" />
-    <Property Name="activity" Type="int" Nullable="false" />
     <Property Name="temprature" Type="int" Nullable="false" />
+    <Property Name="activity" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="app_license">
     <Key>
@@ -105,12 +105,12 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="des" Type="text" />
-    <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="show_activity" Type="bit" />
     <Property Name="show_activity2" Type="bit" />
+    <Property Name="des" Type="text" />
   </EntityType>
   <EntityType Name="common_feature">
     <Key>
@@ -120,6 +120,7 @@
     <Property Name="feature_id" Type="int" Nullable="false" />
     <Property Name="label" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="sequence" Type="text" Nullable="false" />
+    <Property Name="color" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="des" Type="text" />
     <Property Name="group_id" Type="int" Nullable="false" />
     <Property Name="people_id" Type="int" />
@@ -130,8 +131,8 @@
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="enzyme_id" Type="int" Nullable="false" />
-    <Property Name="group_id" Type="int" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="common_restriction">
     <Key>
@@ -139,8 +140,8 @@
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="enzyme_id" Type="int" Nullable="false" />
-    <Property Name="group_id" Type="int" Nullable="false" />
     <Property Name="company_id" Type="int" Nullable="false" />
+    <Property Name="group_id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="company">
     <Key>
@@ -149,14 +150,6 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="shortName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="fullName" Type="nvarchar" MaxLength="500" Nullable="false" />
-    <Property Name="des" Type="text" />
-  </EntityType>
-  <EntityType Name="container">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="category" Type="nvarchar" MaxLength="100" />
     <Property Name="des" Type="text" />
   </EntityType>
   <EntityType Name="Dam">
@@ -218,8 +211,8 @@
     <Property Name="protocol_id" Type="int" />
     <Property Name="des" Type="text" />
     <Property Name="people_id" Type="int" Nullable="false" />
-    <Property Name="dt" Type="datetime" />
     <Property Name="sort_id" Type="int" />
+    <Property Name="dt" Type="datetime" />
   </EntityType>
   <EntityType Name="exp_step_material">
     <Key>
@@ -235,11 +228,11 @@
     <Property Name="plasmid_id" Type="int" />
     <Property Name="frag1_id" Type="int" />
     <Property Name="frag2_id" Type="int" />
-    <Property Name="des" Type="text" />
-    <Property Name="dt" Type="datetime" />
     <Property Name="ligation_method" Type="nvarchar" MaxLength="20" />
     <Property Name="ligation_direction" Type="nvarchar" MaxLength="20" />
     <Property Name="nplasmid_id" Type="nvarchar" MaxLength="200" />
+    <Property Name="des" Type="text" />
+    <Property Name="dt" Type="datetime" />
   </EntityType>
   <EntityType Name="exp_step_result">
     <Key>
@@ -336,9 +329,9 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="depart_id" Type="int" Nullable="false" />
     <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
-    <Property Name="des" Type="text" />
-    <Property Name="code" Type="text" />
     <Property Name="email" Type="nvarchar" MaxLength="100" />
+    <Property Name="code" Type="text" />
+    <Property Name="des" Type="text" />
   </EntityType>
   <EntityType Name="group_people">
     <Key>
@@ -379,8 +372,8 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ladder_id" Type="int" Nullable="false" />
     <Property Name="size" Type="int" Nullable="false" />
-    <Property Name="Rf" Type="float" Nullable="false" />
     <Property Name="mass" Type="int" Nullable="false" />
+    <Property Name="Rf" Type="float" Nullable="false" />
   </EntityType>
   <EntityType Name="letter_code">
     <Key>
@@ -425,40 +418,6 @@
     <Property Name="dam_impaired" Type="bit" Nullable="false" />
     <Property Name="dcm_complete" Type="bit" Nullable="false" />
     <Property Name="dcm_impaired" Type="bit" Nullable="false" />
-  </EntityType>
-  <EntityType Name="minus180_liquid_nitrogen">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="tower_num" Type="int" Nullable="false" />
-    <Property Name="drawer_num" Type="int" Nullable="false" />
-    <Property Name="location" Type="nvarchar" MaxLength="100" />
-    <Property Name="des" Type="text" />
-  </EntityType>
-  <EntityType Name="minus20">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="drawer_up" Type="int" Nullable="false" />
-    <Property Name="drawer_down" Type="int" Nullable="false" />
-    <Property Name="location" Type="nvarchar" MaxLength="100" />
-    <Property Name="des" Type="text" />
-  </EntityType>
-  <EntityType Name="minus80">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="tower_num" Type="int" Nullable="false" />
-    <Property Name="drawer_num" Type="int" Nullable="false" />
-    <Property Name="box_num" Type="int" Nullable="false" />
-    <Property Name="location" Type="nvarchar" MaxLength="100" />
-    <Property Name="des" Type="text" />
   </EntityType>
   <EntityType Name="modifying_company">
     <Key>
@@ -522,6 +481,7 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="sequence" Type="text" />
+    <Property Name="seq_length" Type="int" />
     <Property Name="expression_system" Type="nvarchar" MaxLength="100" />
     <Property Name="expression_subsystem" Type="nvarchar" MaxLength="100" />
     <Property Name="promotor" Type="nvarchar" MaxLength="100" />
@@ -530,6 +490,7 @@
     <Property Name="reporter" Type="nvarchar" MaxLength="200" />
     <Property Name="selection" Type="nvarchar" MaxLength="200" />
     <Property Name="insert" Type="nvarchar" MaxLength="200" />
+    <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
     <Property Name="usage" Type="nvarchar" MaxLength="200" />
     <Property Name="plasmid_type" Type="nvarchar" MaxLength="200" />
     <Property Name="ref_plasmid" Type="nvarchar" MaxLength="100" />
@@ -537,9 +498,8 @@
     <Property Name="addgene" Type="int" />
     <Property Name="d" Type="datetime" />
     <Property Name="people_id" Type="int" Nullable="false" />
+    <Property Name="linear" Type="bit" />
     <Property Name="des" Type="text" />
-    <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
-    <Property Name="seq_length" Type="int" />
   </EntityType>
   <EntityType Name="plasmid_bundle">
     <Key>
@@ -578,8 +538,8 @@
     <Property Name="cut" Type="int" />
     <Property Name="common_id" Type="int" />
     <Property Name="clockwise" Type="int" Nullable="false" />
-    <Property Name="des" Type="text" />
     <Property Name="locked" Type="int" />
+    <Property Name="des" Type="text" />
   </EntityType>
   <EntityType Name="plasmid_map_backup">
     <Key>
@@ -637,13 +597,13 @@
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="upload" Type="nvarchar" MaxLength="500" />
     <Property Name="version" Type="int" />
     <Property Name="versionref" Type="int" />
     <Property Name="people_id" Type="int" />
     <Property Name="des" Type="text" />
-    <Property Name="dt" Type="datetime" />
     <Property Name="type_id" Type="int" />
-    <Property Name="upload" Type="nvarchar" MaxLength="500" />
+    <Property Name="dt" Type="datetime" />
   </EntityType>
   <EntityType Name="restri_enzyme">
     <Key>
@@ -677,23 +637,6 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="necleotide" Type="nvarchar" MaxLength="10" Nullable="false" />
-  </EntityType>
-  <EntityType Name="storage">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="type" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="ref_id" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="container_id" Type="int" Nullable="false" />
-    <Property Name="tower_id" Type="int" />
-    <Property Name="drawer_id" Type="int" />
-    <Property Name="box_id" Type="int" />
-    <Property Name="box_label" Type="nvarchar" MaxLength="500" />
-    <Property Name="vial_label" Type="nvarchar" MaxLength="500" Nullable="false" />
-    <Property Name="parent_link" Type="int" />
-    <Property Name="dt" Type="datetime" />
-    <Property Name="des" Type="text" />
   </EntityType>
   <Association Name="fk_activity_modifying_buffer_id">
     <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
@@ -1558,7 +1501,6 @@
     <EntitySet Name="common_modifying" EntityType="Self.common_modifying" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Dam" EntityType="Self.Dam" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
@@ -1581,9 +1523,6 @@
     <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="methylation" EntityType="Self.methylation" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="methylation_backup" EntityType="Self.methylation_backup" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="minus20" EntityType="Self.minus20" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="minus80" EntityType="Self.minus80" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="modifying_company" EntityType="Self.modifying_company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="oligo" EntityType="Self.oligo" Schema="dbo" store:Type="Tables" />
@@ -1600,7 +1539,6 @@
     <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="restriction_company" EntityType="Self.restriction_company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="seq_code" EntityType="Self.seq_code" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="storage" EntityType="Self.storage" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="fk_activity_modifying_buffer_id" Association="Self.fk_activity_modifying_buffer_id">
       <End Role="buffer" EntitySet="buffer" />
       <End Role="activity_modifying" EntitySet="activity_modifying" />

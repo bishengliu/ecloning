@@ -22,8 +22,8 @@ namespace ecloning.Models
         public Nullable<int> protocol_id { get; set; }
         public string des { get; set; }
         public int people_id { get; set; }
-        public Nullable<System.DateTime> dt { get; set; }
         public Nullable<int> sort_id { get; set; }
+        public Nullable<System.DateTime> dt { get; set; }
     
         public virtual experiment experiment { get; set; }
         public virtual person person { get; set; }

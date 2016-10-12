@@ -1,0 +1,55 @@
+.noEvent
+{
+    pointer-events: none;
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer */
+   -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+   -webkit-user-select: none; /* Chrome, Safari, and Opera */
+   -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+}
+
+
+.label-text
+{
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.rectArrow, .featureRect{
+    cursor: pointer;
+}
+.featureG{
+    cursor: pointer;
+}
+div.rectTooltip {   
+  position: absolute;           
+  text-align: left;           
+  width: 320px;                  
+  padding: 5px;             
+  font: 10px sans-serif;        
+  background: #aec7e8;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}
+div.brushTooltip {   
+  position: absolute;           
+  text-align: left;           
+  padding: 5px;
+  width: 320px;              
+  font: 10px sans-serif;        
+  background: #e7cb94;   
+  border: 0px;      
+  border-radius: 4px;           
+  pointer-events: none;         
+}
+.seqFont{
+    font-family: monospace;
+    font-size: 13px;
+}
+
+/*add * for forms*/
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}

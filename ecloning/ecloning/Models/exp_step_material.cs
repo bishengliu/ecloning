@@ -24,11 +24,11 @@ namespace ecloning.Models
         public Nullable<int> plasmid_id { get; set; }
         public Nullable<int> frag1_id { get; set; }
         public Nullable<int> frag2_id { get; set; }
-        public string des { get; set; }
-        public Nullable<System.DateTime> dt { get; set; }
         public string ligation_method { get; set; }
         public string ligation_direction { get; set; }
         public string nplasmid_id { get; set; }
+        public string des { get; set; }
+        public Nullable<System.DateTime> dt { get; set; }
     
         public virtual experiment experiment { get; set; }
         public virtual primer primer { get; set; }

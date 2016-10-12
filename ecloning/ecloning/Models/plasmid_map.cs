@@ -24,8 +24,8 @@ namespace ecloning.Models
         public Nullable<int> cut { get; set; }
         public Nullable<int> common_id { get; set; }
         public int clockwise { get; set; }
-        public string des { get; set; }
         public Nullable<int> locked { get; set; }
+        public string des { get; set; }
     
         public virtual common_feature common_feature { get; set; }
         public virtual plasmid plasmid { get; set; }

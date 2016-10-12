@@ -356,6 +356,7 @@ CREATE TABLE common_feature
 	feature_id INT NOT NULL,
 	label NVARCHAR(200) NOT NULL,
 	[sequence] text NOT NULL,
+	color NVARCHAR(50) NOT NULL,
 	[des] TEXT,
 	group_id INT NOT NULL,
 	people_id INT, --the person who add this feature

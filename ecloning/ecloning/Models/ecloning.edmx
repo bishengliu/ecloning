@@ -23,8 +23,8 @@
           <Property Name="enzyme_id" Type="int" Nullable="false" />
           <Property Name="company_id" Type="int" Nullable="false" />
           <Property Name="buffer_id" Type="int" Nullable="false" />
-          <Property Name="activity" Type="int" Nullable="false" />
           <Property Name="temprature" Type="int" Nullable="false" />
+          <Property Name="activity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="activity_restriction">
           <Key>
@@ -34,8 +34,8 @@
           <Property Name="enzyme_id" Type="int" Nullable="false" />
           <Property Name="company_id" Type="int" Nullable="false" />
           <Property Name="buffer_id" Type="int" Nullable="false" />
-          <Property Name="activity" Type="int" Nullable="false" />
           <Property Name="temprature" Type="int" Nullable="false" />
+          <Property Name="activity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="app_license">
           <Key>
@@ -110,12 +110,12 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="des" Type="text" />
-          <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="company_id" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="composition" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="show_activity" Type="bit" />
           <Property Name="show_activity2" Type="bit" />
+          <Property Name="des" Type="text" />
         </EntityType>
         <EntityType Name="common_feature">
           <Key>
@@ -125,6 +125,7 @@
           <Property Name="feature_id" Type="int" Nullable="false" />
           <Property Name="label" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="sequence" Type="text" Nullable="false" />
+          <Property Name="color" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="des" Type="text" />
           <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="people_id" Type="int" />
@@ -135,8 +136,8 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="enzyme_id" Type="int" Nullable="false" />
-          <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="company_id" Type="int" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="common_restriction">
           <Key>
@@ -144,8 +145,8 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="enzyme_id" Type="int" Nullable="false" />
-          <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="company_id" Type="int" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="company">
           <Key>
@@ -154,14 +155,6 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="shortName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="fullName" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="des" Type="text" />
-        </EntityType>
-        <EntityType Name="container">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="category" Type="nvarchar" MaxLength="100" />
           <Property Name="des" Type="text" />
         </EntityType>
         <EntityType Name="Dam">
@@ -223,8 +216,8 @@
           <Property Name="protocol_id" Type="int" />
           <Property Name="des" Type="text" />
           <Property Name="people_id" Type="int" Nullable="false" />
-          <Property Name="dt" Type="datetime" />
           <Property Name="sort_id" Type="int" />
+          <Property Name="dt" Type="datetime" />
         </EntityType>
         <EntityType Name="exp_step_material">
           <Key>
@@ -240,11 +233,11 @@
           <Property Name="plasmid_id" Type="int" />
           <Property Name="frag1_id" Type="int" />
           <Property Name="frag2_id" Type="int" />
-          <Property Name="des" Type="text" />
-          <Property Name="dt" Type="datetime" />
           <Property Name="ligation_method" Type="nvarchar" MaxLength="20" />
           <Property Name="ligation_direction" Type="nvarchar" MaxLength="20" />
           <Property Name="nplasmid_id" Type="nvarchar" MaxLength="200" />
+          <Property Name="des" Type="text" />
+          <Property Name="dt" Type="datetime" />
         </EntityType>
         <EntityType Name="exp_step_result">
           <Key>
@@ -341,9 +334,9 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="depart_id" Type="int" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="des" Type="text" />
-          <Property Name="code" Type="text" />
           <Property Name="email" Type="nvarchar" MaxLength="100" />
+          <Property Name="code" Type="text" />
+          <Property Name="des" Type="text" />
         </EntityType>
         <EntityType Name="group_people">
           <Key>
@@ -384,8 +377,8 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ladder_id" Type="int" Nullable="false" />
           <Property Name="size" Type="int" Nullable="false" />
-          <Property Name="Rf" Type="float" Nullable="false" />
           <Property Name="mass" Type="int" Nullable="false" />
+          <Property Name="Rf" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="letter_code">
           <Key>
@@ -430,40 +423,6 @@
           <Property Name="dam_impaired" Type="bit" Nullable="false" />
           <Property Name="dcm_complete" Type="bit" Nullable="false" />
           <Property Name="dcm_impaired" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="minus180_liquid_nitrogen">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="tower_num" Type="int" Nullable="false" />
-          <Property Name="drawer_num" Type="int" Nullable="false" />
-          <Property Name="location" Type="nvarchar" MaxLength="100" />
-          <Property Name="des" Type="text" />
-        </EntityType>
-        <EntityType Name="minus20">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="drawer_up" Type="int" Nullable="false" />
-          <Property Name="drawer_down" Type="int" Nullable="false" />
-          <Property Name="location" Type="nvarchar" MaxLength="100" />
-          <Property Name="des" Type="text" />
-        </EntityType>
-        <EntityType Name="minus80">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="tower_num" Type="int" Nullable="false" />
-          <Property Name="drawer_num" Type="int" Nullable="false" />
-          <Property Name="box_num" Type="int" Nullable="false" />
-          <Property Name="location" Type="nvarchar" MaxLength="100" />
-          <Property Name="des" Type="text" />
         </EntityType>
         <EntityType Name="modifying_company">
           <Key>
@@ -527,6 +486,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="sequence" Type="text" />
+          <Property Name="seq_length" Type="int" />
           <Property Name="expression_system" Type="nvarchar" MaxLength="100" />
           <Property Name="expression_subsystem" Type="nvarchar" MaxLength="100" />
           <Property Name="promotor" Type="nvarchar" MaxLength="100" />
@@ -535,6 +495,7 @@
           <Property Name="reporter" Type="nvarchar" MaxLength="200" />
           <Property Name="selection" Type="nvarchar" MaxLength="200" />
           <Property Name="insert" Type="nvarchar" MaxLength="200" />
+          <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
           <Property Name="usage" Type="nvarchar" MaxLength="200" />
           <Property Name="plasmid_type" Type="nvarchar" MaxLength="200" />
           <Property Name="ref_plasmid" Type="nvarchar" MaxLength="100" />
@@ -542,9 +503,8 @@
           <Property Name="addgene" Type="int" />
           <Property Name="d" Type="datetime" />
           <Property Name="people_id" Type="int" Nullable="false" />
+          <Property Name="linear" Type="bit" />
           <Property Name="des" Type="text" />
-          <Property Name="insert_species" Type="nvarchar" MaxLength="200" />
-          <Property Name="seq_length" Type="int" />
         </EntityType>
         <EntityType Name="plasmid_bundle">
           <Key>
@@ -583,8 +543,8 @@
           <Property Name="cut" Type="int" />
           <Property Name="common_id" Type="int" />
           <Property Name="clockwise" Type="int" Nullable="false" />
-          <Property Name="des" Type="text" />
           <Property Name="locked" Type="int" />
+          <Property Name="des" Type="text" />
         </EntityType>
         <EntityType Name="plasmid_map_backup">
           <Key>
@@ -642,13 +602,13 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="upload" Type="nvarchar" MaxLength="500" />
           <Property Name="version" Type="int" />
           <Property Name="versionref" Type="int" />
           <Property Name="people_id" Type="int" />
           <Property Name="des" Type="text" />
-          <Property Name="dt" Type="datetime" />
           <Property Name="type_id" Type="int" />
-          <Property Name="upload" Type="nvarchar" MaxLength="500" />
+          <Property Name="dt" Type="datetime" />
         </EntityType>
         <EntityType Name="restri_enzyme">
           <Key>
@@ -682,23 +642,6 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="necleotide" Type="nvarchar" MaxLength="10" Nullable="false" />
-        </EntityType>
-        <EntityType Name="storage">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="type" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="ref_id" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="container_id" Type="int" Nullable="false" />
-          <Property Name="tower_id" Type="int" />
-          <Property Name="drawer_id" Type="int" />
-          <Property Name="box_id" Type="int" />
-          <Property Name="box_label" Type="nvarchar" MaxLength="500" />
-          <Property Name="vial_label" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="parent_link" Type="int" />
-          <Property Name="dt" Type="datetime" />
-          <Property Name="des" Type="text" />
         </EntityType>
         <Association Name="fk_activity_modifying_buffer_id">
           <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
@@ -1563,7 +1506,6 @@
           <EntitySet Name="common_modifying" EntityType="Self.common_modifying" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="common_restriction" EntityType="Self.common_restriction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="company" EntityType="Self.company" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="container" EntityType="Self.container" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dam" EntityType="Self.Dam" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dcm" EntityType="Self.Dcm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="department" EntityType="Self.department" Schema="dbo" store:Type="Tables" />
@@ -1586,9 +1528,6 @@
           <EntitySet Name="license" EntityType="Self.license" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="methylation" EntityType="Self.methylation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="methylation_backup" EntityType="Self.methylation_backup" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="minus20" EntityType="Self.minus20" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="minus80" EntityType="Self.minus80" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="modifying_company" EntityType="Self.modifying_company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="oligo" EntityType="Self.oligo" Schema="dbo" store:Type="Tables" />
@@ -1605,7 +1544,6 @@
           <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="restriction_company" EntityType="Self.restriction_company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="seq_code" EntityType="Self.seq_code" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="storage" EntityType="Self.storage" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="fk_activity_modifying_buffer_id" Association="Self.fk_activity_modifying_buffer_id">
             <End Role="buffer" EntitySet="buffer" />
             <End Role="activity_modifying" EntitySet="activity_modifying" />
@@ -1910,8 +1848,8 @@
           <Property Name="enzyme_id" Type="Int32" Nullable="false" />
           <Property Name="company_id" Type="Int32" Nullable="false" />
           <Property Name="buffer_id" Type="Int32" Nullable="false" />
-          <Property Name="activity" Type="Int32" Nullable="false" />
           <Property Name="temprature" Type="Int32" Nullable="false" />
+          <Property Name="activity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="buffer" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="activity_modifying" ToRole="buffer" />
           <NavigationProperty Name="company" Relationship="Self.fk_activity_modifying_company_id" FromRole="activity_modifying" ToRole="company" />
           <NavigationProperty Name="modifying_enzyme" Relationship="Self.fk_activity_modifying_enzyme_id" FromRole="activity_modifying" ToRole="modifying_enzyme" />
@@ -1924,8 +1862,8 @@
           <Property Name="enzyme_id" Type="Int32" Nullable="false" />
           <Property Name="company_id" Type="Int32" Nullable="false" />
           <Property Name="buffer_id" Type="Int32" Nullable="false" />
-          <Property Name="activity" Type="Int32" Nullable="false" />
           <Property Name="temprature" Type="Int32" Nullable="false" />
+          <Property Name="activity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="buffer" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="activity_restriction" ToRole="buffer" />
           <NavigationProperty Name="company" Relationship="Self.fk_activity_restriction_company_id" FromRole="activity_restriction" ToRole="company" />
           <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_activity_restriction_enzyme_id" FromRole="activity_restriction" ToRole="restri_enzyme" />
@@ -2003,12 +1941,12 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="composition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="company_id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="composition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="show_activity" Type="Boolean" />
           <Property Name="show_activity2" Type="Boolean" />
+          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="activity_modifying" Relationship="Self.fk_activity_modifying_buffer_id" FromRole="buffer" ToRole="activity_modifying" />
           <NavigationProperty Name="activity_restriction" Relationship="Self.fk_activity_restriction_buffer_id" FromRole="buffer" ToRole="activity_restriction" />
           <NavigationProperty Name="company" Relationship="Self.fk_buffer_company_id" FromRole="buffer" ToRole="company" />
@@ -2021,6 +1959,7 @@
           <Property Name="feature_id" Type="Int32" Nullable="false" />
           <Property Name="label" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="sequence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="group_id" Type="Int32" Nullable="false" />
           <Property Name="people_id" Type="Int32" />
@@ -2037,8 +1976,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="enzyme_id" Type="Int32" Nullable="false" />
-          <Property Name="group_id" Type="Int32" Nullable="false" />
           <Property Name="company_id" Type="Int32" Nullable="false" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="company" Relationship="Self.fk_common_modifying_company_id" FromRole="common_modifying" ToRole="company" />
           <NavigationProperty Name="modifying_enzyme" Relationship="Self.fk_common_modifying_enzyme_id" FromRole="common_modifying" ToRole="modifying_enzyme" />
           <NavigationProperty Name="group" Relationship="Self.fk_common_modifying_group_id" FromRole="common_modifying" ToRole="group" />
@@ -2049,8 +1988,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="enzyme_id" Type="Int32" Nullable="false" />
-          <Property Name="group_id" Type="Int32" Nullable="false" />
           <Property Name="company_id" Type="Int32" Nullable="false" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="company" Relationship="Self.fk_common_restriction_company_id" FromRole="common_restriction" ToRole="company" />
           <NavigationProperty Name="restri_enzyme" Relationship="Self.fk_common_restriction_enzyme_id" FromRole="common_restriction" ToRole="restri_enzyme" />
           <NavigationProperty Name="group" Relationship="Self.fk_common_restriction_group_id" FromRole="common_restriction" ToRole="group" />
@@ -2071,14 +2010,6 @@
           <NavigationProperty Name="ladders" Relationship="Self.fk_ladder_company_id" FromRole="company" ToRole="ladder" />
           <NavigationProperty Name="modifying_company" Relationship="Self.fk_modifying_company_company_id" FromRole="company" ToRole="modifying_company" />
           <NavigationProperty Name="restriction_company" Relationship="Self.fk_restriction_company_company_id" FromRole="company" ToRole="restriction_company" />
-        </EntityType>
-        <EntityType Name="container">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Dam">
           <Key>
@@ -2143,8 +2074,8 @@
           <Property Name="protocol_id" Type="Int32" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="people_id" Type="Int32" Nullable="false" />
-          <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="sort_id" Type="Int32" />
+          <Property Name="dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_exp_id" FromRole="exp_step" ToRole="experiment" />
           <NavigationProperty Name="person" Relationship="Self.fk_exp_step_people_id" FromRole="exp_step" ToRole="people" />
           <NavigationProperty Name="protocol" Relationship="Self.fk_exp_step_protocol_id" FromRole="exp_step" ToRole="protocol" />
@@ -2163,11 +2094,11 @@
           <Property Name="plasmid_id" Type="Int32" />
           <Property Name="frag1_id" Type="Int32" />
           <Property Name="frag2_id" Type="Int32" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="ligation_method" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ligation_direction" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="nplasmid_id" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="experiment" Relationship="Self.fk_exp_step_material_exp_id" FromRole="exp_step_material" ToRole="experiment" />
           <NavigationProperty Name="primer" Relationship="Self.fk_exp_step_material_forward_primer_id" FromRole="exp_step_material" ToRole="primer" />
           <NavigationProperty Name="fragment" Relationship="Self.fk_exp_step_material_frag1_id" FromRole="exp_step_material" ToRole="fragment" />
@@ -2287,9 +2218,9 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="depart_id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="app_license" Relationship="Self.fk_app_license_group_id" FromRole="group" ToRole="app_license" />
           <NavigationProperty Name="common_feature" Relationship="Self.fk_common_feature_group_id" FromRole="group" ToRole="common_feature" />
           <NavigationProperty Name="common_modifying" Relationship="Self.fk_common_modifying_group_id" FromRole="group" ToRole="common_modifying" />
@@ -2342,8 +2273,8 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ladder_id" Type="Int32" Nullable="false" />
           <Property Name="size" Type="Int32" Nullable="false" />
-          <Property Name="Rf" Type="Double" Nullable="false" />
           <Property Name="mass" Type="Int32" Nullable="false" />
+          <Property Name="Rf" Type="Double" Nullable="false" />
           <NavigationProperty Name="ladder" Relationship="Self.fk_padder_size_ladder_id" FromRole="ladder_size" ToRole="ladder" />
         </EntityType>
         <EntityType Name="letter_code">
@@ -2392,40 +2323,6 @@
           <Property Name="dcm_complete" Type="Boolean" Nullable="false" />
           <Property Name="dcm_impaired" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="plasmid" Relationship="Self.fk_methylation_backup_plasmid_id" FromRole="methylation_backup" ToRole="plasmid" />
-        </EntityType>
-        <EntityType Name="minus180_liquid_nitrogen">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="tower_num" Type="Int32" Nullable="false" />
-          <Property Name="drawer_num" Type="Int32" Nullable="false" />
-          <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="minus20">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="drawer_up" Type="Int32" Nullable="false" />
-          <Property Name="drawer_down" Type="Int32" Nullable="false" />
-          <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="minus80">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="tower_num" Type="Int32" Nullable="false" />
-          <Property Name="drawer_num" Type="Int32" Nullable="false" />
-          <Property Name="box_num" Type="Int32" Nullable="false" />
-          <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="modifying_company">
           <Key>
@@ -2510,6 +2407,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="sequence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="seq_length" Type="Int32" />
           <Property Name="expression_system" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="expression_subsystem" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="promotor" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2518,6 +2416,7 @@
           <Property Name="reporter" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="selection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="insert" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="usage" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="plasmid_type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ref_plasmid" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2525,9 +2424,8 @@
           <Property Name="addgene" Type="Int32" />
           <Property Name="d" Type="DateTime" Precision="3" />
           <Property Name="people_id" Type="Int32" Nullable="false" />
+          <Property Name="linear" Type="Boolean" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="insert_species" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="seq_length" Type="Int32" />
           <NavigationProperty Name="exp_step_material" Relationship="Self.fk_exp_step_material_plasmid_id" FromRole="plasmid" ToRole="exp_step_material" />
           <NavigationProperty Name="fragments" Relationship="Self.fk_plasmid_fragment_plasmid_id" FromRole="plasmid" ToRole="fragment" />
           <NavigationProperty Name="methylations" Relationship="Self.fk_methylation_plasmid_id" FromRole="plasmid" ToRole="methylation" />
@@ -2578,8 +2476,8 @@
           <Property Name="cut" Type="Int32" />
           <Property Name="common_id" Type="Int32" />
           <Property Name="clockwise" Type="Int32" Nullable="false" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="locked" Type="Int32" />
+          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="common_feature" Relationship="Self.fk_plasmid_map_ccommon_id" FromRole="plasmid_map" ToRole="common_feature" />
           <NavigationProperty Name="plasmid" Relationship="Self.fk_plasmid_map_plasmid_id" FromRole="plasmid_map" ToRole="plasmid" />
           <NavigationProperty Name="plasmid_feature" Relationship="Self.fk_plasmid_map_feature_id" FromRole="plasmid_map" ToRole="plasmid_feature" />
@@ -2652,13 +2550,13 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="upload" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="version" Type="Int32" />
           <Property Name="versionref" Type="Int32" />
           <Property Name="people_id" Type="Int32" />
           <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="dt" Type="DateTime" Precision="3" />
           <Property Name="type_id" Type="Int32" />
-          <Property Name="upload" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="dt" Type="DateTime" Precision="3" />
           <NavigationProperty Name="exp_step" Relationship="Self.fk_exp_step_protocol_id" FromRole="protocol" ToRole="exp_step" />
           <NavigationProperty Name="person" Relationship="Self.fk_protocol_people_id" FromRole="protocol" ToRole="people" />
         </EntityType>
@@ -2699,23 +2597,6 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="necleotide" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
-        <EntityType Name="storage">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ref_id" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="container_id" Type="Int32" Nullable="false" />
-          <Property Name="tower_id" Type="Int32" />
-          <Property Name="drawer_id" Type="Int32" />
-          <Property Name="box_id" Type="Int32" />
-          <Property Name="box_label" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="vial_label" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="parent_link" Type="Int32" />
-          <Property Name="dt" Type="DateTime" Precision="3" />
-          <Property Name="des" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="fk_activity_modifying_buffer_id">
           <End Role="buffer" Type="Self.buffer" Multiplicity="1" />
@@ -3555,7 +3436,6 @@
           <EntitySet Name="common_modifying" EntityType="Self.common_modifying" />
           <EntitySet Name="common_restriction" EntityType="Self.common_restriction" />
           <EntitySet Name="companies" EntityType="Self.company" />
-          <EntitySet Name="containers" EntityType="Self.container" />
           <EntitySet Name="Dams" EntityType="Self.Dam" />
           <EntitySet Name="Dcms" EntityType="Self.Dcm" />
           <EntitySet Name="departments" EntityType="Self.department" />
@@ -3578,9 +3458,6 @@
           <EntitySet Name="licenses" EntityType="Self.license" />
           <EntitySet Name="methylations" EntityType="Self.methylation" />
           <EntitySet Name="methylation_backup" EntityType="Self.methylation_backup" />
-          <EntitySet Name="minus180_liquid_nitrogen" EntityType="Self.minus180_liquid_nitrogen" />
-          <EntitySet Name="minus20" EntityType="Self.minus20" />
-          <EntitySet Name="minus80" EntityType="Self.minus80" />
           <EntitySet Name="modifying_company" EntityType="Self.modifying_company" />
           <EntitySet Name="modifying_enzyme" EntityType="Self.modifying_enzyme" />
           <EntitySet Name="oligoes" EntityType="Self.oligo" />
@@ -3597,7 +3474,6 @@
           <EntitySet Name="restri_enzyme" EntityType="Self.restri_enzyme" />
           <EntitySet Name="restriction_company" EntityType="Self.restriction_company" />
           <EntitySet Name="seq_code" EntityType="Self.seq_code" />
-          <EntitySet Name="storages" EntityType="Self.storage" />
           <AssociationSet Name="fk_activity_modifying_buffer_id" Association="Self.fk_activity_modifying_buffer_id">
             <End Role="buffer" EntitySet="buffers" />
             <End Role="activity_modifying" EntitySet="activity_modifying" />
@@ -3898,8 +3774,8 @@
                 <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
                 <ScalarProperty Name="company_id" ColumnName="company_id" />
                 <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
-                <ScalarProperty Name="activity" ColumnName="activity" />
                 <ScalarProperty Name="temprature" ColumnName="temprature" />
+                <ScalarProperty Name="activity" ColumnName="activity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3910,8 +3786,8 @@
                 <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
                 <ScalarProperty Name="company_id" ColumnName="company_id" />
                 <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
-                <ScalarProperty Name="activity" ColumnName="activity" />
                 <ScalarProperty Name="temprature" ColumnName="temprature" />
+                <ScalarProperty Name="activity" ColumnName="activity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3982,12 +3858,12 @@
             <EntityTypeMapping TypeName="ecloningModel.buffer">
               <MappingFragment StoreEntitySet="buffer">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="composition" ColumnName="composition" />
                 <ScalarProperty Name="company_id" ColumnName="company_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="composition" ColumnName="composition" />
                 <ScalarProperty Name="show_activity" ColumnName="show_activity" />
                 <ScalarProperty Name="show_activity2" ColumnName="show_activity2" />
+                <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3998,6 +3874,7 @@
                 <ScalarProperty Name="feature_id" ColumnName="feature_id" />
                 <ScalarProperty Name="label" ColumnName="label" />
                 <ScalarProperty Name="sequence" ColumnName="sequence" />
+                <ScalarProperty Name="color" ColumnName="color" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="group_id" ColumnName="group_id" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
@@ -4009,8 +3886,8 @@
               <MappingFragment StoreEntitySet="common_modifying">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
-                <ScalarProperty Name="group_id" ColumnName="group_id" />
                 <ScalarProperty Name="company_id" ColumnName="company_id" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4019,8 +3896,8 @@
               <MappingFragment StoreEntitySet="common_restriction">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
-                <ScalarProperty Name="group_id" ColumnName="group_id" />
                 <ScalarProperty Name="company_id" ColumnName="company_id" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4030,15 +3907,6 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="shortName" ColumnName="shortName" />
                 <ScalarProperty Name="fullName" ColumnName="fullName" />
-                <ScalarProperty Name="des" ColumnName="des" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="containers">
-            <EntityTypeMapping TypeName="ecloningModel.container">
-              <MappingFragment StoreEntitySet="container">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="category" ColumnName="category" />
                 <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -4106,8 +3974,8 @@
                 <ScalarProperty Name="protocol_id" ColumnName="protocol_id" />
                 <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
-                <ScalarProperty Name="dt" ColumnName="dt" />
                 <ScalarProperty Name="sort_id" ColumnName="sort_id" />
+                <ScalarProperty Name="dt" ColumnName="dt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4124,11 +3992,11 @@
                 <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
                 <ScalarProperty Name="frag1_id" ColumnName="frag1_id" />
                 <ScalarProperty Name="frag2_id" ColumnName="frag2_id" />
-                <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="dt" ColumnName="dt" />
                 <ScalarProperty Name="ligation_method" ColumnName="ligation_method" />
                 <ScalarProperty Name="ligation_direction" ColumnName="ligation_direction" />
                 <ScalarProperty Name="nplasmid_id" ColumnName="nplasmid_id" />
+                <ScalarProperty Name="des" ColumnName="des" />
+                <ScalarProperty Name="dt" ColumnName="dt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4232,9 +4100,9 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="depart_id" ColumnName="depart_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4279,8 +4147,8 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
                 <ScalarProperty Name="size" ColumnName="size" />
-                <ScalarProperty Name="Rf" ColumnName="Rf" />
                 <ScalarProperty Name="mass" ColumnName="mass" />
+                <ScalarProperty Name="Rf" ColumnName="Rf" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4329,43 +4197,6 @@
                 <ScalarProperty Name="dam_impaired" ColumnName="dam_impaired" />
                 <ScalarProperty Name="dcm_complete" ColumnName="dcm_complete" />
                 <ScalarProperty Name="dcm_impaired" ColumnName="dcm_impaired" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="minus180_liquid_nitrogen">
-            <EntityTypeMapping TypeName="ecloningModel.minus180_liquid_nitrogen">
-              <MappingFragment StoreEntitySet="minus180_liquid_nitrogen">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="tower_num" ColumnName="tower_num" />
-                <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
-                <ScalarProperty Name="location" ColumnName="location" />
-                <ScalarProperty Name="des" ColumnName="des" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="minus20">
-            <EntityTypeMapping TypeName="ecloningModel.minus20">
-              <MappingFragment StoreEntitySet="minus20">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="drawer_up" ColumnName="drawer_up" />
-                <ScalarProperty Name="drawer_down" ColumnName="drawer_down" />
-                <ScalarProperty Name="location" ColumnName="location" />
-                <ScalarProperty Name="des" ColumnName="des" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="minus80">
-            <EntityTypeMapping TypeName="ecloningModel.minus80">
-              <MappingFragment StoreEntitySet="minus80">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="tower_num" ColumnName="tower_num" />
-                <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
-                <ScalarProperty Name="box_num" ColumnName="box_num" />
-                <ScalarProperty Name="location" ColumnName="location" />
-                <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4435,6 +4266,7 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="sequence" ColumnName="sequence" />
+                <ScalarProperty Name="seq_length" ColumnName="seq_length" />
                 <ScalarProperty Name="expression_system" ColumnName="expression_system" />
                 <ScalarProperty Name="expression_subsystem" ColumnName="expression_subsystem" />
                 <ScalarProperty Name="promotor" ColumnName="promotor" />
@@ -4443,6 +4275,7 @@
                 <ScalarProperty Name="reporter" ColumnName="reporter" />
                 <ScalarProperty Name="selection" ColumnName="selection" />
                 <ScalarProperty Name="insert" ColumnName="insert" />
+                <ScalarProperty Name="insert_species" ColumnName="insert_species" />
                 <ScalarProperty Name="usage" ColumnName="usage" />
                 <ScalarProperty Name="plasmid_type" ColumnName="plasmid_type" />
                 <ScalarProperty Name="ref_plasmid" ColumnName="ref_plasmid" />
@@ -4450,9 +4283,8 @@
                 <ScalarProperty Name="addgene" ColumnName="addgene" />
                 <ScalarProperty Name="d" ColumnName="d" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
+                <ScalarProperty Name="linear" ColumnName="linear" />
                 <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="insert_species" ColumnName="insert_species" />
-                <ScalarProperty Name="seq_length" ColumnName="seq_length" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4494,8 +4326,8 @@
                 <ScalarProperty Name="cut" ColumnName="cut" />
                 <ScalarProperty Name="common_id" ColumnName="common_id" />
                 <ScalarProperty Name="clockwise" ColumnName="clockwise" />
-                <ScalarProperty Name="des" ColumnName="des" />
                 <ScalarProperty Name="locked" ColumnName="locked" />
+                <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4557,13 +4389,13 @@
               <MappingFragment StoreEntitySet="protocol">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="upload" ColumnName="upload" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="versionref" ColumnName="versionref" />
                 <ScalarProperty Name="people_id" ColumnName="people_id" />
                 <ScalarProperty Name="des" ColumnName="des" />
-                <ScalarProperty Name="dt" ColumnName="dt" />
                 <ScalarProperty Name="type_id" ColumnName="type_id" />
-                <ScalarProperty Name="upload" ColumnName="upload" />
+                <ScalarProperty Name="dt" ColumnName="dt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4600,24 +4432,6 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="necleotide" ColumnName="necleotide" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="storages">
-            <EntityTypeMapping TypeName="ecloningModel.storage">
-              <MappingFragment StoreEntitySet="storage">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="type" ColumnName="type" />
-                <ScalarProperty Name="ref_id" ColumnName="ref_id" />
-                <ScalarProperty Name="container_id" ColumnName="container_id" />
-                <ScalarProperty Name="tower_id" ColumnName="tower_id" />
-                <ScalarProperty Name="drawer_id" ColumnName="drawer_id" />
-                <ScalarProperty Name="box_id" ColumnName="box_id" />
-                <ScalarProperty Name="box_label" ColumnName="box_label" />
-                <ScalarProperty Name="vial_label" ColumnName="vial_label" />
-                <ScalarProperty Name="parent_link" ColumnName="parent_link" />
-                <ScalarProperty Name="dt" ColumnName="dt" />
-                <ScalarProperty Name="des" ColumnName="des" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -18,8 +18,8 @@
           <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
           <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
-          <ScalarProperty Name="activity" ColumnName="activity" />
           <ScalarProperty Name="temprature" ColumnName="temprature" />
+          <ScalarProperty Name="activity" ColumnName="activity" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -30,8 +30,8 @@
           <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
           <ScalarProperty Name="buffer_id" ColumnName="buffer_id" />
-          <ScalarProperty Name="activity" ColumnName="activity" />
           <ScalarProperty Name="temprature" ColumnName="temprature" />
+          <ScalarProperty Name="activity" ColumnName="activity" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -102,12 +102,12 @@
       <EntityTypeMapping TypeName="ecloningModel.buffer">
         <MappingFragment StoreEntitySet="buffer">
           <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="des" ColumnName="des" />
-          <ScalarProperty Name="composition" ColumnName="composition" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="composition" ColumnName="composition" />
           <ScalarProperty Name="show_activity" ColumnName="show_activity" />
           <ScalarProperty Name="show_activity2" ColumnName="show_activity2" />
+          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -118,6 +118,7 @@
           <ScalarProperty Name="feature_id" ColumnName="feature_id" />
           <ScalarProperty Name="label" ColumnName="label" />
           <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="color" ColumnName="color" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="group_id" ColumnName="group_id" />
           <ScalarProperty Name="people_id" ColumnName="people_id" />
@@ -129,8 +130,8 @@
         <MappingFragment StoreEntitySet="common_modifying">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
-          <ScalarProperty Name="group_id" ColumnName="group_id" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -139,8 +140,8 @@
         <MappingFragment StoreEntitySet="common_restriction">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="enzyme_id" ColumnName="enzyme_id" />
-          <ScalarProperty Name="group_id" ColumnName="group_id" />
           <ScalarProperty Name="company_id" ColumnName="company_id" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -150,15 +151,6 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="shortName" ColumnName="shortName" />
           <ScalarProperty Name="fullName" ColumnName="fullName" />
-          <ScalarProperty Name="des" ColumnName="des" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="containers">
-      <EntityTypeMapping TypeName="ecloningModel.container">
-        <MappingFragment StoreEntitySet="container">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="category" ColumnName="category" />
           <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -226,8 +218,8 @@
           <ScalarProperty Name="protocol_id" ColumnName="protocol_id" />
           <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="people_id" ColumnName="people_id" />
-          <ScalarProperty Name="dt" ColumnName="dt" />
           <ScalarProperty Name="sort_id" ColumnName="sort_id" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -244,11 +236,11 @@
           <ScalarProperty Name="plasmid_id" ColumnName="plasmid_id" />
           <ScalarProperty Name="frag1_id" ColumnName="frag1_id" />
           <ScalarProperty Name="frag2_id" ColumnName="frag2_id" />
-          <ScalarProperty Name="des" ColumnName="des" />
-          <ScalarProperty Name="dt" ColumnName="dt" />
           <ScalarProperty Name="ligation_method" ColumnName="ligation_method" />
           <ScalarProperty Name="ligation_direction" ColumnName="ligation_direction" />
           <ScalarProperty Name="nplasmid_id" ColumnName="nplasmid_id" />
+          <ScalarProperty Name="des" ColumnName="des" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -352,9 +344,9 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="depart_id" ColumnName="depart_id" />
           <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="des" ColumnName="des" />
-          <ScalarProperty Name="code" ColumnName="code" />
           <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -399,8 +391,8 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="ladder_id" ColumnName="ladder_id" />
           <ScalarProperty Name="size" ColumnName="size" />
-          <ScalarProperty Name="Rf" ColumnName="Rf" />
           <ScalarProperty Name="mass" ColumnName="mass" />
+          <ScalarProperty Name="Rf" ColumnName="Rf" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -449,43 +441,6 @@
           <ScalarProperty Name="dam_impaired" ColumnName="dam_impaired" />
           <ScalarProperty Name="dcm_complete" ColumnName="dcm_complete" />
           <ScalarProperty Name="dcm_impaired" ColumnName="dcm_impaired" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="minus180_liquid_nitrogen">
-      <EntityTypeMapping TypeName="ecloningModel.minus180_liquid_nitrogen">
-        <MappingFragment StoreEntitySet="minus180_liquid_nitrogen">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="tower_num" ColumnName="tower_num" />
-          <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
-          <ScalarProperty Name="location" ColumnName="location" />
-          <ScalarProperty Name="des" ColumnName="des" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="minus20">
-      <EntityTypeMapping TypeName="ecloningModel.minus20">
-        <MappingFragment StoreEntitySet="minus20">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="drawer_up" ColumnName="drawer_up" />
-          <ScalarProperty Name="drawer_down" ColumnName="drawer_down" />
-          <ScalarProperty Name="location" ColumnName="location" />
-          <ScalarProperty Name="des" ColumnName="des" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="minus80">
-      <EntityTypeMapping TypeName="ecloningModel.minus80">
-        <MappingFragment StoreEntitySet="minus80">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="tower_num" ColumnName="tower_num" />
-          <ScalarProperty Name="drawer_num" ColumnName="drawer_num" />
-          <ScalarProperty Name="box_num" ColumnName="box_num" />
-          <ScalarProperty Name="location" ColumnName="location" />
-          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -555,6 +510,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="sequence" ColumnName="sequence" />
+          <ScalarProperty Name="seq_length" ColumnName="seq_length" />
           <ScalarProperty Name="expression_system" ColumnName="expression_system" />
           <ScalarProperty Name="expression_subsystem" ColumnName="expression_subsystem" />
           <ScalarProperty Name="promotor" ColumnName="promotor" />
@@ -563,6 +519,7 @@
           <ScalarProperty Name="reporter" ColumnName="reporter" />
           <ScalarProperty Name="selection" ColumnName="selection" />
           <ScalarProperty Name="insert" ColumnName="insert" />
+          <ScalarProperty Name="insert_species" ColumnName="insert_species" />
           <ScalarProperty Name="usage" ColumnName="usage" />
           <ScalarProperty Name="plasmid_type" ColumnName="plasmid_type" />
           <ScalarProperty Name="ref_plasmid" ColumnName="ref_plasmid" />
@@ -570,9 +527,8 @@
           <ScalarProperty Name="addgene" ColumnName="addgene" />
           <ScalarProperty Name="d" ColumnName="d" />
           <ScalarProperty Name="people_id" ColumnName="people_id" />
+          <ScalarProperty Name="linear" ColumnName="linear" />
           <ScalarProperty Name="des" ColumnName="des" />
-          <ScalarProperty Name="insert_species" ColumnName="insert_species" />
-          <ScalarProperty Name="seq_length" ColumnName="seq_length" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -614,8 +570,8 @@
           <ScalarProperty Name="cut" ColumnName="cut" />
           <ScalarProperty Name="common_id" ColumnName="common_id" />
           <ScalarProperty Name="clockwise" ColumnName="clockwise" />
-          <ScalarProperty Name="des" ColumnName="des" />
           <ScalarProperty Name="locked" ColumnName="locked" />
+          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -677,13 +633,13 @@
         <MappingFragment StoreEntitySet="protocol">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="upload" ColumnName="upload" />
           <ScalarProperty Name="version" ColumnName="version" />
           <ScalarProperty Name="versionref" ColumnName="versionref" />
           <ScalarProperty Name="people_id" ColumnName="people_id" />
           <ScalarProperty Name="des" ColumnName="des" />
-          <ScalarProperty Name="dt" ColumnName="dt" />
           <ScalarProperty Name="type_id" ColumnName="type_id" />
-          <ScalarProperty Name="upload" ColumnName="upload" />
+          <ScalarProperty Name="dt" ColumnName="dt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -720,24 +676,6 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="necleotide" ColumnName="necleotide" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="storages">
-      <EntityTypeMapping TypeName="ecloningModel.storage">
-        <MappingFragment StoreEntitySet="storage">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="type" ColumnName="type" />
-          <ScalarProperty Name="ref_id" ColumnName="ref_id" />
-          <ScalarProperty Name="container_id" ColumnName="container_id" />
-          <ScalarProperty Name="tower_id" ColumnName="tower_id" />
-          <ScalarProperty Name="drawer_id" ColumnName="drawer_id" />
-          <ScalarProperty Name="box_id" ColumnName="box_id" />
-          <ScalarProperty Name="box_label" ColumnName="box_label" />
-          <ScalarProperty Name="vial_label" ColumnName="vial_label" />
-          <ScalarProperty Name="parent_link" ColumnName="parent_link" />
-          <ScalarProperty Name="dt" ColumnName="dt" />
-          <ScalarProperty Name="des" ColumnName="des" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
