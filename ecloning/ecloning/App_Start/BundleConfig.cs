@@ -75,6 +75,9 @@ namespace ecloning
                       "~/Scripts/nv.d3.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/d3").Include(
                       "~/Scripts/d3/d3.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/d3v4").Include(
+                      "~/Scripts/d3v4/d3.min.js"));
             ////include angular js
             //bundles.Add(new ScriptBundle("~/bundles/AngularJS").Include(
             //          "~/Scripts/angular-*"));
@@ -106,7 +109,7 @@ namespace ecloning
                         "~/Scripts/biotools/morris.min.js",
                         "~/Scripts/biotools/raphael-min.js",
                         "~/Scripts/biotools/sb-admin-2.js",
-                      "~/Scripts/biotools/metisMenu.min.js"));
+                        "~/Scripts/biotools/metisMenu.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.min.css",
@@ -119,11 +122,16 @@ namespace ecloning
                       "~/Content/chosen.css",
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
-                      "~/Content/spectrum/spectrum.css", //color
+                      //"~/Content/spectrum/spectrum.css", //color
                       "~/Content/feature-viewer/fv.css",
                       "~/Content/msa/msa.css",
                       "~/Content/site.css"));
-
+            bundles.Add(new StyleBundle("~/Content/d3plasmid").Include(
+                "~/Content/seqviewer/seqViewer.css",
+                "~/Content/d3plasmid/d3plasmid.css"));
+            bundles.Add(new ScriptBundle("~/bundles/d3plasmid").Include(
+                "~/Scripts/seqviewer/seqViewer.js",
+                "~/Scripts/d3plasmid/d3plasmid.js"));
         }
     }
 }

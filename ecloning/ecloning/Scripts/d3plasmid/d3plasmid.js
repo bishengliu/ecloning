@@ -99,8 +99,12 @@
             addFeatureId = json.addFeatureId;
 
             //sort data
-            features.sort(sortByProperty('start'));
-            enzymes.sort(sortByProperty('cut'));
+            if (features.length > 0) {
+                features.sort(sortByProperty('start'));
+            }
+            if (showEnzyme && enzymes.length > 0) {
+                enzymes.sort(sortByProperty('cut'));
+            }
 
             //get the width for svg
             width = $(id).width() - padding * 2; //padding on each side
@@ -1334,7 +1338,7 @@
     }
 
     //format feature for class
-    function formatName(name){
+    function formatName(name) {
         var nameArray = name.split('');
         var finalArray = [];
         $.each(nameArray, function(i, d){
@@ -1495,7 +1499,7 @@
     }
 
     //formate feature name for class
-    function formatName(name, type){
+    function formatName(name, type) {
         var nameArray = name.split('');
         var finalArray = [];
         $.each(nameArray, function(i, d){

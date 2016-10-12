@@ -61,6 +61,7 @@
 <span id="decodeIt" class="hidden"></span>
 <span id="seqCount" class="hidden">@seqCount</span>
 <span id="name" class="hidden">@Name</span>
+<span id="sequence" class="hidden">@Sequence</span>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-1">
         <div class="col-xs-12 col-sm-offset-2 col-md-offset-3">
@@ -330,6 +331,8 @@
 
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/giraffe")
+@*@Scripts.Render("~/bundles/d3v4")
+@Scripts.Render("~/bundles/d3plasmid")*@
 <script>
     $("#success-alert").fadeTo(20000, 500).slideUp(500, function () {
         $("#success-alert").alert('close');
@@ -348,6 +351,27 @@
     seqCount = parseInt(seqCount)
     //get plasmid name
     name = document.getElementById("name").textContent;
+    //get the sequence
+    sequence = document.getElementById("sequence").textContent;
+    /*
+    features = JSON.parse(features);
+    //configure data for the api
+    var data = {
+        id: "#giraffe-map", //id of the plasmid div
+        form: "#featureEdit", //form id for edit feature
+        addFeatureId: "#featureAdd", //form id for adding feature
+        name: name, //plasmid name
+        sequence: sequence, //sequence
+        features: features, //all features
+        showEnzyme: false, //whether to show enzyme cuts on the map
+        //enzymes: enzymes, //all enzymes
+        cuts_number: -1 //-1 show all cuts, change to any number to show the enzymes that have the number of cuts. It doesn't accept an array                    
+    };
+    var dp = new Plasmid();
+    dp.read(data);
+    //draw the circular map
+    dp.draw();
+    */
     try
     {
         features = JSON.parse(features);
