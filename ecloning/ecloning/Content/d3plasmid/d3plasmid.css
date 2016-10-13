@@ -24,7 +24,7 @@
 div.rectTooltip {   
   position: absolute;           
   text-align: left;           
-  width: 320px;                  
+  width: 360px;                  
   padding: 5px;             
   font: 10px sans-serif;        
   background: #aec7e8;   
@@ -36,7 +36,7 @@ div.brushTooltip {
   position: absolute;           
   text-align: left;           
   padding: 5px;
-  width: 320px;              
+  width: 360px;              
   font: 10px sans-serif;        
   background: #e7cb94;   
   border: 0px;      

@@ -123,7 +123,7 @@ namespace ecloning
                       "~/Content/bootstrap3-editable/css/bootstrap-editable.css",
                       "~/Content/dataTables.bootstrap.min.css",
                       //"~/Content/spectrum/spectrum.css", //color
-                      "~/Content/feature-viewer/fv.css",
+                      //"~/Content/feature-viewer/fv.css",
                       "~/Content/msa/msa.css",
                       "~/Content/site.css"));
             bundles.Add(new StyleBundle("~/Content/d3plasmid").Include(

@@ -116,10 +116,10 @@ textarea {
     color: red;
 }
 
-.required:after {
+/*.required:after {
     content: "*";
     color: red;
-}
+}*/
 
 .dotted-line {
     border: none;

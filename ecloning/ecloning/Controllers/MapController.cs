@@ -90,8 +90,28 @@ namespace ecloning.Controllers
             ViewBag.BackupCount = backup.Count();
             ViewBag.Tag = tag;
             //pass json
-            var features = plasmid_map.Where(f=>f.feature_id !=4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, color=f.common_feature.color, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
+            //var features = plasmid_map.Where(f=>f.feature_id !=4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, color=f.common_feature.color, feature = f.common_feature != null? f.common_feature.label: f.feature, type_id = f.feature_id, start = f.start, cut =f.cut, clockwise = f.clockwise==1? true: false });
+            var features = plasmid_map.Where(f => f.feature_id != 4).OrderBy(s => s.start).Select(f => new { show_feature = f.show_feature, end = f.end, color = f.common_feature.color, name = f.common_feature != null ? f.common_feature.label : f.feature, type_id = f.feature_id, start = f.start, cut = f.cut, clockwise = f.clockwise == 1 ? true : false });
             ViewBag.Features = JsonConvert.SerializeObject(features.ToList());
+
+            //all the methylation
+            var methylation = db.methylations.Where(m => m.plasmid_id == id);
+            var Methylation = methylation.OrderBy(n => n.name).Select(m => new { pId = m.plasmid_id, name = m.name, cut = m.cut, clockwise = m.clockwise, dam_cm = m.dam_complete, dam_ip = m.dam_impaired, dcm_cm = m.dcm_complete, dcm_ip = m.dcm_impaired });
+            ViewBag.Methylation = JsonConvert.SerializeObject(Methylation.ToList());
+            //display all enzyme cuts of the current plasmid
+            var Enzymes = plasmid_map.Where(f => f.feature_id == 4).OrderBy(n => n.common_feature != null ? n.common_feature.label : n.feature).OrderBy(s => s.cut).Select(f =>
+                new
+                {
+                    pId = f.plasmid_id,
+                    name = f.common_feature != null ? f.common_feature.label : f.feature,
+                    start = f.start,
+                    end = f.end,
+                    cut = f.cut,
+                    clockwise = f.clockwise == 1 ? true : false,
+                    methylation = methylation.Where(m => m.name == (f.common_feature != null ? f.common_feature.label : f.feature) && m.cut == f.cut && m.clockwise == f.clockwise).Count() > 0 ? true : false
+                });
+            ViewBag.Enzymes = JsonConvert.SerializeObject(Enzymes.ToList());
+
             return View(plasmid_map.ToList());
         }
 

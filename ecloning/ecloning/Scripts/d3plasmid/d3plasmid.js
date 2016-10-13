@@ -111,7 +111,14 @@
             width = width < 250 ? 250 : width;
 
             //outer: only emzymes
-            r_enzy = genRatioVal((width + 2*padding), 2500, 100, 250); // will be updated later
+            if (showEnzyme)
+            {
+                r_enzy = genRatioVal((width + 2 * padding), 2500, 100, 250); // will be updated later
+            }
+            else
+            {
+                r_enzy = 0;
+            }
             //inner and over circle: features
             r_plasmid = width/2 - r_enzy;
             r_plasmid_padding = genRatioVal((width + 2*padding), 2500, 2, 10);
@@ -124,9 +131,14 @@
             feature_gap = genRatioVal((width + 2*padding), 2500, 20, 40);
 
             //for linear parameters
-            l_padding = genRatioVal($(id).width(), 2500, 50, 100);            
+            l_padding = genRatioVal($(id).width(), 2500, 10, 20);            
             t_padding = genRatioVal(($(id).width()), 2500, 100, 250);
-            l_enzy = genRatioVal(($(id).width()), 2500, 100, 250);
+            if (showEnzyme) {
+                l_enzy = genRatioVal(($(id).width()), 2500, 100, 250);
+            }
+            else {
+                l_enzy = 0;
+            }
             //where the plasmid name
             name_height = 20;
             dna_gap = genRatioVal(($(id).width()), 2500, 3, 6);
@@ -169,7 +181,12 @@
             width = width < 500 ? 500 : width;
 
             //     //outer: only emzymes
-            r_enzy = genRatioVal((width + 2*padding), 2500, 100, 250); // will be updated later
+            if (showEnzyme) {
+                r_enzy = genRatioVal((width + 2 * padding), 2500, 100, 250); // will be updated later
+            }
+            else {
+                r_enzy = 0;
+            }
             //inner and over circle: features
             r_plasmid = width/2 - r_enzy;
             r_plasmid_padding = genRatioVal((width + 2*padding), 2500, 2, 10);
@@ -209,7 +226,7 @@
             //draw markers
              drawLinearCount(sequence.length, width, t_padding, l_enzy, l_padding, dna_gap, cut_length);
              //draw features
-             drawLinearFeature(svg, features, sequence.length, width, t_padding, l_enzy, l_padding, arrow_parameter, dna_gap, cut_length, sequence, feature_gap, featureWidth, form);
+             drawLinearFeature(svg, features, sequence.length, width, t_padding, l_enzy, l_padding, arrow_parameter, dna_gap, cut_length, sequence, feature_gap, featureWidth, form, showEnzyme);
         }
         //redraw linear map 
         this.redrawLinear =function(){
@@ -227,7 +244,12 @@
             //for linear parameters
             l_padding = genRatioVal($(id).width(), 2500, 50, 100);            
             t_padding = genRatioVal(($(id).width()), 2500, 100, 250);
-            l_enzy = genRatioVal(($(id).width()), 2500, 100, 250);
+            if (showEnzyme) {
+                l_enzy = genRatioVal(($(id).width()), 2500, 100, 250);
+            }
+            else {
+                l_enzy = 0;
+            }
             //where the plasmid name
             name_height = 20;
             dna_gap = genRatioVal(($(id).width()), 2500, 3, 6);
@@ -243,7 +265,7 @@
             //draw markers
             drawLinearCount(sequence.length, width, t_padding, l_enzy, l_padding, dna_gap, cut_length);
             //draw features
-            drawLinearFeature(svg, features, sequence.length, width, t_padding, l_enzy, l_padding, arrow_parameter, dna_gap, cut_length, sequence, feature_gap, featureWidth, form);
+            drawLinearFeature(svg, features, sequence.length, width, t_padding, l_enzy, l_padding, arrow_parameter, dna_gap, cut_length, sequence, feature_gap, featureWidth, form, showEnzyme);
         }
     }
 
@@ -290,7 +312,7 @@
                     });
             //backbone plasmid
             backbone.append("path")
-                    .attr("stroke", "#6baed6")
+                    .attr("stroke", "#bdbdbd")
                     .attr("stroke-width", function(){return width > 800 ? 2 : 1})
                     .attr("fill", "#c6dbef")
                     .attr("fill-opacity", .5)
@@ -380,14 +402,14 @@
                 }
             }
             plasmid.append("line")
-                    .style("stroke", "#9ecae1")
+                    .style("stroke", "#bdbdbd")
                     .attr("x1", 0 - dna_gap)
                     .attr("y1", 0)
                     .attr("x2", width + dna_gap)
                     .attr("y2", 0);
             //second line
             plasmid.append("line")
-                    .style("stroke", "#9ecae1")
+                    .style("stroke", "#bdbdbd")
                     .attr("x1", 0 - dna_gap)
                     .attr("y1", 0 + dna_gap)
                     .attr("x2", width + dna_gap)
@@ -411,7 +433,7 @@
                         return fontSize +"px";
                     })
                     .style("fill", "#636363")
-                    .text(function(){ return name; });            
+                    .text(function () { return name; });
          return svg;
     }
     //draw enzymes
@@ -624,205 +646,206 @@
     //draw linear enzymes
     function drawLinearEnzyme(id, svg, enzymes, cuts_number, totalLength, width, t_padding, l_enzy, l_padding, lable_line_length, text_line_distance, label_line_gap, cut_length, dna_gap, selectEnzyme){
         //nest emzymes by enzyme
-        var nestedEnzymes = d3.nest()
-                              .key(function(d){return d.name.split(' ')[0];})
-                              .entries(enzymes);
         var enzySVG = svg.append('g').attr("transform", "translate(" + (0) + "," + (t_padding + l_enzy) + ")").attr("id", "enzyme");
-        
-        if(cuts_number == -1){
-            //draw enzymes cuts
-            //set the start label_line_length
-            var lineLength = lable_line_length;
-            enzymes.forEach(function(d, i){
-                var enzy = enzySVG.append("g").attr("class", function(){
+        if (typeof enzymes != 'undefined' && enzymes.length > 0) {
+            var nestedEnzymes = d3.nest()
+                              .key(function (d) { return d.name.split(' ')[0]; })
+                              .entries(enzymes);
+
+            if (cuts_number == -1) {
+                //draw enzymes cuts
+                //set the start label_line_length
+                var lineLength = lable_line_length;
+                enzymes.forEach(function (d, i) {
+                    var enzy = enzySVG.append("g").attr("class", function () {
                         return d.name.split(' ')[0];
                     })
-                    .datum(d);
-                //cuts
-                var cut = enzy
-                    .append("line")
-                    .attr("class", function(d){
-                        return d.name.split(' ')[0] + "-cut noEvent";
-                    })
-                    .attr("stroke", "#8c564b")
-                    .attr("stroke-width", function(){return width > 800 ? 2 : 1})
-                    .attr("stroke-opacity", .2)
-                    .attr("x1", function(d){
-                        return pos2Length(d.cut, totalLength, width);
-                    })
-                    .attr("y1", 0 - cut_length/4)
-                    .attr("x2", function(d){
-                        return pos2Length(d.cut, totalLength, width) + .5;
-                    })
-                    .attr("y2", 0 + cut_length/4 + dna_gap);
-                
-                //label-line
-                var labelLine = enzy.append("line")
-                                    .attr("class", function(d){
-                                        return d.name.split(' ')[0] + "-line";
-                                    })
-                                    .attr("stroke", "#cedb9c")
-                                    .attr("stroke-width", function(){return width > 800 ? .5 : .2})
-                                    .attr("stroke-opacity", .5)
-                                    .attr("x1", function(d){
-                                        return pos2Length(d.cut, totalLength, width);
-                                    })
-                                    .attr("y1", 0 - cut_length/2 - lineLength)
-                                    .attr("x2", function(d){
-                                        return pos2Length(d.cut, totalLength, width) + .5;
-                                    })
-                                    .attr("y2", 0 - cut_length/2);
-                ////label-text
-                var labelText = enzy.append("text")
-                                .attr("class", function(d){
+                        .datum(d);
+                    //cuts
+                    var cut = enzy
+                        .append("line")
+                        .attr("class", function (d) {
+                            return d.name.split(' ')[0] + "-cut noEvent";
+                        })
+                        .attr("stroke", "#8c564b")
+                        .attr("stroke-width", function () { return width > 800 ? 2 : 1 })
+                        .attr("stroke-opacity", .2)
+                        .attr("x1", function (d) {
+                            return pos2Length(d.cut, totalLength, width);
+                        })
+                        .attr("y1", 0 - cut_length / 4)
+                        .attr("x2", function (d) {
+                            return pos2Length(d.cut, totalLength, width) + .5;
+                        })
+                        .attr("y2", 0 + cut_length / 4 + dna_gap);
+
+                    //label-line
+                    var labelLine = enzy.append("line")
+                                        .attr("class", function (d) {
+                                            return d.name.split(' ')[0] + "-line";
+                                        })
+                                        .attr("stroke", "#cedb9c")
+                                        .attr("stroke-width", function () { return width > 800 ? .5 : .2 })
+                                        .attr("stroke-opacity", .5)
+                                        .attr("x1", function (d) {
+                                            return pos2Length(d.cut, totalLength, width);
+                                        })
+                                        .attr("y1", 0 - cut_length / 2 - lineLength)
+                                        .attr("x2", function (d) {
+                                            return pos2Length(d.cut, totalLength, width) + .5;
+                                        })
+                                        .attr("y2", 0 - cut_length / 2);
+                    ////label-text
+                    var labelText = enzy.append("text")
+                                    .attr("class", function (d) {
                                         return d.name.split(' ')[0] + "-text";
                                     })
-                                .attr("text-anchor", "begin")
-                                .attr("transform", function (d) {
-                                    return "translate(" + (pos2Length(d.cut, totalLength, width) + .5) + "," + (-lineLength - cut_length ) + ")rotate(-90)";
-                                })
-                                .style("fill", "gray")
-                                .style("font", "10px Arial")
-                                .text(function(d){return d.name.split(' ')[0] + " (" + d.cut + ")" ;});
-                
-                //update l_enzy
-                l_enzy = l_enzy <= lineLength + cut_length ? lineLength + cut_length : l_enzy;
+                                    .attr("text-anchor", "begin")
+                                    .attr("transform", function (d) {
+                                        return "translate(" + (pos2Length(d.cut, totalLength, width) + .5) + "," + (-lineLength - cut_length) + ")rotate(-90)";
+                                    })
+                                    .style("fill", "gray")
+                                    .style("font", "10px Arial")
+                                    .text(function (d) { return d.name.split(' ')[0] + " (" + d.cut + ")"; });
 
-                if(i < enzymes.length -1){                    
-                    if(pos2Length(enzymes[i+1].cut, totalLength, width) - pos2Length(d.cut, totalLength, width) <= label_line_gap){
-                        lineLength += 45; //make the label line length
+                    //update l_enzy
+                    l_enzy = l_enzy <= lineLength + cut_length ? lineLength + cut_length : l_enzy;
+
+                    if (i < enzymes.length - 1) {
+                        if (pos2Length(enzymes[i + 1].cut, totalLength, width) - pos2Length(d.cut, totalLength, width) <= label_line_gap) {
+                            lineLength += 45; //make the label line length
+                        }
+                        else {
+                            lineLength = lable_line_length;
+                        }
                     }
-                    else{
-                        lineLength = lable_line_length;
-                    }
-                }
-                //mouse events
-            enzy.on("mouseover", function(d){
+                    //mouse events
+                    enzy.on("mouseover", function (d) {
                         //update select emzymes
                         selectEnzyme = d.name.split(' ')[0];
                         //get the line class
-                        var cutClass = "."+ d.name.split(' ')[0] +"-cut";
+                        var cutClass = "." + d.name.split(' ')[0] + "-cut";
                         d3.selectAll(cutClass).attr("stroke", "blue").attr("stroke-opacity", .8);
                         //get the label class
-                        var lineClass = "."+d.name.split(' ')[0] +"-line";
+                        var lineClass = "." + d.name.split(' ')[0] + "-line";
                         d3.selectAll(lineClass).attr("stroke", "blue");
                         //get text class
-                        var textClass = "."+d.name.split(' ')[0] +"-text";
+                        var textClass = "." + d.name.split(' ')[0] + "-text";
                         d3.selectAll(textClass).style("fill", "blue").style("font", "14px Arial");
                     })
-                .on("mouseout", function(d){
+                        .on("mouseout", function (d) {
                             //get the line class
-                        var cutClass = "."+ d.name.split(' ')[0] +"-cut";
-                        d3.selectAll(cutClass).attr("stroke", "#8c564b").attr("stroke-opacity", .5);
-                        //get the label class
-                        var lineClass = "."+d.name.split(' ')[0] +"-line";
-                        d3.selectAll(lineClass).attr("stroke", "#cedb9c");
-                        //get text class
-                        var textClass = "."+d.name.split(' ')[0] +"-text";
-                        d3.selectAll(textClass).style("fill", "gray").style("font", "10px Arial");
+                            var cutClass = "." + d.name.split(' ')[0] + "-cut";
+                            d3.selectAll(cutClass).attr("stroke", "#8c564b").attr("stroke-opacity", .5);
+                            //get the label class
+                            var lineClass = "." + d.name.split(' ')[0] + "-line";
+                            d3.selectAll(lineClass).attr("stroke", "#cedb9c");
+                            //get text class
+                            var textClass = "." + d.name.split(' ')[0] + "-text";
+                            d3.selectAll(textClass).style("fill", "gray").style("font", "10px Arial");
                         });
 
                 });
-                
+
             }
-        else
-        {
-            //only show the enzymes have the cuts_number
-            //set the start label_line_length
-            var lineLength = lable_line_length;
-            nestedEnzymes.forEach(function(d, i){
-                if(d.values.length == cuts_number){
-                     d.values.forEach(function(sd, si){
-                        var enzy = enzySVG.append("g").attr("class", function(){
-                        return sd.name.split(' ')[0];
-                    })
-                    .datum(sd);
-                        //cuts
-                        var cut = enzy
-                            .append("line")
-                            .attr("class", function(d){
-                                return d.name.split(' ')[0] + "-cut noEvent";
+            else {
+                //only show the enzymes have the cuts_number
+                //set the start label_line_length
+                var lineLength = lable_line_length;
+                nestedEnzymes.forEach(function (d, i) {
+                    if (d.values.length == cuts_number) {
+                        d.values.forEach(function (sd, si) {
+                            var enzy = enzySVG.append("g").attr("class", function () {
+                                return sd.name.split(' ')[0];
                             })
-                            .attr("stroke", "#8c564b")
-                            .attr("stroke-width", function(){return width > 800 ? 2 : 1})
-                            .attr("stroke-opacity", .2)
-                            .attr("x1", function(d){
-                                return pos2Length(d.cut, totalLength, width);
-                            })
-                            .attr("y1", 0 - cut_length/4)
-                            .attr("x2", function(d){
-                                return pos2Length(d.cut, totalLength, width) + .5;
-                            })
-                            .attr("y2", 0 + cut_length/4 + dna_gap);
-                        //label-line
-                        var labelLine = enzy.append("line")
-                                            .attr("class", function(d){
-                                                return d.name.split(' ')[0] + "-line";
-                                            })
-                                            .attr("stroke", "#cedb9c")
-                                            .attr("stroke-width", function(){return width > 800 ? .5 : .2})
-                                            .attr("stroke-opacity", .5)
-                                            .attr("x1", function(d){
-                                                return pos2Length(d.cut, totalLength, width);
-                                            })
-                                            .attr("y1", 0 - cut_length/2 - lineLength)
-                                            .attr("x2", function(d){
-                                                return pos2Length(d.cut, totalLength, width) + .5;
-                                            })
-                                            .attr("y2", 0 - cut_length/2);
-                        //label-text
-                        var labelText = enzy.append("text")
-                                        .attr("class", function(d){
+                        .datum(sd);
+                            //cuts
+                            var cut = enzy
+                                .append("line")
+                                .attr("class", function (d) {
+                                    return d.name.split(' ')[0] + "-cut noEvent";
+                                })
+                                .attr("stroke", "#8c564b")
+                                .attr("stroke-width", function () { return width > 800 ? 2 : 1 })
+                                .attr("stroke-opacity", .2)
+                                .attr("x1", function (d) {
+                                    return pos2Length(d.cut, totalLength, width);
+                                })
+                                .attr("y1", 0 - cut_length / 4)
+                                .attr("x2", function (d) {
+                                    return pos2Length(d.cut, totalLength, width) + .5;
+                                })
+                                .attr("y2", 0 + cut_length / 4 + dna_gap);
+                            //label-line
+                            var labelLine = enzy.append("line")
+                                                .attr("class", function (d) {
+                                                    return d.name.split(' ')[0] + "-line";
+                                                })
+                                                .attr("stroke", "#cedb9c")
+                                                .attr("stroke-width", function () { return width > 800 ? .5 : .2 })
+                                                .attr("stroke-opacity", .5)
+                                                .attr("x1", function (d) {
+                                                    return pos2Length(d.cut, totalLength, width);
+                                                })
+                                                .attr("y1", 0 - cut_length / 2 - lineLength)
+                                                .attr("x2", function (d) {
+                                                    return pos2Length(d.cut, totalLength, width) + .5;
+                                                })
+                                                .attr("y2", 0 - cut_length / 2);
+                            //label-text
+                            var labelText = enzy.append("text")
+                                            .attr("class", function (d) {
                                                 return d.name.split(' ')[0] + "-text";
                                             })
-                                        .attr("text-anchor", "begin")
-                                        .attr("transform", function (d) {
-                                            return "translate(" + (pos2Length(d.cut, totalLength, width) + .5) + "," + (-lineLength - cut_length ) + ")rotate(-90)";
-                                        })
-                                        .style("fill", "gray")
-                                        .style("font", "10px Arial")
-                                        .text(function(d){return d.name.split(' ')[0] + " (" + d.cut + ")" ;});           
-                                        //mouse events
-                        enzy.on("mouseover", function(d){
-                                    //update select emzymes
-                                    selectEnzyme = d.name.split(' ')[0];
-                                    //get the line class
-                                    var cutClass = "."+ d.name.split(' ')[0] +"-cut";
-                                    d3.selectAll(cutClass).attr("stroke", "blue").attr("stroke-opacity", .8);
-                                    //get the label class
-                                    var lineClass = "."+d.name.split(' ')[0] +"-line";
-                                    d3.selectAll(lineClass).attr("stroke", "blue");
-                                    //get text class
-                                    var textClass = "."+d.name.split(' ')[0] +"-text";
-                                    d3.selectAll(textClass).style("fill", "blue").style("font", "14px Arial");
-                        })
-                        .on("mouseout", function(d){
-                                        //get the line class
-                                    var cutClass = "."+ d.name.split(' ')[0] +"-cut";
-                                    d3.selectAll(cutClass).attr("stroke", "#8c564b").attr("stroke-opacity", .5);
-                                    //get the label class
-                                    var lineClass = "."+d.name.split(' ')[0] +"-line";
-                                    d3.selectAll(lineClass).attr("stroke", "#cedb9c");
-                                    //get text class
-                                    var textClass = "."+d.name.split(' ')[0] +"-text";
-                                    d3.selectAll(textClass).style("fill", "gray").style("font", "10px Arial");
-                        });    
-                    });
-                };                
-            });
+                                            .attr("text-anchor", "begin")
+                                            .attr("transform", function (d) {
+                                                return "translate(" + (pos2Length(d.cut, totalLength, width) + .5) + "," + (-lineLength - cut_length) + ")rotate(-90)";
+                                            })
+                                            .style("fill", "gray")
+                                            .style("font", "10px Arial")
+                                            .text(function (d) { return d.name.split(' ')[0] + " (" + d.cut + ")"; });
+                            //mouse events
+                            enzy.on("mouseover", function (d) {
+                                //update select emzymes
+                                selectEnzyme = d.name.split(' ')[0];
+                                //get the line class
+                                var cutClass = "." + d.name.split(' ')[0] + "-cut";
+                                d3.selectAll(cutClass).attr("stroke", "blue").attr("stroke-opacity", .8);
+                                //get the label class
+                                var lineClass = "." + d.name.split(' ')[0] + "-line";
+                                d3.selectAll(lineClass).attr("stroke", "blue");
+                                //get text class
+                                var textClass = "." + d.name.split(' ')[0] + "-text";
+                                d3.selectAll(textClass).style("fill", "blue").style("font", "14px Arial");
+                            })
+                            .on("mouseout", function (d) {
+                                //get the line class
+                                var cutClass = "." + d.name.split(' ')[0] + "-cut";
+                                d3.selectAll(cutClass).attr("stroke", "#8c564b").attr("stroke-opacity", .5);
+                                //get the label class
+                                var lineClass = "." + d.name.split(' ')[0] + "-line";
+                                d3.selectAll(lineClass).attr("stroke", "#cedb9c");
+                                //get text class
+                                var textClass = "." + d.name.split(' ')[0] + "-text";
+                                d3.selectAll(textClass).style("fill", "gray").style("font", "10px Arial");
+                            });
+                        });
+                    };
+                });
+            }
+
+            //adjest the l_enzy
+            //svg height
+            var height = $(id).width();
+            height = height <= t_padding + l_enzy + 100 ? t_padding + l_enzy + 100 : height;
+            d3.select("#plasmid_svg").transition().duration(10).attr("height", height + 50);
+
+            //backbone
+            d3.select("#backbone").transition().duration(10).attr("transform", "translate(" + (0) + "," + (t_padding + l_enzy) + ")");
+            //enzyme
+            d3.select("#enzyme").transition().duration(10).attr("transform", "translate(" + (0) + "," + (t_padding + l_enzy) + ")");
         }
 
-        //adjest the l_enzy
-        //svg height
-        var height = $(id).width();
-        height = height <= t_padding + l_enzy + 100 ? t_padding + l_enzy + 100 : height;
-        d3.select("#plasmid_svg").transition().duration(10).attr("height", height +50);
-
-        //backbone
-        d3.select("#backbone").transition().duration(10).attr("transform", "translate(" + (0) + "," + (t_padding + l_enzy) + ")");
-        //enzyme
-        d3.select("#enzyme").transition().duration(10).attr("transform", "translate(" + (0) + "," + (t_padding + l_enzy) + ")");
-        
         return svg;
     }
 
@@ -851,7 +874,7 @@
             //markers
             var markers = markerG.datum(d)
                     .append("path")
-                    .attr("stroke", "#2ca02c")
+                    .attr("stroke", "gray")
                     .attr("stroke-width", function(){return width > 800 ? 2 : 1})
                     .attr("d", arc);
 
@@ -863,8 +886,8 @@
                                 .attr("transform", function (d) {
                                     return "translate(" + arc2.centroid(pie(d)) + ")rotate(" + angle(angles) + ")";
                                 })
-                                .style("fill", "#2ca02c")
-                                .style("font", "12px Arial")
+                                .style("fill", "gray")
+                                .style("font", "10px Arial")
                                 .text(function(d){return Math.trunc(d/1000)+"K" ;});
         })
         return svg;
@@ -883,7 +906,7 @@
             //add lines
             markerLine.append("line")
                   .attr("class", "marker-line")
-                  .attr("stroke", "#2ca02c")
+                  .attr("stroke", "gray")
                     .attr("stroke-width", function(){return width > 800 ? 2 : 1})
                     .attr("stroke-opacity", .5)
                     .attr("x1", function(d){
@@ -904,7 +927,7 @@
                                 .attr("transform", function (d) {
                                     return "translate(" + pos2Length(d, seqLength, width) + "," + ( cut_length + dna_gap ) + ")";
                                 })
-                                .style("fill", "#2ca02c")
+                                .style("fill", "gray")
                                 .style("font", "10px Arial")
                                 .text(function(d){return Math.trunc(d/1000)+"K" ;});
     }
@@ -1099,7 +1122,7 @@
         return svg;
     }
 
-    function drawLinearFeature(svg, features, totalLength, width, t_padding, l_enzy, l_padding, arrow_parameter, dna_gap, cut_length, sequence, feature_gap, featureWidth, form){
+    function drawLinearFeature(svg, features, totalLength, width, t_padding, l_enzy, l_padding, arrow_parameter, dna_gap, cut_length, sequence, feature_gap, featureWidth, form, showEnzyme) {
         //tooltip for the mouseover event
         //first remove all the tooltip
         d3.selectAll(".rectTooltip").remove();
@@ -1269,7 +1292,12 @@
         })
         //svg height
         var backboneHeight = d3.select("#backbone").node().getBBox().height;
-        var enzymeHeight = d3.select("#enzyme").node().getBBox().height;
+        if (showEnzyme){
+            var enzymeHeight = d3.select("#enzyme").node().getBBox().height;
+        }
+        else {
+            var enzymeHeight = 0;
+        }
         d3.select("#plasmid_svg").transition().duration(10).attr("height", backboneHeight + enzymeHeight + pName_height+ 50);
 
         //adjest plasmid name                    
